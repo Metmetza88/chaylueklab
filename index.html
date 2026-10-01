@@ -142,7 +142,7 @@
                         <i class="fa-brands fa-line text-line-500"></i>
                     </div>
                     <span class="font-bold text-sm">เชื่อมต่อ LINE</span>
-                    <span id="lineStatusSummary" class="text-xs text-slate-400">สถานะ: เชื่อมต่อแล้ว</span>
+                    <span id="lineStatusSummary" class="text-xs text-slate-400">สถานะ: กำลังตรวจสอบ LIFF</span>
                 </div>
             </div>
 
@@ -755,8 +755,7 @@
             try {
                 await liff.sendMessages([{
                     type: 'text',
-                    text: '🔔 ทดสอบจาก CHAYLUEKLAB Senior
-ระบบ LINE LIFF เชื่อมต่อสำเร็จแล้ว'
+                    text: '🔔 ทดสอบจาก CHAYLUEKLAB Senior\nระบบ LINE LIFF เชื่อมต่อสำเร็จแล้ว'
                 }]);
                 showToast('ส่งข้อความทดสอบเข้า LINE สำเร็จ');
             } catch (err) {
