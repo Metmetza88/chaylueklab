@@ -1,0 +1,38 @@
+{
+  "type": "flex",
+  "altText": "⏰ เลื่อน 10 นาที",
+  "contents": {
+    "type": "bubble",
+    "size": "kilo",
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "backgroundColor": "#1A150A",
+      "contents": [
+        {
+          "type": "text",
+          "text": "⏰ เลื่อนเตือนอีก 10 นาที",
+          "color": "#D4AF37",
+          "weight": "bold",
+          "size": "sm"
+        },
+        {
+          "type": "text",
+          "text": "{{task}}",
+          "color": "#FFFFFF",
+          "weight": "bold",
+          "wrap": true,
+          "margin": "md"
+        },
+        {
+          "type": "text",
+          "text": "จะเตือนใหม่เวลา {{newTime}}",
+          "color": "#D4AF37",
+          "size": "xs",
+          "margin": "sm"
+        }
+      ],
+      "paddingAll": "16px"
+    }
+  }
+}
