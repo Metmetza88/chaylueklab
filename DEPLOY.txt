@@ -1,0 +1,18 @@
+CHAILUEKLAB AI — Vercel-ready package
+
+พร้อม deploy เป็น Static Site บน Vercel:
+- index.html
+- manifest.webmanifest
+- vercel.json
+
+หลัง deploy จะใช้ Rich Menu เปิด URL เช่น:
+https://YOUR-DOMAIN.vercel.app/?tab=home
+https://YOUR-DOMAIN.vercel.app/?tab=groups
+https://YOUR-DOMAIN.vercel.app/?tab=tasks
+https://YOUR-DOMAIN.vercel.app/?tab=ai
+https://YOUR-DOMAIN.vercel.app/?tab=account
+https://YOUR-DOMAIN.vercel.app/tasks/new
+
+LIFF-ready:
+หลังสร้าง LIFF app แล้ว สามารถทดสอบโดยเพิ่ม ?liffId=YOUR_LIFF_ID
+เช่น https://YOUR-DOMAIN.vercel.app/?tab=home&liffId=YOUR_LIFF_ID

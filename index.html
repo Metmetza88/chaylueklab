@@ -1,749 +1,453 @@
 <!doctype html>
 <html lang="th">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#07100c">
-  <title>CHAYLUEKLAB • AI Life OS</title>
-
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config={theme:{extend:{colors:{gold:"#D4AF37",ink:"#07100C",panel:"#0B120E",panel2:"#101A14",soft:"#7DD3A6"}}}}
-  </script>
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0b0d" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>CHAILUEKLAB AI</title>
   <style>
     :root{
-      --bg:#050907;--panel:#0b120e;--panel2:#101a14;--panel3:#142019;
-      --soft:#7dd3a6;--gold:#d4af37;--muted:#8fa49a;--green:#16a34a;--red:#ef4444;
+      --bg:#08090a;--bg2:#101214;--card:#f1e6cf;--card2:#eadbbd;--ink:#151515;
+      --gold:#d4af37;--gold2:#f3d27a;--green:#19c56b;--red:#991b1b;--muted:#8f938f;
+      --line:#24282a;--white:#f7f7f2;--shadow:0 14px 35px rgba(0,0,0,.28);
     }
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{margin:0;min-height:100%;background:#050907;color:#f4f7f5}
-    body{
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",sans-serif;
-      background:
-        radial-gradient(circle at 10% -5%,rgba(22,163,74,.18),transparent 28%),
-        radial-gradient(circle at 90% 0%,rgba(212,175,55,.10),transparent 24%),
-        linear-gradient(180deg,#07100c,#050907 55%,#08100c);
+    *{box-sizing:border-box}
+    html,body{margin:0;background:linear-gradient(180deg,#060708,#0a0b0c 40%,#050606);color:var(--white);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",sans-serif;min-height:100%}
+    body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    .app{max-width:560px;margin:0 auto;min-height:100vh;background:
+      radial-gradient(circle at 50% -20%,rgba(212,175,55,.12),transparent 35%),
+      radial-gradient(circle at 100% 20%,rgba(25,197,107,.05),transparent 25%)}
+    .top{position:sticky;top:0;z-index:30;padding:calc(12px + env(safe-area-inset-top)) 16px 10px;
+      background:rgba(8,9,10,.9);backdrop-filter:blur(16px);border-bottom:1px solid #1d2022}
+    .brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brandmark{display:flex;align-items:center;gap:12px}
+    .sigil{width:42px;height:42px;border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;
+      background:linear-gradient(145deg,#16110a,#050505);box-shadow:0 0 0 3px rgba(212,175,55,.08)}
+    .sigil:before{content:"◢";color:var(--gold2);font-size:22px;transform:rotate(-45deg)}
+    .brand h1{font-size:21px;margin:0;color:var(--gold2);letter-spacing:.3px}
+    .brand small{display:block;color:#a9aaa8;font-size:11px;letter-spacing:1.2px;margin-top:2px}
+    .statusdot{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:#b7bbb7}
+    .statusdot i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px rgba(25,197,107,.8)}
+    .page{padding:16px;display:none}
+    .page.active{display:block}
+    .hero{background:linear-gradient(140deg,#15100b,#0f1010 65%,#171308);border:1px solid #3b3320;border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+    .hero .hello{font-size:13px;color:#bebbb1}.hero h2{font-size:25px;margin:6px 0 4px;color:#fff}
+    .hero p{margin:0;color:#c9c8c1;font-size:14px}.quote{margin-top:14px;color:#e1b08f;font-size:14px}
+    .grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0 18px}
+    .stat{background:#111416;border:1px solid #262a2d;border-radius:16px;padding:14px;min-height:96px}
+    .stat b{font-size:24px;display:block;margin-top:8px}.stat span{color:#9ea29f;font-size:12px}.stat .ico{font-size:20px}
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin:18px 2px 10px}
+    .section-title h3{margin:0;font-size:19px}.section-title button{background:none;border:0;color:var(--gold2);font-size:13px}
+    .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .quick button{background:var(--card);border:0;border-radius:15px;padding:13px 6px;color:var(--ink);min-height:92px;box-shadow:var(--shadow)}
+    .quick .qico{font-size:24px;display:block;margin-bottom:8px}.quick small{font-size:11px}
+    .paper{background:linear-gradient(180deg,#f3e8d1,#ead9b8);color:var(--ink);border-radius:18px;padding:14px;border:1px solid #cdbf9d;box-shadow:var(--shadow)}
+    .list{display:flex;flex-direction:column;gap:10px}
+    .row{display:flex;gap:12px;align-items:center}.row .grow{flex:1}
+    .avatar{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#131313;border:1px solid var(--gold);color:var(--gold2);font-weight:800}
+    .paper h4{margin:0 0 4px;font-size:16px}.paper p{margin:0;color:#5e584d;font-size:12px}
+    .tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:11px;background:#e4d7ba;color:#423c31;margin-top:7px}
+    .tag.green{background:#cfeeda;color:#0d6a35}.tag.red{background:#f0d0cc;color:#8d1d12}.tag.gold{background:#efe0aa;color:#725700}
+    .btn{border:0;border-radius:13px;padding:11px 14px;background:#23272a;color:#fff}.btn.gold{background:linear-gradient(180deg,#e5c45f,#b68d22);color:#1a1408;font-weight:700}
+    .btn.green{background:#0d6e3a}.btn.red{background:#7f1d1d}.btn.ghost{background:transparent;border:1px solid #3a3f42}
+    .fab{position:fixed;right:max(18px,calc((100vw - 560px)/2 + 18px));bottom:calc(86px + env(safe-area-inset-bottom));width:54px;height:54px;border-radius:50%;
+      border:0;background:linear-gradient(180deg,#e3bd4f,#b38b20);font-size:28px;z-index:35;box-shadow:0 12px 35px rgba(0,0,0,.45)}
+    .tabs{display:flex;gap:6px;overflow:auto;padding-bottom:2px;margin-bottom:12px}.tabs button{white-space:nowrap;border:1px solid #2c3032;background:#111315;color:#bfc1c0;padding:9px 13px;border-radius:999px}
+    .tabs button.active{background:#17321f;color:#dff7e8;border-color:#235e37}
+    .task{display:flex;gap:10px;align-items:flex-start}.check{width:25px;height:25px;border-radius:7px;border:2px solid #504a3e;background:transparent;display:grid;place-items:center;flex:0 0 auto}
+    .check.done{background:#1ca65d;color:white;border-color:#1ca65d}.task.done h4{text-decoration:line-through;opacity:.6}
+    .progress{height:8px;background:#272b2c;border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;background:linear-gradient(90deg,#13b863,#6ae39c)}
+    .muted{color:#8c918e}.moneyplus{color:#5be696}.moneyminus{color:#ff7368}
+    .ai-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.ai-grid button{min-height:100px;background:linear-gradient(180deg,#efe2c7,#e5d3b2);color:#151515;border:0;border-radius:17px;padding:12px}
+    .ai-grid .ico{font-size:26px;display:block;margin-bottom:8px}
+    .composer{position:sticky;bottom:calc(78px + env(safe-area-inset-bottom));margin-top:14px;background:#101315;border:1px solid #2e3335;border-radius:18px;padding:8px;display:flex;gap:8px}
+    .composer input{flex:1;background:transparent;border:0;color:#fff;padding:10px;outline:0}.composer button{width:44px;border-radius:12px;border:0;background:#167443;color:white}
+    .chat{display:flex;flex-direction:column;gap:9px;margin-top:14px}.bubble{max-width:86%;padding:11px 13px;border-radius:16px;font-size:14px;line-height:1.45}
+    .bubble.user{align-self:flex-end;background:#245b39}.bubble.bot{align-self:flex-start;background:#1a1d1f;border:1px solid #2b3032}
+    .bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:40;width:min(100%,560px);padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+      background:rgba(7,8,8,.96);border-top:1px solid #1f2325;display:grid;grid-template-columns:repeat(5,1fr);backdrop-filter:blur(18px)}
+    .bottom button{border:0;background:transparent;color:#8f9491;padding:7px 2px;font-size:11px}.bottom .ico{display:block;font-size:21px;margin-bottom:3px}
+    .bottom button.active{color:var(--gold2)}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.68);z-index:100;display:none;align-items:flex-end;justify-content:center}
+    .modal.show{display:flex}.sheet{width:min(100%,560px);max-height:90vh;overflow:auto;background:#111315;border-radius:24px 24px 0 0;padding:18px;border:1px solid #292e30}
+    .sheet h3{margin:2px 0 14px}.form{display:grid;gap:11px}.form label{font-size:12px;color:#aeb2af}.form input,.form select,.form textarea{
+      width:100%;background:#0a0c0d;border:1px solid #2f3437;border-radius:12px;padding:12px;color:#fff;margin-top:5px;outline:0}
+    .form textarea{min-height:90px;resize:vertical}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:13px}
+    .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom));background:#202426;color:white;padding:10px 14px;border-radius:12px;z-index:200;display:none;box-shadow:var(--shadow)}
+    .toast.show{display:block}
+    .setting{background:#111416;border:1px solid #282d2f;border-radius:16px;padding:14px;margin-bottom:10px}
+    .setting h4{margin:0 0 5px}.setting p{margin:0;color:#969c98;font-size:12px}
+    .inline{display:flex;gap:8px;align-items:center}.inline>*{flex:1}
+    .danger{border-color:#4b2020;background:#1a0f0f}
+    .empty{text-align:center;padding:26px 10px;color:#8d918f}
+    .mini{font-size:11px}.right{text-align:right}
+    @media(min-width:760px){
+      .app{border-left:1px solid #161a1c;border-right:1px solid #161a1c}
     }
-    body:before{
-      content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;
-      background-image:linear-gradient(rgba(125,211,166,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(125,211,166,.18) 1px,transparent 1px);
-      background-size:34px 34px;mask-image:linear-gradient(#000,transparent 86%);
-    }
-    .shell{max-width:980px;margin:auto;min-height:100dvh;padding-bottom:92px}
-    .sticky{position:sticky;top:0;z-index:30;background:rgba(5,9,7,.90);backdrop-filter:blur(18px);border-bottom:1px solid rgba(212,175,55,.10)}
-    .glass{
-      background:linear-gradient(145deg,rgba(15,25,19,.95),rgba(7,13,10,.97));
-      border:1px solid rgba(212,175,55,.13);
-      box-shadow:0 16px 42px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.02);
-    }
-    .card{border-radius:24px}
-    .muted{color:var(--muted)} .gold{color:var(--gold)} .soft{color:var(--soft)}
-    .pill{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;font-size:11px;font-weight:800;background:rgba(22,163,74,.10);border:1px solid rgba(125,211,166,.17);color:#a2e8bc}
-    .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 5px rgba(34,197,94,.10)}
-    .btn{border:0;border-radius:16px;padding:12px 15px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
-    .btn:active{transform:scale(.98)}
-    .btn-green{background:linear-gradient(135deg,#0e6b3b,#16a34a);color:#fff}
-    .btn-gold{background:linear-gradient(135deg,#c99d23,#e1bd4d);color:#10130f}
-    .btn-ghost{background:rgba(255,255,255,.035);color:#dbe8e0;border:1px solid rgba(255,255,255,.075)}
-    .section-title{font-size:18px;font-weight:900;letter-spacing:-.02em}
-    .page{display:none}.page.active{display:block}
-    .task{display:flex;gap:12px;align-items:center;padding:14px;border-radius:18px;background:rgba(15,25,19,.78);border:1px solid rgba(125,211,166,.09)}
-    .check{width:24px;height:24px;border-radius:8px;border:2px solid #67786f;display:flex;align-items:center;justify-content:center;flex:0 0 auto;cursor:pointer}
-    .check.done{background:#16a34a;border-color:#16a34a}
-    .tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800;background:rgba(255,255,255,.05);color:#9fb1a8}
-    .tag.cloud{background:rgba(22,163,74,.12);color:#8be2aa;border:1px solid rgba(125,211,166,.13)}
-    .tag.fail{background:rgba(239,68,68,.10);color:#ff9d9d}
-    input,textarea,select{
-      width:100%;background:#09110d;border:1px solid rgba(125,211,166,.16);color:#f5f7f6;border-radius:14px;padding:12px 13px;outline:none
-    }
-    input:focus,textarea:focus,select:focus{border-color:rgba(212,175,55,.48);box-shadow:0 0 0 3px rgba(212,175,55,.07)}
-    .bottom{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(5,9,7,.94);backdrop-filter:blur(18px);border-top:1px solid rgba(212,175,55,.12);padding:8px 8px calc(8px + env(safe-area-inset-bottom))}
-    .navbtn{color:#6f8178}.navbtn.active{color:#d4af37}
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:flex-end;z-index:100;backdrop-filter:blur(7px)}
-    .modal.show{display:flex}
-    .sheet{width:100%;max-height:88dvh;overflow:auto;border-radius:28px 28px 0 0;background:linear-gradient(180deg,#0e1712,#07100c);border-top:1px solid rgba(212,175,55,.18);padding:20px 18px calc(24px + env(safe-area-inset-bottom))}
-    .month{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
-    .day{min-height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;position:relative;color:#c6d3cc;font-weight:800;font-size:13px}
-    .day.dim{color:#46544d}.day.sel{background:#153724;border:1px solid rgba(212,175,55,.25)}.day.has:after{content:"";position:absolute;bottom:5px;width:4px;height:4px;border-radius:50%;background:#d4af37}
-    .toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,20px);width:min(92vw,520px);background:#0d1711;color:#eaf4ed;border:1px solid rgba(125,211,166,.16);border-radius:18px;padding:13px 15px;z-index:200;opacity:0;pointer-events:none;transition:.2s;box-shadow:0 18px 50px rgba(0,0,0,.35)}
-    .toast.show{opacity:1;transform:translate(-50%,0)}
-    .hero{background:radial-gradient(circle at 90% 0%,rgba(212,175,55,.17),transparent 30%),radial-gradient(circle at 10% 100%,rgba(22,163,74,.22),transparent 38%),linear-gradient(135deg,#08110d,#0d2518 56%,#0b1711)}
-    @media(min-width:760px){.modal{align-items:center;justify-content:center}.sheet{max-width:560px;border-radius:28px}}
-  button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid #e1c677;outline-offset:4px}button:disabled{opacity:.55;cursor:not-allowed}#membershipPage .btn{min-height:48px;font-size:16px}#membershipPage input{accent-color:#16a34a}#membershipPage{overflow-wrap:anywhere}
-</style>
+  </style>
 </head>
 <body>
-<div class="shell">
-  <header class="sticky">
-    <div class="px-4 pt-[max(12px,env(safe-area-inset-top))] pb-3 flex items-center justify-between gap-3">
-      <div>
-        <div class="font-black tracking-[.05em]">CHAYLUEKLAB</div>
-        <div class="text-[10px] muted mt-1">AI LIFE OS • CLOUD REMINDER</div>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="brandmark">
+        <div class="sigil"></div>
+        <div><h1>ชายลึกลับ</h1><small>CHAILUEKLAB · AI ผู้ช่วยของคุณ</small></div>
       </div>
-      <div class="flex items-center gap-2">
-        <span id="lineBadge" class="pill"><span class="dot"></span><span>รอ LINE</span></span>
-        <span id="cloudBadge" class="pill"><span class="dot"></span><span>รอ CLOUD</span></span>
-      </div>
+      <div class="statusdot"><i></i><span>ONLINE</span></div>
     </div>
   </header>
 
-  <main class="px-4 py-4 space-y-5">
-    <section id="homePage" class="page active space-y-5">
-      <div class="glass card hero p-5">
-        <div class="pill mb-3"><span class="dot"></span><span id="systemText">กำลังเชื่อมต่อ</span></div>
-        <h1 class="text-2xl font-black">สวัสดี <span id="helloName" class="gold">ผู้ใช้ LINE</span></h1>
-        <p class="muted text-sm mt-2">งานและแจ้งเตือนส่วนตัวผ่าน LINE OA แม้ปิดหน้าเว็บ</p>
-        <button class="gold text-sm underline mt-3" onclick="switchPage('membershipPage');loadMembership()">ดูสมาชิก 99 บาท/เดือน →</button>
-        <div class="grid grid-cols-2 gap-2 mt-4">
-          <button class="btn btn-green" onclick="openTaskModal()">＋ เพิ่มงาน</button>
-          <button class="btn btn-ghost" onclick="testCloudLine()">ทดสอบ LINE</button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-3">
-        <div class="glass card p-4"><div class="text-[10px] muted">งานค้าง</div><div id="pendingCount" class="text-2xl font-black mt-1">0</div></div>
-        <div class="glass card p-4"><div class="text-[10px] muted">วันนี้</div><div id="todayCount" class="text-2xl font-black mt-1">0</div></div>
-      </div>
-
-      <div class="glass card p-4">
-        <div class="flex items-center justify-between mb-3">
-          <div><div class="section-title">งานล่าสุด</div><div class="text-[10px] muted">ซิงก์งานจากแชตส่วนตัว LINE OA</div></div>
-          <button class="gold text-xs font-black" onclick="switchPage('tasksPage')">ดูทั้งหมด</button>
-        </div>
-        <div id="homeTasks" class="space-y-2"></div>
-      </div>
-
-      <div class="glass card p-4">
-        <div class="section-title">วิธีใช้กับคนอื่น</div>
-        <div class="text-sm muted leading-relaxed mt-2">
-          ส่งลิงก์ LIFF นี้ให้คนอื่น → เขาเปิดด้วย LINE ของตัวเอง → เพิ่มงาน → ระบบผูกกับบัญชี LINE ของคนนั้น → ถึงเวลา LINE OA เตือนไปหาคนนั้นเอง
-        </div>
-        <div class="mt-3 p-3 rounded-2xl bg-white/[.03] text-xs soft">
-          กลุ่ม LINE: เชิญบอทเข้ากลุ่ม แล้วพิมพ์คำสั่งในกลุ่ม ระบบจะเตือนกลับกลุ่มเดิม
-        </div>
-      </div>
-    </section>
-
-    <section id="calendarPage" class="page space-y-5">
-      <div class="flex items-center justify-between">
-        <div><div class="section-title">ปฏิทิน</div><div class="text-[10px] muted">งานทั้งหมดจากเครื่องนี้</div></div>
-        <button class="btn btn-green !py-2 !px-3 text-xs" onclick="openTaskModal(selectedYmd())">＋ งาน</button>
-      </div>
-      <div class="glass card p-4">
-        <div class="flex items-center justify-between mb-4">
-          <button class="btn btn-ghost !p-2" onclick="moveMonth(-1)">‹</button>
-          <div id="monthTitle" class="font-black"></div>
-          <button class="btn btn-ghost !p-2" onclick="moveMonth(1)">›</button>
-        </div>
-        <div class="month text-[10px] muted mb-2">
-          <div class="text-center">อา</div><div class="text-center">จ</div><div class="text-center">อ</div><div class="text-center">พ</div><div class="text-center">พฤ</div><div class="text-center">ศ</div><div class="text-center">ส</div>
-        </div>
-        <div id="calendarGrid" class="month"></div>
-      </div>
-      <div class="glass card p-4">
-        <div id="selectedDateTitle" class="font-black mb-3"></div>
-        <div id="selectedTasks" class="space-y-2"></div>
-      </div>
-    </section>
-
-    <section id="tasksPage" class="page space-y-5">
-      <div class="flex items-center justify-between">
-        <div><div class="section-title">งาน & นัดหมาย</div><div class="text-[10px] muted">เพิ่มงานแล้วซิงก์ Cloud อัตโนมัติ</div></div>
-        <button class="btn btn-green !py-2 !px-3 text-xs" onclick="openTaskModal()">＋ เพิ่ม</button>
-      </div>
-      <div class="glass card p-4">
-        <div class="flex justify-between">
-          <div><div class="text-[10px] muted">ทั้งหมด</div><div id="allCount" class="text-2xl font-black">0</div></div>
-          <div><div class="text-[10px] muted">Cloud Sync</div><div id="cloudCount" class="text-2xl font-black soft">0</div></div>
-          <div><div class="text-[10px] muted">เสร็จ</div><div id="doneCount" class="text-2xl font-black gold">0</div></div>
-        </div>
-      </div>
-      <div id="allTasks" class="space-y-2"></div>
-    </section>
-
-    <section id="financePage" class="page space-y-5">
-      <div class="flex items-center justify-between">
-        <div><div class="section-title">การเงิน</div><div class="text-[10px] muted">บันทึกในเครื่องนี้</div></div>
-        <button class="btn btn-green !py-2 !px-3 text-xs" onclick="openFinanceModal()">＋ เพิ่ม</button>
-      </div>
-      <div class="glass card p-5">
-        <div class="text-[10px] muted">คงเหลือ</div>
-        <div id="balance" class="text-3xl font-black mt-1">฿0</div>
-        <div class="grid grid-cols-2 gap-3 mt-4">
-          <div class="p-3 rounded-2xl bg-white/[.03]"><div class="text-[10px] muted">รายรับ</div><div id="income" class="soft font-black mt-1">฿0</div></div>
-          <div class="p-3 rounded-2xl bg-white/[.03]"><div class="text-[10px] muted">รายจ่าย</div><div id="expense" class="text-red-400 font-black mt-1">฿0</div></div>
-        </div>
-      </div>
-      <div class="glass card p-4"><div class="section-title mb-3">รายการ</div><div id="financeList" class="space-y-2"></div></div>
-    </section>
-
-    <section id="vaultPage" class="page space-y-5" aria-labelledby="vaultHeading">
-      <button class="btn btn-ghost" onclick="switchPage('homePage')">← กลับหน้าหลัก</button>
-      <div><h1 id="vaultHeading" class="section-title">คลังส่วนตัว</h1><p class="muted text-sm mt-2">ใช้บัญชี LINE เดียวกับงานและสมาชิกของคุณ</p></div>
-      <div class="glass card p-5">
-        <h2 class="font-black">ไฟล์</h2>
-        <label for="vaultFile" class="block mt-3 text-sm">เลือกไฟล์ที่ต้องการเก็บ (ไม่เกิน 10 MB ต่อไฟล์)</label>
-        <input id="vaultFile" type="file" class="w-full mt-3" style="font-size:16px" onchange="uploadVaultFile(this.files[0])">
-        <p id="vaultMessage" class="muted text-sm mt-3" role="status" aria-live="polite"></p>
-        <div id="vaultFiles" class="space-y-3 mt-4"></div>
-      </div>
-      <div class="glass card p-5">
-        <h2 class="font-black">โน้ต</h2>
-        <label for="vaultNote" class="block mt-3 text-sm">ข้อความที่ต้องการจด</label>
-        <textarea id="vaultNote" class="input mt-2" rows="3" style="font-size:16px;width:100%"></textarea>
-        <button id="saveVaultNote" class="btn btn-green w-full mt-3" onclick="saveVaultNote()">บันทึกโน้ต</button>
-        <div id="vaultNotes" class="space-y-3 mt-4"></div>
-      </div>
-      <button class="btn btn-ghost w-full" onclick="loadVault()">โหลดคลังอีกครั้ง</button>
-    </section>
-
-    <section id="adminPage" class="page space-y-5" aria-labelledby="adminHeading">
-      <button class="btn btn-ghost" onclick="switchPage('homePage')">← กลับหน้าหลัก</button>
-      <div><h1 id="adminHeading" class="section-title">ศูนย์จัดการเจ้าของ</h1><p class="muted text-sm mt-2">ดูข้อมูลทั้งหมดและควบคุมสิทธิ์สมาชิก</p></div>
-      <div class="glass card p-5">
-        <label for="adminResource" class="block text-sm">ข้อมูลที่ต้องการจัดการ</label>
-        <select id="adminResource" class="input mt-2" style="width:100%;font-size:16px" onchange="adminOffset=0;loadAdmin()">
-          <option value="members">สมาชิกและสิทธิ์ใช้งาน</option><option value="reminders">แจ้งเตือน</option><option value="tasks">งาน</option><option value="finances">รายรับ–รายจ่าย</option><option value="files">ไฟล์</option><option value="notes">โน้ต</option><option value="issues">เรื่องแจ้งปัญหา</option><option value="subscriptions">การสมัครและต่ออายุ</option><option value="audit">ประวัติการจัดการ</option>
-        </select>
-        <label for="adminUser" class="block text-sm mt-4">บัญชีผู้ใช้</label>
-        <select id="adminUser" class="input mt-2" style="width:100%;font-size:16px" onchange="adminOffset=0;loadAdmin()"><option value="">ทุกบัญชี</option></select>
-        <p id="adminMessage" class="muted text-sm mt-4" role="status" aria-live="polite">หน้านี้สำหรับบัญชีเจ้าของที่ยืนยันแล้ว</p>
-      </div>
-      <div id="adminRows" class="space-y-3"></div>
-      <div class="flex gap-3"><button id="adminPrev" class="btn btn-ghost flex-1" onclick="adminOffset=Math.max(0,adminOffset-50);loadAdmin()">ก่อนหน้า</button><button id="adminNext" class="btn btn-ghost flex-1" onclick="adminOffset+=50;loadAdmin()">ถัดไป</button></div>
-      <p class="muted text-sm">การระงับสิทธิ์ไม่ยกเลิกการเรียกเก็บเงิน หากต้องการหยุดค่าเช่ารอบถัดไป ให้ยกเลิกต่ออายุในหมวดการสมัครด้วย</p>
-    </section>
-    <section id="membershipPage" class="page space-y-5" aria-labelledby="membershipHeading">
-      <button class="btn btn-ghost" onclick="switchPage('homePage')">← กลับหน้าหลัก</button>
-      <div class="glass card p-6">
-        <p class="gold text-xs font-bold tracking-widest">CHAYLUEKLAB MEMBER</p>
-        <h1 id="membershipHeading" class="text-2xl font-black mt-3">ผู้ช่วยใน LINE ของคุณ</h1>
-        <p class="muted mt-2">เก็บงาน ตั้งเตือน จดโน้ต และดูรายรับ–รายจ่ายในที่เดียว</p>
-        <p class="mt-6"><strong class="text-5xl font-black">99</strong> <span class="muted">บาท / เดือน</span></p>
-        <ul class="mt-5 space-y-2 text-sm">
-          <li>✓ งานและปฏิทินส่วนตัว ผูกกับบัญชี LINE</li>
-          <li>✓ แจ้งเตือนผ่าน OA แม้ปิดหน้าเว็บ</li>
-          <li>✓ บันทึกรายรับ–รายจ่าย ไฟล์ และโน้ต</li>
-          <li>✓ ข้อมูลส่วนตัวแยกจากผู้ใช้คนอื่น</li>
-        </ul>
-        <p class="muted text-sm mt-5">ต่ออายุและตัดเงินผ่านบัตรทุกเดือน ยกเลิกได้ผ่านหน้าจัดการสมาชิก และใช้ต่อได้จนสิ้นรอบที่ชำระแล้ว</p>
-      </div>
-      <div class="glass card p-5">
-        <h2 class="font-black">สมาชิกของฉัน</h2>
-        <p id="memberState" class="mt-2" role="status" aria-live="polite">กำลังตรวจสอบบัญชี LINE…</p>
-        <p id="memberPeriod" class="muted text-sm mt-2"></p>
-        <p id="billingNotice" class="muted text-sm mt-3">ยังไม่เปิดรับชำระเงินจนกว่าระบบจะพร้อม</p>
-        <label id="membershipConsent" class="flex gap-3 items-start mt-5 text-sm">
-          <input id="recurringConsent" type="checkbox" class="mt-1" style="width:20px;height:20px;flex:none">
-          <span>ฉันต้องการสมัคร 99 บาท/เดือน และยินยอมให้ต่ออายุและตัดเงินอัตโนมัติจนกว่าจะยกเลิก</span>
-        </label>
-        <button id="subscribeBtn" class="btn btn-green w-full mt-4" onclick="startBilling('checkout')" disabled>สมัคร 99 บาท/เดือน</button>
-        <button id="manageMemberBtn" class="btn btn-ghost w-full mt-3 hidden" onclick="startBilling('portal')">จัดการบัตรและการต่ออายุ</button>
-        <button class="btn btn-ghost w-full mt-3" onclick="loadMembership()">ตรวจสอบสถานะอีกครั้ง</button>
-        <p id="membershipError" class="text-red-300 text-sm mt-3" role="alert"></p>
-      </div>
-      <details class="glass card p-5">
-        <summary class="font-bold cursor-pointer">เงื่อนไขสมาชิกและข้อมูลส่วนตัว</summary>
-        <div class="text-sm muted space-y-3 mt-4">
-          <p>ค่าบริการ 99 บาทต่อเดือน คิดตามรอบการสมัครผ่าน Stripe ไม่มีการสมัครจากการกดริชเมนูเพียงอย่างเดียว</p>
-          <p>เมื่อชำระสำเร็จ ระบบจะเปิดสิทธิ์สมาชิก เมื่อชำระต่ออายุไม่สำเร็จหรือหมดรอบ สิทธิ์เพิ่มข้อมูลและแจ้งเตือนจะหยุด แต่ยังดูและลบข้อมูลเดิมได้</p>
-          <p>ระบบเก็บรหัสผู้ใช้ LINE งาน การเงิน โน้ต และไฟล์ที่คุณบันทึก เพื่อให้บริการ ส่วนข้อมูลบัตรชำระเงินจัดการโดย Stripe ระบบนี้ไม่เก็บเลขบัตรเต็ม ผู้ดูแลระบบเข้าถึงข้อมูลที่บันทึกเพื่อจัดการบริการและช่วยเหลือผู้ใช้ได้</p>
-          <p>รายการที่ส่งในกลุ่มเป็นข้อมูลของกลุ่มนั้น สมาชิกในกลุ่มเห็นได้ หากต้องการเก็บส่วนตัว ให้ใช้แชตส่วนตัวของ OA</p>
-          <p>หากพบปัญหา ให้พิมพ์ “แจ้งปัญหา” พร้อมรายละเอียดในแชต OA</p>
-        </div>
-      </details>
-      <div id="memberAdmin" class="glass card p-5 hidden">
-        <h2 class="font-black">ภาพรวมสมาชิกสำหรับผู้ดูแล</h2>
-        <button class="btn btn-green w-full mt-3" onclick="switchPage('adminPage');loadAdmin()">เปิดศูนย์จัดการทั้งหมด</button>
-        <button class="btn btn-ghost w-full mt-3" onclick="loadMemberAdmin()">ดูสถานะสมาชิก</button>
-        <p id="memberAdminSummary" class="muted text-sm mt-3" role="status"></p>
-      </div>
-    </section>
-
-    <section id="settingsPage" class="page space-y-5">
-      <button class="btn btn-green w-full" onclick="switchPage('membershipPage');loadMembership()">สมาชิก 99 บาท/เดือน</button>
-      <button class="btn btn-ghost w-full" onclick="switchPage('vaultPage');loadVault()">ไฟล์และโน้ตส่วนตัว</button>
-      <div><div class="section-title">ตั้งค่าระบบ</div><div class="text-[10px] muted">พร้อมให้คนอื่นใช้</div></div>
-
-      <div class="glass card p-4">
-        <div class="flex items-center gap-3">
-          <img id="profilePic" class="w-14 h-14 rounded-2xl object-cover hidden" alt="">
-          <div id="profileFallback" class="w-14 h-14 rounded-2xl bg-emerald-950 flex items-center justify-center gold font-black">CL</div>
-          <div class="min-w-0">
-            <div id="profileName" class="font-black truncate">ผู้ใช้ LINE</div>
-            <div id="profileState" class="text-[10px] muted mt-1">กำลังตรวจสอบ LIFF</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="glass card p-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="font-black">Supabase Cloud Sync</div>
-            <div class="text-[10px] muted mt-1">LINE Reminder 24 ชม. แม้ปิดเว็บ</div>
-          </div>
-          <span class="tag cloud">ON</span>
-        </div>
-        <div class="grid grid-cols-2 gap-3 mt-4">
-          <div class="p-3 rounded-2xl bg-white/[.03]"><div class="text-[10px] muted">LIFF ID</div><div class="font-black text-xs mt-1">2011681452-k1lfYGsF</div></div>
-          <div class="p-3 rounded-2xl bg-white/[.03]"><div class="text-[10px] muted">Backend</div><div class="font-black text-xs mt-1 soft">Supabase</div></div>
-        </div>
-        <button class="btn btn-green w-full mt-4" onclick="testCloudLine()">ทดสอบ Cloud + LINE</button>
-      </div>
-
-      <div class="glass card p-4">
-        <div class="font-black">คำสั่งในกลุ่ม LINE</div>
-        <div class="text-xs muted mt-3 leading-7">
-          <div>• <b class="text-white">นอนวันนี้ 22.30น.</b></div>
-          <div>• <b class="text-white">เตือนอีก 10 นาที พักสายตา</b></div>
-          <div>• <b class="text-white">/เมนู</b></div>
-          <div>• <b class="text-white">/งาน</b></div>
-          <div>• <b class="text-white">ไฟล์</b></div>
-        </div>
-      </div>
-
-      <div class="glass card p-4">
-        <div class="font-black mb-2">ระบบความปลอดภัย</div>
-        <div class="text-xs muted leading-relaxed">ไฟล์นี้ไม่มี LINE Channel Access Token และไม่มี Channel Secret ทุก Secret อยู่ฝั่ง Supabase เท่านั้น</div>
-      </div>
-    </section>
+  <main>
+    <section id="home" class="page active"></section>
+    <section id="groups" class="page"></section>
+    <section id="tasks" class="page"></section>
+    <section id="ai" class="page"></section>
+    <section id="account" class="page"></section>
+    <section id="finance" class="page"></section>
+    <section id="membership" class="page"></section>
   </main>
+
+  <button id="fab" class="fab" title="เพิ่ม">＋</button>
+
+  <nav class="bottom">
+    <button data-tab="home" class="active"><span class="ico">⌂</span>หน้าหลัก</button>
+    <button data-tab="groups"><span class="ico">♟</span>กลุ่ม</button>
+    <button data-tab="tasks"><span class="ico">▣</span>งาน</button>
+    <button data-tab="ai"><span class="ico">✦</span>AI</button>
+    <button data-tab="account"><span class="ico">◉</span>บัญชี</button>
+  </nav>
 </div>
 
-<nav class="bottom">
-  <div class="max-w-[980px] mx-auto grid grid-cols-5">
-    <button class="navbtn active py-1 text-xs font-bold" data-page="homePage" onclick="switchPage('homePage')">⌂<div class="text-[10px] mt-1">หน้าแรก</div></button>
-    <button class="navbtn py-1 text-xs font-bold" data-page="calendarPage" onclick="switchPage('calendarPage')">▦<div class="text-[10px] mt-1">ปฏิทิน</div></button>
-    <button class="navbtn py-1 text-xs font-bold" data-page="tasksPage" onclick="switchPage('tasksPage')">✓<div class="text-[10px] mt-1">งาน</div></button>
-    <button class="navbtn py-1 text-xs font-bold" data-page="financePage" onclick="switchPage('financePage')">฿<div class="text-[10px] mt-1">การเงิน</div></button>
-    <button class="navbtn py-1 text-xs font-bold" data-page="settingsPage" onclick="switchPage('settingsPage')">⚙<div class="text-[10px] mt-1">ตั้งค่า</div></button>
-  </div>
-</nav>
-
-<div id="taskModal" class="modal" onclick="backdropClose(event,'taskModal')">
-  <div class="sheet">
-    <div class="flex items-center justify-between">
-      <div><div class="section-title">เพิ่มงาน</div><div class="text-[10px] muted">บันทึก + Cloud Sync + LINE Reminder</div></div>
-      <button class="btn btn-ghost !p-2" onclick="closeModal('taskModal')">×</button>
-    </div>
-    <div class="space-y-3 mt-5">
-      <div><div class="text-[11px] muted mb-1">ชื่องาน</div><input id="taskTitle" placeholder="เช่น โทรหาลูกค้า"></div>
-      <div class="grid grid-cols-2 gap-3">
-        <div><div class="text-[11px] muted mb-1">วันที่</div><input id="taskDate" type="date"></div>
-        <div><div class="text-[11px] muted mb-1">เวลา</div><input id="taskTime" type="time"></div>
-      </div>
-      <div><div class="text-[11px] muted mb-1">หมายเหตุ</div><textarea id="taskNote" rows="3" placeholder="รายละเอียดเพิ่มเติม"></textarea></div>
-      <button id="saveTaskBtn" class="btn btn-green w-full" onclick="saveTask()">บันทึกและตั้ง LINE Reminder</button>
-    </div>
-  </div>
-</div>
-
-<div id="financeModal" class="modal" onclick="backdropClose(event,'financeModal')">
-  <div class="sheet">
-    <div class="flex items-center justify-between">
-      <div><div class="section-title">เพิ่มรายการเงิน</div><div class="text-[10px] muted">บันทึกในเครื่องนี้</div></div>
-      <button class="btn btn-ghost !p-2" onclick="closeModal('financeModal')">×</button>
-    </div>
-    <div class="space-y-3 mt-5">
-      <select id="financeType"><option value="income">รายรับ</option><option value="expense">รายจ่าย</option></select>
-      <input id="financeTitle" placeholder="รายการ">
-      <input id="financeAmount" type="number" inputmode="decimal" placeholder="จำนวนเงิน">
-      <input id="financeDate" type="date">
-      <button class="btn btn-green w-full" onclick="saveFinance()">บันทึก</button>
-    </div>
-  </div>
-</div>
-
-<dialog id="adminEditDialog" aria-labelledby="adminEditHeading" style="background:#101a14;color:#fff;border:1px solid #385441;border-radius:20px;padding:24px;max-width:560px;width:calc(100% - 32px)">
-  <form id="adminEditForm" onsubmit="submitAdminEdit(event)">
-    <h2 id="adminEditHeading" class="text-xl font-black">แก้ไขรายการ</h2><div id="adminEditFields" class="space-y-3 mt-4"></div>
-    <p id="adminEditError" class="text-red-300 mt-3" role="alert"></p>
-    <div class="flex gap-3 mt-5"><button type="button" class="btn btn-ghost flex-1" onclick="document.getElementById('adminEditDialog').close()">ยกเลิก</button><button id="adminEditSave" type="submit" class="btn btn-green flex-1">บันทึก</button></div>
-  </form>
-</dialog>
-
-<div id="toast" class="toast"><div id="toastText" class="font-bold text-sm"></div></div>
+<div id="modal" class="modal"><div class="sheet" id="sheet"></div></div>
+<div id="toast" class="toast"></div>
 
 <script>
-const LIFF_ID='2011681452-k1lfYGsF';
-const API='https://bxaplhrunxiadjsdobyl.supabase.co/functions/v1';
-const TASK_KEY='chaylueklab_cloud_tasks_v1';
-const MONEY_KEY='chaylueklab_finance_v1';
-
-let profile=null,liffReady=false,memberInfo=null,billingBusy=false;
-let tasks=[],moneyRows=[],accountKey='',syncVersion=0,refreshing=null;
-let cursor=new Date(),selected=new Date();
-
-function load(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}}
-function persist(){if(!accountKey)return;localStorage.setItem(TASK_KEY+accountKey,JSON.stringify(tasks));localStorage.setItem(MONEY_KEY+accountKey,JSON.stringify(moneyRows))}
-function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function pad(n){return String(n).padStart(2,'0')}
-function ymd(d=new Date()){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
-function money(v){return '฿'+Number(v||0).toLocaleString('th-TH',{maximumFractionDigits:2})}
-function thDate(d){return new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'long',year:'numeric'}).format(d)}
-function thMonth(d){return new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric'}).format(d)}
-
-function toast(msg){const t=document.getElementById('toast'),x=document.getElementById('toastText');x.textContent=msg;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),2600)}
-function openModal(id){document.getElementById(id).classList.add('show')}
-function closeModal(id){document.getElementById(id).classList.remove('show')}
-function backdropClose(e,id){if(e.target.id===id)closeModal(id)}
-function switchPage(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.page===id));renderAll();window.scrollTo({top:0,behavior:'smooth'})}
-
-async function initLiff(){
+const APP_CONFIG={
+  liffId: new URLSearchParams(location.search).get('liffId') || '',
+  lineReady:false
+};
+async function initLineBridge(){
+  if(!APP_CONFIG.liffId) return;
   try{
-    await liff.init({liffId:LIFF_ID});liffReady=true;
-    if(!liff.isLoggedIn()){
-      document.getElementById('lineBadge').innerHTML='<span class="dot" style="background:#f59e0b"></span><span>LOGIN</span>';
-      document.getElementById('profileState').textContent='ยังไม่ได้เข้าสู่ระบบ LINE';
-      liff.login({redirectUri:location.href});return;
+    if(!window.liff){
+      await new Promise((resolve,reject)=>{
+        const s=document.createElement('script');
+        s.src='https://static.line-scdn.net/liff/edge/2/sdk.js';
+        s.onload=resolve;s.onerror=reject;document.head.appendChild(s);
+      });
     }
-    profile=await liff.getProfile();
-    accountKey=':'+profile.userId;
-    tasks=load(TASK_KEY+accountKey,[]);moneyRows=load(MONEY_KEY+accountKey,[]);
-    const legacyOwner=localStorage.getItem('chaylueklab_legacy_owner');
-    if(!legacyOwner){
-      tasks=[...tasks,...load(TASK_KEY,[])];moneyRows=[...moneyRows,...load(MONEY_KEY,[])];
-      localStorage.setItem('chaylueklab_legacy_owner',profile.userId);persist();
+    await window.liff.init({liffId:APP_CONFIG.liffId});
+    APP_CONFIG.lineReady=true;
+    if(window.liff.isLoggedIn()){
+      const p=await window.liff.getProfile();
+      if(p?.displayName && db?.profile && db.profile.name==='คุณชายลึกลับ'){
+        db.profile.name=p.displayName; save();
+      }
     }
-    document.getElementById('lineBadge').innerHTML='<span class="dot"></span><span>LINE</span>';
-    renderAll();
-    document.getElementById('helloName').textContent=profile.displayName||'ผู้ใช้ LINE';
-    document.getElementById('profileName').textContent=profile.displayName||'ผู้ใช้ LINE';
-    document.getElementById('profileState').textContent='LINE เชื่อมแล้ว • กำลังซิงก์ Cloud';
-    if(profile.pictureUrl){
-      const img=document.getElementById('profilePic');img.src=profile.pictureUrl;img.classList.remove('hidden');document.getElementById('profileFallback').classList.add('hidden');
-    }
-    await syncCloud();
-    await loadMembership();
-  }catch(e){
-    console.error(e);
-    document.getElementById('systemText').textContent='LIFF เชื่อมต่อไม่สำเร็จ';
-    document.getElementById('lineBadge').innerHTML='<span class="dot" style="background:#ef4444"></span><span>ERROR</span>';
+  }catch(e){ console.warn('LIFF init skipped:', e); }
+}
+const KEY='chailueklab_app_v1';
+const uid=()=>Math.random().toString(36).slice(2,10);
+const today=()=>new Date().toISOString().slice(0,10);
+const fmtBaht=n=>new Intl.NumberFormat('th-TH').format(Number(n||0))+' บาท';
+
+const seed={
+  profile:{name:'คุณชายลึกลับ',notifications:true,defaultGroup:'g1',webhookUrl:'',plan:'AI PRO',trialEnds:'2026-10-21'},
+  groups:[
+    {id:'g1',name:'Chailueklab Official',members:128,role:'Owner'},
+    {id:'g2',name:'ร้าน พ.สมนึก 2',members:25,role:'Admin'},
+    {id:'g3',name:'ทีมงานสตึก',members:18,role:'Owner'},
+    {id:'g4',name:'ครอบครัว',members:6,role:'Member'}
+  ],
+  tasks:[
+    {id:uid(),title:'โพสต์โปรโมตสินค้า',date:today(),time:'12:00',category:'การตลาด',groupId:'g1',priority:'กลาง',notes:'โพสต์ Facebook / LINE',done:false},
+    {id:uid(),title:'เช็กออเดอร์',date:today(),time:'10:00',category:'งานขาย',groupId:'g1',priority:'สูง',notes:'',done:true},
+    {id:uid(),title:'เตรียมของส่งลูกค้า',date:today(),time:'14:00',category:'ส่งสินค้า',groupId:'g2',priority:'สูง',notes:'',done:false},
+    {id:uid(),title:'สรุปยอดรายวัน',date:today(),time:'20:00',category:'สรุปงาน',groupId:'g1',priority:'กลาง',notes:'',done:false}
+  ],
+  transactions:[
+    {id:uid(),type:'income',amount:150,note:'ลูกค้า LINE',date:today(),category:'ขายสินค้า',groupId:'g1'},
+    {id:uid(),type:'income',amount:300,note:'ลูกค้า TikTok',date:today(),category:'ขายสินค้า',groupId:'g1'},
+    {id:uid(),type:'expense',amount:70,note:'ค่ากล่อง/อุปกรณ์',date:today(),category:'ต้นทุน',groupId:'g1'}
+  ],
+  aiHistory:[
+    {role:'bot',text:'สวัสดีครับ ผมพร้อมช่วยคิดงาน วางแผน สรุปข้อมูล ตั้งเตือน และร่างคอนเทนต์ให้ครับ'}
+  ]
+};
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||structuredClone(seed)}catch(e){return structuredClone(seed)}}
+let db=load();
+initLineBridge().then(()=>render());
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function groupName(id){return db.groups.find(g=>g.id===id)?.name||'ไม่ระบุกลุ่ม'}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)}
+function showModal(html){document.getElementById('sheet').innerHTML=html;document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+
+let current='home', taskFilter='all';
+function setTab(tab,push=true){
+  const valid=['home','groups','tasks','ai','account','finance','membership'];
+  if(!valid.includes(tab))tab='home';
+  current=tab;
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  document.querySelectorAll('.bottom button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  document.getElementById('fab').style.display=['groups','tasks','finance'].includes(tab)?'block':'none';
+  if(push){
+    const u=new URL(location.href);u.searchParams.set('tab',tab);history.replaceState({},'',u);
   }
+  render();
+}
+document.querySelectorAll('.bottom button').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+document.getElementById('fab').onclick=()=> {
+  if(current==='groups')groupForm();
+  if(current==='tasks')taskForm();
+  if(current==='finance')transactionForm();
+};
+
+function render(){renderHome();renderGroups();renderTasks();renderAI();renderAccount();renderFinance();renderMembership()}
+
+function renderHome(){
+  const open=db.tasks.filter(t=>!t.done).length, done=db.tasks.filter(t=>t.done).length;
+  const income=db.transactions.filter(x=>x.type==='income'&&x.date===today()).reduce((a,b)=>a+Number(b.amount),0);
+  document.getElementById('home').innerHTML=`
+    <div class="hero">
+      <div class="hello">สวัสดีครับ</div><h2>${esc(db.profile.name)}</h2>
+      <p>วันนี้ให้ผมช่วยอะไรดี?</p><div class="quote">“ไอเดียดี ๆ เริ่มได้จากการลงมือทำ”</div>
+    </div>
+    <div class="grid4">
+      <div class="stat"><span class="ico">☑</span><b>${open}</b><span>งานที่ต้องทำ</span></div>
+      <div class="stat"><span class="ico">◌</span><b>${db.aiHistory.length}</b><span>ข้อความ AI</span></div>
+      <div class="stat"><span class="ico">♟</span><b>${db.groups.length}</b><span>กลุ่มของฉัน</span></div>
+      <div class="stat"><span class="ico">฿</span><b>${new Intl.NumberFormat('th-TH').format(income)}</b><span>รายรับวันนี้</span></div>
+    </div>
+    <div class="section-title"><h3>เมนูลัด</h3></div>
+    <div class="quick">
+      <button onclick="setTab('ai')"><span class="qico">✦</span><b>คุยกับ AI</b><br><small>ถาม/ปรึกษา</small></button>
+      <button onclick="taskForm()"><span class="qico">▣</span><b>สร้างงาน</b><br><small>เพิ่ม/สรุป</small></button>
+      <button onclick="aiShortcut('สร้างภาพ')"><span class="qico">▧</span><b>สร้างภาพ</b><br><small>AI สร้างภาพ</small></button>
+      <button onclick="taskForm(null,true)"><span class="qico">◷</span><b>ตั้งเตือน</b><br><small>ไม่พลาดงาน</small></button>
+    </div>
+    <div class="section-title"><h3>งานวันนี้</h3><button onclick="setTab('tasks')">ดูทั้งหมด →</button></div>
+    <div class="list">${db.tasks.filter(t=>t.date===today()).slice(0,4).map(taskCard).join('')||'<div class="empty">วันนี้ยังไม่มีงาน</div>'}</div>
+    <div class="section-title"><h3>ทางลัดอื่น ๆ</h3></div>
+    <div class="list">
+      <div class="paper row" onclick="setTab('finance')"><div class="avatar">฿</div><div class="grow"><h4>การเงิน</h4><p>บันทึกรายรับ รายจ่าย และดูสรุป</p></div><b>›</b></div>
+      <div class="paper row" onclick="setTab('membership')"><div class="avatar">♛</div><div class="grow"><h4>สมาชิก / ราคา</h4><p>${esc(db.profile.plan)} · ทดลองใช้งาน</p></div><b>›</b></div>
+    </div>`;
 }
 
-let vaultFiles=[],vaultNotes=[],vaultBusy=false,adminRows=[],adminMembers=[],adminOffset=0,adminEditIndex=null,adminBusy=false,adminVersion=0;
-async function authenticatedRequest(endpoint,body){
-  if(!profile||!liff.isLoggedIn())throw new Error('กรุณาเข้าสู่ระบบ LINE ก่อน');
-  const res=await fetch(API+'/'+endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,idToken:liff.getIDToken()||'',accessToken:liff.getAccessToken()||''})});
-  const data=await res.json().catch(()=>({}));
-  if(!res.ok||!data.ok){
-    const errors={owner_only:'สำหรับบัญชีเจ้าของที่ยืนยันแล้วเท่านั้น',invalid_line_login:'การเข้าสู่ระบบ LINE หมดอายุ กรุณาเปิดแอปจากริชเมนูใหม่',membership_required:'กรุณาสมัครหรือต่ออายุสมาชิก',account_suspended:'บัญชีถูกระงับสิทธิ์ กรุณาติดต่อผู้ดูแล',not_found_or_in_transit:'รายการไม่พบหรือกำลังส่งแจ้งเตือน กรุณาโหลดอีกครั้ง',billing_not_configured:'ยังไม่เชื่อมบัญชีรับชำระเงิน',admin_unavailable:'จัดการไม่สำเร็จ กรุณาลองใหม่'};
-    throw new Error(errors[data.error]||'ดำเนินการไม่สำเร็จ กรุณาลองใหม่');
-  }
-  return data;
+function renderGroups(){
+  document.getElementById('groups').innerHTML=`
+    <div class="section-title"><h3>กลุ่มของฉัน</h3><button onclick="groupForm()">＋ สร้างกลุ่ม</button></div>
+    <div class="list">${db.groups.map(g=>{
+      const ts=db.tasks.filter(t=>t.groupId===g.id), pct=ts.length?Math.round(ts.filter(t=>t.done).length/ts.length*100):0;
+      return `<div class="paper">
+        <div class="row"><div class="avatar">◢</div><div class="grow" onclick="groupDetail('${g.id}')"><h4>${esc(g.name)}</h4>
+        <p>สมาชิก ${g.members} คน · ${esc(g.role)}</p><span class="tag green">● AI ออนไลน์</span></div>
+        <button class="btn" onclick="groupMenu('${g.id}')">•••</button></div>
+        <div style="margin-top:12px"><div class="mini">${ts.filter(t=>t.done).length} จาก ${ts.length} งานเสร็จแล้ว · ${pct}%</div>
+        <div class="progress" style="margin-top:6px"><i style="width:${pct}%"></i></div></div>
+      </div>`
+    }).join('')||'<div class="empty">ยังไม่มีกลุ่ม</div>'}</div>`;
 }
-function renderVault(){
-  document.getElementById('vaultFiles').innerHTML=vaultFiles.length?vaultFiles.map((f,i)=>'<div class="glass card p-4"><div class="font-bold">'+esc(f.file_name)+'</div><div class="muted text-sm mt-1">'+(Number(f.size_bytes)/1048576).toFixed(2)+' MB</div><div class="flex gap-3 mt-3">'+(f.url?'<a class="btn btn-ghost flex-1 text-center" href="'+esc(f.url)+'" target="_blank" rel="noopener noreferrer">เปิดไฟล์</a>':'')+'<button class="btn btn-ghost" onclick="deleteVaultItem(\'file\','+i+')">ลบไฟล์</button></div></div>').join(''):'<p class="muted text-sm">ยังไม่มีไฟล์ส่วนตัว</p>';
-  document.getElementById('vaultNotes').innerHTML=vaultNotes.length?vaultNotes.map((n,i)=>'<div class="glass card p-4"><p style="white-space:pre-wrap">'+esc(n.note)+'</p><button class="btn btn-ghost mt-3" onclick="deleteVaultItem(\'note\','+i+')">ลบโน้ต</button></div>').join(''):'<p class="muted text-sm">ยังไม่มีโน้ตส่วนตัว</p>';
+function groupDetail(id){
+  const g=db.groups.find(x=>x.id===id);if(!g)return;
+  const ts=db.tasks.filter(t=>t.groupId===id);
+  showModal(`<h3>${esc(g.name)}</h3><div class="paper"><h4>ข้อมูลกลุ่ม</h4><p>สมาชิก ${g.members} คน · สิทธิ์ ${esc(g.role)}</p><span class="tag green">AI ออนไลน์</span></div>
+    <div class="section-title"><h3>งานในกลุ่ม</h3></div><div class="list">${ts.map(taskCard).join('')||'<div class="empty">ยังไม่มีงานในกลุ่มนี้</div>'}</div>
+    <div class="actions"><button class="btn ghost" onclick="closeModal()">ปิด</button><button class="btn gold" onclick="closeModal();taskForm(null,false,'${id}')">＋ เพิ่มงาน</button></div>`);
 }
-async function loadVault(){
-  if(vaultBusy)return;
-  const box=document.getElementById('vaultMessage');box.textContent='กำลังโหลดคลัง…';
-  try{const data=await authenticatedRequest('liff-vault',{action:'list'});vaultFiles=data.files||[];vaultNotes=data.notes||[];renderVault();box.textContent='ไฟล์ '+vaultFiles.length+' รายการ · โน้ต '+vaultNotes.length+' รายการ';}
-  catch(e){box.textContent=e.message;}
+function groupForm(id){
+  const g=id?db.groups.find(x=>x.id===id):null;
+  showModal(`<h3>${g?'แก้ไขกลุ่ม':'สร้างกลุ่มใหม่'}</h3><form class="form" onsubmit="saveGroup(event,'${g?.id||''}')">
+    <label>ชื่อกลุ่ม<input name="name" required value="${esc(g?.name||'')}"></label>
+    <label>จำนวนสมาชิก<input name="members" type="number" min="1" value="${g?.members||1}"></label>
+    <label>สิทธิ์<select name="role">${['Owner','Admin','Member'].map(x=>`<option ${g?.role===x?'selected':''}>${x}</option>`).join('')}</select></label>
+    <div class="actions"><button type="button" class="btn ghost" onclick="closeModal()">ยกเลิก</button><button class="btn gold">บันทึก</button></div>
+  </form>`);
 }
-async function uploadVaultFile(file){
-  if(!file||vaultBusy)return;const box=document.getElementById('vaultMessage');
-  if(file.size===0||file.size>10485760){box.textContent='เลือกไฟล์ที่มีข้อมูลและขนาดไม่เกิน 10 MB';return;}
-  if(!profile||!liff.isLoggedIn()){box.textContent='กรุณาเปิดแอปผ่านริชเมนูและเข้าสู่ระบบ LINE ก่อน';return;}
-  vaultBusy=true;document.getElementById('vaultFile').disabled=true;box.textContent='กำลังอัปโหลด…';
-  try{
-    const form=new FormData();form.append('file',file);form.append('idToken',liff.getIDToken()||'');form.append('accessToken',liff.getAccessToken()||'');
-    const r=await fetch(API+'/liff-vault',{method:'POST',body:form}),d=await r.json().catch(()=>({}));
-    if(!r.ok||!d.ok){const errors={invalid_line_login:'การเข้าสู่ระบบหมดอายุ เปิดแอปจากริชเมนูใหม่แล้วลองอีกครั้ง',membership_required:'กรุณาสมัครหรือต่ออายุสมาชิก',account_suspended:'บัญชีถูกระงับสิทธิ์',file_too_large:'ไฟล์ต้องไม่เกิน 10 MB'};throw new Error(errors[d.error]||'อัปโหลดไม่สำเร็จ กรุณาลองใหม่');}
-    document.getElementById('vaultFile').value='';vaultBusy=false;await loadVault();box.textContent='เก็บไฟล์บน Cloud แล้ว';
-  }catch(e){box.textContent=e.message;}finally{vaultBusy=false;document.getElementById('vaultFile').disabled=false;}
+function saveGroup(e,id){e.preventDefault();const f=new FormData(e.target);
+  if(id){Object.assign(db.groups.find(x=>x.id===id),{name:f.get('name'),members:Number(f.get('members')),role:f.get('role')})}
+  else db.groups.push({id:uid(),name:f.get('name'),members:Number(f.get('members')),role:f.get('role')});
+  save();closeModal();render();toast('บันทึกกลุ่มแล้ว');
 }
-async function saveVaultNote(){
-  const text=document.getElementById('vaultNote').value.trim();if(!text||vaultBusy)return;
-  vaultBusy=true;document.getElementById('saveVaultNote').disabled=true;
-  try{await authenticatedRequest('liff-vault',{action:'create_note',note:text});document.getElementById('vaultNote').value='';vaultBusy=false;await loadVault();}
-  catch(e){document.getElementById('vaultMessage').textContent=e.message;}finally{vaultBusy=false;document.getElementById('saveVaultNote').disabled=false;}
+function groupMenu(id){
+  const g=db.groups.find(x=>x.id===id);
+  showModal(`<h3>${esc(g.name)}</h3><div class="actions" style="justify-content:stretch;flex-direction:column">
+    <button class="btn" onclick="closeModal();groupForm('${id}')">แก้ไขชื่อ/ข้อมูล</button>
+    <button class="btn red" onclick="deleteGroup('${id}')">ลบกลุ่ม</button>
+    <button class="btn ghost" onclick="closeModal()">ปิด</button></div>`);
 }
-async function deleteVaultItem(kind,i){
-  if(vaultBusy||!confirm('ลบ'+(kind==='file'?'ไฟล์':'โน้ต')+'นี้ถาวรหรือไม่?'))return;
-  const item=(kind==='file'?vaultFiles:vaultNotes)[i];if(!item)return;
-  vaultBusy=true;
-  try{await authenticatedRequest('liff-vault',{action:'delete_'+kind,id:item.id});vaultBusy=false;await loadVault();}
-  catch(e){document.getElementById('vaultMessage').textContent=e.message;}finally{vaultBusy=false;}
-}
-async function loadAdmin(){
-  const version=++adminVersion,box=document.getElementById('adminMessage');box.textContent='กำลังโหลดข้อมูล…';
-  const resource=document.getElementById('adminResource').value,user=document.getElementById('adminUser').value;
-  try{
-    if(!adminMembers.length){const members=await authenticatedRequest('admin-manager',{action:'members'});adminMembers=members.rows;document.getElementById('adminUser').innerHTML='<option value="">ทุกบัญชี</option>'+adminMembers.map(m=>'<option value="'+esc(m.line_user_id)+'">'+esc(m.display_name||m.line_user_id)+'</option>').join('');document.getElementById('adminUser').value=user;}
-    let data;
-    if(resource==='members'){data={rows:adminMembers.filter(m=>!user||m.line_user_id===user),total:adminMembers.length};}
-    else data=await authenticatedRequest('admin-manager',{action:'list',resource,user:user||undefined,offset:adminOffset});
-    if(version!==adminVersion)return;adminRows=data.rows||[];
-    document.getElementById('adminRows').innerHTML=adminRows.length?adminRows.map((r,i)=>{
-      const title=r.title||r.note||r.detail||r.file_name||r.display_name||r.stripe_subscription_id||r.line_user_id||r.action||'รายการ';
-      let buttons='';
-      if(resource==='members')buttons='<button class="btn btn-green" onclick="setMemberAccess('+i+',\'grant\')">เปิดสิทธิ์ 30 วัน</button><button class="btn btn-ghost" onclick="setMemberAccess('+i+',\'block\')">ระงับสิทธิ์</button><button class="btn btn-ghost" onclick="setMemberAccess('+i+',\'reset\')">กลับใช้สิทธิ์ชำระเงิน</button>';
-      if(['reminders','tasks','finances','notes','issues'].includes(resource))buttons+='<button class="btn btn-ghost" onclick="editAdminRecord('+i+')">แก้ไข</button>';
-      if(['reminders','tasks','finances','notes','files','issues'].includes(resource))buttons+='<button class="btn btn-ghost" onclick="deleteAdminRecord('+i+')">ลบ</button>';
-      if(resource==='subscriptions')buttons='<button class="btn btn-ghost" onclick="cancelMemberSubscription('+i+')">ยกเลิกต่ออายุ</button>';
-      if(resource==='files'&&r.url)buttons+='<a class="btn btn-ghost" href="'+esc(r.url)+'" target="_blank" rel="noopener noreferrer">เปิดไฟล์</a>';
-      const detail=resource==='members'?'งาน '+r.tasks+' · เตือน '+r.reminders+' · ไฟล์ '+r.files+' · '+(r.access_override||r.subscription_status||'ยังไม่สมัคร'):resource==='finances'?(r.entry_type==='income'?'รับ ':'จ่าย ')+money(r.amount):resource==='audit'?r.action+' · '+r.resource:(r.status||'')+(r.cancel_at_period_end?' · ยกเลิกต่ออายุแล้ว':'');
-      return '<article class="glass card p-5"><p class="font-bold" style="white-space:pre-wrap;overflow-wrap:anywhere">'+esc(title)+'</p><p class="muted text-sm mt-2">'+esc(detail)+'</p><p class="muted text-xs mt-2" style="overflow-wrap:anywhere">'+esc(r.line_user_id||r.actor_id||'')+(r.group_name?' · กลุ่ม '+esc(r.group_name):'')+'</p><div class="flex flex-wrap gap-2 mt-3">'+buttons+'</div></article>';
-    }).join(''):'<div class="glass card p-5 muted">ยังไม่มีรายการในหมวดนี้</div>';
-    box.textContent=resource==='members'?'แสดง '+adminRows.length+' บัญชี (สูงสุด 500 บัญชี)':'ทั้งหมด '+data.total+' รายการ · แสดง '+(adminRows.length?adminOffset+1:0)+'–'+(adminOffset+adminRows.length);
-    document.getElementById('adminPrev').disabled=resource==='members'||adminOffset===0;document.getElementById('adminNext').disabled=resource==='members'||adminOffset+50>=data.total;
-  }catch(e){if(version===adminVersion){box.textContent=e.message;document.getElementById('adminRows').innerHTML='';}}
-}
-async function adminAction(body){
-  if(adminBusy)return;adminBusy=true;
-  try{await authenticatedRequest('admin-manager',body);adminMembers=[];await loadAdmin();}
-  catch(e){document.getElementById('adminMessage').textContent=e.message;}finally{adminBusy=false;}
-}
-function setMemberAccess(i,mode){const r=adminRows[i];if(!r)return;const labels={grant:'เปิดสิทธิ์ฟรี 30 วัน',block:'ระงับสิทธิ์ (การเก็บค่าเช่ายังไม่ถูกยกเลิก)',reset:'กลับไปใช้สิทธิ์ตามการชำระเงิน'};if(confirm(labels[mode]+' สำหรับบัญชีนี้หรือไม่?'))adminAction({action:'access',user:r.line_user_id,mode,days:30});}
-function deleteAdminRecord(i){const r=adminRows[i];if(r&&confirm('ลบรายการนี้ถาวรหรือไม่?'))adminAction({action:'delete',resource:document.getElementById('adminResource').value,id:r.id});}
-function cancelMemberSubscription(i){const r=adminRows[i];if(r&&confirm('หยุดการต่ออายุรอบถัดไปสำหรับสมาชิกนี้หรือไม่?'))adminAction({action:'cancel_subscription',resource:'subscriptions',id:r.stripe_subscription_id});}
-function editAdminRecord(i){
-  const r=adminRows[i];if(!r)return;adminEditIndex=i;const resource=document.getElementById('adminResource').value;
-  const fields={reminders:['title','remind_at','status'],tasks:['title','due_at','status'],finances:['title','amount','entry_type'],notes:['note'],issues:['detail']}[resource];
-  const labels={title:'ชื่อรายการ',remind_at:'วันเวลาที่เตือน (ประเทศไทย)',due_at:'วันเวลาของงาน (ประเทศไทย)',status:'สถานะ',amount:'จำนวนเงิน',entry_type:'ประเภทรายการ',note:'ข้อความโน้ต',detail:'รายละเอียดปัญหา'};
-  document.getElementById('adminEditFields').innerHTML=fields.map(k=>{
-    let control;
-    if(k==='status'||k==='entry_type'){const values=k==='status'?['pending','done','cancelled']:['income','expense'];const names={pending:'รอดำเนินการ',done:'เสร็จแล้ว',cancelled:'ยกเลิก',income:'รายรับ',expense:'รายจ่าย'};control='<select class="input" id="edit-'+k+'" style="width:100%;font-size:16px">'+values.map(v=>'<option value="'+v+'" '+(r[k]===v?'selected':'')+'>'+names[v]+'</option>').join('')+'</select>';}
-    else if(k==='note'||k==='detail')control='<textarea class="input" id="edit-'+k+'" rows="5" style="width:100%;font-size:16px" required>'+esc(r[k])+'</textarea>';
-    else{let value=r[k]??'';if(k==='remind_at'||k==='due_at')value=value?new Date(new Date(value).getTime()+7*3600000).toISOString().slice(0,16):'';control='<input class="input" id="edit-'+k+'" style="width:100%;font-size:16px" type="'+(k==='amount'?'number':k==='title'?'text':'datetime-local')+'" value="'+esc(value)+'" '+(k!=='due_at'?'required':'')+(k==='amount'?' min="0.01" step="0.01"':'')+'>';}
-    return '<div><label for="edit-'+k+'" class="text-sm">'+labels[k]+'</label>'+control+'</div>';
-  }).join('');document.getElementById('adminEditError').textContent='';document.getElementById('adminEditDialog').showModal();document.querySelector('#adminEditFields input,#adminEditFields textarea,#adminEditFields select')?.focus();
-}
-async function submitAdminEdit(event){
-  event.preventDefault();if(adminBusy)return;const r=adminRows[adminEditIndex],resource=document.getElementById('adminResource').value;if(!r)return;
-  const patch={};document.querySelectorAll('#adminEditFields input,#adminEditFields select,#adminEditFields textarea').forEach(input=>{const k=input.id.slice(5);patch[k]=k==='amount'?Number(input.value):['remind_at','due_at'].includes(k)?(input.value?new Date(input.value+':00+07:00').toISOString():null):input.value;});
-  adminBusy=true;document.getElementById('adminEditSave').disabled=true;
-  try{await authenticatedRequest('admin-manager',{action:'update',resource,id:r.id,patch});document.getElementById('adminEditDialog').close();await loadAdmin();}
-  catch(e){document.getElementById('adminEditError').textContent=e.message;}finally{adminBusy=false;document.getElementById('adminEditSave').disabled=false;}
+function deleteGroup(id){
+  const g=db.groups.find(x=>x.id===id);if(!confirm('ลบกลุ่ม "'+g.name+'" ? งานและรายการเงินจะยังคงอยู่แต่ไม่มีกลุ่ม'))return;
+  db.groups=db.groups.filter(x=>x.id!==id);save();closeModal();render();toast('ลบกลุ่มแล้ว');
 }
 
-async function billingRequest(action){
-  if(!liffReady||!profile||!liff.isLoggedIn())throw new Error('กรุณาเข้าสู่ระบบ LINE ก่อน');
-  const res=await fetch(API+'/billing',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,accessToken:liff.getAccessToken()||'',idToken:liff.getIDToken()||''})});
-  const data=await res.json().catch(()=>({}));
-  if(!res.ok||!data.ok){
-    const reasons={billing_not_configured:'ยังไม่เปิดรับชำระเงิน กรุณาลองใหม่หลังเปิดบริการ',checkout_in_progress:'กำลังเตรียมหน้าชำระเงิน รอสักครู่แล้วลองอีกครั้ง',billing_unavailable:'เปิดหน้าชำระเงินไม่สำเร็จ กรุณาลองใหม่',invalid_line_login:'กรุณาเข้าสู่ระบบ LINE อีกครั้ง',forbidden:'หน้านี้สำหรับผู้ดูแลระบบ',no_subscription:'ยังไม่พบรายการสมัครสมาชิก',account_suspended:'บัญชีถูกระงับสิทธิ์ กรุณาติดต่อผู้ดูแล'};
-    throw new Error(reasons[data.error]||'ตรวจสอบสมาชิกไม่สำเร็จ กรุณาลองใหม่');
-  }
-  return data;
+function taskCard(t){
+  return `<div class="paper task ${t.done?'done':''}">
+    <button class="check ${t.done?'done':''}" onclick="toggleTask('${t.id}')">${t.done?'✓':''}</button>
+    <div class="grow" onclick="taskForm('${t.id}')"><h4>${esc(t.title)}</h4><p>${esc(t.date)} ${esc(t.time||'')} · ${esc(groupName(t.groupId))}</p>
+    <span class="tag">${esc(t.category)}</span> ${t.priority==='สูง'?'<span class="tag red">สำคัญ</span>':''}</div>
+    <button class="btn" onclick="taskMenu('${t.id}')">•••</button>
+  </div>`;
 }
-async function loadMembership(){
-  try{
-    const data=await billingRequest('status');memberInfo=data;
-    const m=data.membership;
-    document.getElementById('memberState').textContent=m.owner?'บัญชีผู้ดูแลระบบ':m.status==='blocked'?'บัญชีถูกระงับสิทธิ์':m.active?(m.status==='granted'?'ผู้ดูแลเปิดสิทธิ์ให้':'สมาชิกใช้งานได้'):'ยังไม่มีสมาชิกที่ใช้งานได้';
-    document.getElementById('memberPeriod').textContent=m.periodEnd?'รอบบริการสิ้นสุด '+new Intl.DateTimeFormat('th-TH',{timeZone:'Asia/Bangkok',dateStyle:'long'}).format(new Date(m.periodEnd))+(m.cancelAtPeriodEnd?' • ยกเลิกต่ออายุแล้ว':''):'';
-    document.getElementById('billingNotice').textContent=data.mode==='test'?'โหมดทดสอบ ยังไม่มีการตัดเงินจริง':!data.checkoutReady?'ยังไม่เปิดรับชำระเงิน กำลังเตรียมระบบ':data.billingEnforced?'ชำระผ่านบัตรในหน้า Stripe ที่ปลอดภัย':'กำลังเตรียมเปิดบริการ ระบบจำกัดสิทธิ์สมาชิกยังไม่เปิด';
-    document.getElementById('subscribeBtn').disabled=!data.checkoutReady||m.active||m.owner||m.status==='blocked'||billingBusy;
-    document.getElementById('subscribeBtn').textContent=m.active?'สมัครสมาชิกแล้ว':'สมัคร 99 บาท/เดือน';
-    document.getElementById('membershipConsent').classList.toggle('hidden',m.active||m.owner);
-    document.getElementById('manageMemberBtn').classList.toggle('hidden',!data.canManage);
-    document.getElementById('memberAdmin').classList.toggle('hidden',!m.owner);
-    const returned=new URLSearchParams(location.search).get('payment');
-    if(returned==='success'&&!m.active)document.getElementById('billingNotice').textContent='กำลังรอยืนยันผลชำระเงินจาก Stripe กดตรวจสอบสถานะอีกครั้งได้';
-    if(returned==='cancelled')document.getElementById('billingNotice').textContent='ปิดหน้าชำระเงินแล้ว คุณยังไม่ได้สมัครจากขั้นตอนนี้';
-    document.getElementById('membershipError').textContent='';
-  }catch(e){document.getElementById('membershipError').textContent=e.message;document.getElementById('subscribeBtn').disabled=true;}
-}
-async function startBilling(action){
-  if(billingBusy)return;
-  const error=document.getElementById('membershipError');error.textContent='';
-  if(action==='checkout'&&!document.getElementById('recurringConsent').checked){error.textContent='กรุณายืนยันการต่ออายุอัตโนมัติก่อนสมัคร';document.getElementById('recurringConsent').focus();return;}
-  billingBusy=true;document.getElementById('subscribeBtn').disabled=true;document.getElementById('manageMemberBtn').disabled=true;
-  try{
-    const data=await billingRequest(action);
-    const url=new URL(data.url);
-    if(url.protocol!=='https:'||!['checkout.stripe.com','billing.stripe.com'].includes(url.hostname))throw new Error('ลิงก์ชำระเงินไม่ถูกต้อง');
-    location.assign(url.href);
-  }catch(e){error.textContent=e.message;}
-  finally{billingBusy=false;document.getElementById('subscribeBtn').disabled=!memberInfo?.checkoutReady||memberInfo?.membership.active||memberInfo?.membership.owner||memberInfo?.membership.status==='blocked';document.getElementById('manageMemberBtn').disabled=false;}
-}
-async function loadMemberAdmin(){
-  const box=document.getElementById('memberAdminSummary');box.textContent='กำลังตรวจสอบ…';
-  try{
-    const d=await billingRequest('admin_summary');
-    const active=d.subscriptions.filter(s=>s.status==='active'&&s.paid&&new Date(s.current_period_end).getTime()>Date.now());
-    const unique=new Set(active.map(s=>s.line_user_id));
-    box.textContent='สมาชิกที่ใช้งานได้ '+unique.size+' บัญชี จากรายการล่าสุด '+d.subscriptions.length+' รายการ (แสดงสูงสุด 100 รายการ)';
-  }catch(e){box.textContent=e.message;}
-}
-
-async function cloudRequest(action,values={}){
-  if(!liffReady||!profile||!liff.isLoggedIn())throw new Error('กรุณาเปิดผ่าน LINE');
-  const res=await fetch(API+'/liff-dashboard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...values,accessToken:liff.getAccessToken()||'',idToken:liff.getIDToken()||''})});
-  const data=await res.json().catch(()=>({}));
-  if(res.status===402){switchPage('membershipPage');loadMembership();throw new Error('ฟังก์ชันนี้สำหรับสมาชิก กรุณาสมัครหรือต่ออายุ')}
-  if(!res.ok||!data.ok)throw new Error(data.error||('HTTP '+res.status));
-  return data;
-}
-function bangkokDate(iso){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(iso))}
-function remoteTask(t,kind){
-  const at=t.remind_at||t.due_at;
-  return {id:kind+'-'+t.id,remoteId:t.id,kind,title:t.title,date:at?bangkokDate(at):'',time:at?new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Bangkok',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(at)):'',done:t.status==='done',status:t.status,cloud:'synced',createdAt:t.created_at};
-}
-async function syncCloud(){
-  if(tasks.some(t=>t.busy||t.cloud==='syncing')||moneyRows.some(t=>t.busy)||window.__savingFinance)return;
-  if(refreshing)return refreshing;
-  refreshing=(async()=>{
-    const version=syncVersion;
-    try{
-      const data=await cloudRequest('list');
-      if(version!==syncVersion)return;
-      const remote=[...data.reminders.map(t=>remoteTask(t,'reminder')),...data.tasks.map(t=>remoteTask(t,'task'))];
-      const ids=new Set(remote.map(t=>t.remoteId));
-      tasks=[...tasks.filter(t=>!t.remoteId&&t.cloud!=='synced'),...tasks.filter(t=>t.remoteId&&!t.kind&&!ids.has(t.remoteId)),...remote];
-      moneyRows=[...moneyRows.filter(t=>!t.remoteId),...data.finances.map(t=>({id:t.id,remoteId:t.id,title:t.title,type:t.entry_type,amount:Number(t.amount),date:bangkokDate(t.created_at)}))];
-      persist();renderAll();
-      document.getElementById('cloudBadge').innerHTML='<span class="dot"></span><span>CLOUD</span>';
-      document.getElementById('systemText').textContent='ซิงก์ Cloud แล้ว';
-      document.getElementById('profileState').textContent='LINE เชื่อมแล้ว • Cloud ซิงก์แล้ว';
-    }catch(e){
-      document.getElementById('cloudBadge').innerHTML='<span class="dot" style="background:#f59e0b"></span><span>รอซิงก์</span>';
-      document.getElementById('systemText').textContent='Cloud ยังไม่ซิงก์';
-      toast('ซิงก์ Cloud ไม่สำเร็จ: '+e.message);
-    }
-  })();
-  try{await refreshing}finally{refreshing=null}
-}
-
-function openTaskModal(dateStr){
-  const n=new Date();document.getElementById('taskTitle').value='';document.getElementById('taskNote').value='';
-  document.getElementById('taskDate').value=dateStr||ymd(n);
-  const m=new Date(n.getTime()+5*60000);document.getElementById('taskDate').value=dateStr||bangkokDate(m.toISOString());document.getElementById('taskTime').value=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Bangkok',hour:'2-digit',minute:'2-digit',hour12:false}).format(m);
-  openModal('taskModal');
-}
-
-async function saveTask(){
-  const title=document.getElementById('taskTitle').value.trim();
-  const date=document.getElementById('taskDate').value;
-  const time=document.getElementById('taskTime').value;
-  const note=document.getElementById('taskNote').value.trim();
-  if(!title||!date||!time){toast('กรอกชื่องาน วันที่ และเวลาให้ครบ');return}
-  const due=new Date(date+'T'+time+':00+07:00');if(Number.isNaN(due.getTime())){toast('วันเวลาไม่ถูกต้อง');return}
-  if(due.getTime()<=Date.now()){toast('กรุณาเลือกเวลาในอนาคต');return}
-  syncVersion++;
-  const item={id:Date.now(),title,date,time,note,done:false,cloud:'syncing',remoteId:null,createdAt:new Date().toISOString()};
-  tasks.unshift(item);persist();renderAll();closeModal('taskModal');toast('กำลังซิงก์ขึ้น Cloud…');
-
-  try{
-    if(!liffReady||!liff.isLoggedIn())throw new Error('กรุณาเปิดผ่าน LINE');
-    const accessToken=liff.getAccessToken?.()||'';
-    const idToken=liff.getIDToken?.()||'';
-    const res=await fetch(API+'/create-reminder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accessToken,idToken,title,remindAt:due.toISOString()})});
-    const data=await res.json().catch(()=>({}));
-    if(res.status===402){switchPage('membershipPage');loadMembership();throw new Error('ฟังก์ชันนี้สำหรับสมาชิก กรุณาสมัครหรือต่ออายุ')}
-  if(!res.ok||!data.ok)throw new Error(data.error||('HTTP '+res.status));
-    item.cloud='synced';item.kind='reminder';item.status='pending';item.remoteId=data.reminder?.id||null;item.confirmationSent=data.confirmationSent===true;persist();renderAll();toast(data.confirmationSent?'บันทึก Cloud และส่งข้อความยืนยันเข้า LINE แล้ว':'บันทึก Cloud แล้ว แต่ส่งข้อความยืนยันเข้า LINE ไม่สำเร็จ');
-  }catch(e){
-    console.error(e);item.cloud='failed';persist();renderAll();toast('เก็บในเครื่องแล้ว แต่ Cloud ยังไม่ซิงก์');
-  }
-}
-
-function taskHtml(t){
-  const cloud=t.cloud==='synced'?'<span class="tag cloud">'+(t.done?'เสร็จแล้ว • Cloud ✓':t.kind==='task'?'งาน • Cloud ✓':t.status==='sent'?'ส่งแจ้งเตือนแล้ว':t.status==='failed'?'ส่งแจ้งเตือนไม่สำเร็จ':t.status==='queued'?'กำลังส่งแจ้งเตือน':'ตั้งเตือน • Cloud ✓')+'</span>':t.cloud==='syncing'?'<span class="tag">Syncing…</span>':t.cloud==='failed'?'<span class="tag fail">Cloud ✕</span>':'<span class="tag">Local เดิม</span>';
-  return '<div class="task"><div class="check '+(t.done?'done':'')+'" onclick="toggleTask(\''+t.id+'\')">'+(t.done?'✓':'')+'</div><div class="min-w-0 flex-1"><div class="font-black text-sm '+(t.done?'line-through opacity-50':'')+'">'+esc(t.title)+'</div><div class="text-[10px] muted mt-1">'+esc(t.date)+' '+esc(t.time)+'</div><div class="mt-2">'+cloud+'</div></div><button class="text-red-400/70 p-2" onclick="deleteTask(\''+t.id+'\')">×</button></div>';
-}
-async function toggleTask(id){
-  const t=tasks.find(x=>String(x.id)===String(id));if(!t||t.busy)return;
-  syncVersion++;t.busy=true;
-  try{
-    if(t.remoteId)await cloudRequest('update_task',{id:t.remoteId,kind:t.kind||'reminder',status:t.done?'pending':'done'});
-    t.done=!t.done;t.status=t.done?'done':'pending';persist();renderAll();
-  }catch(e){toast('อัปเดตงานไม่สำเร็จ: '+e.message)}finally{t.busy=false}
-}
-async function deleteTask(id){
-  const t=tasks.find(x=>String(x.id)===String(id));if(!t||t.busy)return;
-  syncVersion++;t.busy=true;
-  try{
-    if(t.remoteId)await cloudRequest('update_task',{id:t.remoteId,kind:t.kind||'reminder',status:'cancelled'});
-    tasks=tasks.filter(x=>x!==t);persist();renderAll();toast('ลบงานแล้ว');
-  }catch(e){toast('ลบงานไม่สำเร็จ: '+e.message)}finally{t.busy=false}
-}
-
 function renderTasks(){
-  const sorted=[...tasks].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
-  document.getElementById('allTasks').innerHTML=sorted.length?sorted.map(taskHtml).join(''):'<div class="glass card p-6 text-center muted text-sm">ยังไม่มีงาน</div>';
-  document.getElementById('homeTasks').innerHTML=sorted.length?sorted.slice(0,5).map(taskHtml).join(''):'<div class="text-center muted text-sm py-5">ยังไม่มีงาน</div>';
-  const today=ymd();document.getElementById('pendingCount').textContent=tasks.filter(x=>!x.done).length;
-  document.getElementById('todayCount').textContent=tasks.filter(x=>x.date===today&&!x.done).length;
-  document.getElementById('allCount').textContent=tasks.length;
-  document.getElementById('cloudCount').textContent=tasks.filter(x=>x.cloud==='synced').length;
-  document.getElementById('doneCount').textContent=tasks.filter(x=>x.done).length;
+  let arr=[...db.tasks];
+  const d=today();
+  if(taskFilter==='today')arr=arr.filter(t=>t.date===d);
+  if(taskFilter==='week'){const now=new Date(d), end=new Date(now);end.setDate(end.getDate()+7);arr=arr.filter(t=>new Date(t.date)>=now&&new Date(t.date)<=end)}
+  if(taskFilter==='done')arr=arr.filter(t=>t.done);
+  const pct=db.tasks.length?Math.round(db.tasks.filter(t=>t.done).length/db.tasks.length*100):0;
+  document.getElementById('tasks').innerHTML=`
+    <div class="section-title"><h3>งาน / การแจ้งเตือน</h3><button onclick="taskForm()">＋ เพิ่มงาน</button></div>
+    <div class="tabs">${[['all','ทั้งหมด'],['today','วันนี้'],['week','สัปดาห์นี้'],['done','เสร็จแล้ว']].map(x=>`<button class="${taskFilter===x[0]?'active':''}" onclick="taskFilter='${x[0]}';renderTasks()">${x[1]}</button>`).join('')}</div>
+    <div class="paper" style="margin-bottom:12px"><div class="row"><div class="grow"><h4>ความคืบหน้าทั้งหมด</h4><p>${db.tasks.filter(t=>t.done).length}/${db.tasks.length} (${pct}%)</p></div></div><div class="progress" style="margin-top:10px"><i style="width:${pct}%"></i></div></div>
+    <div class="list">${arr.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).map(taskCard).join('')||'<div class="empty">ไม่มีงานในหมวดนี้</div>'}</div>`;
 }
+function taskForm(id,reminder=false,groupId=''){
+  const t=id?db.tasks.find(x=>x.id===id):null;
+  showModal(`<h3>${t?'แก้ไขงาน':reminder?'ตั้งเตือน':'เพิ่มงานใหม่'}</h3><form class="form" onsubmit="saveTask(event,'${t?.id||''}')">
+    <label>ชื่องาน<input name="title" required value="${esc(t?.title||'')}"></label>
+    <div class="inline"><label>วันที่<input name="date" type="date" required value="${t?.date||today()}"></label><label>เวลา<input name="time" type="time" value="${t?.time||'09:00'}"></label></div>
+    <label>หมวด<select name="category">${['การตลาด','งานขาย','ส่งสินค้า','สรุปงาน','ส่วนตัว'].map(x=>`<option ${t?.category===x?'selected':''}>${x}</option>`).join('')}</select></label>
+    <label>กลุ่ม<select name="groupId">${db.groups.map(g=>`<option value="${g.id}" ${(t?.groupId||groupId||db.profile.defaultGroup)===g.id?'selected':''}>${esc(g.name)}</option>`).join('')}</select></label>
+    <label>ความสำคัญ<select name="priority">${['ต่ำ','กลาง','สูง'].map(x=>`<option ${t?.priority===x?'selected':''}>${x}</option>`).join('')}</select></label>
+    <label>โน้ต<textarea name="notes">${esc(t?.notes||'')}</textarea></label>
+    <div class="actions"><button type="button" class="btn ghost" onclick="closeModal()">ยกเลิก</button><button class="btn gold">บันทึก</button></div>
+  </form>`);
+}
+function saveTask(e,id){e.preventDefault();const f=new FormData(e.target),obj={title:f.get('title'),date:f.get('date'),time:f.get('time'),category:f.get('category'),groupId:f.get('groupId'),priority:f.get('priority'),notes:f.get('notes')};
+  if(id)Object.assign(db.tasks.find(x=>x.id===id),obj);else db.tasks.push({id:uid(),...obj,done:false});
+  save();closeModal();render();toast('บันทึกงานแล้ว');
+}
+function toggleTask(id){const t=db.tasks.find(x=>x.id===id);t.done=!t.done;save();render();toast(t.done?'ทำงานเสร็จแล้ว':'เปิดงานอีกครั้ง')}
+function taskMenu(id){showModal(`<h3>จัดการงาน</h3><div class="actions" style="justify-content:stretch;flex-direction:column"><button class="btn" onclick="closeModal();taskForm('${id}')">แก้ไข</button><button class="btn red" onclick="deleteTask('${id}')">ลบงาน</button><button class="btn ghost" onclick="closeModal()">ปิด</button></div>`)}
+function deleteTask(id){if(!confirm('ลบงานนี้?'))return;db.tasks=db.tasks.filter(x=>x.id!==id);save();closeModal();render();toast('ลบงานแล้ว')}
 
-function moveMonth(n){cursor=new Date(cursor.getFullYear(),cursor.getMonth()+n,1);renderCalendar()}
-function selectDay(y,m,d){selected=new Date(y,m,d);renderCalendar()}
-function selectedYmd(){return ymd(selected)}
-function renderCalendar(){
-  document.getElementById('monthTitle').textContent=thMonth(cursor);document.getElementById('selectedDateTitle').textContent=thDate(selected);
-  const y=cursor.getFullYear(),m=cursor.getMonth(),first=new Date(y,m,1),start=first.getDay(),days=new Date(y,m+1,0).getDate(),prev=new Date(y,m,0).getDate();
-  let out='';
-  for(let i=0;i<42;i++){
-    let d,cm=m,cy=y,dim=false;
-    if(i<start){d=prev-start+i+1;cm=m-1;dim=true}else if(i>=start+days){d=i-(start+days)+1;cm=m+1;dim=true}else d=i-start+1;
-    const x=new Date(cy,cm,d);cy=x.getFullYear();cm=x.getMonth();d=x.getDate();const k=ymd(x),has=tasks.some(t=>t.date===k),sel=ymd(selected)===k;
-    out+='<button class="day '+(dim?'dim ':'')+(has?'has ':'')+(sel?'sel':'')+'" onclick="selectDay('+cy+','+cm+','+d+')">'+d+'</button>';
-  }
-  document.getElementById('calendarGrid').innerHTML=out;
-  const rows=tasks.filter(t=>t.date===ymd(selected));document.getElementById('selectedTasks').innerHTML=rows.length?rows.map(taskHtml).join(''):'<div class="text-center muted text-sm py-5">ไม่มีงานในวันนี้</div>';
+const prompts={
+  'คิดไอเดีย':'ช่วยคิดไอเดีย 5 แบบ โดยแยกเป็น: เป้าหมาย / แนวคิด / วิธีเริ่มวันนี้',
+  'เขียนโพสต์':'โครงโพสต์พร้อมใช้: เปิดด้วย Hook สั้น ๆ → บอกประโยชน์ → หลักฐาน/รายละเอียด → CTA ชัดเจน',
+  'สรุปข้อมูล':'ส่งข้อมูลมาได้เลย ผมจะสรุปเป็น 3 ส่วน: ประเด็นสำคัญ / สิ่งที่ต้องทำ / สิ่งที่ต้องติดตาม',
+  'วางแผน':'เริ่มจากเป้าหมาย 1 ข้อ → แบ่งเป็นงานย่อย 3–5 งาน → ใส่เส้นตาย → เลือกงานแรกที่ทำได้ใน 15 นาที',
+  'สร้างภาพ':'บอกสินค้า/คน/ฉาก/สไตล์/สัดส่วนภาพ ผมจะช่วยจัด prompt ภาพให้พร้อมใช้',
+  'วิเคราะห์':'ส่งตัวเลขหรือสถานการณ์มา ผมจะช่วยแยกข้อเท็จจริง แนวโน้ม ความเสี่ยง และทางเลือก',
+  'ตั้งเตือน':'เปิดหน้า “งาน” แล้วเพิ่มวันและเวลาได้ทันที หรือพิมพ์ เช่น “เตือนส่งของพรุ่งนี้ 14:00”',
+  'ค้นหาข้อมูล':'พิมพ์หัวข้อที่ต้องการค้นหา พร้อมบอกว่าต้องการคำตอบสั้นหรือแบบละเอียด',
+  'อื่น ๆ':'พิมพ์สิ่งที่อยากให้ช่วยได้เลยครับ'
+};
+function renderAI(){
+  document.getElementById('ai').innerHTML=`
+    <div class="section-title"><h3>สั่งงาน AI</h3><button onclick="clearAI()">ล้างแชต</button></div>
+    <div class="ai-grid">${Object.keys(prompts).map((k,i)=>`<button onclick="aiShortcut('${k}')"><span class="ico">${['💡','📝','▤','◎','▧','⌁','🔔','⌕','•••'][i]}</span><b>${k}</b></button>`).join('')}</div>
+    <div class="chat">${db.aiHistory.map(x=>`<div class="bubble ${x.role==='user'?'user':'bot'}">${esc(x.text)}</div>`).join('')}</div>
+    <div class="composer"><input id="aiInput" placeholder="พิมพ์คำสั่งได้เลย..." onkeydown="if(event.key==='Enter')sendAI()"><button onclick="sendAI()">➤</button></div>`;
 }
-
-function openFinanceModal(){document.getElementById('financeTitle').value='';document.getElementById('financeAmount').value='';document.getElementById('financeDate').value=ymd();openModal('financeModal')}
-async function saveFinance(){
-  const type=document.getElementById('financeType').value,title=document.getElementById('financeTitle').value.trim(),amount=Number(document.getElementById('financeAmount').value),date=document.getElementById('financeDate').value;
-  if(!title||!Number.isFinite(amount)||amount<=0||!date){toast('กรอกรายการ จำนวนเงินมากกว่า 0 และวันที่');return}
-  if(window.__savingFinance)return;window.__savingFinance=true;syncVersion++;
-  try{
-    const data=await cloudRequest('create_finance',{type,title,amount,date});
-    moneyRows.unshift({id:data.finance.id,remoteId:data.finance.id,type,title,amount,date});
-    persist();closeModal('financeModal');renderFinance();toast('บันทึก Cloud แล้ว • ดูใน LINE ด้วย /เงิน');
-  }catch(e){toast('บันทึกไม่สำเร็จ: '+e.message)}finally{window.__savingFinance=false}
+function aiShortcut(k){setTab('ai');db.aiHistory.push({role:'user',text:k});db.aiHistory.push({role:'bot',text:prompts[k]||'พร้อมช่วยครับ'});save();renderAI();setTimeout(()=>scrollTo(0,document.body.scrollHeight),50)}
+async function sendAI(){
+  const el=document.getElementById('aiInput');const msg=el?.value.trim();if(!msg)return;
+  db.aiHistory.push({role:'user',text:msg});save();renderAI();
+  let reply='';
+  if(db.profile.webhookUrl){
+    try{
+      const r=await fetch(db.profile.webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg,groupId:db.profile.defaultGroup,userId:'local-user'})});
+      const j=await r.json();reply=j.reply||j.message||JSON.stringify(j);
+    }catch(e){reply='เชื่อม Webhook ไม่สำเร็จ จึงใช้ผู้ช่วยในเครื่องแทนครับ\n\n'+localAI(msg)}
+  }else reply=localAI(msg);
+  db.aiHistory.push({role:'bot',text:reply});save();renderAI();setTimeout(()=>scrollTo(0,document.body.scrollHeight),50)
 }
-async function deleteFinance(id){
-  const item=moneyRows.find(x=>String(x.id)===String(id));if(!item||item.busy)return;
-  item.busy=true;syncVersion++;
-  try{
-    if(item.remoteId)await cloudRequest('delete_finance',{id:item.remoteId});
-    moneyRows=moneyRows.filter(x=>x!==item);persist();renderFinance();
-  }catch(e){toast('ลบไม่สำเร็จ: '+e.message)}finally{item.busy=false}
+function localAI(m){
+  const s=m.toLowerCase();
+  if(s.includes('โพสต์'))return prompts['เขียนโพสต์'];
+  if(s.includes('ไอเดีย'))return prompts['คิดไอเดีย'];
+  if(s.includes('สรุป'))return prompts['สรุปข้อมูล'];
+  if(s.includes('แผน'))return prompts['วางแผน'];
+  if(s.includes('เตือน'))return prompts['ตั้งเตือน'];
+  if(s.includes('ภาพ'))return prompts['สร้างภาพ'];
+  return 'รับคำสั่งแล้วครับ: “'+m+'”\n\nเวอร์ชันนี้ทำงานออฟไลน์ จึงตอบด้วยผู้ช่วยพื้นฐานก่อน หากต้องการ AI จริง ให้ใส่ Webhook URL ที่หน้า บัญชี → การเชื่อมต่อ';
 }
+function clearAI(){if(confirm('ล้างประวัติแชต AI?')){db.aiHistory=[];save();renderAI()}}
 
 function renderFinance(){
-  const inc=moneyRows.filter(x=>x.type==='income').reduce((s,x)=>s+Number(x.amount),0),exp=moneyRows.filter(x=>x.type==='expense').reduce((s,x)=>s+Number(x.amount),0);
-  document.getElementById('income').textContent=money(inc);document.getElementById('expense').textContent=money(exp);document.getElementById('balance').textContent=money(inc-exp);
-  document.getElementById('financeList').innerHTML=moneyRows.length?moneyRows.map(x=>'<div class="task"><div class="flex-1 min-w-0"><div class="font-black text-sm">'+esc(x.title)+'</div><div class="text-[10px] muted mt-1">'+esc(x.date)+'</div></div><div class="font-black '+(x.type==='income'?'soft':'text-red-400')+'">'+(x.type==='income'?'+':'-')+money(x.amount)+'</div><button class="text-red-400/70 p-2" onclick="deleteFinance(\''+x.id+'\')">×</button></div>').join(''):'<div class="text-center muted text-sm py-5">ยังไม่มีรายการ</div>';
+  const inc=db.transactions.filter(x=>x.type==='income').reduce((a,b)=>a+Number(b.amount),0);
+  const exp=db.transactions.filter(x=>x.type==='expense').reduce((a,b)=>a+Number(b.amount),0);
+  document.getElementById('finance').innerHTML=`
+    <div class="section-title"><h3>การเงิน</h3><button onclick="transactionForm()">＋ เพิ่มรายการ</button></div>
+    <div class="grid4">
+      <div class="stat"><span>รายรับทั้งหมด</span><b class="moneyplus">${fmtBaht(inc)}</b></div>
+      <div class="stat"><span>รายจ่ายทั้งหมด</span><b class="moneyminus">${fmtBaht(exp)}</b></div>
+      <div class="stat"><span>คงเหลือ</span><b>${fmtBaht(inc-exp)}</b></div>
+      <div class="stat"><span>จำนวนรายการ</span><b>${db.transactions.length}</b></div>
+    </div>
+    <div class="list">${[...db.transactions].sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<div class="paper row">
+      <div class="avatar">${x.type==='income'?'＋':'−'}</div><div class="grow"><h4>${esc(x.note||x.category)}</h4><p>${esc(x.date)} · ${esc(groupName(x.groupId))}</p><span class="tag">${esc(x.category)}</span></div>
+      <div class="right"><b class="${x.type==='income'?'moneyplus':'moneyminus'}">${x.type==='income'?'+':'-'}${fmtBaht(x.amount)}</b><br><button class="btn" style="margin-top:7px" onclick="transactionMenu('${x.id}')">•••</button></div>
+    </div>`).join('')||'<div class="empty">ยังไม่มีรายการ</div>'}</div>`;
 }
-
-async function testCloudLine(){
-  try{
-    if(!liffReady||!liff.isLoggedIn())throw new Error('กรุณาเปิดผ่าน LINE');
-    const accessToken=liff.getAccessToken?.()||'',idToken=liff.getIDToken?.()||'';
-    const res=await fetch(API+'/line-test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accessToken,idToken})});
-    const data=await res.json().catch(()=>({}));if(res.status===402){switchPage('membershipPage');loadMembership();throw new Error('ฟังก์ชันนี้สำหรับสมาชิก กรุณาสมัครหรือต่ออายุ')}
-  if(!res.ok||!data.ok)throw new Error(data.error||('HTTP '+res.status));
-    toast('✅ Supabase + LINE พร้อมใช้งาน');
-  }catch(e){console.error(e);toast('Cloud test ไม่สำเร็จ: '+(e.message||e))}
+function transactionForm(id){
+  const x=id?db.transactions.find(y=>y.id===id):null;
+  showModal(`<h3>${x?'แก้ไขรายการ':'เพิ่มรายการเงิน'}</h3><form class="form" onsubmit="saveTransaction(event,'${x?.id||''}')">
+    <label>ประเภท<select name="type"><option value="income" ${x?.type==='income'?'selected':''}>รายรับ</option><option value="expense" ${x?.type==='expense'?'selected':''}>รายจ่าย</option></select></label>
+    <label>จำนวนเงิน<input name="amount" type="number" min="0" step="0.01" required value="${x?.amount||''}"></label>
+    <label>รายละเอียด<input name="note" required value="${esc(x?.note||'')}"></label>
+    <label>หมวด<input name="category" value="${esc(x?.category||'ขายสินค้า')}"></label>
+    <label>วันที่<input name="date" type="date" value="${x?.date||today()}"></label>
+    <label>กลุ่ม<select name="groupId">${db.groups.map(g=>`<option value="${g.id}" ${(x?.groupId||db.profile.defaultGroup)===g.id?'selected':''}>${esc(g.name)}</option>`).join('')}</select></label>
+    <div class="actions"><button type="button" class="btn ghost" onclick="closeModal()">ยกเลิก</button><button class="btn gold">บันทึก</button></div>
+  </form>`);
 }
+function saveTransaction(e,id){e.preventDefault();const f=new FormData(e.target),obj={type:f.get('type'),amount:Number(f.get('amount')),note:f.get('note'),category:f.get('category'),date:f.get('date'),groupId:f.get('groupId')};
+  if(id)Object.assign(db.transactions.find(x=>x.id===id),obj);else db.transactions.push({id:uid(),...obj});
+  save();closeModal();render();toast('บันทึกรายการแล้ว');
+}
+function transactionMenu(id){showModal(`<h3>จัดการรายการ</h3><div class="actions" style="justify-content:stretch;flex-direction:column"><button class="btn" onclick="closeModal();transactionForm('${id}')">แก้ไข</button><button class="btn red" onclick="deleteTransaction('${id}')">ลบรายการ</button><button class="btn ghost" onclick="closeModal()">ปิด</button></div>`)}
+function deleteTransaction(id){if(!confirm('ลบรายการนี้?'))return;db.transactions=db.transactions.filter(x=>x.id!==id);save();closeModal();render();toast('ลบรายการแล้ว')}
 
-function renderAll(){renderTasks();renderCalendar();renderFinance()}
+function renderMembership(){
+  const remaining=Math.max(0,Math.ceil((new Date(db.profile.trialEnds)-new Date())/86400000));
+  document.getElementById('membership').innerHTML=`
+    <div class="section-title"><h3>สมาชิก / ราคา</h3><button onclick="setTab('account')">ตั้งค่า</button></div>
+    <div class="hero"><div class="hello">แพ็กเกจปัจจุบัน</div><h2>AI PRO · 99 บาท / เดือน</h2><p>ทดลองใช้งาน · เหลือประมาณ ${remaining} วัน</p></div>
+    <div class="paper" style="margin-top:14px"><h4>สิ่งที่รวมในแพ็กเกจ</h4>
+      <p style="line-height:2">✓ งาน / เตือน<br>✓ กลุ่มหลายกลุ่ม<br>✓ ผู้ช่วย AI / Webhook<br>✓ การเงิน<br>✓ สรุปข้อมูลและวิเคราะห์<br>✓ Export / Import สำรองข้อมูล</p>
+      <button class="btn gold" style="width:100%;margin-top:12px" onclick="renew()">ต่ออายุสมาชิก</button>
+    </div>`;
+}
+function renew(){showModal(`<h3>ต่ออายุสมาชิก</h3><div class="paper"><h4>AI PRO · 99 บาท / เดือน</h4><p>ยังไม่ได้เชื่อมระบบชำระเงินจริง จึงยังไม่ตัดเงินและไม่แสดงสถานะชำระสำเร็จ</p></div><div class="actions"><button class="btn ghost" onclick="closeModal()">ปิด</button></div>`)}
 
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&profile){syncCloud();loadMembership()}});
-window.addEventListener('focus',()=>{if(profile){syncCloud();loadMembership()}});
+function renderAccount(){
+  document.getElementById('account').innerHTML=`
+    <div class="section-title"><h3>บัญชี / ตั้งค่า</h3></div>
+    <div class="setting"><h4>${esc(db.profile.name)}</h4><p>${esc(db.profile.plan)} · ข้อมูลเก็บในเครื่องนี้</p><div class="actions"><button class="btn" onclick="profileForm()">แก้ไขโปรไฟล์</button></div></div>
+    <div class="setting"><h4>กลุ่มเริ่มต้น</h4><p>${esc(groupName(db.profile.defaultGroup))}</p><div class="actions"><button class="btn" onclick="defaultGroupForm()">เปลี่ยน</button></div></div>
+    <div class="setting"><h4>การเชื่อมต่อ</h4><p>LINE LIFF: ยังไม่เชื่อม<br>LINE Messaging API: ยังไม่เชื่อม<br>AI Webhook: ${db.profile.webhookUrl?'เชื่อม URL แล้ว':'ยังไม่ตั้งค่า'}</p>
+      <div class="actions"><button class="btn gold" onclick="integrationForm()">ตั้งค่า AI Webhook</button></div></div>
+    <div class="setting"><h4>การเงิน</h4><p>บันทึกรายรับ/รายจ่ายและสรุปยอด</p><div class="actions"><button class="btn" onclick="setTab('finance')">เปิดการเงิน</button></div></div>
+    <div class="setting"><h4>สมาชิก</h4><p>AI PRO 99 บาท / เดือน</p><div class="actions"><button class="btn" onclick="setTab('membership')">ดูแพ็กเกจ</button></div></div>
+    <div class="setting"><h4>สำรองข้อมูล</h4><p>Export / Import เป็นไฟล์ JSON</p><div class="actions"><button class="btn" onclick="exportData()">Export</button><button class="btn" onclick="importData()">Import</button></div></div>
+    <div class="setting danger"><h4>รีเซ็ตข้อมูลตัวอย่าง</h4><p>ลบข้อมูลในเครื่องและกลับเป็นชุดเริ่มต้น</p><div class="actions"><button class="btn red" onclick="resetData()">รีเซ็ต</button></div></div>`;
+}
+function profileForm(){showModal(`<h3>โปรไฟล์</h3><form class="form" onsubmit="saveProfile(event)"><label>ชื่อที่แสดง<input name="name" value="${esc(db.profile.name)}"></label><label><input name="notifications" type="checkbox" ${db.profile.notifications?'checked':''}> เปิดการแจ้งเตือนในแอป</label><div class="actions"><button type="button" class="btn ghost" onclick="closeModal()">ยกเลิก</button><button class="btn gold">บันทึก</button></div></form>`)}
+function saveProfile(e){e.preventDefault();const f=new FormData(e.target);db.profile.name=f.get('name');db.profile.notifications=f.has('notifications');save();closeModal();render();toast('บันทึกโปรไฟล์แล้ว')}
+function defaultGroupForm(){showModal(`<h3>กลุ่มเริ่มต้น</h3><form class="form" onsubmit="saveDefaultGroup(event)"><label>เลือกกลุ่ม<select name="groupId">${db.groups.map(g=>`<option value="${g.id}" ${db.profile.defaultGroup===g.id?'selected':''}>${esc(g.name)}</option>`).join('')}</select></label><div class="actions"><button type="button" class="btn ghost" onclick="closeModal()">ยกเลิก</button><button class="btn gold">บันทึก</button></div></form>`)}
+function saveDefaultGroup(e){e.preventDefault();db.profile.defaultGroup=new FormData(e.target).get('groupId');save();closeModal();render();toast('เปลี่ยนกลุ่มเริ่มต้นแล้ว')}
+function integrationForm(){showModal(`<h3>AI Webhook</h3><form class="form" onsubmit="saveIntegration(event)"><label>Webhook URL<input name="url" type="url" placeholder="https://..." value="${esc(db.profile.webhookUrl||'')}"></label><p class="muted mini">เมื่อมี URL แอปจะ POST JSON: message, groupId, userId ไปยังปลายทางนี้ หากเรียกไม่ได้จะกลับมาใช้ผู้ช่วยออฟไลน์อัตโนมัติ</p><div class="actions"><button type="button" class="btn ghost" onclick="closeModal()">ยกเลิก</button><button class="btn gold">บันทึก</button></div></form>`)}
+function saveIntegration(e){e.preventDefault();db.profile.webhookUrl=new FormData(e.target).get('url').trim();save();closeModal();render();toast('บันทึก Webhook แล้ว')}
+function exportData(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='chailueklab-backup.json';a.click();URL.revokeObjectURL(a.href);toast('Export แล้ว')}
+function importData(){const i=document.createElement('input');i.type='file';i.accept='.json,application/json';i.onchange=()=>{const f=i.files[0],r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();render();toast('Import สำเร็จ')}catch(e){alert('ไฟล์ไม่ถูกต้อง')}};r.readAsText(f)};i.click()}
+function resetData(){if(!confirm('รีเซ็ตข้อมูลทั้งหมดในเครื่องนี้?'))return;db=structuredClone(seed);save();render();toast('รีเซ็ตข้อมูลแล้ว')}
 
-document.addEventListener('DOMContentLoaded',async()=>{
-  document.getElementById('financeDate').value=ymd();
-  renderAll();
-  if(new URLSearchParams(location.search).get('view')==='membership')switchPage('membershipPage');
-  await initLiff();
-  const view=new URLSearchParams(location.search).get('view');
-  if(view==='vault'){switchPage('vaultPage');loadVault()}
-  if(view==='admin'){switchPage('adminPage');loadAdmin()}
-});
+const params=new URLSearchParams(location.search);
+setTab(params.get('tab')||'home',false);
+if(location.pathname.endsWith('/tasks/new')){setTab('tasks',false);setTimeout(()=>taskForm(),100)}
 </script>
 </body>
 </html>
