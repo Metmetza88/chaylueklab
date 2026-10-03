@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080c0f">
+  <meta name="description" content="CHAYLUEKLAB พื้นที่จัดการงาน แจ้งเตือนประจำ การเงิน และคลังส่วนตัวใน LINE">
+  <title>CHAYLUEKLAB • AI Life OS</title>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config={theme:{extend:{colors:{gold:"#E8D2A3",ink:"#080C0F",panel:"#10181D",panel2:"#172128",soft:"#91E5C1"}}}}
+  </script>
+
+  <style>
+    :root{
+      --bg:#050907;--panel:#0b120e;--panel2:#101a14;--panel3:#142019;
+      --soft:#7dd3a6;--gold:#d4af37;--muted:#8fa49a;--green:#16a34a;--red:#ef4444;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;background:#050907;color:#f4f7f5}
+    body{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",sans-serif;
+      background:
+        radial-gradient(circle at 10% -5%,rgba(22,163,74,.18),transparent 28%),
+        radial-gradient(circle at 90% 0%,rgba(212,175,55,.10),transparent 24%),
+        linear-gradient(180deg,#07100c,#050907 55%,#08100c);
+    }
+    body:before{
+      content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;
+      background-image:linear-gradient(rgba(125,211,166,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(125,211,166,.18) 1px,transparent 1px);
+      background-size:34px 34px;mask-image:linear-gradient(#000,transparent 86%);
+    }
+    .shell{max-width:980px;margin:auto;min-height:100dvh;padding-bottom:92px}
+    .sticky{position:sticky;top:0;z-index:30;background:rgba(5,9,7,.90);backdrop-filter:blur(18px);border-bottom:1px solid rgba(212,175,55,.10)}
+    .glass{
+      background:linear-gradient(145deg,rgba(15,25,19,.95),rgba(7,13,10,.97));
+      border:1px solid rgba(212,175,55,.13);
+      box-shadow:0 16px 42px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.02);
+    }
+    .card{border-radius:24px}
+    .muted{color:var(--muted)} .gold{color:var(--gold)} .soft{color:var(--soft)}
+    .pill{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;font-size:11px;font-weight:800;background:rgba(22,163,74,.10);border:1px solid rgba(125,211,166,.17);color:#a2e8bc}
+    .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 5px rgba(34,197,94,.10)}
+    .btn{border:0;border-radius:16px;padding:12px 15px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+    .btn:active{transform:scale(.98)}
+    .btn-green{background:linear-gradient(135deg,#0e6b3b,#16a34a);color:#fff}
+    .btn-gold{background:linear-gradient(135deg,#c99d23,#e1bd4d);color:#10130f}
+    .btn-ghost{background:rgba(255,255,255,.035);color:#dbe8e0;border:1px solid rgba(255,255,255,.075)}
+    .section-title{font-size:18px;font-weight:900;letter-spacing:-.02em}
+    .page{display:none}.page.active{display:block}
+    .task{display:flex;gap:12px;align-items:center;padding:14px;border-radius:18px;background:rgba(15,25,19,.78);border:1px solid rgba(125,211,166,.09)}
+    .check{width:24px;height:24px;border-radius:8px;border:2px solid #67786f;display:flex;align-items:center;justify-content:center;flex:0 0 auto;cursor:pointer}
+    .check.done{background:#16a34a;border-color:#16a34a}
+    .tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800;background:rgba(255,255,255,.05);color:#9fb1a8}
+    .tag.cloud{background:rgba(22,163,74,.12);color:#8be2aa;border:1px solid rgba(125,211,166,.13)}
+    .tag.fail{background:rgba(239,68,68,.10);color:#ff9d9d}
+    input,textarea,select{
+      width:100%;background:#09110d;border:1px solid rgba(125,211,166,.16);color:#f5f7f6;border-radius:14px;padding:12px 13px;outline:none
+    }
+    input:focus,textarea:focus,select:focus{border-color:rgba(212,175,55,.48);box-shadow:0 0 0 3px rgba(212,175,55,.07)}
+    .bottom{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(5,9,7,.94);backdrop-filter:blur(18px);border-top:1px solid rgba(212,175,55,.12);padding:8px 8px calc(8px + env(safe-area-inset-bottom))}
+    .navbtn{color:#6f8178}.navbtn.active{color:#d4af37}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:flex-end;z-index:100;backdrop-filter:blur(7px)}
+    .modal.show{display:flex}
+    .sheet{width:100%;max-height:88dvh;overflow:auto;border-radius:28px 28px 0 0;background:linear-gradient(180deg,#0e1712,#07100c);border-top:1px solid rgba(212,175,55,.18);padding:20px 18px calc(24px + env(safe-area-inset-bottom))}
+    .month{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+    .day{min-height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;position:relative;color:#c6d3cc;font-weight:800;font-size:13px}
+    .day.dim{color:#46544d}.day.sel{background:#153724;border:1px solid rgba(212,175,55,.25)}.day.has:after{content:"";position:absolute;bottom:5px;width:4px;height:4px;border-radius:50%;background:#d4af37}
+    .toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,20px);width:min(92vw,520px);background:#0d1711;color:#eaf4ed;border:1px solid rgba(125,211,166,.16);border-radius:18px;padding:13px 15px;z-index:200;opacity:0;pointer-events:none;transition:.2s;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    .hero{background:radial-gradient(circle at 90% 0%,rgba(212,175,55,.17),transparent 30%),radial-gradient(circle at 10% 100%,rgba(22,163,74,.22),transparent 38%),linear-gradient(135deg,#08110d,#0d2518 56%,#0b1711)}
+    @media(min-width:760px){.modal{align-items:center;justify-content:center}.sheet{max-width:560px;border-radius:28px}}
+  button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid #e1c677;outline-offset:4px}button:disabled{opacity:.55;cursor:not-allowed}#membershipPage .btn{min-height:48px;font-size:16px}#membershipPage input{accent-color:#16a34a}#membershipPage{overflow-wrap:anywhere}
+
+    /* Personal command desk: champagne actions, emerald service states. */
+    :root{--bg:#080c0f;--panel:#10181d;--panel2:#172128;--panel3:#1c282f;--soft:#91e5c1;--gold:#e8d2a3;--muted:#a0b0b7;--green:#137452;--red:#ffadb0;--line:#2b3b42}
+    html,body{background:var(--bg);color:#f4f4ef;color-scheme:dark}
+    body{background:radial-gradient(ellipse at 90% 0%,#123328 0,transparent 36%),#080c0f}
+    body:before{opacity:.035;background-size:64px 64px;mask-image:linear-gradient(#000,transparent 70%)}
+    .shell{max-width:1160px;padding-bottom:100px}.sticky{background:#080c0ff5;border-bottom:1px solid #26353a;backdrop-filter:blur(12px)}
+    main{padding-top:26px!important}.glass{background:var(--panel);border:1px solid var(--line);box-shadow:inset 0 1px #ffffff04}.card{border-radius:18px}
+    .pill{background:#14261e;border-color:#315244;color:#c2efd9;font-size:11px;padding:7px 9px}.dot{width:6px;height:6px;box-shadow:none}.btn{min-height:46px;border-radius:12px;font-size:14px;transition:background .16s,border-color .16s,transform .16s}.btn-green{background:#147450;color:#fff;border:1px solid #2b8c65}.btn-gold{background:var(--gold);color:#11191d}.btn-ghost{background:#ffffff04;color:#e0e8eb;border:1px solid #35464d}.btn:hover:not(:disabled){filter:brightness(1.10)}button:disabled{opacity:.55}.section-title{font-size:20px;line-height:1.45;letter-spacing:-.025em}.task{background:#10181d;border:1px solid #2b3b42;border-radius:13px}.check{min-width:40px;min-height:40px;width:40px;height:40px;border-radius:11px;border:1px solid #52636c;background:transparent;color:#fff}.check.done{background:#176342;border-color:#438767}.tag{font-size:11px;border-radius:6px}.tag.cloud{background:#17362b;color:#b7efcf;border-color:#335744}.day.dim{color:#8b9ba3}.navbtn{min-height:52px;color:#a0b0b7;border-radius:10px;font-size:19px}.navbtn.active{color:#e8d2a3;background:#e8d2a30b}.navbtn div{font-size:11px}.bottom{background:#080c0ff5;border-top:1px solid #334044}.bottom>div{max-width:1160px}
+    input,textarea,select{font-size:16px;background:#0b1216;border:1px solid #415059;border-radius:11px;min-height:46px}textarea{resize:vertical}input[type=checkbox]{min-height:unset}.sheet{background:#10181d;border-color:#415059}.modal{backdrop-filter:blur(5px)}
+    button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #e8d2a3;outline-offset:3px}
+    .brand{display:flex;align-items:center;gap:11px}.brand-mark{width:36px;height:38px;border:1px solid #776b51;border-radius:9px;display:grid;place-items:center;font-size:16px;font-weight:900;color:var(--gold);background:linear-gradient(135deg,#282b28,#12191c)}.brand-name{font-size:14px;font-weight:850;letter-spacing:.08em}.brand-sub{font-size:10px;color:#a0b0b7;letter-spacing:.16em;margin-top:3px}
+    .desk-intro{display:flex;align-items:start;justify-content:space-between;gap:16px;margin-bottom:18px}.eyebrow{font-size:10px;letter-spacing:.16em;font-weight:750;color:var(--gold);text-transform:uppercase}.desk-title{font-size:clamp(28px,4vw,38px);font-weight:850;letter-spacing:-.04em;line-height:1.3;margin:8px 0 6px}.desk-sub{font-size:13px;color:var(--muted);line-height:1.7}.iconbtn{width:44px;height:44px;display:grid;place-items:center;flex-shrink:0;border:1px solid #35464d;border-radius:12px;color:#e8d2a3;background:#ffffff03}.iconbtn svg,.tool-icon svg{width:21px;height:21px}.desk-grid{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}.desk-main,.desk-side{display:grid;gap:16px;align-content:start}.desk-panel{padding:20px;border-radius:18px;border:1px solid #2b3b42;background:#10181d;min-width:0}.panel-head{display:flex;align-items:start;justify-content:space-between;gap:12px;margin-bottom:16px}.panel-title{font-size:16px;font-weight:800;line-height:1.6}.inline-arrow{width:13px;height:13px;display:inline-block;vertical-align:-2px;margin-left:4px;flex-shrink:0}.text-action{color:var(--gold);font-size:12px;min-height:44px;white-space:nowrap;padding:0 5px}.statusline{display:flex;align-items:center;gap:7px;color:#b7d3c6;font-size:12px}.statusline .dot{background:#91e5c1}.command-panel{position:relative;overflow:hidden;background:linear-gradient(110deg,#122521,#10191e 78%);border-color:#375748}.command-panel:after{content:"";width:130px;height:130px;position:absolute;right:-65px;top:-75px;border:1px solid #e8d2a33b;border-radius:50%;pointer-events:none}.command-top{display:flex;justify-content:space-between;gap:12px;align-items:start}.command-heading{font-weight:800;font-size:19px;margin-top:10px;line-height:1.5}.plan-chip{background:#080c0f50;color:var(--gold);border:1px solid #b9a16c50;padding:6px 10px;border-radius:6px;min-width:60px;font-size:11px;text-align:center;font-weight:750}.command-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}.desk-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid #375748;margin-top:20px;padding-top:16px;gap:12px}.metric-label{font-size:11px;line-height:1.5;color:#acbcb9}.metric-value{font-size:29px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.045em;margin:3px 0}.metric-value.warning{color:#e8d2a3}.metric-cell:not(:first-child){border-left:1px solid #375748;padding-left:12px}.desk-caption{font-size:12px;color:var(--muted);line-height:1.7}.quiet-state{font-size:13px;color:#a0b0b7;line-height:1.7;padding:18px 0}.inline-state{font-size:12px;color:#b3c1c8;line-height:1.7}.premium-state{padding:14px;border-radius:12px;background:#e8d2a309;border:1px solid #e8d2a332;color:#d9ceb5;font-size:13px;line-height:1.7}.weekly-total{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.04em;line-height:1.4;margin:5px 0 18px}.ledger-line{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;font-size:13px;margin-top:14px}.ledger-line strong{font-variant-numeric:tabular-nums}.ledger-track{height:5px;background:#25323b;border-radius:3px;overflow:hidden;margin-top:7px}.ledger-track span{display:block;height:100%;background:#80d3ae;border-radius:3px}.ledger-track.expense span{background:#e8c49d}.weekly-footer{display:flex;gap:12px;justify-content:space-between;border-top:1px solid #2b3b42;margin-top:18px;padding-top:14px;font-size:12px;color:#b7c4ca}.utility-links{display:grid;grid-template-columns:1fr 1fr;gap:9px}.utility-link{display:flex;align-items:center;gap:11px;padding:14px 10px;border:1px solid #34444b;border-radius:12px;text-align:left;background:#101a1f;min-height:66px;font-weight:700;font-size:13px}.tool-icon{width:30px;display:grid;place-items:center;color:var(--gold);flex-shrink:0}.utility-link small{display:block;color:#a0b0b7;font-size:10px;font-weight:400;margin-top:3px;line-height:1.6}.utility-link:hover{border-color:#8a8068}.tool-row{display:flex;gap:12px;align-items:start;padding:14px 0;border-top:1px solid #2b3b42}.tool-row:first-child{border-top:0;padding-top:0}.tool-row:last-child{padding-bottom:0}.tool-row>div{min-width:0;flex:1}.tool-row strong{display:block;font-size:14px;line-height:1.6;overflow-wrap:anywhere}.tool-row p{font-size:12px;color:var(--muted);line-height:1.7;margin:4px 0 0}.row-amount{font-size:15px;font-weight:750;font-variant-numeric:tabular-nums;color:#e8d2a3;white-space:nowrap}.row-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.row-actions .btn{font-size:12px;min-height:42px;padding:8px 11px}.amount-overview{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid #2b3b42}.amount-overview strong{font-size:22px;letter-spacing:-.025em;font-variant-numeric:tabular-nums}.progress-summary{height:3px;background:#2b3b42;border-radius:3px;margin-top:9px;overflow:hidden}.progress-summary>span{height:100%;display:block;background:#91e5c1}.tools-intro{max-width:55ch}.life-dialog{color:#f4f4ef;background:#10181d;border:1px solid #526168;border-radius:20px;padding:24px;width:min(560px,calc(100vw - 32px));max-height:85dvh;overflow:auto}.life-dialog::backdrop,#adminEditDialog::backdrop{background:#03070bcc;backdrop-filter:blur(5px)}.life-dialog h2{font-size:22px;font-weight:800;line-height:1.5}.life-dialog label{display:block;font-size:13px;color:#cfdbdf;margin:16px 0 6px}.life-dialog .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.life-dialog .form-error{color:#ffb8bd;line-height:1.7;font-size:13px;margin-top:14px}.dialog-head{display:flex;justify-content:space-between;gap:12px;align-items:start}.dialog-buttons{display:flex;gap:10px;margin-top:22px}.dialog-buttons button{flex:1}.tools-layout{display:grid;gap:18px}.page:focus{outline:none}.tools-anchor{scroll-margin-top:100px}.tools-anchor:focus{outline:2px solid #e8d2a3;outline-offset:3px}.member-feature{border-bottom:1px solid #34444b;padding-bottom:16px;margin-bottom:16px}#membershipPage .glass:first-of-type{background:linear-gradient(130deg,#14251f,#10181d);border-color:#4c6358}#membershipPage table th,#membershipPage table td{padding:12px 8px;border-bottom:1px solid #33443c;font-size:13px}#membershipPage table th:nth-child(3),#membershipPage table td:nth-child(3){color:#e8d2a3;background:#e8d2a306}#adminRows .glass{border-radius:14px}.error-state{padding:14px;border:1px solid #845254;background:#ffadad05;border-radius:12px;font-size:13px;color:#edc4c7}.skip-link{position:fixed;top:8px;left:8px;padding:12px;background:#e8d2a3;color:#080c0f;z-index:300;transform:translateY(-150%);border-radius:10px}.skip-link:focus{transform:translateY(0)}
+    @media(min-width:800px){main{padding-inline:28px!important}.desk-grid{grid-template-columns:minmax(0,1.55fr) minmax(300px,1fr)}.desk-title{font-size:38px}.desk-panel{padding:24px}.tools-layout{grid-template-columns:1fr 1fr}.tools-layout .report-panel{grid-column:1/-1}.report-panel .report-body{display:grid;grid-template-columns:1fr 1fr;gap:36px}}
+    @media(max-width:380px){.brand-mark{display:none}.brand-name{font-size:12px}.brand-sub{font-size:9px;letter-spacing:.1em}.pill{font-size:10px;padding:6px 7px}.desk-panel{padding:16px}.command-actions{grid-template-columns:1fr}.desk-metrics{gap:8px}.metric-cell:not(:first-child){padding-left:8px}.metric-value{font-size:25px}.utility-link{padding:12px 8px;gap:7px}.utility-link small{font-size:11px}.life-dialog{padding:18px}.life-dialog .form-grid{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}.btn:active{transform:none}}
+
+</style>
+</head>
+<body>
+<a class="skip-link" href="#homePage">ข้ามไปพื้นที่ทำงาน</a>
+<div class="shell">
+  <header class="sticky">
+    <div class="px-4 pt-[max(12px,env(safe-area-inset-top))] pb-3 flex items-center justify-between gap-3">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">C.</div><div><div class="brand-name">CHAYLUEKLAB</div><div class="brand-sub">PERSONAL LIFE OS</div></div></div>
+      <div class="flex items-center gap-2">
+        <span id="lineBadge" class="pill"><span class="dot"></span><span>รอ LINE</span></span>
+        <span id="cloudBadge" class="pill"><span class="dot"></span><span>รอ CLOUD</span></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="px-4 py-4 space-y-5">
+    <section id="homePage" class="page active" aria-labelledby="dashboardHeading" tabindex="-1">
+      <div class="desk-intro"><div><p class="eyebrow">YOUR DAILY COMMAND DESK</p><h1 id="dashboardHeading" class="desk-title">วันนี้ จัดการได้</h1><p class="desk-sub"><span id="dashboardDate"></span> · สวัสดี <span id="helloName">ผู้ใช้ LINE</span></p></div><button id="dashboardRefresh" class="iconbtn" onclick="refreshDesk()" aria-label="โหลดข้อมูลแดชบอร์ดอีกครั้ง"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L3 9M3 4v5h5M4 13a8 8 0 0 0 14 5l3-3M21 20v-5h-5"/></svg></button></div>
+      <div class="desk-grid">
+        <div class="desk-main">
+          <section class="desk-panel command-panel" aria-labelledby="commandHeading"><div class="command-top"><div><div class="statusline"><span class="dot" aria-hidden="true"></span><span id="systemText">กำลังเชื่อมต่อ LINE</span></div><h2 id="commandHeading" class="command-heading">พื้นที่ส่วนตัวของคุณ</h2><p class="desk-caption mt-1">งานสำคัญอยู่ตรงนี้ ถึงเวลาเตือนใน LINE</p></div><button id="deskPlan" class="plan-chip" onclick="switchPage('membershipPage');loadMembership()">ตรวจสิทธิ์</button></div>
+            <div class="command-actions"><button class="btn btn-gold" onclick="openTaskModal()">＋ เพิ่มงานและเตือน</button><button class="btn btn-ghost" onclick="openFinanceModal()">＋ บันทึกเงิน</button></div>
+            <div class="desk-metrics"><div class="metric-cell"><p class="metric-label">งานวันนี้</p><p id="todayCount" class="metric-value">—</p></div><div class="metric-cell"><p class="metric-label">งานที่ยังค้าง</p><p id="pendingCount" class="metric-value">—</p></div><div class="metric-cell"><p class="metric-label">เลยกำหนด</p><p id="overdueCount" class="metric-value warning">—</p></div></div>
+          </section>
+          <section class="desk-panel" aria-labelledby="todayWorkHeading"><div class="panel-head"><div><h2 id="todayWorkHeading" class="panel-title">งานถัดไป</h2><p class="desk-caption">เรียงตามวันและเวลาที่บันทึก</p></div><button class="text-action" onclick="switchPage('tasksPage')">ดูงานทั้งหมด <svg class="inline-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div><div id="homeTasks" class="space-y-2"><p class="quiet-state">กำลังโหลดงานของคุณ…</p></div></section>
+          <section class="desk-panel" aria-labelledby="recurringPreviewHeading"><div class="panel-head"><div><p class="eyebrow">SET ONCE · REPEAT</p><h2 id="recurringPreviewHeading" class="panel-title mt-1">เรื่องเดิม ให้เตือนเอง</h2><p class="desk-caption">เตือนทุกวัน ทุกสัปดาห์ หรือทุกเดือน</p></div><button class="text-action" onclick="openLifeTools('recurring')">จัดการ <svg class="inline-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div><div id="recurringPreview"><p class="quiet-state">กำลังโหลดรายการประจำ…</p></div><button class="btn btn-ghost w-full mt-4" onclick="openLifeDialog('recurring')">＋ ตั้งเตือนประจำ</button></section>
+        </div>
+        <div class="desk-side">
+          <section class="desk-panel" aria-labelledby="weeklyPreviewHeading"><div class="panel-head"><div><p class="eyebrow">WEEKLY INSIGHT</p><h2 id="weeklyPreviewHeading" class="panel-title mt-1">สัปดาห์นี้ของคุณ</h2></div><button class="text-action" onclick="openLifeTools('report')">ดูรายงาน <svg class="inline-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div><div id="weeklyPreview"><p class="quiet-state">กำลังคำนวณจากรายการจริง…</p></div></section>
+          <section class="desk-panel" aria-labelledby="debtPreviewHeading"><div class="panel-head"><div><h2 id="debtPreviewHeading" class="panel-title">เงินที่ต้องติดตาม</h2><p class="desk-caption">ค้างรับและค้างจ่าย แยกจากบัญชีเงิน</p></div><button class="text-action" onclick="openLifeTools('debts')">ดูทั้งหมด <svg class="inline-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div><div id="debtPreview"><p class="quiet-state">กำลังโหลดเงินค้าง…</p></div><button class="btn btn-ghost w-full mt-4" onclick="openLifeDialog('debt')">＋ บันทึกเงินค้าง</button></section>
+          <section class="utility-links" aria-label="เครื่องมือส่วนตัว"><button class="utility-link" onclick="switchPage('vaultPage');loadVault()"><span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 5V3h8v2M8 10h8M8 15h5"/></svg></span><span>คลังส่วนตัว<small>ไฟล์ รูป และโน้ต</small></span></button><button class="utility-link" onclick="switchPage('calendarPage')"><span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4M16 3v4M4 10h16M8 14h2M14 14h2"/></svg></span><span>ปฏิทินของฉัน<small>ดูวันและนัดหมาย</small></span></button><button class="utility-link" onclick="openLifeTools('report')"><span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M7 16v-5M12 16V4M17 16v-8"/></svg></span><span>รายงานสัปดาห์<small>งานและกระแสเงิน</small></span></button><button id="ownerDeskLink" class="utility-link hidden" onclick="switchPage('adminPage');loadAdmin()"><span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14M5 17h14M16 4l3 3-3 3M8 14l-3 3 3 3"/></svg></span><span>ศูนย์เจ้าของ<small>สมาชิก สิทธิ์ ข้อมูล</small></span></button><button id="upgradeDeskLink" class="utility-link" onclick="switchPage('membershipPage');loadMembership()"><span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span>สิทธิ์ของฉัน<small>ทดลองฟรี · Plus 59 บาท</small></span></button></section>
+          <p id="deskSyncStatus" class="inline-state" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="lifeToolsPage" class="page space-y-5" aria-labelledby="lifeToolsHeading">
+      <button class="btn btn-ghost" onclick="switchPage('homePage')">← กลับพื้นที่ทำงาน</button>
+      <div class="desk-intro"><div class="tools-intro"><p class="eyebrow">PERSONAL SYSTEMS</p><h1 id="lifeToolsHeading" class="desk-title">ตั้งระบบให้ชีวิต</h1><p class="desk-sub">เตือนเรื่องประจำ ติดตามเงินค้าง และดูภาพรวมสัปดาห์ จากข้อมูลส่วนตัวของคุณ</p></div><button class="iconbtn" onclick="loadLifeTools()" aria-label="โหลดเครื่องมืออีกครั้ง"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L3 9M3 4v5h5M4 13a8 8 0 0 0 14 5l3-3M21 20v-5h-5"/></svg></button></div>
+      <p id="lifeToolsStatus" class="inline-state" role="status" aria-live="polite"></p>
+      <div class="tools-layout">
+        <section id="debtPanel" class="desk-panel tools-anchor" aria-labelledby="debtHeading"><div class="panel-head"><div><p class="eyebrow">MONEY TO FOLLOW UP</p><h2 id="debtHeading" class="panel-title mt-1">เงินค้างรับ–ค้างจ่าย</h2></div><button class="btn btn-gold" onclick="openLifeDialog('debt')">＋ เพิ่ม</button></div><p class="desk-caption mb-4">ติดตามยอดที่ตกลงกัน การปิดยอดไม่ได้บันทึกรายรับ–รายจ่ายให้อัตโนมัติ</p><div id="debtList"></div><p class="desk-caption mt-4">แสดงรายการที่ยังไม่ปิดยอด สูงสุด 100 รายการ ยอดรวมคำนวณจากทุกรายการ</p></section>
+        <section id="recurringPanel" class="desk-panel tools-anchor" aria-labelledby="recurringHeading"><div class="panel-head"><div><p class="eyebrow">AUTOMATE YOUR ROUTINE</p><h2 id="recurringHeading" class="panel-title mt-1">แจ้งเตือนประจำ</h2></div><button class="btn btn-gold" onclick="openLifeDialog('recurring')">＋ เพิ่ม</button></div><p class="desk-caption mb-4">เลือกเวลาไทย (UTC+7) หยุดพักและเปิดต่อได้ตามต้องการ</p><div id="recurringList"></div></section>
+        <section id="reportPanel" class="desk-panel report-panel tools-anchor" aria-labelledby="reportHeading"><div class="panel-head"><div><p class="eyebrow">WEEK TO DATE</p><h2 id="reportHeading" class="panel-title mt-1">รายงานสัปดาห์นี้</h2><p class="desk-caption">คำนวณจากรายการของคุณ ตั้งแต่วันจันทร์ถึงตอนนี้</p></div><button class="text-action" onclick="switchPage('financePage')">ดูรายการเงิน <svg class="inline-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div><div id="weeklyReport"></div></section>
+      </div>
+    </section>
+
+    <section id="calendarPage" class="page space-y-5">
+      <div class="flex items-center justify-between">
+        <div><div class="section-title">ปฏิทิน</div><div class="text-[10px] muted">งานส่วนตัวที่ซิงก์กับบัญชี LINE</div></div>
+        <button class="btn btn-green !py-2 !px-3 text-xs" onclick="openTaskModal(selectedYmd())">＋ งาน</button>
+      </div>
+      <div class="glass card p-4">
+        <div class="flex items-center justify-between mb-4">
+          <button class="btn btn-ghost !p-2" onclick="moveMonth(-1)">‹</button>
+          <div id="monthTitle" class="font-black"></div>
+          <button class="btn btn-ghost !p-2" onclick="moveMonth(1)">›</button>
+        </div>
+        <div class="month text-[10px] muted mb-2">
+          <div class="text-center">อา</div><div class="text-center">จ</div><div class="text-center">อ</div><div class="text-center">พ</div><div class="text-center">พฤ</div><div class="text-center">ศ</div><div class="text-center">ส</div>
+        </div>
+        <div id="calendarGrid" class="month"></div>
+      </div>
+      <button class="btn btn-ghost w-full" onclick="openLifeTools('recurring')">จัดการแจ้งเตือนประจำ <svg class="inline-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></button>
+      <div class="glass card p-4">
+        <div id="selectedDateTitle" class="font-black mb-3"></div>
+        <div id="selectedTasks" class="space-y-2"></div>
+      </div>
+    </section>
+
+    <section id="tasksPage" class="page space-y-5">
+      <div class="flex items-center justify-between">
+        <div><div class="section-title">งาน & นัดหมาย</div><div class="text-[10px] muted">เพิ่มงานแล้วซิงก์ Cloud อัตโนมัติ</div></div>
+        <button class="btn btn-green !py-2 !px-3 text-xs" onclick="openTaskModal()">＋ เพิ่ม</button>
+      </div>
+      <div class="glass card p-4">
+        <div class="flex justify-between">
+          <div><div class="text-[10px] muted">ทั้งหมด</div><div id="allCount" class="text-2xl font-black">0</div></div>
+          <div><div class="text-[10px] muted">Cloud Sync</div><div id="cloudCount" class="text-2xl font-black soft">0</div></div>
+          <div><div class="text-[10px] muted">เสร็จ</div><div id="doneCount" class="text-2xl font-black gold">0</div></div>
+        </div>
+      </div>
+      <div id="allTasks" class="space-y-2"></div>
+    </section>
+
+    <section id="financePage" class="page space-y-5">
+      <div class="flex items-center justify-between">
+        <div><div class="section-title">การเงิน</div><div class="text-[10px] muted">บันทึกส่วนตัวใน Cloud</div></div>
+        <button class="btn btn-green !py-2 !px-3 text-xs" onclick="openFinanceModal()">＋ เพิ่ม</button>
+      </div>
+      <div class="glass card p-5">
+        <div class="text-[10px] muted">คงเหลือ</div>
+        <div id="balance" class="text-3xl font-black mt-1">฿0</div>
+        <div class="grid grid-cols-2 gap-3 mt-4">
+          <div class="p-3 rounded-2xl bg-white/[.03]"><div class="text-[10px] muted">รายรับ</div><div id="income" class="soft font-black mt-1">฿0</div></div>
+          <div class="p-3 rounded-2xl bg-white/[.03]"><div class="text-[10px] muted">รายจ่าย</div><div id="expense" class="text-red-400 font-black mt-1">฿0</div></div>
+        </div>
+      </div>
+      <button class="btn btn-ghost w-full" onclick="openLifeTools('debts')">ติดตามเงินค้างรับ–ค้างจ่าย <svg class="inline-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></button>
+      <div class="glass card p-4"><div class="section-title mb-3">รายการ</div><div id="financeList" class="space-y-2"></div></div>
+    </section>
+
+    <section id="vaultPage" class="page space-y-5" aria-labelledby="vaultHeading">
+      <button class="btn btn-ghost" onclick="switchPage('homePage')">← กลับหน้าหลัก</button>
+      <div><h1 id="vaultHeading" class="section-title">คลังส่วนตัว</h1><p class="muted text-sm mt-2">ใช้บัญชี LINE เดียวกับงานและสมาชิกของคุณ</p></div>
+      <div class="glass card p-5">
+        <h2 class="font-black">ไฟล์</h2>
+        <label for="vaultFile" class="block mt-3 text-sm">เลือกไฟล์: ฟรีไฟล์ละ 1 MB / Plus ไฟล์ละ 10 MB</label>
+        <input id="vaultFile" type="file" class="w-full mt-3" style="font-size:16px" onchange="uploadVaultFile(this.files[0])">
+        <p id="vaultMessage" class="muted text-sm mt-3" role="status" aria-live="polite"></p>
+        <div id="vaultFiles" class="space-y-3 mt-4"></div>
+      </div>
+      <div class="glass card p-5">
+        <h2 class="font-black">โน้ต</h2>
+        <label for="vaultNote" class="block mt-3 text-sm">ข้อความที่ต้องการจด</label>
+        <textarea id="vaultNote" class="input mt-2" rows="3" style="font-size:16px;width:100%"></textarea>
+        <button id="saveVaultNote" class="btn btn-green w-full mt-3" onclick="saveVaultNote()">บันทึกโน้ต</button>
+        <div id="vaultNotes" class="space-y-3 mt-4"></div>
+      </div>
+      <button class="btn btn-ghost w-full" onclick="loadVault()">โหลดคลังอีกครั้ง</button>
+    </section>
+
+    <section id="adminPage" class="page space-y-5" aria-labelledby="adminHeading">
+      <button class="btn btn-ghost" onclick="switchPage('homePage')">← กลับหน้าหลัก</button>
+      <div><h1 id="adminHeading" class="section-title">ศูนย์จัดการเจ้าของ</h1><p class="muted text-sm mt-2">ดูข้อมูลทั้งหมดและควบคุมสิทธิ์สมาชิก</p></div>
+      <div class="glass card p-5">
+        <label for="adminResource" class="block text-sm">ข้อมูลที่ต้องการจัดการ</label>
+        <select id="adminResource" class="input mt-2" style="width:100%;font-size:16px" onchange="adminOffset=0;loadAdmin()">
+          <option value="members">สมาชิกและสิทธิ์ใช้งาน</option><option value="reminders">แจ้งเตือน</option><option value="recurring">รายการเตือนประจำ</option><option value="debts">เงินค้างรับ–ค้างจ่าย</option><option value="tasks">งาน</option><option value="finances">รายรับ–รายจ่าย</option><option value="files">ไฟล์</option><option value="notes">โน้ต</option><option value="issues">เรื่องแจ้งปัญหา</option><option value="subscriptions">การสมัครและต่ออายุ</option><option value="audit">ประวัติการจัดการ</option>
+        </select>
+        <label for="adminUser" class="block text-sm mt-4">บัญชีผู้ใช้</label>
+        <select id="adminUser" class="input mt-2" style="width:100%;font-size:16px" onchange="adminOffset=0;loadAdmin()"><option value="">ทุกบัญชี</option></select>
+        <p id="adminMessage" class="muted text-sm mt-4" role="status" aria-live="polite">หน้านี้สำหรับบัญชีเจ้าของที่ยืนยันแล้ว</p>
+      </div>
+      <div id="adminRows" class="space-y-3"></div>
+      <div class="flex gap-3"><button id="adminPrev" class="btn btn-ghost flex-1" onclick="adminOffset=Math.max(0,adminOffset-50);loadAdmin()">ก่อนหน้า</button><button id="adminNext" class="btn btn-ghost flex-1" onclick="adminOffset+=50;loadAdmin()">ถัดไป</button></div>
+      <p class="muted text-sm">การระงับสิทธิ์ไม่ยกเลิกการเรียกเก็บเงิน หากต้องการหยุดค่าเช่ารอบถัดไป ให้ยกเลิกต่ออายุในหมวดการสมัครด้วย</p>
+    </section>
+    <section id="membershipPage" class="page space-y-5" aria-labelledby="membershipHeading">
+      <button class="btn btn-ghost" onclick="switchPage('homePage')">← กลับหน้าหลัก</button>
+      <div class="glass card p-6">
+        <p class="gold text-xs font-bold tracking-widest">CHAYLUEKLAB MEMBER</p>
+        <h1 id="membershipHeading" class="text-2xl font-black mt-3">ผู้ช่วยใน LINE ของคุณ</h1>
+        <p class="muted mt-2">ทดลองใช้ฟรี 7 วัน ไม่ต้องผูกบัตร • ใช้แพ็กเกจฟรีต่อได้หลังทดลอง หรืออัปเกรด Plus เพื่อรับโควตาและเครื่องมือเพิ่ม</p>
+        <p class="mt-6"><strong class="text-5xl font-black">59</strong> <span class="muted">บาท / เดือน</span></p>
+        <div class="mt-5 overflow-x-auto"><table class="w-full text-sm"><caption class="text-left font-bold mb-3">โควตาต่อบัญชีต่อเดือน</caption><thead><tr><th class="text-left py-2">รายการ</th><th>ฟรี</th><th>Plus 59 บาท</th></tr></thead><tbody><tr><td class="py-2">สร้างงาน</td><td class="text-center">10</td><td class="text-center">200</td></tr><tr><td class="py-2">ตั้งเตือน</td><td class="text-center">3</td><td class="text-center">30</td></tr><tr><td class="py-2">บันทึกเงิน</td><td class="text-center">30</td><td class="text-center">500</td></tr><tr><td class="py-2">โน้ต</td><td class="text-center">10</td><td class="text-center">200</td></tr><tr><td class="py-2">อัปโหลดรวม</td><td class="text-center">5 MB</td><td class="text-center">100 MB</td></tr><tr><td class="py-2">ต่อไฟล์</td><td class="text-center">1 MB</td><td class="text-center">10 MB</td></tr></tbody></table></div><p class="muted text-sm mt-3">Plus เพิ่มแจ้งเตือนประจำ ติดตามเงินค้าง รายงานสัปดาห์ ค้นหาข้อมูล สรุปรายเดือน งบ นัดหมายล่วงหน้า และเลื่อนเตือน โควตานับจากการสร้างรายการและรีเซ็ตวันที่ 1 ตามเวลาประเทศไทย ลบรายการไม่คืนโควตา ทดลอง Plus ฟรี 7 วัน</p><p id="memberUsage" class="muted text-sm mt-3"></p>
+        <ul class="mt-5 space-y-2 text-sm">
+          <li>✓ งานและปฏิทินส่วนตัว ผูกกับบัญชี LINE</li>
+          <li>✓ แจ้งเตือนผ่าน OA แม้ปิดหน้าเว็บ</li>
+          <li>✓ บันทึกรายรับ–รายจ่าย ไฟล์ และโน้ต</li>
+          <li>✓ ข้อมูลส่วนตัวแยกจากผู้ใช้คนอื่น</li>
+        </ul>
+        <p class="muted text-sm mt-5">ทดลองใช้ฟรี 7 วันครั้งเดียวต่อบัญชี เริ่มเมื่อเข้าใช้งาน ไม่ตัดเงินเมื่อหมดทดลอง หากต้องการใช้เครื่องมือ Plus ต่อ สมัคร 59 บาท/เดือนและยินยอมให้ตัดผ่านบัตร ยกเลิกได้ผ่านหน้าจัดการสมาชิก</p>
+      </div>
+      <div class="glass card p-5">
+        <h2 class="font-black">สมาชิกของฉัน</h2>
+        <p id="memberState" class="mt-2" role="status" aria-live="polite">กำลังตรวจสอบบัญชี LINE…</p>
+        <p id="memberPeriod" class="muted text-sm mt-2"></p>
+        <p id="billingNotice" class="muted text-sm mt-3">ยังไม่เปิดรับชำระเงินจนกว่าระบบจะพร้อม</p>
+        <label id="membershipConsent" class="flex gap-3 items-start mt-5 text-sm">
+          <input id="recurringConsent" type="checkbox" class="mt-1" style="width:20px;height:20px;flex:none">
+          <span>ฉันต้องการสมัคร 59 บาท/เดือน และยินยอมให้ต่ออายุและตัดเงินอัตโนมัติจนกว่าจะยกเลิก</span>
+        </label>
+        <button id="subscribeBtn" class="btn btn-green w-full mt-4" onclick="startBilling('checkout')" disabled>สมัคร 59 บาท/เดือน</button>
+        <button id="manageMemberBtn" class="btn btn-ghost w-full mt-3 hidden" onclick="startBilling('portal')">จัดการบัตรและการต่ออายุ</button>
+        <button class="btn btn-ghost w-full mt-3" onclick="loadMembership()">ตรวจสอบสถานะอีกครั้ง</button>
+        <p id="membershipError" class="text-red-300 text-sm mt-3" role="alert"></p>
+      </div>
+      <details class="glass card p-5">
+        <summary class="font-bold cursor-pointer">เงื่อนไขสมาชิกและข้อมูลส่วนตัว</summary>
+        <div class="text-sm muted space-y-3 mt-4">
+          <p>ค่าบริการ 59 บาทต่อเดือน คิดตามรอบการสมัครผ่าน Stripe ไม่มีการสมัครจากการกดริชเมนูเพียงอย่างเดียว</p>
+          <p>เมื่อชำระสำเร็จ ระบบจะเปิดสิทธิ์ Plus เมื่อหมดรอบบริการหรือหมดทดลอง จะใช้แพ็กเกจฟรีตามโควตาได้ และยังดูหรือลบข้อมูลเดิมได้ เครื่องมือ Plus ต้องมีสิทธิ์ที่ใช้งานได้</p>
+          <p>ระบบเก็บรหัสผู้ใช้ LINE งาน การเงิน โน้ต และไฟล์ที่คุณบันทึก เพื่อให้บริการ ส่วนข้อมูลบัตรชำระเงินจัดการโดย Stripe ระบบนี้ไม่เก็บเลขบัตรเต็ม ผู้ดูแลระบบเข้าถึงข้อมูลที่บันทึกเพื่อจัดการบริการและช่วยเหลือผู้ใช้ได้</p>
+          <p>รายการที่ส่งในกลุ่มเป็นข้อมูลของกลุ่มนั้น สมาชิกในกลุ่มเห็นได้ หากต้องการเก็บส่วนตัว ให้ใช้แชตส่วนตัวของ OA</p>
+          <p>หากพบปัญหา ให้พิมพ์ “แจ้งปัญหา” พร้อมรายละเอียดในแชต OA</p>
+        </div>
+      </details>
+      <div id="memberAdmin" class="glass card p-5 hidden">
+        <h2 class="font-black">ภาพรวมสมาชิกสำหรับผู้ดูแล</h2>
+        <button class="btn btn-green w-full mt-3" onclick="switchPage('adminPage');loadAdmin()">เปิดศูนย์จัดการทั้งหมด</button>
+        <button class="btn btn-ghost w-full mt-3" onclick="loadMemberAdmin()">ดูสถานะสมาชิก</button>
+        <p id="memberAdminSummary" class="muted text-sm mt-3" role="status"></p>
+      </div>
+    </section>
+
+    <section id="settingsPage" class="page space-y-5">
+      <button class="btn btn-green w-full" onclick="switchPage('membershipPage');loadMembership()">สมาชิก 59 บาท/เดือน</button>
+      <button class="btn btn-ghost w-full" onclick="openLifeTools()">แจ้งเตือนประจำ · เงินค้าง · รายงาน</button>
+      <button class="btn btn-ghost w-full" onclick="switchPage('vaultPage');loadVault()">ไฟล์และโน้ตส่วนตัว</button>
+      <div><div class="section-title">ตั้งค่าระบบ</div><div class="text-[10px] muted">พร้อมให้คนอื่นใช้</div></div>
+
+      <div class="glass card p-4">
+        <div class="flex items-center gap-3">
+          <img id="profilePic" class="w-14 h-14 rounded-2xl object-cover hidden" alt="">
+          <div id="profileFallback" class="w-14 h-14 rounded-2xl bg-emerald-950 flex items-center justify-center gold font-black">CL</div>
+          <div class="min-w-0">
+            <div id="profileName" class="font-black truncate">ผู้ใช้ LINE</div>
+            <div id="profileState" class="text-[10px] muted mt-1">กำลังตรวจสอบ LIFF</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass card p-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-black">Supabase Cloud Sync</div>
+            <div class="text-[10px] muted mt-1">LINE Reminder 24 ชม. แม้ปิดเว็บ</div>
+          </div>
+          <span id="settingsCloudState" class="tag">รอตรวจสอบ</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3 mt-4">
+          <div class="p-3 rounded-2xl bg-white/[.03]"><div class="text-[10px] muted">LIFF ID</div><div class="font-black text-xs mt-1">2011681452-k1lfYGsF</div></div>
+          <div class="p-3 rounded-2xl bg-white/[.03]"><div class="text-[10px] muted">Backend</div><div class="font-black text-xs mt-1 soft">Supabase</div></div>
+        </div>
+        <button class="btn btn-green w-full mt-4" onclick="testCloudLine()">ทดสอบ Cloud + LINE</button>
+      </div>
+
+      <div class="glass card p-4">
+        <div class="font-black">คำสั่งในกลุ่ม LINE</div>
+        <div class="text-xs muted mt-3 leading-7">
+          <div>• <b class="text-white">นอนวันนี้ 22.30น.</b></div>
+          <div>• <b class="text-white">เตือนอีก 10 นาที พักสายตา</b></div>
+          <div>• <b class="text-white">/เมนู</b></div>
+          <div>• <b class="text-white">/งาน</b></div>
+          <div>• <b class="text-white">ไฟล์</b></div>
+        </div>
+      </div>
+
+      <div class="glass card p-4">
+        <div class="font-black mb-2">ระบบความปลอดภัย</div>
+        <div class="text-xs muted leading-relaxed">ไฟล์นี้ไม่มี LINE Channel Access Token และไม่มี Channel Secret ทุก Secret อยู่ฝั่ง Supabase เท่านั้น</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav class="bottom" aria-label="หน้าหลักของแอป">
+  <div class="max-w-[980px] mx-auto grid grid-cols-5">
+    <button class="navbtn active py-1 text-xs font-bold" data-page="homePage" onclick="switchPage('homePage')">⌂<div class="text-[10px] mt-1">หน้าแรก</div></button>
+    <button class="navbtn py-1 text-xs font-bold" data-page="calendarPage" onclick="switchPage('calendarPage')">▦<div class="text-[10px] mt-1">ปฏิทิน</div></button>
+    <button class="navbtn py-1 text-xs font-bold" data-page="tasksPage" onclick="switchPage('tasksPage')">✓<div class="text-[10px] mt-1">งาน</div></button>
+    <button class="navbtn py-1 text-xs font-bold" data-page="financePage" onclick="switchPage('financePage')">฿<div class="text-[10px] mt-1">การเงิน</div></button>
+    <button class="navbtn py-1 text-xs font-bold" data-page="settingsPage" onclick="switchPage('settingsPage')">⚙<div class="text-[10px] mt-1">ตั้งค่า</div></button>
+  </div>
+</nav>
+
+<div id="taskModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="taskModalHeading" onclick="backdropClose(event,'taskModal')">
+  <div class="sheet">
+    <div class="flex items-center justify-between">
+      <div><h2 id="taskModalHeading" class="section-title">เพิ่มงาน</h2><div class="text-[10px] muted">ถึงเวลา ส่งแจ้งเตือนเข้า LINE ของคุณ</div></div>
+      <button class="btn btn-ghost !p-2" aria-label="ปิดเพิ่มงาน" onclick="closeModal('taskModal')">×</button>
+    </div>
+    <div class="space-y-3 mt-5">
+      <div><label for="taskTitle" class="text-sm muted mb-1 block">ชื่องาน</label><input id="taskTitle" placeholder="เช่น โทรหาลูกค้า"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label for="taskDate" class="text-sm muted mb-1 block">วันที่</label><input id="taskDate" type="date"></div>
+        <div><label for="taskTime" class="text-sm muted mb-1 block">เวลา</label><input id="taskTime" type="time"></div>
+      </div>
+      <div><label for="taskNote" class="text-sm muted mb-1 block">หมายเหตุ</label><textarea id="taskNote" rows="3" placeholder="รายละเอียดเพิ่มเติม"></textarea></div>
+      <button id="saveTaskBtn" class="btn btn-green w-full" onclick="saveTask()">บันทึกและตั้ง LINE Reminder</button>
+    </div>
+  </div>
+</div>
+
+<div id="financeModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="financeModalHeading" onclick="backdropClose(event,'financeModal')">
+  <div class="sheet">
+    <div class="flex items-center justify-between">
+      <div><h2 id="financeModalHeading" class="section-title">เพิ่มรายการเงิน</h2><div class="text-[10px] muted">บันทึกส่วนตัวใน Cloud</div></div>
+      <button class="btn btn-ghost !p-2" aria-label="ปิดเพิ่มรายการเงิน" onclick="closeModal('financeModal')">×</button>
+    </div>
+    <div class="space-y-3 mt-5">
+      <label for="financeType" class="muted text-sm block">ประเภท</label><select id="financeType"><option value="income">รายรับ</option><option value="expense">รายจ่าย</option></select>
+      <label for="financeTitle" class="muted text-sm block">ชื่อรายการ</label><input id="financeTitle" placeholder="เช่น ค่าเดินทาง">
+      <label for="financeAmount" class="muted text-sm block">จำนวนเงิน (บาท)</label><input id="financeAmount" type="number" step="0.01" min="0.01" inputmode="decimal" placeholder="0.00">
+      <label for="financeDate" class="muted text-sm block">วันที่</label><input id="financeDate" type="date">
+      <button class="btn btn-green w-full" onclick="saveFinance()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<dialog id="adminEditDialog" aria-labelledby="adminEditHeading" style="background:#101a14;color:#fff;border:1px solid #385441;border-radius:20px;padding:24px;max-width:560px;width:calc(100% - 32px)">
+  <form id="adminEditForm" onsubmit="submitAdminEdit(event)">
+    <h2 id="adminEditHeading" class="text-xl font-black">แก้ไขรายการ</h2><div id="adminEditFields" class="space-y-3 mt-4"></div>
+    <p id="adminEditError" class="text-red-300 mt-3" role="alert"></p>
+    <div class="flex gap-3 mt-5"><button type="button" class="btn btn-ghost flex-1" onclick="document.getElementById('adminEditDialog').close()">ยกเลิก</button><button id="adminEditSave" type="submit" class="btn btn-green flex-1">บันทึก</button></div>
+  </form>
+</dialog>
+
+<dialog id="lifeDialog" class="life-dialog" aria-labelledby="lifeDialogHeading"><form id="lifeForm" onsubmit="submitLifeForm(event)"><div class="dialog-head"><div><p id="lifeDialogEyebrow" class="eyebrow"></p><h2 id="lifeDialogHeading" class="mt-2"></h2></div><button type="button" class="iconbtn" onclick="document.getElementById('lifeDialog').close()" aria-label="ปิดหน้าต่าง">×</button></div><div id="lifeDialogFields"></div><p id="lifeDialogError" class="form-error" role="alert"></p><div class="dialog-buttons"><button type="button" class="btn btn-ghost" onclick="document.getElementById('lifeDialog').close()">ยกเลิก</button><button id="lifeDialogSave" type="submit" class="btn btn-gold">บันทึก</button></div></form></dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"><div id="toastText" class="font-bold text-sm"></div></div>
+
+<script>
+const LIFF_ID='2011681452-k1lfYGsF';
+const API='https://bxaplhrunxiadjsdobyl.supabase.co/functions/v1';
+const TASK_KEY='chaylueklab_cloud_tasks_v1';
+const MONEY_KEY='chaylueklab_finance_v1';
+
+let profile=null,liffReady=false,memberInfo=null,billingBusy=false;
+let tasks=[],moneyRows=[],accountKey='',syncVersion=0,refreshing=null;
+let cursor=new Date(),selected=new Date();
+
+function load(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}}
+function persist(){if(!accountKey)return;localStorage.setItem(TASK_KEY+accountKey,JSON.stringify(tasks));localStorage.setItem(MONEY_KEY+accountKey,JSON.stringify(moneyRows))}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function pad(n){return String(n).padStart(2,'0')}
+function ymd(d=new Date()){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function money(v){return '฿'+Number(v||0).toLocaleString('th-TH',{maximumFractionDigits:2})}
+function thDate(d){return new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'long',year:'numeric'}).format(d)}
+function thMonth(d){return new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric'}).format(d)}
+
+function toast(msg){const t=document.getElementById('toast'),x=document.getElementById('toastText');x.textContent=msg;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),2600)}
+function openModal(id){const el=document.getElementById(id);el.__returnFocus=document.activeElement;el.classList.add('show');document.querySelector('.shell').inert=true;document.querySelector('nav.bottom').inert=true;el.querySelector('input,select,textarea')?.focus()}
+function closeModal(id){const el=document.getElementById(id);el.classList.remove('show');document.querySelector('.shell').inert=false;document.querySelector('nav.bottom').inert=false;el.__returnFocus?.focus()}
+function backdropClose(e,id){if(e.target.id===id)closeModal(id)}
+function switchPage(id){const page=document.getElementById(id);if(!page)return;document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));page.classList.add('active');page.setAttribute('tabindex','-1');page.focus({preventScroll:true});document.querySelectorAll('.navbtn').forEach(x=>{x.classList.toggle('active',x.dataset.page===id);if(x.dataset.page===id)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});renderAll();window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});document.title=(page.querySelector('h1,h2,.section-title')?.textContent||'พื้นที่ทำงาน')+' · CHAYLUEKLAB';if(profile&&id==='homePage'&&!deskLoading)loadLifeTools()}
+
+async function initLiff(){
+  try{
+    await liff.init({liffId:LIFF_ID});liffReady=true;
+    if(!liff.isLoggedIn()){
+      document.getElementById('lineBadge').innerHTML='<span class="dot" style="background:#f59e0b"></span><span>LOGIN</span>';
+      document.getElementById('profileState').textContent='ยังไม่ได้เข้าสู่ระบบ LINE';
+      liff.login({redirectUri:location.href});return;
+    }
+    profile=await liff.getProfile();
+    accountKey=':'+profile.userId;
+    tasks=load(TASK_KEY+accountKey,[]);moneyRows=load(MONEY_KEY+accountKey,[]);
+    const legacyOwner=localStorage.getItem('chaylueklab_legacy_owner');
+    if(!legacyOwner){
+      tasks=[...tasks,...load(TASK_KEY,[])];moneyRows=[...moneyRows,...load(MONEY_KEY,[])];
+      localStorage.setItem('chaylueklab_legacy_owner',profile.userId);persist();
+    }
+    document.getElementById('lineBadge').innerHTML='<span class="dot"></span><span>LINE</span>';
+    renderAll();
+    document.getElementById('helloName').textContent=profile.displayName||'ผู้ใช้ LINE';
+    document.getElementById('profileName').textContent=profile.displayName||'ผู้ใช้ LINE';
+    document.getElementById('profileState').textContent='LINE เชื่อมแล้ว • กำลังซิงก์ Cloud';
+    if(profile.pictureUrl){
+      const img=document.getElementById('profilePic');img.src=profile.pictureUrl;img.classList.remove('hidden');document.getElementById('profileFallback').classList.add('hidden');
+    }
+    await syncCloud();
+    await loadMembership();
+    await loadLifeTools();
+  }catch(e){
+    console.error(e);
+    document.getElementById('systemText').textContent='LIFF เชื่อมต่อไม่สำเร็จ';
+    document.getElementById('lineBadge').innerHTML='<span class="dot" style="background:#ef4444"></span><span>ERROR</span>';
+  }
+}
+
+let vaultFiles=[],vaultNotes=[],vaultBusy=false,adminRows=[],adminMembers=[],adminOffset=0,adminEditIndex=null,adminBusy=false,adminVersion=0;
+async function authenticatedRequest(endpoint,body){
+  if(!profile||!liff.isLoggedIn())throw new Error('กรุณาเข้าสู่ระบบ LINE ก่อน');
+  const res=await fetch(API+'/'+endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,idToken:liff.getIDToken()||'',accessToken:liff.getAccessToken()||''})});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok||!data.ok){
+    const errors={owner_only:'สำหรับบัญชีเจ้าของที่ยืนยันแล้วเท่านั้น',invalid_line_login:'การเข้าสู่ระบบ LINE หมดอายุ กรุณาเปิดแอปจากริชเมนูใหม่',membership_required:'กรุณาสมัครหรือต่ออายุสมาชิก',account_suspended:'บัญชีถูกระงับสิทธิ์ กรุณาติดต่อผู้ดูแล',not_found_or_in_transit:'รายการไม่พบหรือกำลังส่งแจ้งเตือน กรุณาโหลดอีกครั้ง',billing_not_configured:'ยังไม่เชื่อมบัญชีรับชำระเงิน',admin_unavailable:'จัดการไม่สำเร็จ กรุณาลองใหม่'};
+    const err=new Error(data.message||errors[data.error]||({premium_required:'เครื่องมือนี้สำหรับ Plus หรือช่วงทดลองฟรี',recurring_limit_reached:'ตั้งเตือนประจำได้สูงสุด 10 รายการที่เปิดใช้งาน',debt_limit_reached:'ติดตามเงินค้างได้สูงสุด 100 รายการที่ยังไม่ปิดยอด',quota_exceeded:'โควตารอบเดือนนี้เต็มแล้ว',settlement_exceeds_balance:'ยอดชำระมากกว่ายอดคงเหลือ กรุณาโหลดรายการอีกครั้ง',debt_not_found:'ไม่พบเงินค้างนี้ กรุณาโหลดรายการอีกครั้ง',rule_not_found:'ไม่พบรายการประจำนี้ กรุณาโหลดอีกครั้ง',request_conflict:'ข้อมูลเปลี่ยนไป กรุณาเปิดรายการใหม่แล้วลองอีกครั้ง',invalid_debt:'ตรวจชื่อเรื่อง จำนวนเงิน และกำหนดชำระให้ถูกต้อง',invalid_settlement:'กรอกยอดชำระมากกว่า 0 และไม่เกินยอดคงเหลือ',invalid_schedule:'ตรวจเวลา วันในสัปดาห์ หรือวันที่ในเดือน',invalid_title:'กรอกชื่อเรื่องก่อนบันทึก',invalid_request:'ตรวจข้อมูลที่กรอกแล้วลองใหม่'}[data.error])||'ดำเนินการไม่สำเร็จ กรุณาลองใหม่');err.code=data.error;err.status=res.status;throw err;
+  }
+  return data;
+}
+function renderVault(){
+  document.getElementById('vaultFiles').innerHTML=vaultFiles.length?vaultFiles.map((f,i)=>'<div class="glass card p-4"><div class="font-bold">'+esc(f.file_name)+'</div><div class="muted text-sm mt-1">'+(Number(f.size_bytes)/1048576).toFixed(2)+' MB</div><div class="flex gap-3 mt-3">'+(f.url?'<a class="btn btn-ghost flex-1 text-center" href="'+esc(f.url)+'" target="_blank" rel="noopener noreferrer">เปิดไฟล์</a>':'')+'<button class="btn btn-ghost" onclick="deleteVaultItem(\'file\','+i+')">ลบไฟล์</button></div></div>').join(''):'<p class="muted text-sm">ยังไม่มีไฟล์ส่วนตัว</p>';
+  document.getElementById('vaultNotes').innerHTML=vaultNotes.length?vaultNotes.map((n,i)=>'<div class="glass card p-4"><p style="white-space:pre-wrap">'+esc(n.note)+'</p><button class="btn btn-ghost mt-3" onclick="deleteVaultItem(\'note\','+i+')">ลบโน้ต</button></div>').join(''):'<p class="muted text-sm">ยังไม่มีโน้ตส่วนตัว</p>';
+}
+async function loadVault(){
+  if(vaultBusy)return;
+  const box=document.getElementById('vaultMessage');box.textContent='กำลังโหลดคลัง…';
+  try{const data=await authenticatedRequest('liff-vault',{action:'list'});vaultFiles=data.files||[];vaultNotes=data.notes||[];renderVault();box.textContent='ไฟล์ '+vaultFiles.length+' รายการ · โน้ต '+vaultNotes.length+' รายการ';}
+  catch(e){box.textContent=e.message;}
+}
+async function uploadVaultFile(file){
+  if(!file||vaultBusy)return;const box=document.getElementById('vaultMessage');
+  if(file.size===0||file.size>10485760){box.textContent='เลือกไฟล์ที่มีข้อมูลและขนาดไม่เกิน 10 MB';return;}
+  if(!profile||!liff.isLoggedIn()){box.textContent='กรุณาเปิดแอปผ่านริชเมนูและเข้าสู่ระบบ LINE ก่อน';return;}
+  vaultBusy=true;document.getElementById('vaultFile').disabled=true;box.textContent='กำลังอัปโหลด…';
+  try{
+    const form=new FormData();form.append('file',file);form.append('idToken',liff.getIDToken()||'');form.append('accessToken',liff.getAccessToken()||'');
+    const r=await fetch(API+'/liff-vault',{method:'POST',body:form}),d=await r.json().catch(()=>({}));
+    if(!r.ok||!d.ok){const errors={invalid_line_login:'การเข้าสู่ระบบหมดอายุ เปิดแอปจากริชเมนูใหม่แล้วลองอีกครั้ง',membership_required:'กรุณาสมัครหรือต่ออายุสมาชิก',account_suspended:'บัญชีถูกระงับสิทธิ์',file_too_large:'ไฟล์ต้องไม่เกิน 10 MB'};throw new Error(d.message||errors[d.error]||'อัปโหลดไม่สำเร็จ กรุณาลองใหม่');}
+    document.getElementById('vaultFile').value='';vaultBusy=false;await loadVault();box.textContent='เก็บไฟล์บน Cloud แล้ว';
+  }catch(e){box.textContent=e.message;}finally{vaultBusy=false;document.getElementById('vaultFile').disabled=false;}
+}
+async function saveVaultNote(){
+  const text=document.getElementById('vaultNote').value.trim();if(!text||vaultBusy)return;
+  vaultBusy=true;document.getElementById('saveVaultNote').disabled=true;
+  try{await authenticatedRequest('liff-vault',{action:'create_note',note:text});document.getElementById('vaultNote').value='';vaultBusy=false;await loadVault();}
+  catch(e){document.getElementById('vaultMessage').textContent=e.message;}finally{vaultBusy=false;document.getElementById('saveVaultNote').disabled=false;}
+}
+async function deleteVaultItem(kind,i){
+  if(vaultBusy||!confirm('ลบ'+(kind==='file'?'ไฟล์':'โน้ต')+'นี้ถาวรหรือไม่?'))return;
+  const item=(kind==='file'?vaultFiles:vaultNotes)[i];if(!item)return;
+  vaultBusy=true;
+  try{await authenticatedRequest('liff-vault',{action:'delete_'+kind,id:item.id});vaultBusy=false;await loadVault();}
+  catch(e){document.getElementById('vaultMessage').textContent=e.message;}finally{vaultBusy=false;}
+}
+async function loadAdmin(){
+  const version=++adminVersion,box=document.getElementById('adminMessage');box.textContent='กำลังโหลดข้อมูล…';
+  const resource=document.getElementById('adminResource').value,user=document.getElementById('adminUser').value;
+  try{
+    if(!adminMembers.length){const members=await authenticatedRequest('admin-manager',{action:'members'});adminMembers=members.rows;document.getElementById('adminUser').innerHTML='<option value="">ทุกบัญชี</option>'+adminMembers.map(m=>'<option value="'+esc(m.line_user_id)+'">'+esc(m.display_name||m.line_user_id)+'</option>').join('');document.getElementById('adminUser').value=user;}
+    let data;
+    if(resource==='members'){data={rows:adminMembers.filter(m=>!user||m.line_user_id===user),total:adminMembers.length};}
+    else data=await authenticatedRequest('admin-manager',{action:'list',resource,user:user||undefined,offset:adminOffset});
+    if(version!==adminVersion)return;adminRows=data.rows||[];
+    document.getElementById('adminRows').innerHTML=adminRows.length?adminRows.map((r,i)=>{
+      const title=r.title||r.note||r.detail||r.file_name||r.display_name||r.stripe_subscription_id||r.line_user_id||r.action||'รายการ';
+      let buttons='';
+      if(resource==='members')buttons='<button class="btn btn-green" onclick="setMemberAccess('+i+',\'grant\')">เปิดสิทธิ์ 30 วัน</button><button class="btn btn-ghost" onclick="setMemberAccess('+i+',\'block\')">ระงับสิทธิ์</button><button class="btn btn-ghost" onclick="setMemberAccess('+i+',\'reset\')">กลับใช้สิทธิ์ชำระเงิน</button>';
+      if(['reminders','tasks','finances','notes','issues'].includes(resource))buttons+='<button class="btn btn-ghost" onclick="editAdminRecord('+i+')">แก้ไข</button>';
+      if(resource==='recurring')buttons+='<button class="btn btn-ghost" onclick="adminRecurringStatus('+i+')">'+(r.status==='active'?'หยุดพักการเตือน':'เปิดการเตือนต่อ')+'</button>';
+      if(['reminders','tasks','finances','notes','files','issues','debts','recurring'].includes(resource))buttons+='<button class="btn btn-ghost" onclick="deleteAdminRecord('+i+')">ลบ</button>';
+      if(resource==='subscriptions')buttons='<button class="btn btn-ghost" onclick="cancelMemberSubscription('+i+')">ยกเลิกต่ออายุ</button>';
+      if(resource==='files'&&r.url)buttons+='<a class="btn btn-ghost" href="'+esc(r.url)+'" target="_blank" rel="noopener noreferrer">เปิดไฟล์</a>';
+      const detail=resource==='members'?'งาน '+r.tasks+' · เตือน '+r.reminders+' · ไฟล์ '+r.files+' · '+(r.access_override||r.subscription_status||'ยังไม่สมัคร'):resource==='finances'?(r.entry_type==='income'?'รับ ':'จ่าย ')+money(r.amount):resource==='debts'?(r.direction==='receivable'?'ค้างรับ ':'ค้างจ่าย ')+money(debtRemaining(r))+' · '+(r.counterparty||'ไม่ระบุชื่อ'):resource==='recurring'?recurrenceLabel(r)+' · '+(r.status==='active'?'เปิดใช้งาน':r.status==='paused'?'หยุดพัก':'พักอัตโนมัติ'):resource==='audit'?r.action+' · '+r.resource:(r.status||'')+(r.cancel_at_period_end?' · ยกเลิกต่ออายุแล้ว':'');
+      return '<article class="glass card p-5"><p class="font-bold" style="white-space:pre-wrap;overflow-wrap:anywhere">'+esc(title)+'</p><p class="muted text-sm mt-2">'+esc(detail)+'</p><p class="muted text-xs mt-2" style="overflow-wrap:anywhere">'+esc(r.line_user_id||r.actor_id||'')+(r.group_name?' · กลุ่ม '+esc(r.group_name):'')+'</p><div class="flex flex-wrap gap-2 mt-3">'+buttons+'</div></article>';
+    }).join(''):'<div class="glass card p-5 muted">ยังไม่มีรายการในหมวดนี้</div>';
+    box.textContent=resource==='members'?'แสดง '+adminRows.length+' บัญชี (สูงสุด 500 บัญชี)':'ทั้งหมด '+data.total+' รายการ · แสดง '+(adminRows.length?adminOffset+1:0)+'–'+(adminOffset+adminRows.length);
+    document.getElementById('adminPrev').disabled=resource==='members'||adminOffset===0;document.getElementById('adminNext').disabled=resource==='members'||adminOffset+50>=data.total;
+  }catch(e){if(version===adminVersion){box.textContent=e.message;document.getElementById('adminRows').innerHTML='';}}
+}
+async function adminAction(body){
+  if(adminBusy)return;adminBusy=true;
+  try{await authenticatedRequest('admin-manager',body);adminMembers=[];await loadAdmin();}
+  catch(e){document.getElementById('adminMessage').textContent=e.message;}finally{adminBusy=false;}
+}
+function setMemberAccess(i,mode){const r=adminRows[i];if(!r)return;const labels={grant:'เปิดสิทธิ์ฟรี 30 วัน',block:'ระงับสิทธิ์ (การเก็บค่าเช่ายังไม่ถูกยกเลิก)',reset:'กลับไปใช้สิทธิ์ตามการชำระเงิน'};if(confirm(labels[mode]+' สำหรับบัญชีนี้หรือไม่?'))adminAction({action:'access',user:r.line_user_id,mode,days:30});}
+function adminRecurringStatus(i){const r=adminRows[i];if(!r)return;const status=r.status==='active'?'paused':'active';if(confirm((status==='active'?'เปิดการเตือนต่อโดยใช้สิทธิ์ของสมาชิก':'หยุดพักการเตือนประจำ')+' สำหรับรายการนี้หรือไม่?'))adminAction({action:'update',resource:'recurring',id:r.id,patch:{status}})}
+function deleteAdminRecord(i){const r=adminRows[i];if(r&&confirm('ลบรายการนี้ถาวรหรือไม่?'))adminAction({action:'delete',resource:document.getElementById('adminResource').value,id:r.id});}
+function cancelMemberSubscription(i){const r=adminRows[i];if(r&&confirm('หยุดการต่ออายุรอบถัดไปสำหรับสมาชิกนี้หรือไม่?'))adminAction({action:'cancel_subscription',resource:'subscriptions',id:r.stripe_subscription_id});}
+function editAdminRecord(i){
+  const r=adminRows[i];if(!r)return;adminEditIndex=i;const resource=document.getElementById('adminResource').value;
+  const fields={reminders:['title','remind_at','status'],tasks:['title','due_at','status'],finances:['title','amount','entry_type'],notes:['note'],issues:['detail']}[resource];
+  const labels={title:'ชื่อรายการ',remind_at:'วันเวลาที่เตือน (ประเทศไทย)',due_at:'วันเวลาของงาน (ประเทศไทย)',status:'สถานะ',amount:'จำนวนเงิน',entry_type:'ประเภทรายการ',note:'ข้อความโน้ต',detail:'รายละเอียดปัญหา'};
+  document.getElementById('adminEditFields').innerHTML=fields.map(k=>{
+    let control;
+    if(k==='status'||k==='entry_type'){const values=k==='status'?['pending','done','cancelled']:['income','expense'];const names={pending:'รอดำเนินการ',done:'เสร็จแล้ว',cancelled:'ยกเลิก',income:'รายรับ',expense:'รายจ่าย'};control='<select class="input" id="edit-'+k+'" style="width:100%;font-size:16px">'+values.map(v=>'<option value="'+v+'" '+(r[k]===v?'selected':'')+'>'+names[v]+'</option>').join('')+'</select>';}
+    else if(k==='note'||k==='detail')control='<textarea class="input" id="edit-'+k+'" rows="5" style="width:100%;font-size:16px" required>'+esc(r[k])+'</textarea>';
+    else{let value=r[k]??'';if(k==='remind_at'||k==='due_at')value=value?new Date(new Date(value).getTime()+7*3600000).toISOString().slice(0,16):'';control='<input class="input" id="edit-'+k+'" style="width:100%;font-size:16px" type="'+(k==='amount'?'number':k==='title'?'text':'datetime-local')+'" value="'+esc(value)+'" '+(k!=='due_at'?'required':'')+(k==='amount'?' min="0.01" step="0.01"':'')+'>';}
+    return '<div><label for="edit-'+k+'" class="text-sm">'+labels[k]+'</label>'+control+'</div>';
+  }).join('');document.getElementById('adminEditError').textContent='';document.getElementById('adminEditDialog').showModal();document.querySelector('#adminEditFields input,#adminEditFields textarea,#adminEditFields select')?.focus();
+}
+async function submitAdminEdit(event){
+  event.preventDefault();if(adminBusy)return;const r=adminRows[adminEditIndex],resource=document.getElementById('adminResource').value;if(!r)return;
+  const patch={};document.querySelectorAll('#adminEditFields input,#adminEditFields select,#adminEditFields textarea').forEach(input=>{const k=input.id.slice(5);patch[k]=k==='amount'?Number(input.value):['remind_at','due_at'].includes(k)?(input.value?new Date(input.value+':00+07:00').toISOString():null):input.value;});
+  adminBusy=true;document.getElementById('adminEditSave').disabled=true;
+  try{await authenticatedRequest('admin-manager',{action:'update',resource,id:r.id,patch});document.getElementById('adminEditDialog').close();await loadAdmin();}
+  catch(e){document.getElementById('adminEditError').textContent=e.message;}finally{adminBusy=false;document.getElementById('adminEditSave').disabled=false;}
+}
+
+async function billingRequest(action){
+  if(!liffReady||!profile||!liff.isLoggedIn())throw new Error('กรุณาเข้าสู่ระบบ LINE ก่อน');
+  const res=await fetch(API+'/billing',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,accessToken:liff.getAccessToken()||'',idToken:liff.getIDToken()||''})});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok||!data.ok){
+    const reasons={billing_not_configured:'ยังไม่เปิดรับชำระเงิน กรุณาลองใหม่หลังเปิดบริการ',checkout_in_progress:'กำลังเตรียมหน้าชำระเงิน รอสักครู่แล้วลองอีกครั้ง',billing_unavailable:'เปิดหน้าชำระเงินไม่สำเร็จ กรุณาลองใหม่',invalid_line_login:'กรุณาเข้าสู่ระบบ LINE อีกครั้ง',forbidden:'หน้านี้สำหรับผู้ดูแลระบบ',no_subscription:'ยังไม่พบรายการสมัครสมาชิก',account_suspended:'บัญชีถูกระงับสิทธิ์ กรุณาติดต่อผู้ดูแล'};
+    throw new Error(reasons[data.error]||'ตรวจสอบสมาชิกไม่สำเร็จ กรุณาลองใหม่');
+  }
+  return data;
+}
+async function loadMembership(){
+  try{
+    const data=await billingRequest('status');memberInfo=data;
+    const m=data.membership;const u=data.account?.usage||{};document.getElementById('memberUsage').textContent=m.owner?'เจ้าของไม่จำกัดโควตารายการ':'ใช้เดือนนี้: งาน '+(u.tasks||0)+' • เตือน '+(u.reminders||0)+' • เงิน '+(u.finance||0)+' • โน้ต '+(u.notes||0);
+    document.getElementById('memberState').textContent=m.owner?'บัญชีผู้ดูแลระบบ':m.status==='blocked'?'บัญชีถูกระงับสิทธิ์':m.status==='trialing'?'กำลังทดลองใช้ฟรี 7 วัน':m.status==='trial_expired'?'แพ็กเกจฟรี ใช้ได้ตามโควตา':m.active?(m.status==='granted'?'ผู้ดูแลเปิดสิทธิ์ให้':'สมาชิกใช้งานได้'):'ยังไม่มีสมาชิกที่ใช้งานได้';
+    document.getElementById('memberPeriod').textContent=m.owner?'':m.periodEnd?(m.status==='trialing'||m.status==='trial_expired'?'ทดลองใช้ฟรีถึง ':'รอบบริการสิ้นสุด ')+new Intl.DateTimeFormat('th-TH',{timeZone:'Asia/Bangkok',dateStyle:'long'}).format(new Date(m.periodEnd))+(m.cancelAtPeriodEnd?' • ยกเลิกต่ออายุแล้ว':''):'';
+    document.getElementById('billingNotice').textContent=data.mode==='test'?'โหมดทดสอบ ยังไม่มีการตัดเงินจริง':!data.checkoutReady?'ยังไม่เปิดรับชำระเงิน กำลังเตรียมระบบ':'ชำระผ่านบัตรในหน้า Stripe ยกเลิกต่ออายุได้';
+    document.getElementById('subscribeBtn').disabled=!data.checkoutReady||(m.active&&m.status!=='trialing')||m.owner||m.status==='blocked'||billingBusy;
+    document.getElementById('subscribeBtn').textContent=m.owner?'บัญชีเจ้าของ':m.status==='trialing'?(data.checkoutReady?'อัปเกรด Plus 59 บาท/เดือน':'กำลังทดลองใช้ฟรี 7 วัน'):m.status==='granted'?'ผู้ดูแลเปิดสิทธิ์ให้':m.active?'สมาชิก Plus ใช้งานได้':'อัปเกรด Plus 59 บาท/เดือน';
+    document.getElementById('membershipConsent').classList.toggle('hidden',(m.active&&m.status!=='trialing')||m.owner);
+    document.getElementById('manageMemberBtn').classList.toggle('hidden',!data.canManage);
+    document.getElementById('memberAdmin').classList.toggle('hidden',!m.owner);
+    const returned=new URLSearchParams(location.search).get('payment');
+    if(returned==='success'&&!m.active)document.getElementById('billingNotice').textContent='กำลังรอยืนยันผลชำระเงินจาก Stripe กดตรวจสอบสถานะอีกครั้งได้';
+    if(returned==='cancelled')document.getElementById('billingNotice').textContent='ปิดหน้าชำระเงินแล้ว คุณยังไม่ได้สมัครจากขั้นตอนนี้';
+    document.getElementById('membershipError').textContent='';
+    renderDeskMembership();
+  }catch(e){document.getElementById('membershipError').textContent=e.message;document.getElementById('subscribeBtn').disabled=true;}
+}
+async function startBilling(action){
+  if(billingBusy)return;
+  const error=document.getElementById('membershipError');error.textContent='';
+  if(action==='checkout'&&!document.getElementById('recurringConsent').checked){error.textContent='กรุณายืนยันการต่ออายุอัตโนมัติก่อนสมัคร';document.getElementById('recurringConsent').focus();return;}
+  billingBusy=true;document.getElementById('subscribeBtn').disabled=true;document.getElementById('manageMemberBtn').disabled=true;
+  try{
+    const data=await billingRequest(action);
+    const url=new URL(data.url);
+    if(url.protocol!=='https:'||!['checkout.stripe.com','billing.stripe.com'].includes(url.hostname))throw new Error('ลิงก์ชำระเงินไม่ถูกต้อง');
+    location.assign(url.href);
+  }catch(e){error.textContent=e.message;}
+  finally{billingBusy=false;document.getElementById('subscribeBtn').disabled=!memberInfo?.checkoutReady||(memberInfo?.membership.active&&memberInfo?.membership.status!=='trialing')||memberInfo?.membership.owner||memberInfo?.membership.status==='blocked';document.getElementById('manageMemberBtn').disabled=false;}
+}
+async function loadMemberAdmin(){
+  const box=document.getElementById('memberAdminSummary');box.textContent='กำลังตรวจสอบ…';
+  try{
+    const d=await billingRequest('admin_summary');
+    const active=d.subscriptions.filter(s=>s.status==='active'&&s.paid&&new Date(s.current_period_end).getTime()>Date.now());
+    const unique=new Set(active.map(s=>s.line_user_id));
+    box.textContent='สมาชิกที่ใช้งานได้ '+unique.size+' บัญชี จากรายการล่าสุด '+d.subscriptions.length+' รายการ (แสดงสูงสุด 100 รายการ)';
+  }catch(e){box.textContent=e.message;}
+}
+
+async function cloudRequest(action,values={}){
+  if(!liffReady||!profile||!liff.isLoggedIn())throw new Error('กรุณาเปิดผ่าน LINE');
+  const res=await fetch(API+'/liff-dashboard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...values,accessToken:liff.getAccessToken()||'',idToken:liff.getIDToken()||''})});
+  const data=await res.json().catch(()=>({}));
+  if(res.status===402){switchPage('membershipPage');loadMembership();throw new Error('ฟังก์ชันนี้สำหรับสมาชิก กรุณาสมัครหรือต่ออายุ')}
+  if(!res.ok||!data.ok)throw new Error(data.message||data.error||('HTTP '+res.status));
+  return data;
+}
+function bangkokDate(iso){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(iso))}
+function remoteTask(t,kind){
+  const at=t.remind_at||t.due_at;
+  return {id:kind+'-'+t.id,remoteId:t.id,kind,title:t.title,date:at?bangkokDate(at):'',time:at?new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Bangkok',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(at)):'',done:t.status==='done',status:t.status,cloud:'synced',createdAt:t.created_at};
+}
+async function syncCloud(){
+  if(tasks.some(t=>t.busy||t.cloud==='syncing')||moneyRows.some(t=>t.busy)||window.__savingFinance)return;
+  if(refreshing)return refreshing;
+  refreshing=(async()=>{
+    const version=syncVersion;
+    try{
+      const data=await cloudRequest('list');
+      if(version!==syncVersion)return;
+      const remote=[...data.reminders.map(t=>remoteTask(t,'reminder')),...data.tasks.map(t=>remoteTask(t,'task'))];
+      const ids=new Set(remote.map(t=>t.remoteId));
+      tasks=[...tasks.filter(t=>!t.remoteId&&t.cloud!=='synced'),...tasks.filter(t=>t.remoteId&&!t.kind&&!ids.has(t.remoteId)),...remote];
+      moneyRows=[...moneyRows.filter(t=>!t.remoteId),...data.finances.map(t=>({id:t.id,remoteId:t.id,title:t.title,type:t.entry_type,amount:Number(t.amount),date:bangkokDate(t.created_at)}))];
+      persist();renderAll();
+      document.getElementById('cloudBadge').innerHTML='<span class="dot"></span><span>CLOUD</span>';
+      document.getElementById('systemText').textContent='ซิงก์ Cloud แล้ว';
+      document.getElementById('profileState').textContent='LINE เชื่อมแล้ว • Cloud ซิงก์แล้ว';
+      document.getElementById('settingsCloudState').textContent='ซิงก์แล้ว';
+    }catch(e){
+      document.getElementById('cloudBadge').innerHTML='<span class="dot" style="background:#f59e0b"></span><span>รอซิงก์</span>';
+      document.getElementById('systemText').textContent='Cloud ยังไม่ซิงก์';
+      document.getElementById('settingsCloudState').textContent='รอลองอีกครั้ง';
+      toast('ซิงก์ Cloud ไม่สำเร็จ: '+e.message);
+    }
+  })();
+  try{await refreshing}finally{refreshing=null}
+}
+
+function openTaskModal(dateStr){
+  const n=new Date();document.getElementById('taskTitle').value='';document.getElementById('taskNote').value='';
+  document.getElementById('taskDate').value=dateStr||ymd(n);
+  const m=new Date(n.getTime()+5*60000);document.getElementById('taskDate').value=dateStr||bangkokDate(m.toISOString());document.getElementById('taskTime').value=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Bangkok',hour:'2-digit',minute:'2-digit',hour12:false}).format(m);
+  openModal('taskModal');
+}
+
+async function saveTask(){
+  const title=document.getElementById('taskTitle').value.trim();
+  const date=document.getElementById('taskDate').value;
+  const time=document.getElementById('taskTime').value;
+  const note=document.getElementById('taskNote').value.trim();
+  if(!title||!date||!time){toast('กรอกชื่องาน วันที่ และเวลาให้ครบ');return}
+  const due=new Date(date+'T'+time+':00+07:00');if(Number.isNaN(due.getTime())){toast('วันเวลาไม่ถูกต้อง');return}
+  if(due.getTime()<=Date.now()){toast('กรุณาเลือกเวลาในอนาคต');return}
+  syncVersion++;
+  const item={id:Date.now(),title,date,time,note,done:false,cloud:'syncing',remoteId:null,createdAt:new Date().toISOString()};
+  tasks.unshift(item);persist();renderAll();closeModal('taskModal');toast('กำลังซิงก์ขึ้น Cloud…');
+
+  try{
+    if(!liffReady||!liff.isLoggedIn())throw new Error('กรุณาเปิดผ่าน LINE');
+    const accessToken=liff.getAccessToken?.()||'';
+    const idToken=liff.getIDToken?.()||'';
+    const res=await fetch(API+'/create-reminder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accessToken,idToken,title,remindAt:due.toISOString()})});
+    const data=await res.json().catch(()=>({}));
+    if(res.status===402){switchPage('membershipPage');loadMembership();throw new Error('ฟังก์ชันนี้สำหรับสมาชิก กรุณาสมัครหรือต่ออายุ')}
+  if(!res.ok||!data.ok)throw new Error(data.message||data.error||('HTTP '+res.status));
+    item.cloud='synced';item.kind='reminder';item.status='pending';item.remoteId=data.reminder?.id||null;item.confirmationSent=data.confirmationSent===true;persist();renderAll();toast(data.confirmationSent?'บันทึก Cloud และส่งข้อความยืนยันเข้า LINE แล้ว':'บันทึก Cloud แล้ว แต่ส่งข้อความยืนยันเข้า LINE ไม่สำเร็จ');
+  }catch(e){
+    console.error(e);item.cloud='failed';persist();renderAll();toast('เก็บในเครื่องแล้ว แต่ Cloud ยังไม่ซิงก์');
+  }
+}
+
+function taskHtml(t){
+  const cloud=t.cloud==='synced'?'<span class="tag cloud">'+(t.done?'เสร็จแล้ว • Cloud ✓':t.kind==='task'?'งาน • Cloud ✓':t.status==='sent'?'ส่งแจ้งเตือนแล้ว':t.status==='failed'?'ส่งแจ้งเตือนไม่สำเร็จ':t.status==='queued'?'กำลังส่งแจ้งเตือน':'ตั้งเตือน • Cloud ✓')+'</span>':t.cloud==='syncing'?'<span class="tag">Syncing…</span>':t.cloud==='failed'?'<span class="tag fail">Cloud ✕</span>':'<span class="tag">Local เดิม</span>';
+  return '<div class="task"><button type="button" class="check '+(t.done?'done':'')+'" aria-label="'+esc((t.done?'เปิดงานอีกครั้ง: ':'ทำเสร็จ: ')+t.title)+'" onclick="toggleTask(\''+t.id+'\')">'+(t.done?'✓':'')+'</button><div class="min-w-0 flex-1"><div class="font-black text-sm '+(t.done?'line-through opacity-50':'')+'">'+esc(t.title)+'</div><div class="text-[10px] muted mt-1">'+esc(t.date)+' '+esc(t.time)+'</div><div class="mt-2">'+cloud+'</div></div><button class="text-red-400/70 p-2" style="min-width:44px;min-height:44px" aria-label="ลบงาน" onclick="deleteTask(\''+t.id+'\')">×</button></div>';
+}
+async function toggleTask(id){
+  const t=tasks.find(x=>String(x.id)===String(id));if(!t||t.busy)return;
+  syncVersion++;t.busy=true;
+  try{
+    if(t.remoteId)await cloudRequest('update_task',{id:t.remoteId,kind:t.kind||'reminder',status:t.done?'pending':'done'});
+    t.done=!t.done;t.status=t.done?'done':'pending';persist();renderAll();
+  }catch(e){toast('อัปเดตงานไม่สำเร็จ: '+e.message)}finally{t.busy=false}
+}
+async function deleteTask(id){
+  const t=tasks.find(x=>String(x.id)===String(id));if(!t||t.busy)return;
+  syncVersion++;t.busy=true;
+  try{
+    if(t.remoteId)await cloudRequest('update_task',{id:t.remoteId,kind:t.kind||'reminder',status:'cancelled'});
+    tasks=tasks.filter(x=>x!==t);persist();renderAll();toast('ลบงานแล้ว');
+  }catch(e){toast('ลบงานไม่สำเร็จ: '+e.message)}finally{t.busy=false}
+}
+
+function renderTasks(){
+  const sorted=[...tasks].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  document.getElementById('allTasks').innerHTML=sorted.length?sorted.map(taskHtml).join(''):'<div class="glass card p-6 text-center muted text-sm">ยังไม่มีงาน</div>';
+  const upcoming=sorted.filter(t=>!t.done&&!['cancelled','failed'].includes(t.status));document.getElementById('homeTasks').innerHTML=upcoming.length?upcoming.slice(0,4).map(taskHtml).join(''):'<div class="quiet-state">'+(profile?'ยังไม่มีงานค้าง กดเพิ่มงานเพื่อเริ่มวันของคุณ':'กำลังเชื่อมต่อบัญชี LINE…')+'</div>';
+  const today=bangkokDate(new Date().toISOString());document.getElementById('pendingCount').textContent=tasks.filter(x=>!x.done&&!['cancelled'].includes(x.status)).length;
+  document.getElementById('todayCount').textContent=tasks.filter(x=>x.date===today&&!x.done).length;
+  document.getElementById('overdueCount').textContent=profile?tasks.filter(x=>!x.done&&x.date&&new Date(x.date+'T'+(x.time||'23:59')+':00+07:00').getTime()<Date.now()&&!['cancelled','failed','sent'].includes(x.status)).length:'—';
+  if(!profile){document.getElementById('pendingCount').textContent='—';document.getElementById('todayCount').textContent='—'}
+  document.getElementById('allCount').textContent=tasks.length;
+  document.getElementById('cloudCount').textContent=tasks.filter(x=>x.cloud==='synced').length;
+  document.getElementById('doneCount').textContent=tasks.filter(x=>x.done).length;
+}
+
+function moveMonth(n){cursor=new Date(cursor.getFullYear(),cursor.getMonth()+n,1);renderCalendar()}
+function selectDay(y,m,d){selected=new Date(y,m,d);renderCalendar()}
+function selectedYmd(){return ymd(selected)}
+function renderCalendar(){
+  document.getElementById('monthTitle').textContent=thMonth(cursor);document.getElementById('selectedDateTitle').textContent=thDate(selected);
+  const y=cursor.getFullYear(),m=cursor.getMonth(),first=new Date(y,m,1),start=first.getDay(),days=new Date(y,m+1,0).getDate(),prev=new Date(y,m,0).getDate();
+  let out='';
+  for(let i=0;i<42;i++){
+    let d,cm=m,cy=y,dim=false;
+    if(i<start){d=prev-start+i+1;cm=m-1;dim=true}else if(i>=start+days){d=i-(start+days)+1;cm=m+1;dim=true}else d=i-start+1;
+    const x=new Date(cy,cm,d);cy=x.getFullYear();cm=x.getMonth();d=x.getDate();const k=ymd(x),has=tasks.some(t=>t.date===k),sel=ymd(selected)===k;
+    out+='<button class="day '+(dim?'dim ':'')+(has?'has ':'')+(sel?'sel':'')+'" onclick="selectDay('+cy+','+cm+','+d+')">'+d+'</button>';
+  }
+  document.getElementById('calendarGrid').innerHTML=out;
+  const rows=tasks.filter(t=>t.date===ymd(selected));document.getElementById('selectedTasks').innerHTML=rows.length?rows.map(taskHtml).join(''):'<div class="text-center muted text-sm py-5">ไม่มีงานในวันนี้</div>';
+}
+
+function openFinanceModal(){document.getElementById('financeTitle').value='';document.getElementById('financeAmount').value='';document.getElementById('financeDate').value=ymd();openModal('financeModal')}
+async function saveFinance(){
+  const type=document.getElementById('financeType').value,title=document.getElementById('financeTitle').value.trim(),amount=Number(document.getElementById('financeAmount').value),date=document.getElementById('financeDate').value;
+  if(!title||!Number.isFinite(amount)||amount<=0||!date){toast('กรอกรายการ จำนวนเงินมากกว่า 0 และวันที่');return}
+  if(window.__savingFinance)return;window.__savingFinance=true;syncVersion++;
+  try{
+    const data=await cloudRequest('create_finance',{type,title,amount,date});
+    moneyRows.unshift({id:data.finance.id,remoteId:data.finance.id,type,title,amount,date});
+    persist();closeModal('financeModal');renderFinance();toast('บันทึก Cloud แล้ว • ดูใน LINE ด้วย /เงิน');
+  }catch(e){toast('บันทึกไม่สำเร็จ: '+e.message)}finally{window.__savingFinance=false}
+}
+async function deleteFinance(id){
+  const item=moneyRows.find(x=>String(x.id)===String(id));if(!item||item.busy)return;
+  item.busy=true;syncVersion++;
+  try{
+    if(item.remoteId)await cloudRequest('delete_finance',{id:item.remoteId});
+    moneyRows=moneyRows.filter(x=>x!==item);persist();renderFinance();
+  }catch(e){toast('ลบไม่สำเร็จ: '+e.message)}finally{item.busy=false}
+}
+
+function renderFinance(){
+  const inc=moneyRows.filter(x=>x.type==='income').reduce((s,x)=>s+Number(x.amount),0),exp=moneyRows.filter(x=>x.type==='expense').reduce((s,x)=>s+Number(x.amount),0);
+  document.getElementById('income').textContent=money(inc);document.getElementById('expense').textContent=money(exp);document.getElementById('balance').textContent=money(inc-exp);
+  document.getElementById('financeList').innerHTML=moneyRows.length?moneyRows.map(x=>'<div class="task"><div class="flex-1 min-w-0"><div class="font-black text-sm">'+esc(x.title)+'</div><div class="text-[10px] muted mt-1">'+esc(x.date)+'</div></div><div class="font-black '+(x.type==='income'?'soft':'text-red-400')+'">'+(x.type==='income'?'+':'-')+money(x.amount)+'</div><button class="text-red-400/70 p-2" onclick="deleteFinance(\''+x.id+'\')">×</button></div>').join(''):'<div class="text-center muted text-sm py-5">ยังไม่มีรายการ</div>';
+}
+
+async function testCloudLine(){
+  try{
+    if(!liffReady||!liff.isLoggedIn())throw new Error('กรุณาเปิดผ่าน LINE');
+    const accessToken=liff.getAccessToken?.()||'',idToken=liff.getIDToken?.()||'';
+    const res=await fetch(API+'/line-test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accessToken,idToken})});
+    const data=await res.json().catch(()=>({}));if(res.status===402){switchPage('membershipPage');loadMembership();throw new Error('ฟังก์ชันนี้สำหรับสมาชิก กรุณาสมัครหรือต่ออายุ')}
+  if(!res.ok||!data.ok)throw new Error(data.message||data.error||('HTTP '+res.status));
+    toast('✅ Supabase + LINE พร้อมใช้งาน');
+  }catch(e){console.error(e);toast('Cloud test ไม่สำเร็จ: '+(e.message||e))}
+}
+
+function renderAll(){renderTasks();renderCalendar();renderFinance();document.getElementById('dashboardDate').textContent=new Intl.DateTimeFormat('th-TH',{timeZone:'Asia/Bangkok',weekday:'long',day:'numeric',month:'long'}).format(new Date())}
+
+
+let deskData=null,deskRules=[],deskError='',rulesError='',deskLoading=false,deskVersion=0,lifeDialogMode='',lifeDialogIndex=null,lifeDialogRecordId=null,lifeSaving=false,lifeRequestSignature='',lifeRequestId='';
+function renderDeskMembership(){
+  const m=memberInfo?.membership;if(!m)return;
+  document.getElementById('deskPlan').textContent=m.owner?'OWNER':m.status==='blocked'?'ระงับสิทธิ์':m.status==='trialing'?'ทดลอง Plus':m.active?'PLUS':'FREE';
+  document.getElementById('ownerDeskLink').classList.toggle('hidden',!m.owner);
+  document.getElementById('upgradeDeskLink').classList.toggle('hidden',!!m.owner);
+}
+function premiumPrompt(){return '<div class="premium-state"><strong>เครื่องมือสำหรับ Plus</strong><p class="mt-1">ใช้ได้ระหว่างทดลองฟรี 7 วัน หรือสมัคร Plus 59 บาท/เดือน</p><button class="text-action mt-1" onclick="switchPage(\'membershipPage\');loadMembership()">ดูสิทธิ์ของฉัน <svg class="inline-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div>'}
+function toolError(message){return '<div class="error-state">'+esc(message)+'<button class="text-action block mt-2" onclick="loadLifeTools()">ลองโหลดอีกครั้ง</button></div>'}
+function dateLabel(value){if(!value)return 'ไม่กำหนดวัน';const d=new Date(value.length===10?value+'T00:00:00+07:00':value);if(!Number.isFinite(d.getTime()))return 'ไม่ระบุเวลา';return new Intl.DateTimeFormat('th-TH',{timeZone:'Asia/Bangkok',day:'numeric',month:'short'}).format(d)}
+function debtRemaining(row){return Math.max(0,Math.round((Number(row.amount||0)-Number(row.settled_amount||0))*100)/100)}
+function weeklyMarkup(w,full=false){
+  if(!w)return premiumPrompt();
+  const inc=Number(w.income||0),exp=Number(w.expense||0),net=Number(w.net||0),scale=Math.max(inc,exp,1),done=Number(w.doneTasks||0),pending=Number(w.pendingTasks||0);
+  const values='<div><p class="desk-caption">กระแสเงินสุทธิ · '+esc(dateLabel(w.start))+' – '+esc(dateLabel(w.end))+'</p><p class="weekly-total '+(net<0?'text-red-300':'')+'">'+money(net)+'</p><div class="ledger-line"><span>รายรับ</span><strong>'+money(inc)+'</strong></div><div class="ledger-track" aria-hidden="true"><span style="width:'+Math.round(inc/scale*100)+'%"></span></div><div class="ledger-line"><span>รายจ่าย</span><strong>'+money(exp)+'</strong></div><div class="ledger-track expense" aria-hidden="true"><span style="width:'+Math.round(exp/scale*100)+'%"></span></div></div>';
+  const work='<div class="'+(full?'':'weekly-footer')+'"><div><span class="desk-caption">งานที่ปิดในสัปดาห์นี้</span><strong class="'+(full?'weekly-total block':'block text-white mt-1')+'">'+done+' งาน</strong></div><div class="'+(full?'mt-4':'')+'"><span class="desk-caption">งานที่ยังค้างทั้งหมด</span><strong class="block text-white mt-1">'+pending+' งาน</strong></div>'+(full?'<p class="desk-caption mt-4">รายงานแสดงเฉพาะรายการที่บันทึกในบัญชีนี้ เงินค้างและยอดปิดหนี้แสดงแยกต่างหาก</p>':'')+'</div>';
+  return full?'<div class="report-body">'+values+work+'</div>':values+work;
+}
+function debtMarkup(row,i,preview=false){
+  const remaining=debtRemaining(row),isDone=row.status==='settled'||remaining===0,direction=row.direction==='receivable'?'ค้างรับ':'ค้างจ่าย';
+  return '<article class="tool-row"><div><strong>'+esc(row.title)+'</strong><p>'+direction+' · '+esc(row.counterparty||'ไม่ระบุชื่อ')+' · '+(isDone?'ปิดยอดแล้ว':row.due_date?'กำหนด '+esc(dateLabel(row.due_date)):'ไม่กำหนดวัน')+'</p>'+(!preview?'<p>ยอดเดิม '+money(row.amount)+' · ชำระแล้ว '+money(row.settled_amount)+'</p><div class="row-actions">'+(!isDone?'<button class="btn btn-ghost" onclick="openLifeDialog(\'settle\','+i+')">'+(row.direction==='receivable'?'บันทึกเงินที่รับแล้ว':'บันทึกเงินที่จ่ายแล้ว')+'</button>':'')+'<button class="btn btn-ghost" onclick="deleteDebt('+i+')">ลบรายการ</button></div>':'')+'</div><span class="row-amount">'+money(remaining)+'</span></article>';
+}
+function recurrenceLabel(row){const weekdays={1:'จันทร์',2:'อังคาร',3:'พุธ',4:'พฤหัสบดี',5:'ศุกร์',6:'เสาร์',7:'อาทิตย์'};return(row.cadence==='daily'?'ทุกวัน':row.cadence==='weekly'?'ทุกวัน'+(weekdays[row.weekday]||'ที่เลือก'):'ทุกวันที่ '+row.month_day)+' · '+row.time_local+' น.'}
+function recurringMarkup(row,i,preview=false){
+  const active=row.status==='active';const status=active?'เปิดใช้งาน':row.status==='paused'?'หยุดพัก':'พักอัตโนมัติ';
+  const reason=row.status==='suspended'?(row.error==='quota_exceeded'||String(row.error||'').includes('โควตา')?'โควตาแจ้งเตือนเดือนนี้เต็มแล้ว':row.error==='premium_required'||row.error==='membership_required'?'ต้องมีสิทธิ์ Plus เพื่อเตือนต่อ':'กดเปิดต่อเพื่อลองอีกครั้ง'):'';
+  return '<article class="tool-row"><div><strong>'+esc(row.title)+'</strong><p>'+esc(recurrenceLabel(row))+'</p><p>'+status+(active&&row.next_due_at?' · ครั้งถัดไป '+esc(dateLabel(row.next_due_at)):'')+(reason?' · '+esc(reason):'')+'</p>'+(!preview?'<div class="row-actions"><button class="btn btn-ghost" onclick="changeRecurring('+i+',\''+(active?'pause':'resume')+'\')">'+(active?'หยุดพัก':'เปิดต่อ')+'</button><button class="btn btn-ghost" onclick="changeRecurring('+i+',\'delete\')">ลบ</button></div>':'')+'</div><span class="tag '+(active?'cloud':'')+'">'+status+'</span></article>';
+}
+function renderLifeTools(){
+  const debts=deskData?.debts||[],open=debts.filter(d=>d.status!=='settled'&&debtRemaining(d)>0),totals=deskData?.debtTotals,receivable=totals?Number(totals.receivable||0):open.filter(d=>d.direction==='receivable').reduce((s,d)=>s+debtRemaining(d),0),payable=totals?Number(totals.payable||0):open.filter(d=>d.direction==='payable').reduce((s,d)=>s+debtRemaining(d),0);
+  const overview='<div class="amount-overview"><div><p class="desk-caption">รอรับ</p><strong class="soft">'+money(receivable)+'</strong></div><div><p class="desk-caption">รอจ่าย</p><strong>'+money(payable)+'</strong></div></div>';
+  document.getElementById('debtPreview').innerHTML=deskError?toolError(deskError):deskData?overview+(open.length?open.slice(0,2).map(d=>debtMarkup(d,debts.indexOf(d),true)).join(''):'<p class="quiet-state">ยังไม่มีเงินค้างให้ติดตาม</p>'):'<p class="quiet-state">กำลังโหลดข้อมูลของคุณ…</p>';
+  document.getElementById('debtList').innerHTML=deskError?toolError(deskError):deskData?overview+(debts.length?debts.map((d,i)=>debtMarkup(d,i)).join(''):'<p class="quiet-state">จดเงินที่รอรับหรือรอจ่าย แล้วบันทึกยอดชำระได้ทีละส่วน</p>'):'<p class="quiet-state">กำลังโหลดข้อมูล…</p>';
+  document.getElementById('weeklyPreview').innerHTML=deskError?toolError(deskError):deskData?weeklyMarkup(deskData.weekly):'<p class="quiet-state">กำลังคำนวณจากรายการจริง…</p>';
+  document.getElementById('weeklyReport').innerHTML=deskError?toolError(deskError):deskData?weeklyMarkup(deskData.weekly,true):'<p class="quiet-state">กำลังคำนวณจากรายการจริง…</p>';
+  const recError=rulesError==='premium_required'?premiumPrompt():rulesError?toolError(rulesError):'';
+  document.getElementById('recurringPreview').innerHTML=recError|| (deskRules.length?deskRules.slice(0,2).map((r,i)=>recurringMarkup(r,i,true)).join(''):'<p class="quiet-state">ยังไม่มีรายการประจำ เช่น จ่ายค่าเน็ตทุกวันที่ 5</p>');
+  document.getElementById('recurringList').innerHTML=recError||(deskRules.length?deskRules.map((r,i)=>recurringMarkup(r,i)).join(''):'<p class="quiet-state">ตั้งครั้งเดียว แล้วระบบเตือนใน LINE ตามรอบที่เลือก</p>');
+}
+async function loadLifeTools(){
+  if(!profile||deskLoading)return;deskLoading=true;const version=++deskVersion;
+  document.getElementById('lifeToolsStatus').textContent='กำลังโหลดข้อมูลส่วนตัว…';document.getElementById('deskSyncStatus').textContent='กำลังโหลดเครื่องมือ…';
+  const results=await Promise.allSettled([authenticatedRequest('life-tools',{action:'dashboard'}),authenticatedRequest('recurring-tools',{action:'list'})]);
+  if(version!==deskVersion){deskLoading=false;return}
+  const [summary,rules]=results;
+  if(summary.status==='fulfilled'){deskData=summary.value;deskError=''}else{deskError=summary.reason.status===402?'เครื่องมือนี้ต้องใช้สิทธิ์ Plus':summary.reason.message}
+  if(rules.status==='fulfilled'){deskRules=rules.value.rules||rules.value.recurring||[];rulesError=''}else rulesError=rules.reason.status===402?'premium_required':rules.reason.message;
+  deskLoading=false;renderLifeTools();
+  const failed=summary.status==='rejected'||(rules.status==='rejected'&&rules.reason.status!==402);
+  document.getElementById('lifeToolsStatus').textContent=failed?'บางส่วนโหลดไม่สำเร็จ กดลองอีกครั้งได้':'แสดงข้อมูลส่วนตัวล่าสุด · เวลาไทย UTC+7';
+  document.getElementById('deskSyncStatus').textContent=failed?'เครื่องมือบางส่วนยังโหลดไม่สำเร็จ':'อัปเดตเครื่องมือแล้ว · '+new Intl.DateTimeFormat('th-TH',{timeZone:'Asia/Bangkok',hour:'2-digit',minute:'2-digit'}).format(new Date())+' น.';
+}
+async function refreshDesk(){const btn=document.getElementById('dashboardRefresh');if(btn.disabled)return;btn.disabled=true;try{await Promise.allSettled([syncCloud(),loadMembership(),loadLifeTools()])}finally{btn.disabled=false}}
+function openLifeTools(target=''){switchPage('lifeToolsPage');loadLifeTools();const id={debts:'debtPanel',recurring:'recurringPanel',report:'reportPanel'}[target];if(id)requestAnimationFrame(()=>{const el=document.getElementById(id);el.setAttribute('tabindex','-1');el.focus({preventScroll:true});el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'})})}
+function toolPermission(){const m=memberInfo?.membership;if(m&&!(m.owner||m.active)){switchPage('membershipPage');loadMembership();toast(m.status==='blocked'?'บัญชีถูกระงับสิทธิ์ กรุณาติดต่อผู้ดูแล':'เครื่องมือนี้สำหรับ Plus หรือช่วงทดลองฟรี');return false}return true}
+function updateRecurrenceFields(){const cadence=document.getElementById('ruleCadence').value;document.getElementById('ruleWeekdayGroup').hidden=cadence!=='weekly';document.getElementById('ruleMonthDayGroup').hidden=cadence!=='monthly';document.getElementById('ruleWeekday').disabled=cadence!=='weekly';document.getElementById('ruleMonthDay').disabled=cadence!=='monthly'}
+function openLifeDialog(mode,index=null){
+  if(!profile){toast('กรุณาเข้าสู่ระบบ LINE ก่อน');return}if(!toolPermission())return;
+  lifeDialogMode=mode;lifeDialogIndex=index;lifeDialogRecordId=null;lifeRequestSignature='';lifeRequestId='';document.getElementById('lifeDialogError').textContent='';const title=document.getElementById('lifeDialogHeading'),eyebrow=document.getElementById('lifeDialogEyebrow'),fields=document.getElementById('lifeDialogFields');document.getElementById('lifeDialogSave').textContent='บันทึก';
+  if(mode==='debt'){
+    title.textContent='เพิ่มเงินค้าง';eyebrow.textContent='MONEY TO FOLLOW UP';
+    fields.innerHTML='<label for="debtDirection">ประเภท</label><select id="debtDirection"><option value="receivable">เงินที่รอรับ</option><option value="payable">เงินที่ต้องจ่าย</option></select><label for="debtTitle">เรื่องที่ต้องติดตาม</label><input id="debtTitle" maxlength="200" required placeholder="เช่น ค่าสินค้ารอรับ"><label for="debtCounterparty">ชื่อคนหรือบริษัท</label><input id="debtCounterparty" maxlength="100" placeholder="เช่น คุณเมย์"><div class="form-grid"><div><label for="debtAmount">จำนวนเงิน (บาท)</label><input id="debtAmount" required type="number" inputmode="decimal" min="0.01" max="1000000000" step="0.01" placeholder="0.00"></div><div><label for="debtDue">กำหนดชำระ (เลือกได้)</label><input id="debtDue" type="date" min="1900-01-01" max="2100-12-31"></div></div><p class="desk-caption mt-4">รายการนี้ใช้ติดตามยอด ยังไม่บันทึกเป็นรายรับหรือรายจ่าย และไม่ตั้งเตือนอัตโนมัติ</p>';
+  }else if(mode==='recurring'){
+    title.textContent='ตั้งแจ้งเตือนประจำ';eyebrow.textContent='SET ONCE · REPEAT';
+    fields.innerHTML='<label for="ruleTitle">เรื่องที่ต้องเตือน</label><input id="ruleTitle" required maxlength="200" placeholder="เช่น จ่ายค่าเน็ต"><div class="form-grid"><div><label for="ruleCadence">ความถี่</label><select id="ruleCadence" onchange="updateRecurrenceFields()"><option value="daily">ทุกวัน</option><option value="weekly">ทุกสัปดาห์</option><option value="monthly">ทุกเดือน</option></select></div><div><label for="ruleTime">เวลาไทย (UTC+7)</label><input id="ruleTime" required type="time" value="09:00"></div></div><div id="ruleWeekdayGroup" hidden><label for="ruleWeekday">วันในสัปดาห์</label><select id="ruleWeekday"><option value="1">จันทร์</option><option value="2">อังคาร</option><option value="3">พุธ</option><option value="4">พฤหัสบดี</option><option value="5">ศุกร์</option><option value="6">เสาร์</option><option value="7">อาทิตย์</option></select></div><div id="ruleMonthDayGroup" hidden><label for="ruleMonthDay">วันที่ในเดือน</label><input id="ruleMonthDay" type="number" min="1" max="31" step="1" value="5"><p class="desk-caption mt-2">เดือนที่ไม่มีวันที่นี้ ใช้วันสุดท้ายของเดือน</p></div><p class="desk-caption mt-4">Plus เปิดได้ 10 รายการประจำ การส่งแต่ละครั้งนับรวมโควตาแจ้งเตือน 30 ครั้ง/เดือน หากเต็มระบบจะพักรายการให้</p>';
+  }else if(mode==='settle'){
+    const row=deskData?.debts?.[index];if(!row)return;lifeDialogRecordId=row.id;title.textContent=row.direction==='receivable'?'บันทึกเงินที่รับแล้ว':'บันทึกเงินที่จ่ายแล้ว';eyebrow.textContent='UPDATE OUTSTANDING';
+    fields.innerHTML='<p class="desk-caption mt-4">'+esc(row.title)+' · '+esc(row.counterparty||'ไม่ระบุชื่อ')+'</p><p class="weekly-total">คงเหลือ '+money(debtRemaining(row))+'</p><label for="settleAmount">ยอดที่ชำระครั้งนี้ (บาท)</label><input id="settleAmount" type="number" required inputmode="decimal" min="0.01" max="'+debtRemaining(row)+'" step="0.01" value="'+debtRemaining(row)+'"><p class="desk-caption mt-4">ลดเฉพาะยอดค้างของรายการนี้ หากต้องการบันทึกเข้าบัญชีเงิน ให้เพิ่มรายรับหรือรายจ่ายแยกอีกครั้ง</p>';
+  }
+  if(mode==='recurring')updateRecurrenceFields();document.getElementById('lifeDialog').showModal();fields.querySelector('input,select')?.focus();
+}
+async function submitLifeForm(event){
+  event.preventDefault();if(lifeSaving)return;const error=document.getElementById('lifeDialogError'),btn=document.getElementById('lifeDialogSave');error.textContent='';let endpoint,body;
+  if(lifeDialogMode==='debt'){endpoint='life-tools';body={action:'create_debt',title:document.getElementById('debtTitle').value.trim(),counterparty:document.getElementById('debtCounterparty').value.trim(),direction:document.getElementById('debtDirection').value,amount:Number(document.getElementById('debtAmount').value),due_date:document.getElementById('debtDue').value||null};if(!body.title){error.textContent='กรอกเรื่องที่ต้องติดตาม';document.getElementById('debtTitle').focus();return}}
+  else if(lifeDialogMode==='settle'){endpoint='life-tools';const row=deskData?.debts?.find(row=>row.id===lifeDialogRecordId);if(!row){error.textContent='รายการนี้เปลี่ยนไปแล้ว กรุณาปิดหน้าต่างและโหลดข้อมูลใหม่';return}body={action:'settle_debt',id:row.id,amount:Number(document.getElementById('settleAmount').value)}}
+  else{endpoint='recurring-tools';body={action:'create',title:document.getElementById('ruleTitle').value.trim(),cadence:document.getElementById('ruleCadence').value,time_local:document.getElementById('ruleTime').value};if(body.cadence==='weekly')body.weekday=Number(document.getElementById('ruleWeekday').value);if(body.cadence==='monthly')body.month_day=Number(document.getElementById('ruleMonthDay').value);if(!body.title){error.textContent='กรอกเรื่องที่ต้องเตือน';document.getElementById('ruleTitle').focus();return}}
+  if(endpoint==='life-tools'||endpoint==='recurring-tools'&&body.action==='create'){const signature=JSON.stringify(body);if(signature!==lifeRequestSignature){lifeRequestSignature=signature;lifeRequestId=crypto.randomUUID()}body.requestId=lifeRequestId}
+  lifeSaving=true;btn.disabled=true;btn.textContent='กำลังบันทึก…';
+  try{await authenticatedRequest(endpoint,body);document.getElementById('lifeDialog').close();toast(lifeDialogMode==='settle'?'อัปเดตยอดค้างแล้ว ยังไม่ได้ลงบัญชีเงิน':'บันทึกแล้ว');await loadLifeTools()}
+  catch(e){if(e.status===402){document.getElementById('lifeDialog').close();switchPage('membershipPage');loadMembership();toast(e.message)}else error.textContent=e.message}
+  finally{lifeSaving=false;btn.disabled=false;btn.textContent='บันทึก'}
+}
+async function deleteDebt(index){const row=deskData?.debts?.[index];if(!row||!confirm('ลบรายการเงินค้าง “'+row.title+'” หรือไม่? การลบไม่เปลี่ยนรายการบัญชีเงิน'))return;try{await authenticatedRequest('life-tools',{action:'delete_debt',id:row.id});await loadLifeTools();toast('ลบรายการเงินค้างแล้ว')}catch(e){toast(e.message)}}
+async function changeRecurring(index,action){const row=deskRules[index];if(!row)return;if(action==='resume'&&!toolPermission())return;if(action==='delete'&&!confirm('ลบการเตือนประจำ “'+row.title+'” และหยุดการเตือนครั้งถัดไปหรือไม่?'))return;try{await authenticatedRequest('recurring-tools',{action,id:row.id});await loadLifeTools();toast(action==='pause'?'หยุดพักแล้ว':action==='resume'?'เปิดแจ้งเตือนต่อแล้ว':'ลบแจ้งเตือนประจำแล้ว')}catch(e){if(e.status===402){switchPage('membershipPage');loadMembership()}toast(e.message)}}
+document.addEventListener('keydown',event=>{const modal=document.querySelector('.modal.show');if(!modal)return;if(event.key==='Escape'){closeModal(modal.id);return}if(event.key==='Tab'){const controls=[...modal.querySelectorAll('button,input,textarea,select,a[href]')].filter(el=>!el.disabled&&el.offsetParent!==null);const first=controls[0],last=controls[controls.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus()}}});
+
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&profile){syncCloud();loadMembership();loadLifeTools()}});
+window.addEventListener('focus',()=>{if(profile){syncCloud();loadMembership();loadLifeTools()}});
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  document.getElementById('financeDate').value=ymd();
+  renderAll();
+  if(new URLSearchParams(location.search).get('view')==='membership')switchPage('membershipPage');
+  await initLiff();
+  const view=new URLSearchParams(location.search).get('view');
+  if(view==='vault'){switchPage('vaultPage');loadVault()}
+  if(view==='admin'){switchPage('adminPage');loadAdmin()}
+  if(['debts','recurring','report','tools'].includes(view))openLifeTools(view==='tools'?'':view);
+});
+</script>
+</body>
+</html>
