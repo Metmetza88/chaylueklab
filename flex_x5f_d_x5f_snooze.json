@@ -44,73 +44,8 @@
               "alignItems": "center",
               "contents": [
                 { "type": "text", "text": "●", "color": "#00FF94", "size": "sm" },
-                { "type": "text", "text": "จะเตือนใหม่เวลา {{newTime}}", "color": "#D4AF37", "size": "sm", "margin": "{
-  "type": "flex",
-  "altText": "⏰ เลื่อน 10 นาที",
-  "contents": {
-    "type": "bubble",
-    "size": "kilo",
-    "body": {
-      "type": "box",
-      "layout": "vertical",
-      "backgroundColor": "#121212",
-      "contents": [
-        {
-          "type": "box",
-          "layout": "horizontal",
-          "contents": [
-            { "type": "text", "text": "⏰", "size": "3xl" },
-            {
-              "type": "box",
-              "layout": "vertical",
-              "contents": [
-                { "type": "text", "text": "SNOOZE MODE", "color": "#D4AF37", "size": "xxs", "letterSpacing": "2px" },
-                { "type": "text", "text": "เลื่อนเตือนอีก 10 นาที", "color": "#D4AF37", "weight": "bold", "size": "md", "margin": "sm" }
-              ],
-              "margin": "lg"
-            }
-          ],
-          "alignItems": "center"
-        },
-        { "type": "separator", "color": "#2A2418", "margin": "lg" },
-        {
-          "type": "box",
-          "layout": "vertical",
-          "backgroundColor": "#1E1A12",
-          "cornerRadius": "12px",
-          "paddingAll": "14px",
-          "margin": "lg",
-          "contents": [
-            { "type": "text", "text": "ภารกิจ", "color": "#8A7D5E", "size": "xs" },
-            { "type": "text", "text": "{{task}}", "color": "#FFFFFF", "weight": "bold", "size": "xl", "wrap": true, "margin": "xs" },
-            {
-              "type": "box",
-              "layout": "horizontal",
-              "margin": "md",
-              "alignItems": "center",
-              "contents": [
-                { "type": "text", "text": "●", "color": "#00FF94", "size": "sm" },
                 { "type": "text", "text": "จะเตือนใหม่เวลา {{newTime}}", "color": "#D4AF37", "size": "sm", "margin": "sm" }
               ]
-            }
-          ]
-        }
-      ],
-      "paddingAll": "20px"
-    },
-    "footer": {
-      "type": "box",
-      "layout": "horizontal",
-      "spacing": "md",
-      "backgroundColor": "#121212",
-      "paddingAll": "12px",
-      "contents": [
-        { "type": "button", "style": "secondary", "color": "#2A2418", "action": { "type": "postback", "label": "ปิด", "data": "action=cancel" } },
-        { "type": "button", "style": "primary", "color": "#D4AF37", "action": { "type": "postback", "label": "เลื่อน 10 นาที", "data": "action=snooze&min=10" } }
-      ]
-    }
-  }
-}
             }
           ]
         }
