@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CHAYLUEKLAB: SHADOW MOTION AR - OVERDRIVE</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome 6 CDN for Cyberpunk & Gaming icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- MediaPipe Pose CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap');
+    
+    :root {
+      --neon-cyan: #00f3ff;
+      --neon-gold: #ffb703;
+      --neon-crimson: #ff0055;
+      --neon-purple: #9d4edd;
+      --dark-glass: rgba(8, 12, 22, 0.78);
+    }
+
+    * {
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    body {
+      background-color: #030712;
+      color: #f3f4f6;
+      font-family: 'Rajdhani', sans-serif;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    .font-sci {
+      font-family: 'Orbitron', monospace;
+    }
+
+    /* Sci-Fi Glass Panels */
+    .cyber-panel {
+      background: var(--dark-glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 243, 255, 0.28);
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.08), inset 0 0 15px rgba(0, 243, 255, 0.04);
+    }
+
+    .cyber-panel-crimson {
+      background: rgba(26, 4, 10, 0.85);
+      border: 1px solid rgba(255, 0, 85, 0.4);
+      box-shadow: 0 0 25px rgba(255, 0, 85, 0.15);
+    }
+
+    .glow-cyan {
+      text-shadow: 0 0 8px rgba(0, 243, 255, 0.7), 0 0 18px rgba(0, 243, 255, 0.4);
+    }
+
+    .glow-gold {
+      text-shadow: 0 0 8px rgba(255, 183, 3, 0.7), 0 0 18px rgba(255, 183, 3, 0.4);
+    }
+
+    .glow-crimson {
+      text-shadow: 0 0 8px rgba(255, 0, 85, 0.7), 0 0 18px rgba(255, 0, 85, 0.4);
+    }
+
+    /* Cyber button styling */
+    .btn-cyber {
+      position: relative;
+      clip-path: polygon(10px 0%, 100% 0%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0% 100%, 0% 10px);
+      transition: all 0.2s ease-in-out;
+    }
+    .btn-cyber:active {
+      transform: scale(0.97);
+    }
+
+    /* Custom Scanline FX */
+    .scanlines {
+      background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0),
+        rgba(255,255,255,0) 50%,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0.3)
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+    }
+
+    /* Overdrive Screen FX */
+    .overdrive-active {
+      animation: overdrivePulse 1.4s infinite alternate;
+    }
+    @keyframes overdrivePulse {
+      0% { box-shadow: inset 0 0 30px rgba(255, 183, 3, 0.3); }
+      100% { box-shadow: inset 0 0 70px rgba(255, 0, 85, 0.5); }
+    }
+
+    /* Floating radar scan animation */
+    @keyframes sweep {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .radar-sweep {
+      animation: sweep 3s linear infinite;
+    }
+
+    /* Hide scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 243, 255, 0.3);
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="w-screen h-screen relative select-none">
+
+  <!-- ================= CAMERA & AR CANVAS LAYER ================= -->
+  <!-- Video feed hidden directly, drawn onto Canvas with AR transforms -->
+  <video id="webcam" class="hidden" playsinline muted autoplay></video>
+
+  <!-- Main AR Graphics Layer -->
+  <canvas id="arCanvas" class="absolute inset-0 w-full h-full z-0 object-cover"></canvas>
+  
+  <!-- CRT Scanline & Lens Distortion Layer -->
+  <div class="absolute inset-0 scanlines z-10 opacity-40 pointer-events-none"></div>
+  <div id="overdriveVfx" class="absolute inset-0 z-15 pointer-events-none transition-all duration-300"></div>
+
+  <!-- ================= IN-GAME AR HUD (ACTIVE DURING GAMEPLAY) ================= -->
+  <div id="gameHud" class="hidden absolute inset-0 z-20 flex flex-col justify-between p-3 pointer-events-none">
+    
+    <!-- Top HUD: Boss Health, Tracking Indicators, Overdrive Meter -->
+    <div class="w-full flex flex-col gap-2">
+      <!-- Status Bar -->
+      <div class="flex items-center justify-between pointer-events-auto">
+        <div class="flex items-center gap-2 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg border border-cyan-500/30">
+          <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></div>
+          <span class="text-xs font-sci tracking-wider text-cyan-400">CHAYLUEKLAB AR</span>
+          <span id="fpsCounter" class="text-[10px] text-gray-400 border-l border-gray-700 pl-2">60 FPS</span>
+        </div>
+
+        <!-- Tracking Confidence Badges -->
+        <div class="flex items-center gap-2 text-[10px] font-sci">
+          <div id="bodyBadge" class="bg-black/60 px-2.5 py-1 rounded border border-emerald-500/40 text-emerald-400">
+            BODY 98%
+          </div>
+          <div id="handBadge" class="bg-black/60 px-2.5 py-1 rounded border border-cyan-500/40 text-cyan-400">
+            HANDS LOCKED
+          </div>
+          <button id="btnPause" class="w-8 h-8 rounded bg-gray-900/80 border border-gray-700 flex items-center justify-center text-white active:bg-cyan-900 pointer-events-auto">
+            <i class="fa-solid fa-pause text-xs"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Boss HP Bar Panel (Visible in Boss Mode) -->
+      <div id="bossHud" class="w-full max-w-md mx-auto cyber-panel-crimson px-3 py-2 rounded-xl flex flex-col gap-1 transition-all duration-300">
+        <div class="flex items-center justify-between text-xs font-sci">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-skull text-rose-500 animate-bounce"></i>
+            <span id="bossName" class="font-bold text-rose-400 tracking-wider">THE RED CORE</span>
+            <span id="bossPhaseBadge" class="text-[10px] px-1.5 py-0.5 rounded bg-rose-950 border border-rose-600/50 text-rose-300">PHASE 1</span>
+          </div>
+          <span id="bossHpPercent" class="text-rose-400 font-bold">100%</span>
+        </div>
+        <div class="w-full h-3 bg-black/70 rounded-full overflow-hidden p-0.5 border border-rose-500/30">
+          <div id="bossHpBar" class="h-full bg-gradient-to-r from-rose-600 via-red-500 to-amber-500 rounded-full transition-all duration-200" style="width: 100%;"></div>
+        </div>
+      </div>
+
+      <!-- Warning Announcement Banner -->
+      <div id="hudAlert" class="hidden text-center py-1 bg-red-600/30 border-y border-red-500 text-rose-300 font-sci text-xs tracking-widest animate-pulse">
+        <i class="fa-solid fa-triangle-exclamation mr-1"></i> WARNING: HEAVY ATTACK INCOMING - DODGE LEFT/RIGHT!
+      </div>
+    </div>
+
+    <!-- Center HUD: Guidance Crosshair / Notifications -->
+    <div class="flex flex-col items-center justify-center text-center">
+      <div id="guideText" class="text-sm font-sci bg-black/60 backdrop-blur-md px-4 py-1.5 rounded-full border border-cyan-400/40 text-cyan-300 shadow-lg tracking-wide animate-pulse">
+        SHOW BOTH HANDS TO ENGAGE
+      </div>
+    </div>
+
+    <!-- Bottom HUD: Player Vitals, Ammo/Charge, Energy, Ultimate Trigger -->
+    <div class="w-full flex flex-col gap-2 max-w-lg mx-auto">
+      
+      <!-- Overdrive / Ultimate Gauge -->
+      <div class="cyber-panel px-3 py-2 rounded-xl flex flex-col gap-1">
+        <div class="flex items-center justify-between text-xs font-sci">
+          <div class="flex items-center gap-1.5">
+            <i class="fa-solid fa-bolt text-amber-400"></i>
+            <span class="text-gray-300">OVERDRIVE ENERGY</span>
+          </div>
+          <span id="energyPercent" class="text-amber-400 font-bold">0%</span>
+        </div>
+        <div class="w-full h-2.5 bg-black/60 rounded-full overflow-hidden p-0.5 border border-amber-500/30">
+          <div id="energyBar" class="h-full bg-gradient-to-r from-amber-500 to-cyan-400 rounded-full transition-all duration-150" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Score & Gesture Helper Controls (Touch Fallbacks for quick testing) -->
+      <div class="flex items-center justify-between text-xs font-sci px-1">
+        <div class="flex items-center gap-3">
+          <div>
+            <div class="text-[10px] text-gray-400 uppercase">SCORE</div>
+            <div id="hudScore" class="text-lg font-bold text-cyan-400 glow-cyan">00000</div>
+          </div>
+          <div class="border-l border-gray-700 pl-3">
+            <div class="text-[10px] text-gray-400 uppercase">COMBO</div>
+            <div id="hudCombo" class="text-lg font-bold text-amber-400 glow-gold">x0</div>
+          </div>
+        </div>
+
+        <!-- Gesture indicator pills -->
+        <div class="flex items-center gap-1.5">
+          <span class="text-[10px] text-gray-400 uppercase">GESTURES:</span>
+          <span class="px-2 py-0.5 rounded bg-cyan-950 border border-cyan-600/40 text-cyan-300 text-[10px]">🖐️ BLAST</span>
+          <span class="px-2 py-0.5 rounded bg-emerald-950 border border-emerald-600/40 text-emerald-300 text-[10px]">✊ SHIELD</span>
+          <span class="px-2 py-0.5 rounded bg-amber-950 border border-amber-600/40 text-amber-300 text-[10px]">🙌 OVERDRIVE</span>
+        </div>
+      </div>
+
+      <!-- Virtual Touch Trigger bar (Allows testing on non-camera desktop or touch testing) -->
+      <div class="flex items-center gap-2 pointer-events-auto pt-1">
+        <button id="btnManualBlast" class="btn-cyber flex-1 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-sci font-bold text-xs shadow-md border-t border-cyan-300/40">
+          <i class="fa-solid fa-hand-sparkles mr-1"></i> TAP BLAST (AUTO-AIM)
+        </button>
+        <button id="btnManualUlt" class="btn-cyber flex-1 py-2 bg-gradient-to-r from-amber-600 to-rose-600 text-white font-sci font-bold text-xs shadow-md border-t border-amber-300/40 disabled:opacity-40" disabled>
+          <i class="fa-solid fa-atom mr-1"></i> OVERDRIVE
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= FULLSCREEN UI SCREENS ================= -->
+
+  <!-- 1. BOOTING & SYSTEM DIAGNOSTIC SCREEN -->
+  <div id="screenBoot" class="absolute inset-0 z-50 bg-[#030712] flex flex-col justify-between p-6">
+    <div class="flex items-center justify-between border-b border-cyan-900/60 pb-3">
+      <div class="text-xs font-sci text-cyan-400 tracking-widest">CHAYLUEKLAB BIOS v3.2.0</div>
+      <div class="text-[10px] text-gray-500 font-mono">NODE: BANGKOK_01</div>
+    </div>
+
+    <div class="flex flex-col items-center justify-center max-w-sm mx-auto text-center">
+      <div class="relative w-28 h-28 mb-6 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-full border-2 border-dashed border-cyan-500/40 radar-sweep"></div>
+        <div class="absolute inset-2 rounded-full border border-cyan-400/20"></div>
+        <div class="w-16 h-16 rounded-full bg-cyan-950/80 border border-cyan-400 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <i class="fa-solid fa-network-wired text-cyan-400 text-2xl animate-pulse"></i>
+        </div>
+      </div>
+
+      <h1 class="text-xl font-sci font-black tracking-wider text-white mb-1 glow-cyan">
+        CHAYLUEKLAB
+      </h1>
+      <div class="text-xs font-sci tracking-widest text-cyan-400 mb-6">SHADOW MOTION AR : OVERDRIVE</div>
+
+      <!-- Boot Logs Step by Step -->
+      <div id="bootLogs" class="w-full text-left font-mono text-xs text-gray-400 bg-black/60 p-3 rounded-lg border border-cyan-900/50 space-y-1 mb-6">
+        <div>> INITIALIZING NEURAL ENGINE...</div>
+      </div>
+      
+      <button id="btnBeginAuth" class="hidden btn-cyber w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-sci font-bold text-sm tracking-wider uppercase shadow-lg shadow-cyan-500/25">
+        START SYSTEM SYNC
+      </button>
+    </div>
+
+    <div class="text-[11px] text-center text-gray-600 font-mono">
+      CAMERA FEED RUNS 100% LOCALLY ON-DEVICE • NO DATA TRANSMITTED
+    </div>
+  </div>
+
+  <!-- 2. SAFETY & CAMERA PERMISSION CHECK MODAL -->
+  <div id="screenSafety" class="hidden absolute inset-0 z-40 bg-black/90 backdrop-blur-md flex flex-col justify-center items-center p-6">
+    <div class="cyber-panel p-6 rounded-2xl max-w-md w-full text-center">
+      <div class="w-14 h-14 mx-auto rounded-full bg-amber-500/20 border border-amber-400/60 flex items-center justify-center mb-4">
+        <i class="fa-solid fa-person-running text-amber-400 text-2xl"></i>
+      </div>
+      <h2 class="text-lg font-sci font-bold text-white mb-2">SAFETY SPACE CLEARANCE</h2>
+      <p class="text-xs text-gray-300 leading-relaxed mb-4">
+        Make sure you have at least <span class="text-cyan-400 font-bold">1.5 - 2 meters</span> of clear space around you. Step back from furniture, walls, and screens.
+      </p>
+
+      <div class="grid grid-cols-2 gap-2 text-left text-xs mb-5 font-sci">
+        <div class="bg-black/50 p-2.5 rounded-lg border border-gray-800 flex items-center gap-2">
+          <i class="fa-solid fa-check text-cyan-400"></i>
+          <span>Clear Hands View</span>
+        </div>
+        <div class="bg-black/50 p-2.5 rounded-lg border border-gray-800 flex items-center gap-2">
+          <i class="fa-solid fa-check text-cyan-400"></i>
+          <span>Good Lighting</span>
+        </div>
+        <div class="bg-black/50 p-2.5 rounded-lg border border-gray-800 flex items-center gap-2">
+          <i class="fa-solid fa-check text-cyan-400"></i>
+          <span>Full Torso Vis</span>
+        </div>
+        <div class="bg-black/50 p-2.5 rounded-lg border border-gray-800 flex items-center gap-2">
+          <i class="fa-solid fa-chair text-amber-400"></i>
+          <span>Seated Mode OK</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <button id="btnGrantCamera" class="btn-cyber w-full py-3 bg-cyan-400 text-black font-sci font-black text-sm tracking-wider uppercase shadow-lg shadow-cyan-500/30">
+          <i class="fa-solid fa-camera mr-2"></i> ACTIVATE CAMERA & PLAY
+        </button>
+        <button id="btnSimulateCamera" class="btn-cyber w-full py-2.5 bg-gray-900 border border-gray-700 text-gray-300 font-sci text-xs hover:text-white">
+          <i class="fa-solid fa-gamepad mr-2"></i> PLAY WITHOUT CAMERA (SIMULATOR)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. MAIN MENU / HUB SCREEN -->
+  <div id="screenMainMenu" class="hidden absolute inset-0 z-30 flex flex-col justify-between p-4 overflow-y-auto pointer-events-auto bg-gradient-to-b from-black/80 via-black/40 to-black/90">
+    
+    <!-- Header: Player ID, Level, Currency -->
+    <div class="flex items-center justify-between cyber-panel px-3 py-2 rounded-xl">
+      <div class="flex items-center gap-2.5">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-cyan-600 to-purple-600 border border-cyan-400 flex items-center justify-center font-sci font-bold text-white shadow-md">
+          S1
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="font-sci font-bold text-sm text-white">OPERATOR_01</span>
+            <span class="text-[10px] px-1.5 py-0.2 rounded bg-purple-900/60 border border-purple-500/40 text-purple-300 font-sci">SHADOW CLASS</span>
+          </div>
+          <div class="text-[11px] text-gray-400">LVL <span id="menuPlayerLvl" class="text-cyan-400 font-bold">1</span> • EXP <span id="menuPlayerXp">0/100</span></div>
+        </div>
+      </div>
+
+      <!-- Currency Counters -->
+      <div class="flex items-center gap-3 font-sci text-xs">
+        <div class="flex items-center gap-1 bg-black/60 px-2 py-1 rounded border border-amber-500/30">
+          <i class="fa-solid fa-coins text-amber-400"></i>
+          <span id="menuCoins" class="font-bold text-amber-300">500</span>
+        </div>
+        <div class="flex items-center gap-1 bg-black/60 px-2 py-1 rounded border border-cyan-500/30">
+          <i class="fa-solid fa-gem text-cyan-400"></i>
+          <span id="menuGems" class="font-bold text-cyan-300">50</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center Holo Stage: Character Presentation -->
+    <div class="my-auto text-center flex flex-col items-center">
+      <div class="relative w-44 h-44 my-4 flex items-center justify-center">
+        <!-- Hologram base ring -->
+        <div class="absolute inset-0 rounded-full border border-cyan-500/30 animate-spin" style="animation-duration: 10s;"></div>
+        <div class="absolute inset-4 rounded-full border-2 border-dashed border-amber-500/40 animate-spin" style="animation-duration: 15s; animation-direction: reverse;"></div>
+        
+        <!-- Center Character Avatar Silhouette -->
+        <div class="w-32 h-32 rounded-full bg-gradient-to-b from-cyan-950/70 to-purple-950/90 border border-cyan-400/50 flex items-center justify-center shadow-2xl shadow-cyan-500/20">
+          <i class="fa-solid fa-user-ninja text-5xl text-cyan-300/80"></i>
+        </div>
+
+        <!-- Overdrive status badge -->
+        <div class="absolute -bottom-2 bg-black/80 px-3 py-1 rounded-full border border-cyan-400 text-[10px] font-sci text-cyan-300 tracking-wider">
+          CORE SYNCHRONIZED
+        </div>
+      </div>
+
+      <h2 class="text-xl font-sci font-black tracking-widest text-white glow-cyan">
+        CHAYLUEKLAB OVERDRIVE
+      </h2>
+      <p class="text-xs text-gray-400 font-sci tracking-wider mt-1">
+        PLAYER IS THE CONTROLLER • MOTION AR COMBAT
+      </p>
+    </div>
+
+    <!-- Mode Selector & Action Buttons -->
+    <div class="flex flex-col gap-2 max-w-md mx-auto w-full">
+      <button id="btnLaunchBattle" class="btn-cyber w-full py-4 bg-gradient-to-r from-rose-600 via-red-600 to-amber-600 text-white font-sci font-black text-base tracking-widest uppercase shadow-xl shadow-rose-600/30 border-t border-rose-300/40">
+        <i class="fa-solid fa-crosshairs mr-2"></i> ENGAGE BOSS BATTLE
+      </button>
+
+      <div class="grid grid-cols-4 gap-2">
+        <button id="btnOpenSkills" class="btn-cyber py-2.5 cyber-panel flex flex-col items-center justify-center text-gray-200 hover:text-cyan-300">
+          <i class="fa-solid fa-dna text-base text-cyan-400 mb-1"></i>
+          <span class="text-[10px] font-sci">SKILLS</span>
+        </button>
+        <button id="btnOpenVault" class="btn-cyber py-2.5 cyber-panel flex flex-col items-center justify-center text-gray-200 hover:text-amber-300">
+          <i class="fa-solid fa-box-archive text-base text-amber-400 mb-1"></i>
+          <span class="text-[10px] font-sci">VAULT</span>
+        </button>
+        <button id="btnOpenStore" class="btn-cyber py-2.5 cyber-panel flex flex-col items-center justify-center text-gray-200 hover:text-emerald-300">
+          <i class="fa-solid fa-cart-shopping text-base text-emerald-400 mb-1"></i>
+          <span class="text-[10px] font-sci">STORE</span>
+        </button>
+        <button id="btnOpenParty" class="btn-cyber py-2.5 cyber-panel flex flex-col items-center justify-center text-gray-200 hover:text-purple-300">
+          <i class="fa-solid fa-users-rays text-base text-purple-400 mb-1"></i>
+          <span class="text-[10px] font-sci">PARTY</span>
+        </button>
+      </div>
+
+      <!-- Quick Nav row for Pass & Settings -->
+      <div class="flex items-center justify-between text-xs font-sci px-2 text-gray-400 pt-1">
+        <button id="btnOpenPass" class="hover:text-amber-400 flex items-center gap-1">
+          <i class="fa-solid fa-shield-halved text-amber-400"></i> SHADOW PASS (LVL 1)
+        </button>
+        <button id="btnOpenSettings" class="hover:text-cyan-400 flex items-center gap-1">
+          <i class="fa-solid fa-gear"></i> SETTINGS
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. SKILL MATRIX MODAL -->
+  <div id="modalSkills" class="hidden absolute inset-0 z-40 bg-black/90 backdrop-blur-md flex flex-col justify-between p-4 overflow-y-auto">
+    <div class="flex items-center justify-between border-b border-cyan-900 pb-2">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-dna text-cyan-400"></i>
+        <h2 class="font-sci font-bold text-white text-sm">SKILL MATRIX TREE</h2>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-sci text-cyan-400">SKILL POINTS: <span id="skillPoints" class="font-bold text-white">3</span></span>
+        <button class="btnCloseModal text-gray-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+    </div>
+
+    <!-- Tree Categories Tabs -->
+    <div class="grid grid-cols-4 gap-1.5 my-3">
+      <button class="skill-tab active py-1.5 bg-cyan-950 border border-cyan-500 text-cyan-300 font-sci text-xs rounded" data-cat="ATTACK">ATTACK</button>
+      <button class="skill-tab py-1.5 bg-black/60 border border-gray-800 text-gray-400 font-sci text-xs rounded" data-cat="DEFENSE">DEFENSE</button>
+      <button class="skill-tab py-1.5 bg-black/60 border border-gray-800 text-gray-400 font-sci text-xs rounded" data-cat="MOTION">MOTION</button>
+      <button class="skill-tab py-1.5 bg-black/60 border border-gray-800 text-gray-400 font-sci text-xs rounded" data-cat="ENERGY">ENERGY</button>
+    </div>
+
+    <!-- Skills List Container -->
+    <div id="skillList" class="flex-1 space-y-2.5 overflow-y-auto pr-1">
+      <!-- Dynamic list generated by JS -->
+    </div>
+
+    <div class="pt-3 border-t border-gray-800">
+      <button class="btnCloseModal btn-cyber w-full py-2.5 bg-gray-900 border border-cyan-500/40 font-sci text-cyan-300 text-xs">
+        CONFIRM & RETURN TO HUB
+      </button>
+    </div>
+  </div>
+
+  <!-- 5. VAULT / INVENTORY MODAL -->
+  <div id="modalVault" class="hidden absolute inset-0 z-40 bg-black/90 backdrop-blur-md flex flex-col justify-between p-4 overflow-y-auto">
+    <div class="flex items-center justify-between border-b border-amber-900/60 pb-2">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-box-archive text-amber-400"></i>
+        <h2 class="font-sci font-bold text-white text-sm">OPERATOR VAULT</h2>
+      </div>
+      <button class="btnCloseModal text-gray-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+
+    <!-- Equipment Slots -->
+    <div class="grid grid-cols-3 gap-2 my-3 text-center">
+      <div class="cyber-panel p-2.5 rounded-xl border-amber-500/40">
+        <div class="text-[10px] text-gray-400 font-sci">HAND CORE</div>
+        <div id="vaultEquippedCore" class="font-sci font-bold text-xs text-amber-400 my-1">PLASMA BLUE</div>
+        <span class="text-[9px] bg-amber-950 px-2 py-0.5 rounded text-amber-300">EQUIPPED</span>
+      </div>
+      <div class="cyber-panel p-2.5 rounded-xl border-cyan-500/40">
+        <div class="text-[10px] text-gray-400 font-sci">OPERATOR SUIT</div>
+        <div id="vaultEquippedSkin" class="font-sci font-bold text-xs text-cyan-400 my-1">SHADOW CLASSIC</div>
+        <span class="text-[9px] bg-cyan-950 px-2 py-0.5 rounded text-cyan-300">EQUIPPED</span>
+      </div>
+      <div class="cyber-panel p-2.5 rounded-xl border-purple-500/40">
+        <div class="text-[10px] text-gray-400 font-sci">OVERDRIVE AURA</div>
+        <div class="font-sci font-bold text-xs text-purple-400 my-1">GOLD BURST</div>
+        <span class="text-[9px] bg-purple-950 px-2 py-0.5 rounded text-purple-300">EQUIPPED</span>
+      </div>
+    </div>
+
+    <!-- Inventory Filter Items -->
+    <div id="vaultItemsContainer" class="flex-1 space-y-2 overflow-y-auto">
+      <!-- Injected by JS -->
+    </div>
+
+    <div class="pt-3 border-t border-gray-800">
+      <button class="btnCloseModal btn-cyber w-full py-2.5 bg-gray-900 border border-amber-500/40 font-sci text-amber-300 text-xs">
+        CLOSE VAULT
+      </button>
+    </div>
+  </div>
+
+  <!-- 6. STORE (DEMO / COSMETIC ONLY) -->
+  <div id="modalStore" class="hidden absolute inset-0 z-40 bg-black/90 backdrop-blur-md flex flex-col justify-between p-4 overflow-y-auto">
+    <div class="flex items-center justify-between border-b border-emerald-900/60 pb-2">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-cart-shopping text-emerald-400"></i>
+        <h2 class="font-sci font-bold text-white text-sm">CYBER DEPOT (COSMETIC ONLY)</h2>
+      </div>
+      <button class="btnCloseModal text-gray-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+
+    <div class="bg-emerald-950/40 border border-emerald-500/40 p-2.5 rounded-lg my-2 text-[11px] text-emerald-300 flex items-center gap-2">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>FAIR PLAY ARCHITECTURE: All items are strictly visual cosmetics. Zero Pay-to-Win stat bonuses.</span>
+    </div>
+
+    <div class="flex-1 space-y-2.5 overflow-y-auto pr-1">
+      <!-- Signature Brand Skin Card -->
+      <div class="cyber-panel p-3 rounded-xl border-amber-500/50 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded bg-gradient-to-tr from-amber-900 to-black border border-amber-400 flex items-center justify-center text-amber-400">
+            <i class="fa-solid fa-hat-cowboy text-xl"></i>
+          </div>
+          <div>
+            <div class="font-sci font-bold text-xs text-amber-400">CHAYLUEKLAB SIGNATURE</div>
+            <div class="text-[10px] text-gray-400">Mystery Man • Dark Red & Metallic Gold Particles</div>
+            <div class="text-[10px] text-amber-300 mt-0.5">LEGENDARY COSMETIC</div>
+          </div>
+        </div>
+        <button class="btnBuyItem btn-cyber px-3 py-1.5 bg-amber-500 text-black font-sci font-bold text-xs" data-item="CHAYLUEKLAB SIGNATURE" data-cost="200" data-currency="GEMS">
+          200 <i class="fa-solid fa-gem text-[10px]"></i>
+        </button>
+      </div>
+
+      <!-- Blood Red Energy Core -->
+      <div class="cyber-panel p-3 rounded-xl border-rose-500/30 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded bg-gradient-to-tr from-rose-950 to-black border border-rose-400 flex items-center justify-center text-rose-400">
+            <i class="fa-solid fa-fire text-xl"></i>
+          </div>
+          <div>
+            <div class="font-sci font-bold text-xs text-rose-400">CRIMSON VOID CORE</div>
+            <div class="text-[10px] text-gray-400">Custom Red Palm Lightning Arc & Trail</div>
+          </div>
+        </div>
+        <button class="btnBuyItem btn-cyber px-3 py-1.5 bg-rose-600 text-white font-sci font-bold text-xs" data-item="CRIMSON VOID CORE" data-cost="800" data-currency="COINS">
+          800 <i class="fa-solid fa-coins text-[10px]"></i>
+        </button>
+      </div>
+
+      <!-- Test Gem Refill (Demo Currency) -->
+      <div class="cyber-panel p-3 rounded-xl border-cyan-500/30 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded bg-gradient-to-tr from-cyan-950 to-black border border-cyan-400 flex items-center justify-center text-cyan-400">
+            <i class="fa-solid fa-gem text-xl"></i>
+          </div>
+          <div>
+            <div class="font-sci font-bold text-xs text-cyan-400">TEST GEM PACKAGE</div>
+            <div class="text-[10px] text-gray-400">Demo sandbox currency for testing purchases</div>
+          </div>
+        </div>
+        <button id="btnClaimFreeGems" class="btn-cyber px-3 py-1.5 bg-cyan-500 text-black font-sci font-bold text-xs">
+          +100 FREE
+        </button>
+      </div>
+    </div>
+
+    <div class="pt-3 border-t border-gray-800">
+      <button class="btnCloseModal btn-cyber w-full py-2.5 bg-gray-900 border border-emerald-500/40 font-sci text-emerald-300 text-xs">
+        RETURN TO HUB
+      </button>
+    </div>
+  </div>
+
+  <!-- 7. PARTY ROOM MODAL -->
+  <div id="modalParty" class="hidden absolute inset-0 z-40 bg-black/90 backdrop-blur-md flex flex-col justify-between p-4 overflow-y-auto">
+    <div class="flex items-center justify-between border-b border-purple-900/60 pb-2">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-users-rays text-purple-400"></i>
+        <h2 class="font-sci font-bold text-white text-sm">CO-OP RAID PARTY</h2>
+      </div>
+      <button class="btnCloseModal text-gray-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+
+    <div class="my-4 text-center">
+      <div class="text-xs text-gray-400 font-sci">SESSION CODE</div>
+      <div class="text-2xl font-sci font-black text-purple-400 tracking-widest my-1 glow-cyan">SHDW-7284</div>
+      <div class="text-[10px] text-gray-500">SHARE CODE WITH NEARBY AR OPERATORS</div>
+    </div>
+
+    <!-- Party Members Slots -->
+    <div class="space-y-2 flex-1">
+      <div class="cyber-panel p-2.5 rounded-lg flex items-center justify-between border-purple-500/40">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded bg-purple-900 flex items-center justify-center font-sci text-xs font-bold text-white">P1</div>
+          <div>
+            <div class="font-sci text-xs text-white">OPERATOR_01 (YOU)</div>
+            <div class="text-[10px] text-purple-400">HOST • SHADOW CLASS</div>
+          </div>
+        </div>
+        <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-500/40 text-[10px] font-sci">READY</span>
+      </div>
+
+      <div class="cyber-panel p-2.5 rounded-lg flex items-center justify-between border-gray-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded bg-gray-900 flex items-center justify-center font-sci text-xs font-bold text-gray-500">P2</div>
+          <div>
+            <div class="font-sci text-xs text-gray-300">VOID_HUNTER_99</div>
+            <div class="text-[10px] text-cyan-400">STRIKER CLASS</div>
+          </div>
+        </div>
+        <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-500/40 text-[10px] font-sci">READY</span>
+      </div>
+
+      <div class="border border-dashed border-gray-800 p-2.5 rounded-lg flex items-center justify-between text-gray-600 text-xs font-sci">
+        <span>PLAYER 3</span>
+        <span>WAITING TO JOIN...</span>
+      </div>
+
+      <div class="border border-dashed border-gray-800 p-2.5 rounded-lg flex items-center justify-between text-gray-600 text-xs font-sci">
+        <span>PLAYER 4</span>
+        <span>WAITING TO JOIN...</span>
+      </div>
+    </div>
+
+    <div class="pt-3 border-t border-gray-800">
+      <button class="btnCloseModal btn-cyber w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-sci font-bold text-xs">
+        LAUNCH CO-OP RAID (DEMO)
+      </button>
+    </div>
+  </div>
+
+  <!-- 8. POST-BATTLE DEBRIEF SCREEN -->
+  <div id="screenVictory" class="hidden absolute inset-0 z-40 bg-black/90 backdrop-blur-md flex flex-col justify-between p-6">
+    <div class="text-center my-auto">
+      <div id="victoryBadge" class="text-4xl mb-2 text-amber-400 animate-bounce">
+        <i class="fa-solid fa-crown"></i>
+      </div>
+      <h1 id="victoryTitle" class="text-2xl font-sci font-black tracking-widest text-white glow-gold mb-1">
+        THE RED CORE ELIMINATED
+      </h1>
+      <div class="text-xs font-sci text-cyan-400 tracking-wider mb-6">
+        CHAYLUEKLAB SHADOW PROTOCOL COMPLETED
+      </div>
+
+      <!-- Stats Box -->
+      <div class="cyber-panel p-4 rounded-xl max-w-sm mx-auto grid grid-cols-2 gap-4 text-left font-sci mb-6">
+        <div>
+          <div class="text-[10px] text-gray-400 uppercase">FINAL SCORE</div>
+          <div id="debriefScore" class="text-xl font-bold text-cyan-400">48,500</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-gray-400 uppercase">MAX COMBO</div>
+          <div id="debriefCombo" class="text-xl font-bold text-amber-400">x24</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-gray-400 uppercase">EXP GAINED</div>
+          <div id="debriefXp" class="text-base font-bold text-purple-400">+120 XP</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-gray-400 uppercase">COINS RECOVERED</div>
+          <div id="debriefCoins" class="text-base font-bold text-emerald-400">+350 COINS</div>
+        </div>
+      </div>
+
+      <button id="btnReturnHub" class="btn-cyber w-full max-w-sm py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-sci font-black text-sm tracking-wider uppercase shadow-lg shadow-cyan-500/30">
+        COLLECT REWARDS & RETURN TO HUB
+      </button>
+    </div>
+  </div>
+
+  <!-- AUDIO ENGINE & WEB AUDIO SYNTHESIZER -->
+  <script>
+    class CyberAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContextClass();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playLaserShoot() {
+        if (!this.ctx || this.muted) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(880, now);
+        osc.frequency.exponentialRampToValueAtTime(110, now + 0.18);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.18);
+      }
+
+      playHit() {
+        if (!this.ctx || this.muted) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.exponentialRampToValueAtTime(60, now + 0.12);
+
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.12);
+      }
+
+      playOverdrive() {
+        if (!this.ctx || this.muted) return;
+        const now = this.ctx.currentTime;
+        // Dual oscillator sonic boom
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc1.type = 'sine';
+        osc2.type = 'sawtooth';
+
+        osc1.frequency.setValueAtTime(150, now);
+        osc1.frequency.exponentialRampToValueAtTime(600, now + 0.6);
+
+        osc2.frequency.setValueAtTime(220, now);
+        osc2.frequency.exponentialRampToValueAtTime(880, now + 0.6);
+
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.8);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.8);
+        osc2.stop(now + 0.8);
+      }
+
+      playBossWarning() {
+        if (!this.ctx || this.muted) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.setValueAtTime(330, now + 0.1);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.25);
+      }
+    }
+
+    const audioEngine = new CyberAudioEngine();
+  </script>
+
+  <!-- ================= MAIN GAME CONTROLLER & AR ENGINE ================= -->
+  <script>
+    const STATE = {
+      user: {
+        name: 'OPERATOR_01',
+        level: 1,
+        xp: 0,
+        xpNext: 100,
+        coins: 500,
+        gems: 50,
+        skillPoints: 3,
+        class: 'SHADOW',
+        equippedCore: 'PLASMA BLUE',
+        equippedSkin: 'SHADOW CLASSIC',
+        inventory: ['PLASMA BLUE', 'SHADOW CLASSIC', 'GOLD BURST']
+      },
+      skills: {
+        'PALM SHOT': { level: 1, max: 5, cat: 'ATTACK', desc: 'Increases basic energy blast damage.' },
+        'POWER BEAM': { level: 0, max: 3, cat: 'ATTACK', desc: 'Sustained laser deals multi-hit piercing damage.' },
+        'SHIELD STRENGTH': { level: 1, max: 5, cat: 'DEFENSE', desc: 'Increases block window and absorbed damage.' },
+        'PERFECT BLOCK': { level: 0, max: 3, cat: 'DEFENSE', desc: 'Counter-blasts boss when raising fist in time.' },
+        'DODGE SENSITIVITY': { level: 1, max: 3, cat: 'MOTION', desc: 'Increases evasion detection radius.' },
+        'CHARGE VELOCITY': { level: 1, max: 5, cat: 'ENERGY', desc: 'Fist charging speeds up ultimate build-up.' }
+      },
+      tracking: {
+        active: false,
+        useSimulator: false,
+        confidenceBody: 0,
+        confidenceHand: 0,
+        landmarks: null,
+        leftHand: { x: 0.3, y: 0.6, isFist: false, isUp: false },
+        rightHand: { x: 0.7, y: 0.6, isOpen: false, isUp: false },
+        head: { x: 0.5, y: 0.3 }
+      },
+      game: {
+        active: false,
+        score: 0,
+        combo: 0,
+        maxCombo: 0,
+        overdriveEnergy: 0,
+        isOverdrive: false,
+        overdriveTimeLeft: 0,
+        lastShootTime: 0,
+        shootCooldown: 250 // ms
+      },
+      boss: {
+        name: 'THE RED CORE',
+        phase: 1,
+        maxHp: 1000,
+        hp: 1000,
+        x: 0.5,
+        y: 0.28,
+        radius: 45,
+        weakPoint: { active: true, angle: 0, radius: 18 },
+        pulse: 0,
+        attackTimer: 0,
+        isRaging: false
+      },
+      projectiles: [], // Player shots
+      bossProjectiles: [], // Boss orbs
+      particles: [] // Holographic explosion sparks
+    };
+
+    const webcamEl = document.getElementById('webcam');
+    const canvas = document.getElementById('arCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Screen containers
+    const screenBoot = document.getElementById('screenBoot');
+    const screenSafety = document.getElementById('screenSafety');
+    const screenMainMenu = document.getElementById('screenMainMenu');
+    const gameHud = document.getElementById('gameHud');
+    const screenVictory = document.getElementById('screenVictory');
+
+    // Modals
+    const modalSkills = document.getElementById('modalSkills');
+    const modalVault = document.getElementById('modalVault');
+    const modalStore = document.getElementById('modalStore');
+    const modalParty = document.getElementById('modalParty');
+
+    // Resize canvas to full viewport
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const bootLogs = document.getElementById('bootLogs');
+    const btnBeginAuth = document.getElementById('btnBeginAuth');
+
+    const bootSteps = [
+      '> INITIALIZING CHAYLUEKLAB MOTION CORE...',
+      '> 01 CAMERA & OPTICAL SENSOR HOOK: OK',
+      '> 02 NEURAL POSE ESTIMATION (24 LANDMARKS): READY',
+      '> 03 PLASMA ENERGY MATRIX PIPELINE: ENGAGED',
+      '> 04 REAL-TIME STENCIL & OCCLUSION MESH: LOADED',
+      '> 05 PLAYER IS THE CONTROLLER. SYSTEM ONLINE.'
+    ];
+
+    let currentBootIndex = 0;
+    function runBootSequence() {
+      if (currentBootIndex < bootSteps.length) {
+        const line = document.createElement('div');
+        line.innerText = bootSteps[currentBootIndex];
+        line.className = 'text-cyan-400 font-mono text-[11px]';
+        bootLogs.appendChild(line);
+        currentBootIndex++;
+        setTimeout(runBootSequence, 320);
+      } else {
+        btnBeginAuth.classList.remove('hidden');
+      }
+    }
+    window.addEventListener('load', () => {
+      runBootSequence();
+    });
+
+    btnBeginAuth.addEventListener('click', () => {
+      audioEngine.init();
+      screenBoot.classList.add('hidden');
+      screenSafety.classList.remove('hidden');
+    });
+
+    let poseTracker = null;
+    let cameraInstance = null;
+
+    async function initCameraTracking() {
+      try {
+        poseTracker = new Pose({
+          locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+        });
+
+        poseTracker.setOptions({
+          modelComplexity: 0, // Mobile optimized lightweight model
+          smoothLandmarks: true,
+          enableSegmentation: false,
+          minDetectionConfidence: 0.5,
+          minTrackingConfidence: 0.5
+        });
+
+        poseTracker.onResults(onPoseResults);
+
+        cameraInstance = new Camera(webcamEl, {
+          onFrame: async () => {
+            if (STATE.tracking.active && !STATE.tracking.useSimulator) {
+              await poseTracker.send({ image: webcamEl });
+            }
+          },
+          width: 640,
+          height: 480
+        });
+
+        await cameraInstance.start();
+        STATE.tracking.active = true;
+        STATE.tracking.useSimulator = false;
+
+        document.getElementById('bodyBadge').textContent = 'BODY 98%';
+        document.getElementById('handBadge').textContent = 'HANDS LOCKED';
+      } catch (err) {
+        console.warn('Real camera tracking fallback to Simulator Mode:', err);
+        enableSimulatorMode();
+      }
+    }
+
+    function enableSimulatorMode() {
+      STATE.tracking.active = true;
+      STATE.tracking.useSimulator = true;
+      document.getElementById('bodyBadge').textContent = 'BODY (SIM)';
+      document.getElementById('handBadge').textContent = 'TOUCH CTRL';
+    }
+
+    // Handle Pose Results from MediaPipe
+    function onPoseResults(results) {
+      if (!results.poseLandmarks) {
+        STATE.tracking.confidenceBody = 0;
+        return;
+      }
+
+      STATE.tracking.landmarks = results.poseLandmarks;
+      STATE.tracking.confidenceBody = 95;
+
+      const lm = results.poseLandmarks;
+      // Nose / Head
+      if (lm[0]) {
+        STATE.tracking.head.x = 1.0 - lm[0].x; // Invert for selfie mirror
+        STATE.tracking.head.y = lm[0].y;
+      }
+
+      // Wrists / Hands (15: Left Wrist, 16: Right Wrist)
+      if (lm[15]) {
+        STATE.tracking.leftHand.x = 1.0 - lm[15].x;
+        STATE.tracking.leftHand.y = lm[15].y;
+        // Raise hand detection for Ultimate
+        STATE.tracking.leftHand.isUp = lm[15].y < (lm[11] ? lm[11].y : 0.4);
+      }
+
+      if (lm[16]) {
+        STATE.tracking.rightHand.x = 1.0 - lm[16].x;
+        STATE.tracking.rightHand.y = lm[16].y;
+        STATE.tracking.rightHand.isUp = lm[16].y < (lm[12] ? lm[12].y : 0.4);
+      }
+
+      // Check for dual arm raise gesture (Overdrive Trigger)
+      if (STATE.tracking.leftHand.isUp && STATE.tracking.rightHand.isUp) {
+        triggerOverdriveGesture();
+      }
+
+      // Auto palm shoot gesture (when right hand is extended)
+      if (STATE.game.active && Date.now() - STATE.game.lastShootTime > STATE.game.shootCooldown) {
+        if (STATE.tracking.rightHand.y < 0.65) {
+          triggerPlayerBlast(
+            STATE.tracking.rightHand.x * canvas.width,
+            STATE.tracking.rightHand.y * canvas.height
+          );
+        }
+      }
+    }
+
+    document.getElementById('btnGrantCamera').addEventListener('click', async () => {
+      screenSafety.classList.add('hidden');
+      screenMainMenu.classList.remove('hidden');
+      await initCameraTracking();
+    });
+
+    document.getElementById('btnSimulateCamera').addEventListener('click', () => {
+      enableSimulatorMode();
+      screenSafety.classList.add('hidden');
+      screenMainMenu.classList.remove('hidden');
+    });
+
+    let lastTime = performance.now();
+    let frameCount = 0;
+    let fpsTimer = 0;
+
+    function gameLoop(now) {
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+
+      // FPS Counter
+      frameCount++;
+      fpsTimer += dt;
+      if (fpsTimer >= 1.0) {
+        document.getElementById('fpsCounter').innerText = `${frameCount} FPS`;
+        frameCount = 0;
+        fpsTimer = 0;
+      }
+
+      // 1. Clear Canvas and Draw Camera Feed / Background
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (STATE.tracking.active && !STATE.tracking.useSimulator && webcamEl.readyState >= 2) {
+        // Draw mirrored webcam feed
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(webcamEl, -canvas.width, 0, canvas.width, canvas.height);
+        ctx.restore();
+
+        // Dark tint overlay for AR contrast
+        ctx.fillStyle = 'rgba(4, 8, 18, 0.65)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      } else {
+        // Futuristic Cyber Grid background for simulator / idle
+        drawCyberGrid();
+      }
+
+      // 2. Draw Digital Skeleton & Hologram Rings around Player
+      drawDigitalSkeleton();
+
+      // 3. Render Hand Energy Cores
+      drawEnergyCores();
+
+      // 4. Update & Render Game Logic if active
+      if (STATE.game.active) {
+        updateGameLogic(dt);
+        drawBoss();
+        drawProjectiles();
+        drawBossProjectiles();
+      }
+
+      // 5. Particles Update & Render
+      updateAndDrawParticles();
+
+      requestAnimationFrame(gameLoop);
+    }
+    requestAnimationFrame(gameLoop);
+
+    function drawCyberGrid() {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(0, 243, 255, 0.08)';
+      ctx.lineWidth = 1;
+
+      const gridSize = 40;
+      for (let x = 0; x < canvas.width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawDigitalSkeleton() {
+      const lm = STATE.tracking.landmarks;
+      if (!lm) return;
+
+      ctx.save();
+      ctx.strokeStyle = 'rgba(0, 243, 255, 0.5)';
+      ctx.lineWidth = 2;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#00f3ff';
+
+      // Connect arms
+      const connections = [
+        [11, 13], [13, 15], // Left Arm
+        [12, 14], [14, 16], // Right Arm
+        [11, 12]            // Shoulder Line
+      ];
+
+      connections.forEach(([i, j]) => {
+        if (lm[i] && lm[j]) {
+          const x1 = (1.0 - lm[i].x) * canvas.width;
+          const y1 = lm[i].y * canvas.height;
+          const x2 = (1.0 - lm[j].x) * canvas.width;
+          const y2 = lm[j].y * canvas.height;
+
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+        }
+      });
+
+      // Holographic Ring at chest/torso
+      if (lm[11] && lm[12]) {
+        const cx = ((1.0 - lm[11].x + 1.0 - lm[12].x) / 2) * canvas.width;
+        const cy = ((lm[11].y + lm[12].y) / 2 + 0.05) * canvas.height;
+
+        ctx.strokeStyle = 'rgba(255, 183, 3, 0.4)';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 38, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    function drawEnergyCores() {
+      // Coordinates for hands (from tracking or simulated defaults)
+      const rx = STATE.tracking.rightHand.x * canvas.width;
+      const ry = STATE.tracking.rightHand.y * canvas.height;
+      const lx = STATE.tracking.leftHand.x * canvas.width;
+      const ly = STATE.tracking.leftHand.y * canvas.height;
+
+      // Right Hand: Attack Core (Plasma Cyan/Gold)
+      drawSingleCore(rx, ry, '#00f3ff', '#38bdf8', 'ATTACK');
+
+      // Left Hand: Defense Core (Emerald Shield)
+      drawSingleCore(lx, ly, '#10b981', '#34d399', 'SHIELD');
+    }
+
+    function drawSingleCore(x, y, primaryColor, glowColor, label) {
+      ctx.save();
+      const time = performance.now() * 0.005;
+
+      // Outer Holographic Circle
+      ctx.strokeStyle = primaryColor;
+      ctx.lineWidth = 2;
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = glowColor;
+
+      ctx.beginPath();
+      ctx.arc(x, y, 26 + Math.sin(time * 3) * 3, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Spinning Tech Brackets
+      ctx.beginPath();
+      ctx.arc(x, y, 34, time, time + Math.PI * 0.8);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(x, y, 34, time + Math.PI, time + Math.PI * 1.8);
+      ctx.stroke();
+
+      // Glowing Core Node
+      ctx.fillStyle = glowColor;
+      ctx.beginPath();
+      ctx.arc(x, y, 10, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Mini text tag
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '10px Orbitron';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, y + 48);
+
+      ctx.restore();
+    }
+
+    function updateGameLogic(dt) {
+      const boss = STATE.boss;
+      boss.pulse += dt * 3;
+
+      // Overdrive timer decay
+      if (STATE.game.isOverdrive) {
+        STATE.game.overdriveTimeLeft -= dt;
+        if (STATE.game.overdriveTimeLeft <= 0) {
+          deactivateOverdrive();
+        }
+      }
+
+      // Boss movement: Floats horizontally
+      boss.x = 0.5 + Math.sin(boss.pulse * 0.8) * 0.22;
+      boss.weakPoint.angle += dt * 2.5;
+
+      // Boss Attack Cycle
+      boss.attackTimer += dt;
+      const attackInterval = boss.phase === 3 ? 1.4 : boss.phase === 2 ? 2.0 : 2.8;
+
+      if (boss.attackTimer >= attackInterval) {
+        boss.attackTimer = 0;
+        fireBossAttack();
+      }
+
+      // Update boss projectiles
+      for (let i = STATE.bossProjectiles.length - 1; i >= 0; i--) {
+        const bp = STATE.bossProjectiles[i];
+        bp.x += bp.vx * dt;
+        bp.y += bp.vy * dt;
+
+        // Check hit against player head or hands
+        const targetX = STATE.tracking.head.x * canvas.width;
+        const targetY = STATE.tracking.head.y * canvas.height;
+        const dist = Math.hypot(bp.x - targetX, bp.y - targetY);
+
+        if (dist < 45) {
+          // Player hit or perfect block
+          handlePlayerHit();
+          createSparks(bp.x, bp.y, '#ff0055', 12);
+          STATE.bossProjectiles.splice(i, 1);
+          continue;
+        }
+
+        // Out of screen
+        if (bp.y > canvas.height + 50 || bp.x < -50 || bp.x > canvas.width + 50) {
+          STATE.bossProjectiles.splice(i, 1);
+        }
+      }
+
+      // Update player projectiles
+      for (let i = STATE.projectiles.length - 1; i >= 0; i--) {
+        const p = STATE.projectiles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+
+        // Check collision with Boss
+        const bx = boss.x * canvas.width;
+        const by = boss.y * canvas.height;
+        const distToBoss = Math.hypot(p.x - bx, p.y - by);
+
+        if (distToBoss < boss.radius + 15) {
+          // Check if weak point hit
+          const wx = bx + Math.cos(boss.weakPoint.angle) * 35;
+          const wy = by + Math.sin(boss.weakPoint.angle) * 35;
+          const distToWeak = Math.hypot(p.x - wx, p.y - wy);
+
+          let damage = p.damage;
+          let isCritical = false;
+
+          if (distToWeak < boss.weakPoint.radius + 10) {
+            damage *= 2.2;
+            isCritical = true;
+            createSparks(wx, wy, '#ffb703', 20);
+          }
+
+          damageBoss(damage, isCritical);
+          createSparks(p.x, p.y, isCritical ? '#ffb703' : '#00f3ff', 10);
+          audioEngine.playHit();
+          STATE.projectiles.splice(i, 1);
+          continue;
+        }
+
+        // Remove offscreen
+        if (p.y < -40) {
+          STATE.projectiles.splice(i, 1);
+        }
+      }
+    }
+
+    function fireBossAttack() {
+      audioEngine.playBossWarning();
+      const bx = STATE.boss.x * canvas.width;
+      const by = STATE.boss.y * canvas.height;
+
+      // Aim toward player chest / head
+      const targetX = STATE.tracking.head.x * canvas.width;
+      const targetY = STATE.tracking.head.y * canvas.height;
+      const angle = Math.atan2(targetY - by, targetX - bx);
+      const speed = STATE.boss.phase === 3 ? 380 : 280;
+
+      STATE.bossProjectiles.push({
+        x: bx,
+        y: by,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        radius: 12
+      });
+
+      // Trigger warning HUD
+      const alertEl = document.getElementById('hudAlert');
+      alertEl.classList.remove('hidden');
+      setTimeout(() => alertEl.classList.add('hidden'), 1200);
+    }
+
+    function handlePlayerHit() {
+      // Decrease combo on hit
+      STATE.game.combo = 0;
+      updateHudStats();
+
+      // Screen glitch red flash
+      const vfx = document.getElementById('overdriveVfx');
+      vfx.style.backgroundColor = 'rgba(255, 0, 85, 0.3)';
+      setTimeout(() => {
+        vfx.style.backgroundColor = 'transparent';
+      }, 150);
+    }
+
+    function damageBoss(amount, isCrit) {
+      STATE.boss.hp = Math.max(0, STATE.boss.hp - amount);
+
+      // Score & combo
+      STATE.game.combo++;
+      if (STATE.game.combo > STATE.game.maxCombo) {
+        STATE.game.maxCombo = STATE.game.combo;
+      }
+      const multiplier = Math.min(5, 1 + Math.floor(STATE.game.combo / 5));
+      const gainedScore = (isCrit ? 350 : 150) * multiplier;
+      STATE.game.score += gainedScore;
+
+      // Charge Overdrive Energy
+      if (!STATE.game.isOverdrive) {
+        STATE.game.overdriveEnergy = Math.min(100, STATE.game.overdriveEnergy + (isCrit ? 8 : 4));
+        if (STATE.game.overdriveEnergy >= 100) {
+          document.getElementById('btnManualUlt').disabled = false;
+        }
+      }
+
+      // Check Boss Phases
+      const hpPct = (STATE.boss.hp / STATE.boss.maxHp) * 100;
+      if (hpPct <= 35 && STATE.boss.phase < 3) {
+        STATE.boss.phase = 3;
+        STATE.boss.isRaging = true;
+        document.getElementById('bossPhaseBadge').textContent = 'PHASE 3 RAGE';
+        document.getElementById('bossPhaseBadge').className = 'text-[10px] px-1.5 py-0.5 rounded bg-red-900 border border-red-500 text-amber-300 animate-pulse';
+      } else if (hpPct <= 70 && STATE.boss.phase < 2) {
+        STATE.boss.phase = 2;
+        document.getElementById('bossPhaseBadge').textContent = 'PHASE 2';
+      }
+
+      updateHudStats();
+
+      // Check Boss Defeat
+      if (STATE.boss.hp <= 0) {
+        triggerVictory();
+      }
+    }
+
+    function updateHudStats() {
+      document.getElementById('hudScore').textContent = STATE.game.score.toString().padStart(5, '0');
+      document.getElementById('hudCombo').textContent = `x${STATE.game.combo}`;
+
+      const hpPct = Math.round((STATE.boss.hp / STATE.boss.maxHp) * 100);
+      document.getElementById('bossHpPercent').textContent = `${hpPct}%`;
+      document.getElementById('bossHpBar').style.width = `${hpPct}%`;
+
+      document.getElementById('energyPercent').textContent = `${Math.round(STATE.game.overdriveEnergy)}%`;
+      document.getElementById('energyBar').style.width = `${STATE.game.overdriveEnergy}%`;
+    }
+
+    function drawBoss() {
+      const boss = STATE.boss;
+      const bx = boss.x * canvas.width;
+      const by = boss.y * canvas.height;
+      const r = boss.radius;
+
+      ctx.save();
+      // Outer Warning Ring
+      ctx.strokeStyle = boss.isRaging ? 'rgba(255, 0, 85, 0.8)' : 'rgba(239, 68, 68, 0.5)';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([8, 6]);
+      ctx.beginPath();
+      ctx.arc(bx, by, r + 15 + Math.sin(boss.pulse * 2) * 5, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Main Core Body
+      const gradient = ctx.createRadialGradient(bx, by, 5, bx, by, r);
+      gradient.addColorStop(0, '#ffffff');
+      gradient.addColorStop(0.3, '#ef4444');
+      gradient.addColorStop(1, '#7f1d1d');
+
+      ctx.fillStyle = gradient;
+      ctx.shadowBlur = 30;
+      ctx.shadowColor = '#ef4444';
+      ctx.beginPath();
+      ctx.arc(bx, by, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Rotating Weak Point Diamond
+      const wx = bx + Math.cos(boss.weakPoint.angle) * 35;
+      const wy = by + Math.sin(boss.weakPoint.angle) * 35;
+
+      ctx.fillStyle = '#ffb703';
+      ctx.shadowColor = '#ffb703';
+      ctx.beginPath();
+      ctx.arc(wx, wy, boss.weakPoint.radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Core Text
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 11px Orbitron';
+      ctx.textAlign = 'center';
+      ctx.fillText(boss.phase === 3 ? 'RAGE' : 'CORE', bx, by + 4);
+
+      ctx.restore();
+    }
+
+    function drawProjectiles() {
+      ctx.save();
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = STATE.game.isOverdrive ? '#ffb703' : '#00f3ff';
+      ctx.fillStyle = STATE.game.isOverdrive ? '#ffb703' : '#00f3ff';
+
+      STATE.projectiles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+    }
+
+    function drawBossProjectiles() {
+      ctx.save();
+      ctx.shadowBlur = 18;
+      ctx.shadowColor = '#ff0055';
+      ctx.fillStyle = '#ff0055';
+
+      STATE.bossProjectiles.forEach(bp => {
+        ctx.beginPath();
+        ctx.arc(bp.x, bp.y, bp.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+    }
+
+    function createSparks(x, y, color, count) {
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 180 + 40;
+        STATE.particles.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          radius: Math.random() * 3 + 1,
+          color,
+          alpha: 1.0,
+          decay: Math.random() * 1.5 + 1.0
+        });
+      }
+    }
+
+    function updateAndDrawParticles() {
+      ctx.save();
+      for (let i = STATE.particles.length - 1; i >= 0; i--) {
+        const p = STATE.particles[i];
+        p.x += p.vx * 0.016;
+        p.y += p.vy * 0.016;
+        p.alpha -= p.decay * 0.016;
+
+        if (p.alpha <= 0) {
+          STATE.particles.splice(i, 1);
+          continue;
+        }
+
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function triggerPlayerBlast(originX, originY) {
+      STATE.game.lastShootTime = Date.now();
+      audioEngine.playLaserShoot();
+
+      // Aim toward Boss or direct straight up
+      const targetX = STATE.boss.x * canvas.width;
+      const targetY = STATE.boss.y * canvas.height;
+      const angle = Math.atan2(targetY - originY, targetX - originX);
+      const speed = 750;
+
+      const damageValue = STATE.game.isOverdrive ? 45 : 20;
+
+      STATE.projectiles.push({
+        x: originX,
+        y: originY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        radius: STATE.game.isOverdrive ? 10 : 6,
+        damage: damageValue
+      });
+
+      createSparks(originX, originY, '#00f3ff', 6);
+    }
+
+    function triggerOverdriveGesture() {
+      if (STATE.game.active && STATE.game.overdriveEnergy >= 100 && !STATE.game.isOverdrive) {
+        activateOverdrive();
+      }
+    }
+
+    function activateOverdrive() {
+      STATE.game.isOverdrive = true;
+      STATE.game.overdriveTimeLeft = 8.0; // 8 seconds of Overdrive
+      STATE.game.overdriveEnergy = 0;
+      document.getElementById('btnManualUlt').disabled = true;
+
+      audioEngine.playOverdrive();
+
+      // Screen FX
+      const overdriveEl = document.getElementById('overdriveVfx');
+      overdriveEl.className = 'absolute inset-0 z-15 pointer-events-none overdrive-active';
+
+      // Blast huge spark burst
+      createSparks(canvas.width / 2, canvas.height / 2, '#ffb703', 60);
+
+      document.getElementById('guideText').textContent = 'CHAYLUEKLAB OVERDRIVE ACTIVATED!';
+      setTimeout(() => {
+        if (STATE.game.active) {
+          document.getElementById('guideText').textContent = 'BLAST WEAKPOINTS WITH YOUR HANDS!';
+        }
+      }, 2500);
+    }
+
+    function deactivateOverdrive() {
+      STATE.game.isOverdrive = false;
+      document.getElementById('overdriveVfx').className = 'absolute inset-0 z-15 pointer-events-none';
+      updateHudStats();
+    }
+
+    document.getElementById('btnManualBlast').addEventListener('click', () => {
+      const rx = STATE.tracking.rightHand.x * canvas.width;
+      const ry = STATE.tracking.rightHand.y * canvas.height;
+      triggerPlayerBlast(rx, ry);
+    });
+
+    document.getElementById('btnManualUlt').addEventListener('click', () => {
+      activateOverdrive();
+    });
+
+    // Touch screen anywhere during game to fire towards that point
+    canvas.addEventListener('pointerdown', (e) => {
+      if (STATE.game.active) {
+        triggerPlayerBlast(e.clientX, e.clientY);
+      }
+    });
+
+    document.getElementById('btnLaunchBattle').addEventListener('click', () => {
+      screenMainMenu.classList.add('hidden');
+      gameHud.classList.remove('hidden');
+      startBattleSession();
+    });
+
+    function startBattleSession() {
+      STATE.game.active = true;
+      STATE.game.score = 0;
+      STATE.game.combo = 0;
+      STATE.game.overdriveEnergy = 0;
+      STATE.game.isOverdrive = false;
+
+      STATE.boss.hp = STATE.boss.maxHp;
+      STATE.boss.phase = 1;
+      STATE.boss.isRaging = false;
+      STATE.projectiles = [];
+      STATE.bossProjectiles = [];
+
+      document.getElementById('bossPhaseBadge').textContent = 'PHASE 1';
+      document.getElementById('bossPhaseBadge').className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 border border-rose-600/50 text-rose-300';
+      updateHudStats();
+    }
+
+    document.getElementById('btnPause').addEventListener('click', () => {
+      STATE.game.active = false;
+      gameHud.classList.add('hidden');
+      screenMainMenu.classList.remove('hidden');
+    });
+
+    function triggerVictory() {
+      STATE.game.active = false;
+      deactivateOverdrive();
+      gameHud.classList.add('hidden');
+      screenVictory.classList.remove('hidden');
+
+      // Calculate XP and Currency Rewards
+      const xpGained = 150;
+      const coinsGained = 350;
+
+      STATE.user.xp += xpGained;
+      STATE.user.coins += coinsGained;
+
+      if (STATE.user.xp >= STATE.user.xpNext) {
+        STATE.user.level++;
+        STATE.user.xp -= STATE.user.xpNext;
+        STATE.user.skillPoints += 1;
+      }
+
+      document.getElementById('debriefScore').textContent = STATE.game.score.toLocaleString();
+      document.getElementById('debriefCombo').textContent = `x${STATE.game.maxCombo}`;
+      document.getElementById('debriefXp').textContent = `+${xpGained} XP`;
+      document.getElementById('debriefCoins').textContent = `+${coinsGained} COINS`;
+
+      updateUserUI();
+    }
+
+    document.getElementById('btnReturnHub').addEventListener('click', () => {
+      screenVictory.classList.add('hidden');
+      screenMainMenu.classList.remove('hidden');
+    });
+
+    function updateUserUI() {
+      document.getElementById('menuPlayerLvl').textContent = STATE.user.level;
+      document.getElementById('menuPlayerXp').textContent = `${STATE.user.xp}/${STATE.user.xpNext}`;
+      document.getElementById('menuCoins').textContent = STATE.user.coins;
+      document.getElementById('menuGems').textContent = STATE.user.gems;
+      document.getElementById('skillPoints').textContent = STATE.user.skillPoints;
+    }
+
+    function openModal(modalEl) {
+      modalEl.classList.remove('hidden');
+    }
+    function closeAllModals() {
+      modalSkills.classList.add('hidden');
+      modalVault.classList.add('hidden');
+      modalStore.classList.add('hidden');
+      modalParty.classList.add('hidden');
+    }
+
+    document.querySelectorAll('.btnCloseModal').forEach(btn => {
+      btn.addEventListener('click', closeAllModals);
+    });
+
+    // 1. Skill Matrix Modal
+    document.getElementById('btnOpenSkills').addEventListener('click', () => {
+      renderSkillList('ATTACK');
+      openModal(modalSkills);
+    });
+
+    document.querySelectorAll('.skill-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        document.querySelectorAll('.skill-tab').forEach(t => {
+          t.className = 'skill-tab py-1.5 bg-black/60 border border-gray-800 text-gray-400 font-sci text-xs rounded';
+        });
+        e.target.className = 'skill-tab active py-1.5 bg-cyan-950 border border-cyan-500 text-cyan-300 font-sci text-xs rounded';
+        renderSkillList(e.target.dataset.cat);
+      });
+    });
+
+    function renderSkillList(category) {
+      const container = document.getElementById('skillList');
+      container.innerHTML = '';
+
+      Object.entries(STATE.skills)
+        .filter(([_, sk]) => sk.cat === category)
+        .forEach(([name, sk]) => {
+          const card = document.createElement('div');
+          card.className = 'cyber-panel p-3 rounded-xl flex items-center justify-between';
+          card.innerHTML = `
+            <div>
+              <div class="font-sci font-bold text-xs text-white">${name} <span class="text-cyan-400">LVL ${sk.level}/${sk.max}</span></div>
+              <div class="text-[10px] text-gray-400">${sk.desc}</div>
+            </div>
+            <button class="btnUpgradeSkill btn-cyber px-3 py-1.5 bg-cyan-500 text-black font-sci font-bold text-xs ${STATE.user.skillPoints <= 0 || sk.level >= sk.max ? 'opacity-40 pointer-events-none' : ''}">
+              UPGRADE
+            </button>
+          `;
+
+          const btn = card.querySelector('.btnUpgradeSkill');
+          btn.addEventListener('click', () => {
+            if (STATE.user.skillPoints > 0 && sk.level < sk.max) {
+              STATE.user.skillPoints--;
+              sk.level++;
+              updateUserUI();
+              renderSkillList(category);
+            }
+          });
+
+          container.appendChild(card);
+        });
+    }
+
+    // 2. Vault Modal
+    document.getElementById('btnOpenVault').addEventListener('click', () => {
+      renderVault();
+      openModal(modalVault);
+    });
+
+    function renderVault() {
+      const container = document.getElementById('vaultItemsContainer');
+      container.innerHTML = '';
+
+      STATE.user.inventory.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'cyber-panel p-2.5 rounded-lg flex items-center justify-between border-cyan-500/20';
+        card.innerHTML = `
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-shield text-cyan-400"></i>
+            <span class="font-sci text-xs text-white">${item}</span>
+          </div>
+          <span class="text-[9px] bg-cyan-950 px-2 py-0.5 rounded text-cyan-300 font-sci">IN VAULT</span>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // 3. Store Modal
+    document.getElementById('btnOpenStore').addEventListener('click', () => {
+      openModal(modalStore);
+    });
+
+    document.querySelectorAll('.btnBuyItem').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const item = btn.dataset.item;
+        const cost = parseInt(btn.dataset.cost);
+        const curr = btn.dataset.currency;
+
+        if (curr === 'GEMS' && STATE.user.gems >= cost) {
+          STATE.user.gems -= cost;
+          STATE.user.inventory.push(item);
+          btn.textContent = 'OWNED';
+          btn.classList.add('opacity-50', 'pointer-events-none');
+          updateUserUI();
+        } else if (curr === 'COINS' && STATE.user.coins >= cost) {
+          STATE.user.coins -= cost;
+          STATE.user.inventory.push(item);
+          btn.textContent = 'OWNED';
+          btn.classList.add('opacity-50', 'pointer-events-none');
+          updateUserUI();
+        }
+      });
+    });
+
+    document.getElementById('btnClaimFreeGems').addEventListener('click', () => {
+      STATE.user.gems += 100;
+      updateUserUI();
+      const btn = document.getElementById('btnClaimFreeGems');
+      btn.textContent = 'CLAIMED (+100)';
+      setTimeout(() => btn.textContent = '+100 FREE', 2000);
+    });
+
+    // 4. Party Modal
+    document.getElementById('btnOpenParty').addEventListener('click', () => {
+      openModal(modalParty);
+    });
+  </script>
+</body>
+</html>

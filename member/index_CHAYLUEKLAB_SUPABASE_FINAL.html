@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaylueklab - ซีเนียร์ ฮับ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        },
+                        line: {
+                            500: '#06C755',
+                            600: '#05b34b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+    </style>
+    <!--
+      CHAYLUEKLAB Senior LIFF-ready build | LIFF ID: 2011681452-k1lfYGsF
+      1) Deploy this file to an HTTPS URL
+      2) Set that URL as LINE Developers > LIFF > Endpoint URL
+      3) Paste the newly-created LIFF ID into the app's LINE tab
+      Recommended scopes: openid, profile
+      Optional for liff.sendMessages(): chat_message.write
+    -->
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <header class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white/20 p-2 rounded-xl text-xl">
+                    <i class="fa-solid fa-crown text-amber-300"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Chaylueklab</h1>
+                    <p class="text-xs text-emerald-100">ระบบจัดการชีวิต & ผู้ช่วยส่วนตัว ซีเนียร์</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span id="userBadge" class="bg-emerald-800 text-xs px-3 py-1 rounded-full font-medium border border-emerald-500/30">
+                    แพ็กเกจ: พื้นฐาน
+                </span>
+                <button onclick="openUpgradeModal()" class="bg-amber-400 hover:bg-amber-500 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-lg transition shadow">
+                    อัปเกรดซีเนียร์
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
+        
+        <!-- Tab Navigation -->
+        <div class="flex overflow-x-auto space-x-2 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
+            <button onclick="switchTab('overview')" id="tab-overview" class="flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-semibold transition bg-emerald-600 text-white shadow-sm flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-house"></i><span>หน้าแรก</span>
+            </button>
+            <button onclick="switchTab('notes')" id="tab-notes" class="flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-100 flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-pen-to-square"></i><span>จดงาน & การเงิน</span>
+            </button>
+            <button onclick="switchTab('storage')" id="tab-storage" class="flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-100 flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-folder-open"></i><span>ไฟล์ & สลิป</span>
+            </button>
+            <button onclick="switchTab('line')" id="tab-line" class="flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-100 flex items-center justify-center space-x-1.5">
+                <i class="fa-brands fa-line text-emerald-500 text-sm"></i><span>เชื่อม LINE</span>
+            </button>
+            <button onclick="switchTab('compare')" id="tab-compare" class="flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-100 flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-list-check"></i><span>เปรียบเทียบแผน</span>
+            </button>
+        </div>
+
+        <!-- TAB CONTENT: OVERVIEW -->
+        <div id="content-overview" class="space-y-6">
+            <!-- Greeting & Quick Status Card -->
+            <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
+                <div class="absolute right-0 bottom-0 opacity-10 transform translate-x-4 translate-y-4">
+                    <i class="fa-solid fa-shield-halved text-9xl"></i>
+                </div>
+                <div class="relative z-10 space-y-3">
+                    <span id="heroLiffStatus" class="bg-white/20 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">สถานะระบบ: เว็บพร้อมใช้งาน • รอเชื่อม LIFF</span>
+                    <h2 class="text-2xl font-bold">สวัสดี, คุณชายลึกลับ! 👋</h2>
+                    <p class="text-emerald-100 text-sm max-w-xl">
+                        ผู้ช่วยอัจฉริยะจัดการนัดหมาย การเงิน สลิปใบเสร็จ พร้อมระบบสั่งงานด้วยเสียง เชื่อมต่อ LINE และแจ้งเตือนครบวงจร
+                    </p>
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button onclick="simulateMorningCard()" class="bg-white text-emerald-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-emerald-50 transition shadow">
+                            <i class="fa-solid fa-sun text-amber-500 mr-1.5"></i> การ์ดสวัสดีตอนเช้า
+                        </button>
+                        <button onclick="simulateDailySummary()" class="bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-emerald-800 transition border border-emerald-500/40">
+                            <i class="fa-solid fa-chart-pie mr-1.5"></i> สรุปทั้งหมดในวันนี้
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div onclick="switchTab('notes'); openModal('task')" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer flex flex-col items-center text-center space-y-2">
+                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <span class="font-bold text-sm">จดงาน/นัดหมาย</span>
+                    <span class="text-xs text-slate-400">จดงานและนัดจากรูป/พิมพ์</span>
+                </div>
+                <div onclick="switchTab('notes'); openModal('finance')" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer flex flex-col items-center text-center space-y-2">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <span class="font-bold text-sm">บันทึกการเงิน</span>
+                    <span class="text-xs text-slate-400">แนบสลิป/ใบเสร็จได้</span>
+                </div>
+                <div onclick="triggerVoiceCommand()" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer flex flex-col items-center text-center space-y-2">
+                    <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-microphone-lines"></i>
+                    </div>
+                    <span class="font-bold text-sm">สั่งงานด้วยเสียง</span>
+                    <span class="text-xs text-slate-400">พูดเพื่อบันทึกงานด่วน</span>
+                </div>
+                <div onclick="switchTab('line')" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer flex flex-col items-center text-center space-y-2">
+                    <div class="w-12 h-12 bg-emerald-50 text-line-500 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-brands fa-line text-line-500"></i>
+                    </div>
+                    <span class="font-bold text-sm">เชื่อมต่อ LINE</span>
+                    <span id="lineStatusSummary" class="text-xs text-slate-400">สถานะ: กำลังตรวจสอบ LIFF</span>
+                </div>
+            </div>
+
+            <!-- Today's Schedule & Tasks preview -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 flex items-center space-x-2">
+                        <i class="fa-regular fa-calendar-days text-emerald-600"></i>
+                        <span>รายการวันนี้และนัดหมาย</span>
+                    </h3>
+                    <button onclick="switchTab('notes')" class="text-xs font-semibold text-emerald-600 hover:underline">ดูทั้งหมด</button>
+                </div>
+                <div id="todayTaskList" class="space-y-2">
+                    <!-- Dynamic Items -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT: NOTES & FINANCE -->
+        <div id="content-notes" class="space-y-6 hidden">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                <div>
+                    <h2 class="font-bold text-lg text-slate-800">จดบันทึกงาน, นัดหมาย และการเงิน</h2>
+                    <p class="text-xs text-slate-500">จัดการข้อมูลทั้งหมดของคุณ พร้อมรองรับการแนบไฟล์และสลิป</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="openModal('task')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow">
+                        <i class="fa-solid fa-plus mr-1"></i> เพิ่มงาน/นัดหมาย
+                    </button>
+                    <button onclick="openModal('finance')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow">
+                        <i class="fa-solid fa-plus mr-1"></i> บันทึกการเงิน
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Task List Box -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <h3 class="font-bold text-slate-800 flex items-center space-x-2">
+                            <i class="fa-solid fa-list-check text-emerald-600"></i>
+                            <span>งาน & นัดหมายทั้งหมด</span>
+                        </h3>
+                        <span id="taskCountBadge" class="bg-slate-100 text-slate-600 text-xs px-2.5 py-0.5 rounded-full font-semibold">0 รายการ</span>
+                    </div>
+                    <div id="fullTaskList" class="space-y-3 max-h-[400px] overflow-y-auto pr-1">
+                        <!-- Dynamic Tasks -->
+                    </div>
+                </div>
+
+                <!-- Finance List Box -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <h3 class="font-bold text-slate-800 flex items-center space-x-2">
+                            <i class="fa-solid fa-wallet text-blue-600"></i>
+                            <span>รายการเงิน & สลิป/ใบเสร็จ</span>
+                        </h3>
+                        <span id="financeCountBadge" class="bg-slate-100 text-slate-600 text-xs px-2.5 py-0.5 rounded-full font-semibold">0 รายการ</span>
+                    </div>
+                    <div id="fullFinanceList" class="space-y-3 max-h-[400px] overflow-y-auto pr-1">
+                        <!-- Dynamic Finance -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT: STORAGE & SLIPS -->
+        <div id="content-storage" class="space-y-6 hidden">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="font-bold text-lg text-slate-800">จัดการพื้นที่เก็บไฟล์ & กลุ่มไลน์</h2>
+                        <p class="text-xs text-slate-500">ฝากไฟล์ รูปภาพ และเอกสารสำคัญ (แพ็กเกจซีเนียร์รับพื้นที่ 5 GB และ 3 กลุ่มไลน์)</p>
+                    </div>
+                    <button onclick="openUploadModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow">
+                        <i class="fa-solid fa-upload mr-1"></i> อัปโหลดไฟล์
+                    </button>
+                </div>
+
+                <!-- Storage Meter -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                    <div class="flex justify-between text-xs font-semibold">
+                        <span id="storageUsedLabel">พื้นที่ใช้งาน: 12 MB / 100 MB</span>
+                        <span id="storagePercentLabel" class="text-emerald-600">12%</span>
+                    </div>
+                    <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
+                        <div id="storageBar" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 12%;"></div>
+                    </div>
+                </div>
+
+                <!-- LINE Groups Notes Section -->
+                <div class="bg-emerald-50/60 border border-emerald-100 p-4 rounded-2xl space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-sm text-slate-800 flex items-center space-x-2">
+                            <i class="fa-brands fa-line text-line-500 text-base"></i>
+                            <span>กลุ่มไลน์ & คุณโน้ตในกลุ่ม (<span id="lineGroupCountLabel">1</span>/ <span id="lineGroupMaxLabel">1</span> กลุ่ม)</span>
+                        </h3>
+                        <button onclick="addGroupNote()" class="bg-line-500 hover:bg-line-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition shadow">
+                            <i class="fa-solid fa-plus mr-1"></i> เพิ่มกลุ่มไลน์โน้ต
+                        </button>
+                    </div>
+                    <div id="lineGroupsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- Dynamic LINE Groups -->
+                    </div>
+                </div>
+
+                <!-- File List -->
+                <div class="space-y-3">
+                    <h3 class="font-bold text-sm text-slate-700">ไฟล์และรูปภาพที่เก็บไว้</h3>
+                    <div id="fileManagerList" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- Files items -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT: LINE LIFF CONNECTION -->
+        <div id="content-line" class="space-y-6 hidden">
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-6 max-w-3xl mx-auto">
+                <div class="flex items-center space-x-4 border-b pb-4">
+                    <div class="w-14 h-14 bg-emerald-50 text-line-500 rounded-2xl flex items-center justify-center text-3xl shadow-sm">
+                        <i class="fa-brands fa-line"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h2 class="font-bold text-xl text-slate-800">เชื่อมต่อ LINE LIFF (Chaylueklab)</h2>
+                        <p class="text-xs text-slate-500 break-all">LIFF URL: <span id="liffUrlText" class="font-mono text-emerald-600 font-semibold">ยังไม่ได้ตั้ง LIFF ID</span></p>
+                    </div>
+                </div>
+
+                <!-- LIFF Setup -->
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 space-y-3">
+                    <div>
+                        <h3 class="font-bold text-sm text-amber-900">ตั้งค่า LIFF App ID</h3>
+                        <p class="text-[11px] text-amber-800 mt-1">
+                            หลังจากกด Add ใน LINE Developers ให้นำ LIFF ID ที่ได้มาใส่ช่องนี้ครั้งเดียว ระบบจะบันทึกไว้ในอุปกรณ์นี้
+                        </p>
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <input id="liffIdInput" type="text" autocomplete="off"
+                            value="2011681452-k1lfYGsF" placeholder="ตัวอย่าง: 1234567890-AbCdEfGh"
+                            class="flex-1 bg-white border border-amber-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-500">
+                        <button onclick="saveLiffId()" class="bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold px-4 py-2.5 rounded-xl text-xs transition">
+                            บันทึก LIFF ID
+                        </button>
+                    </div>
+                    <p class="text-[10px] text-amber-700">
+                        Endpoint URL ต้องเป็น URL HTTPS ของไฟล์เว็บนี้เมื่ออัปโหลดขึ้นโฮสต์แล้ว
+                    </p>
+                </div>
+
+                <!-- Connection Status Box -->
+                <div id="lineConnectionCard" class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3">
+                        <div class="flex items-center space-x-3">
+                            <div id="lineStatusIndicator" class="w-4 h-4 rounded-full bg-slate-300"></div>
+                            <div>
+                                <h4 id="lineStatusText" class="font-bold text-sm text-slate-800">สถานะ: กำลังตรวจสอบ LINE LIFF</h4>
+                                <p id="lineStatusDetail" class="text-[11px] text-slate-500">ยังไม่ได้เริ่มต้น LIFF</p>
+                            </div>
+                        </div>
+                        <button onclick="toggleLineConnection()" id="lineConnectBtn"
+                            class="bg-line-500 hover:bg-line-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow">
+                            เชื่อมต่อ LINE
+                        </button>
+                    </div>
+
+                    <!-- Real LINE Profile Card -->
+                    <div id="lineProfileBox" class="hidden bg-white p-4 rounded-xl border border-emerald-100 flex items-center space-x-4">
+                        <img id="lineUserAvatar"
+                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23e2e8f0'/%3E%3Ccircle cx='50' cy='38' r='18' fill='%2394a3b8'/%3E%3Cpath d='M20 92c3-22 17-34 30-34s27 12 30 34' fill='%2394a3b8'/%3E%3C/svg%3E"
+                            class="w-12 h-12 rounded-full object-cover border-2 border-line-500 shadow-sm" alt="LINE Profile">
+                        <div class="flex-1 min-w-0">
+                            <h5 id="lineUserName" class="font-bold text-sm text-slate-800 truncate">ผู้ใช้ LINE</h5>
+                            <p class="text-xs text-slate-500">
+                                LINE UID: <span id="lineUserId" class="font-mono text-[10px]">-</span>
+                            </p>
+                            <p id="lineStatusMessage" class="text-[10px] text-slate-400 truncate"></p>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-800 text-[10px] px-2.5 py-1 rounded-full font-bold">LIFF จริง</span>
+                    </div>
+                </div>
+
+                <!-- Context -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4">
+                        <div class="text-[11px] text-slate-500">เปิดจาก</div>
+                        <div id="liffContextType" class="font-bold text-sm text-slate-800 mt-1">เบราว์เซอร์ / ยังไม่ทราบ</div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4">
+                        <div class="text-[11px] text-slate-500">สถานะ Login</div>
+                        <div id="liffLoginState" class="font-bold text-sm text-slate-800 mt-1">ยังไม่ได้ตรวจสอบ</div>
+                    </div>
+                </div>
+
+                <!-- How to Use -->
+                <div class="space-y-4 pt-2">
+                    <h3 class="font-bold text-sm text-slate-800"><i class="fa-solid fa-circle-question text-emerald-600 mr-1.5"></i> วิธีใช้งานจริง</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2">
+                            <div class="w-7 h-7 bg-emerald-600 text-white rounded-lg flex items-center justify-center font-bold text-xs">1</div>
+                            <h4 class="font-bold text-xs text-slate-800">Deploy เว็บเป็น HTTPS</h4>
+                            <p class="text-[11px] text-slate-500">นำไฟล์นี้ขึ้นโฮสต์ แล้วใช้ URL นั้นเป็น Endpoint URL ใน LINE Developers</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2">
+                            <div class="w-7 h-7 bg-emerald-600 text-white rounded-lg flex items-center justify-center font-bold text-xs">2</div>
+                            <h4 class="font-bold text-xs text-slate-800">ใส่ LIFF ID</h4>
+                            <p class="text-[11px] text-slate-500">LIFF ID ต้องมาจาก LINE Login channel ที่คุณกำลังสร้างอยู่</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2">
+                            <div class="w-7 h-7 bg-emerald-600 text-white rounded-lg flex items-center justify-center font-bold text-xs">3</div>
+                            <h4 class="font-bold text-xs text-slate-800">เปิดผ่าน LINE</h4>
+                            <p class="text-[11px] text-slate-500">ระบบจะดึงชื่อ รูปโปรไฟล์ UID และบริบท LINE จริงหลังผู้ใช้อนุญาตสิทธิ์</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test LINE message -->
+                <div class="pt-4 border-t flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="text-xs text-slate-500">
+                        ทดสอบส่งข้อความกลับเข้าแชตได้เมื่อ LIFF มี scope <code>chat_message.write</code> และเปิดอยู่ใน LINE client
+                    </div>
+                    <button onclick="sendLineTestNotification()"
+                        class="w-full md:w-auto bg-line-500 hover:bg-line-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition shadow flex items-center justify-center space-x-2">
+                        <i class="fa-brands fa-line text-base"></i><span>ทดสอบส่งข้อความเข้า LINE</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT: COMPARE PLANS -->
+        <div id="content-compare" class="space-y-6 hidden">
+            <div class="text-center space-y-2 max-w-xl mx-auto">
+                <h2 class="text-2xl font-bold text-slate-800">เปรียบเทียบแพ็กเกจ ชายลึกลับ</h2>
+                <p class="text-xs text-slate-500">เลือกแพ็กเกจที่ใช่สำหรับคุณ เพื่อปลดล็อกฟีเจอร์ขั้นสูงและพื้นที่จุใจ</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <!-- Basic Plan -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="inline-block bg-slate-100 text-slate-700 text-xs px-3 py-1 rounded-full font-semibold">พื้นฐาน (Free)</div>
+                        <h3 class="text-2xl font-bold">ฟรีตลอดชีพ</h3>
+                        <p class="text-xs text-slate-500">เหมาะสำหรับการใช้งานจดบันทึกและจัดการงานพื้นฐานในชีวิตประจำวัน</p>
+                        
+                        <ul class="space-y-2.5 text-xs text-slate-700 pt-2">
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"><span>จดงาน นัดหมาย การเงินพื้นฐาน</span></i></li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"><span>อ่านสลิป / ใบเสร็จ</span></i></li>
+                            <li class="flex items-center text-slate-400"><i class="fa-solid fa-xmark text-red-400 mr-2"><span>จดงานและนัดจากรูป (ซีเนียร์)</span></i></li>
+                            <li class="flex items-center text-slate-400"><i class="fa-solid fa-xmark text-red-400 mr-2"><span>สั่งงานด้วยเสียง (ซีเนียร์)</span></i></li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"><span>พื้นที่เก็บไฟล์ 100 MB</span></i></li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"><span>กลุ่มไลน์โน้ต 1 กลุ่ม (100 MB)</span></i></li>
+                            <li class="flex items-center text-slate-400"><i class="fa-solid fa-xmark text-red-400 mr-2"><span>เชื่อมต่อ Google Calendar</span></i></li>
+                            <li class="flex items-center text-slate-400"><i class="fa-solid fa-xmark text-red-400 mr-2"><span>ส่งออก Excel / CSV & รายงาน</span></i></li>
+                        </ul>
+                    </div>
+                    <button onclick="setPlan('basic')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 rounded-xl text-xs transition">
+                        ใช้งานแผนปัจจุบัน
+                    </button>
+                </div>
+
+                <!-- Senior Plan -->
+                <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-3xl p-6 shadow-xl border border-emerald-500 flex flex-col justify-between space-y-6 relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 bg-white/10 w-40 h-40 rounded-full blur-xl"></div>
+                    <div class="space-y-4 relative z-10">
+                        <div class="inline-block bg-amber-400 text-slate-900 text-xs px-3 py-1 rounded-full font-bold">แนะนำ (ซีเนียร์)</div>
+                        <h3 class="text-2xl font-bold">คุ้มค่าที่สุด</h3>
+                        <p class="text-xs text-emerald-100">ปลดล็อกพลังเต็มรูปแบบ สั่งงานด้วยเสียง อ่านรูปภาพ และซิงค์ปฏิทิน</p>
+                        
+                        <ul class="space-y-2.5 text-xs text-emerald-50 pt-2">
+                            <li class="flex items-center"><i class="fa-solid fa-check text-amber-300 mr-2"><span>จดงาน นัดหมาย การเงินครบถ้วน</span></i></li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-amber-300 mr-2"><span>อ่านสลิป / ใบเสร็จ อัจฉริยะ</span></i></li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-amber-300 mr-2"><span>จดงานและนัดจากรูปภาพ</span></i></li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-amber-300 mr-2"><span>สั่งงานด้วยเสียง (Speech-to-Text)</span></i></li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-amber-300 mr-2"><span>พื้นที่เก็บไฟล์จุใจ 5 GB</span></i></li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-amber-300 mr-2"><span>กลุ่มไลน์โน้ต 3 กลุ่ม (กลุ่มละ 5 GB)</span></i></li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-amber-300 mr-2"><span>เชื่อมต่อ Google Calendar ได้ทันที</span></i></li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-amber-300 mr-2"><span>ส่งออก Excel / รายงานประจำสัปดาห์ / แจ้งสิทธิ</span></i></li>
+                        </ul>
+                    </div>
+                    <button onclick="setPlan('senior')" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold py-2.5 rounded-xl text-xs transition shadow relative z-10">
+                        <i class="fa-solid fa-crown mr-1"></i> อัปเกรดเป็นซีเนียร์ทันที
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-100 py-4 text-center text-xs text-slate-400">
+        <p>Chaylueklab Senior Hub &copy; 2026 - ระบบช่วยจัดการชีวิตอัจฉริยะสำหรับคุณ • LINE LIFF Ready</p>
+    </footer>
+
+    <!-- MODAL: ADD TASK / APPOINTMENT -->
+    <div id="modalTask" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-xl">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-base text-slate-800">จดงานหรือนัดหมายใหม่</h3>
+                <button onclick="closeModal('task')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">หัวข้องาน / นัดหมาย</label>
+                    <input type="text" id="inputTaskTitle" placeholder="เช่น ประชุมงาน, ซื้อของเข้าบ้าน" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">วันและเวลา</label>
+                    <input type="datetime-local" id="inputTaskDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500">
+                </div>
+                <div id="seniorTaskImageOption" class="hidden">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">แนบรูปภาพแปลงเป็นงาน (ฟีเจอร์ซีเนียร์)</label>
+                    <input type="file" id="inputTaskImg" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                </div>
+                <button onclick="saveTask()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition">
+                    บันทึกรายการ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD FINANCE / SLIP -->
+    <div id="modalFinance" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-xl">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-base text-slate-800">บันทึกรายรับ-รายจ่าย & สลิป</h3>
+                <button onclick="closeModal('finance')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">รายการ</label>
+                    <input type="text" id="inputFinTitle" placeholder="เช่น ค่าอาหาร, ค่าน้ำมัน" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">จำนวนเงิน (บาท)</label>
+                    <input type="number" id="inputFinAmount" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ประเภท</label>
+                    <select id="inputFinType" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-blue-500">
+                        <option value="expense">รายจ่าย</option>
+                        <option value="income">รายรับ</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">แนบสลิป / ใบเสร็จ (อ่านสลิปอัตโนมัติ)</label>
+                    <input type="file" id="inputFinSlip" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                </div>
+                <button onclick="saveFinance()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs transition">
+                    บันทึกข้อมูลการเงิน
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION POPUP -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs px-4 py-3 rounded-2xl shadow-xl transition-all duration-300 transform translate-y-20 opacity-0 z-50 flex items-center space-x-3">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span id="toastMessage">แจ้งเตือนสำเร็จ</span>
+    </div>
+
+    <script>
+        // State Management
+        let userPlan = localStorage.getItem('chay_plan') || 'basic'; // 'basic' or 'senior'
+        let isLineConnected = false;
+        let lineProfile = null;
+        let liffInitialized = false;
+        let LIFF_ID = localStorage.getItem('chay_liff_id') || '2011681452-k1lfYGsF';
+        let tasks = JSON.parse(localStorage.getItem('chay_tasks')) || [
+            { id: 1, title: 'ประชุมทีมประจำสัปดาห์', date: '2026-10-02T10:00', completed: false },
+            { id: 2, title: 'จ่ายค่าน้ำค่าไฟ', date: '2026-10-03T14:30', completed: true }
+        ];
+        let finances = JSON.parse(localStorage.getItem('chay_finances')) || [
+            { id: 1, title: 'ซื้ออุปกรณ์สำนักงาน', amount: 450, type: 'expense', slip: 'slip_sample.jpg' },
+            { id: 2, title: 'รับเงินค่าปรึกษาโปรเจกต์', amount: 3500, type: 'income', slip: null }
+        ];
+        let files = JSON.parse(localStorage.getItem('chay_files')) || [
+            { id: 1, name: 'เอกสารข้อเสนอโครงการ.pdf', size: '3.2 MB', date: '01/10/2026' },
+            { id: 2, name: 'สลิปโอนเงินค่าอาหาร.jpg', size: '1.5 MB', date: '01/10/2026' }
+        ];
+        let lineGroups = JSON.parse(localStorage.getItem('chay_line_groups')) || [
+            { id: 1, name: 'กลุ่มครอบครัวสุขสันต์', note: 'นัดทานข้าววันอาทิตย์' }
+        ];
+
+        // Initialize App
+        window.onload = async function() {
+            updatePlanUI();
+            renderAll();
+            const liffInput = document.getElementById('liffIdInput');
+            if (liffInput) liffInput.value = LIFF_ID;
+            await initLineLiff();
+        };
+
+        function switchTab(tabName) {
+            ['overview', 'notes', 'storage', 'line', 'compare'].forEach(t => {
+                document.getElementById('content-' + t).classList.add('hidden');
+                document.getElementById('tab-' + t).className = "flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-100 flex items-center justify-center space-x-1.5";
+            });
+            document.getElementById('content-' + tabName).classList.remove('hidden');
+            let activeColor = userPlan === 'senior' ? 'bg-amber-500 text-slate-900 shadow-sm' : 'bg-emerald-600 text-white shadow-sm';
+            if(tabName === 'line') activeColor = 'bg-line-500 text-white shadow-sm';
+            document.getElementById('tab-' + tabName).className = `flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-semibold transition ${activeColor} flex items-center justify-center space-x-1.5`;
+        }
+
+        function updatePlanUI() {
+            const badge = document.getElementById('userBadge');
+            const seniorOption = document.getElementById('seniorTaskImageOption');
+            if (userPlan === 'senior') {
+                badge.innerText = 'แพ็กเกจ: ซีเนียร์ (Senior)';
+                badge.className = 'bg-amber-400 text-slate-900 text-xs px-3 py-1 rounded-full font-bold border border-amber-300';
+                if(seniorOption) seniorOption.classList.remove('hidden');
+            } else {
+                badge.innerText = 'แพ็กเกจ: พื้นฐาน';
+                badge.className = 'bg-emerald-800 text-xs px-3 py-1 rounded-full font-medium border border-emerald-500/30';
+                if(seniorOption) seniorOption.classList.add('hidden');
+            }
+        }
+
+        function updateLineUI() {
+            const summary = document.getElementById('lineStatusSummary');
+            const card = document.getElementById('lineConnectionCard');
+            const indicator = document.getElementById('lineStatusIndicator');
+            const statusText = document.getElementById('lineStatusText');
+            const detail = document.getElementById('lineStatusDetail');
+            const btn = document.getElementById('lineConnectBtn');
+            const profileBox = document.getElementById('lineProfileBox');
+            const loginState = document.getElementById('liffLoginState');
+            const contextType = document.getElementById('liffContextType');
+            const urlText = document.getElementById('liffUrlText');
+            const heroStatus = document.getElementById('heroLiffStatus');
+
+            if (urlText) {
+                urlText.innerText = LIFF_ID ? `https://liff.line.me/${LIFF_ID}` : 'ยังไม่ได้ตั้ง LIFF ID';
+            }
+
+            if (!LIFF_ID) {
+                if(summary) summary.innerText = "สถานะ: ยังไม่ได้ตั้ง LIFF ID";
+                if(indicator) indicator.className = "w-4 h-4 rounded-full bg-amber-400";
+                if(statusText) statusText.innerText = "สถานะ: รอ LIFF ID จาก LINE Developers";
+                if(detail) detail.innerText = "กรอก LIFF ID แล้วกดบันทึกเพื่อเริ่มเชื่อมต่อจริง";
+                if(btn) {
+                    btn.innerText = "ยังเชื่อมไม่ได้";
+                    btn.disabled = true;
+                    btn.className = "bg-slate-300 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl cursor-not-allowed";
+                }
+                if(profileBox) profileBox.classList.add('hidden');
+                if(loginState) loginState.innerText = "ยังไม่ได้ตั้งค่า";
+                if(contextType) contextType.innerText = "เบราว์เซอร์ / ยังไม่เชื่อม LIFF";
+                if(heroStatus) heroStatus.innerText = "สถานะระบบ: เว็บพร้อมใช้งาน • รอ LIFF ID";
+                return;
+            }
+
+            if (!liffInitialized) {
+                if(summary) summary.innerText = "สถานะ: กำลังเริ่ม LIFF";
+                if(indicator) indicator.className = "w-4 h-4 rounded-full bg-amber-400 animate-pulse";
+                if(statusText) statusText.innerText = "สถานะ: กำลังเชื่อมต่อ LINE LIFF";
+                if(detail) detail.innerText = `LIFF ID: ${LIFF_ID}`;
+                if(btn) {
+                    btn.innerText = "กำลังตรวจสอบ...";
+                    btn.disabled = true;
+                    btn.className = "bg-slate-300 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl cursor-not-allowed";
+                }
+                return;
+            }
+
+            let inClient = false;
+            let context = null;
+            try {
+                inClient = liff.isInClient();
+                context = liff.getContext();
+            } catch (_) {}
+
+            if(contextType) {
+                const type = context?.type || (inClient ? 'LINE client' : 'external browser');
+                contextType.innerText = type;
+            }
+
+            if(isLineConnected) {
+                if(summary) summary.innerText = "สถานะ: เชื่อมต่อ LINE จริงแล้ว";
+                if(indicator) indicator.className = "w-4 h-4 rounded-full bg-emerald-500 animate-pulse";
+                if(statusText) statusText.innerText = "สถานะ: เข้าสู่ระบบ LINE สำเร็จ";
+                if(detail) detail.innerText = `LIFF ID: ${LIFF_ID}`;
+                if(loginState) loginState.innerText = "Logged in";
+                if(btn) {
+                    btn.innerText = "ออกจากระบบ LINE";
+                    btn.disabled = false;
+                    btn.className = "bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow";
+                }
+                if(profileBox) profileBox.classList.remove('hidden');
+                if(heroStatus) heroStatus.innerText = "สถานะระบบ: เชื่อม LINE LIFF จริงแล้ว";
+
+                if(lineProfile) {
+                    const avatar = document.getElementById('lineUserAvatar');
+                    const name = document.getElementById('lineUserName');
+                    const uid = document.getElementById('lineUserId');
+                    const msg = document.getElementById('lineStatusMessage');
+                    if(avatar && lineProfile.pictureUrl) avatar.src = lineProfile.pictureUrl;
+                    if(name) name.innerText = lineProfile.displayName || 'ผู้ใช้ LINE';
+                    if(uid) uid.innerText = lineProfile.userId || '-';
+                    if(msg) msg.innerText = lineProfile.statusMessage || '';
+                }
+            } else {
+                if(summary) summary.innerText = "สถานะ: พร้อมเชื่อมต่อ LINE";
+                if(indicator) indicator.className = "w-4 h-4 rounded-full bg-slate-300";
+                if(statusText) statusText.innerText = "สถานะ: ยังไม่ได้เข้าสู่ระบบ LINE";
+                if(detail) detail.innerText = `LIFF พร้อมใช้งาน • ID: ${LIFF_ID}`;
+                if(loginState) loginState.innerText = "Not logged in";
+                if(btn) {
+                    btn.innerText = "เชื่อมต่อ LINE";
+                    btn.disabled = false;
+                    btn.className = "bg-line-500 hover:bg-line-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow";
+                }
+                if(profileBox) profileBox.classList.add('hidden');
+                if(heroStatus) heroStatus.innerText = "สถานะระบบ: LIFF พร้อม • รอเข้าสู่ระบบ LINE";
+            }
+        }
+
+        async function saveLiffId() {
+            const input = document.getElementById('liffIdInput');
+            const value = (input?.value || '').trim();
+            if (!value) {
+                showToast('กรุณาใส่ LIFF ID');
+                return;
+            }
+            LIFF_ID = value;
+            localStorage.setItem('chay_liff_id', LIFF_ID);
+            liffInitialized = false;
+            isLineConnected = false;
+            lineProfile = null;
+            showToast('บันทึก LIFF ID แล้ว กำลังเชื่อมต่อ...');
+            await initLineLiff();
+        }
+
+        async function initLineLiff() {
+            updateLineUI();
+
+            if (!LIFF_ID) return;
+
+            if (!window.liff) {
+                showToast('โหลด LINE LIFF SDK ไม่สำเร็จ');
+                const detail = document.getElementById('lineStatusDetail');
+                if(detail) detail.innerText = 'ไม่พบ LIFF SDK กรุณาตรวจสอบอินเทอร์เน็ต';
+                return;
+            }
+
+            try {
+                await liff.init({ liffId: LIFF_ID });
+                liffInitialized = true;
+                isLineConnected = liff.isLoggedIn();
+
+                if (isLineConnected) {
+                    try {
+                        lineProfile = await liff.getProfile();
+                    } catch (profileErr) {
+                        console.warn('getProfile failed', profileErr);
+                        lineProfile = null;
+                    }
+                }
+                updateLineUI();
+                try {
+                    if ('Notification' in window && Notification.permission === 'default') {
+                        // Do not force; permission prompt may be ignored by iOS webviews.
+                    }
+                } catch (_) {}
+            } catch (err) {
+                console.error('LIFF init failed', err);
+                liffInitialized = false;
+                isLineConnected = false;
+                updateLineUI();
+                const statusText = document.getElementById('lineStatusText');
+                const detail = document.getElementById('lineStatusDetail');
+                if(statusText) statusText.innerText = 'สถานะ: เชื่อม LIFF ไม่สำเร็จ';
+                if(detail) detail.innerText = 'ตรวจสอบ LIFF ID และ Endpoint URL ใน LINE Developers';
+                showToast('LIFF init ไม่สำเร็จ ตรวจสอบ LIFF ID / Endpoint URL');
+            }
+        }
+
+        async function toggleLineConnection() {
+            if (!LIFF_ID) {
+                showToast('กรุณาตั้ง LIFF ID ก่อน');
+                return;
+            }
+            if (!liffInitialized) {
+                await initLineLiff();
+                if (!liffInitialized) return;
+            }
+
+            if (liff.isLoggedIn()) {
+                liff.logout();
+                isLineConnected = false;
+                lineProfile = null;
+                updateLineUI();
+                showToast('ออกจากระบบ LINE แล้ว');
+                return;
+            }
+
+            liff.login({ redirectUri: window.location.href });
+        }
+
+        async function sendLineTestNotification() {
+            if (!LIFF_ID || !liffInitialized) {
+                showToast('กรุณาเชื่อม LIFF ให้สำเร็จก่อน');
+                switchTab('line');
+                return;
+            }
+            if (!liff.isLoggedIn()) {
+                showToast('กรุณาเข้าสู่ระบบ LINE ก่อน');
+                switchTab('line');
+                return;
+            }
+            if (!liff.isInClient()) {
+                showToast('ต้องเปิดหน้า LIFF นี้ภายในแอป LINE จึงจะส่งข้อความกลับเข้าแชตได้');
+                return;
+            }
+
+            try {
+                await liff.sendMessages([{
+                    type: 'text',
+                    text: '🔔 ทดสอบจาก CHAYLUEKLAB Senior\nระบบ LINE LIFF เชื่อมต่อสำเร็จแล้ว'
+                }]);
+                showToast('ส่งข้อความทดสอบเข้า LINE สำเร็จ');
+            } catch (err) {
+                console.error('sendMessages failed', err);
+                showToast('ส่งไม่ได้: เปิด scope chat_message.write ใน LIFF ก่อน');
+            }
+        }
+
+        function setPlan(plan) {
+            userPlan = plan;
+            localStorage.setItem('chay_plan', plan);
+            updatePlanUI();
+            showToast(plan === 'senior' ? 'อัปเกรดเป็นแพ็กเกจ ซีเนียร์ สำเร็จ!' : 'เปลี่ยนเป็นแพ็กเกจ พื้นฐานแล้ว');
+            renderAll();
+        }
+
+        function openModal(type) {
+            if(type === 'task') document.getElementById('modalTask').classList.remove('hidden');
+            if(type === 'finance') document.getElementById('modalFinance').classList.add('hidden'); // wait
+            if(type === 'finance') document.getElementById('modalFinance').classList.remove('hidden');
+        }
+
+        function closeModal(type) {
+            if(type === 'task') document.getElementById('modalTask').classList.add('hidden');
+            if(type === 'finance') document.getElementById('modalFinance').classList.add('hidden');
+        }
+
+        function openUploadModal() {
+            let fileName = prompt("ตั้งชื่อไฟล์หรืออัปโหลดเอกสาร/รูปภาพ:");
+            if(fileName) {
+                let limit = userPlan === 'senior' ? 5120 : 100;
+                let currentMB = files.reduce((acc, f) => acc + 2, 12);
+                if(currentMB + 2 > limit) {
+                    showToast('พื้นที่เก็บไฟล์เต็ม! กรุณาอัปเกรดเป็นซีเนียร์เพื่อรับ 5 GB');
+                    return;
+                }
+                files.push({ id: Date.now(), name: fileName, size: '2.0 MB', date: new Date().toLocaleDateString('th-TH') });
+                localStorage.setItem('chay_files', JSON.stringify(files));
+                renderStorage();
+                showToast('อัปโหลดไฟล์สำเร็จ!');
+            }
+        }
+
+        function addGroupNote() {
+            let maxGroups = userPlan === 'senior' ? 3 : 1;
+            if(lineGroups.length >= maxGroups) {
+                showToast(`แพ็กเกจปัจจุบันสร้างกลุ่มไลน์โน้ตได้สูงสุด ${maxGroups} กลุ่ม (อัปเกรดซีเนียร์รับ 3 กลุ่ม)`);
+                switchTab('compare');
+                return;
+            }
+            let groupName = prompt("ตั้งชื่อกลุ่มไลน์ (สำหรับคุณโน้ต):");
+            if(groupName) {
+                lineGroups.push({ id: Date.now(), name: groupName, note: 'บันทึกโน้ตกลุ่มใหม่' });
+                localStorage.setItem('chay_line_groups', JSON.stringify(lineGroups));
+                renderStorage();
+                showToast('เพิ่มกลุ่มไลน์โน้ตสำเร็จ!');
+            }
+        }
+
+
+        async function scheduleReminderViaLine(title, dateValue) {
+            if (!dateValue) return { ok: false, reason: 'no-date' };
+
+            const backendUrl = 'https://bxaplhrunxiadjsdobyl.supabase.co/functions/v1/create-reminder';
+            const reminderText = `เตือน ${dateValue.replace('T', ' ')} ${title}`;
+
+            // Primary: save directly to Supabase backend using the signed LINE ID token.
+            try {
+                if (window.liff && liffInitialized && liff.isLoggedIn()) {
+                    const idToken = liff.getIDToken();
+                    if (idToken) {
+                        const due = new Date(dateValue);
+                        const res = await fetch(backendUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                idToken,
+                                title,
+                                remindAt: due.toISOString()
+                            })
+                        });
+                        if (res.ok) return { ok: true, mode: 'supabase' };
+                        console.warn('create-reminder backend returned', res.status, await res.text());
+                    }
+                }
+            } catch (err) {
+                console.warn('Supabase reminder save failed', err);
+            }
+
+            // Secondary bridge: send a normal LINE message. The LINE webhook parses it.
+            try {
+                if (window.liff && liffInitialized && liff.isLoggedIn() && liff.isInClient()) {
+                    await liff.sendMessages([{ type: 'text', text: reminderText }]);
+                    return { ok: true, mode: 'line-webhook' };
+                }
+            } catch (err) {
+                console.warn('LINE bridge failed', err);
+            }
+
+            // Local-only fallback while the webview remains alive.
+            try {
+                const due = new Date(dateValue).getTime();
+                const delay = due - Date.now();
+                if (delay > 0 && delay <= 2147483647) {
+                    setTimeout(() => {
+                        if ('Notification' in window && Notification.permission === 'granted') {
+                            new Notification('CHAYLUEKLAB เตือนคุณ', { body: title });
+                        } else {
+                            alert(`🔔 CHAYLUEKLAB เตือนคุณ\n${title}`);
+                        }
+                    }, delay);
+                }
+            } catch (_) {}
+
+            return { ok: false, reason: 'backend-unavailable' };
+        }
+
+        async function saveTask() {
+            let title = document.getElementById('inputTaskTitle').value;
+            let date = document.getElementById('inputTaskDate').value;
+            if(!title) {
+                showToast('กรุณากรอกหัวข้องาน');
+                return;
+            }
+
+            tasks.push({ id: Date.now(), title, date: date || new Date().toISOString(), completed: false });
+            localStorage.setItem('chay_tasks', JSON.stringify(tasks));
+            closeModal('task');
+            document.getElementById('inputTaskTitle').value = '';
+            renderAll();
+
+            if (date) {
+                const result = await scheduleReminderViaLine(title, date);
+                if (result.ok) {
+                    showToast('✅ บันทึกงานแล้ว • ระบบเตือนอัตโนมัติพร้อม');
+                } else {
+                    showToast('บันทึกงานแล้ว • กรุณาเปิดผ่าน LINE เพื่อผูกการแจ้งเตือน');
+                }
+            } else {
+                showToast('บันทึกงานเรียบร้อย (ยังไม่ได้ตั้งเวลาเตือน)');
+            }
+        }
+
+        function saveFinance() {
+            let title = document.getElementById('inputFinTitle').value;
+            let amount = document.getElementById('inputFinAmount').value;
+            let type = document.getElementById('inputFinType').value;
+            let slipInput = document.getElementById('inputFinSlip');
+            if(!title || !amount) {
+                showToast('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+            let slipName = slipInput.files.length > 0 ? slipInput.files[0].name : null;
+            finances.push({ id: Date.now(), title, amount: parseFloat(amount), type, slip: slipName });
+            localStorage.setItem('chay_finances', JSON.stringify(finances));
+            closeModal('finance');
+            document.getElementById('inputFinTitle').value = '';
+            document.getElementById('inputFinAmount').value = '';
+            renderAll();
+            showToast('บันทึกการเงินและแนบสลิปเรียบร้อย');
+        }
+
+        function toggleTask(id) {
+            tasks = tasks.map(t => t.id === id ? {...t, completed: !t.completed} : t);
+            localStorage.setItem('chay_tasks', JSON.stringify(tasks));
+            renderAll();
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            localStorage.setItem('chay_tasks', JSON.stringify(tasks));
+            renderAll();
+            showToast('ลบรายการเรียบร้อย');
+        }
+
+        function deleteFinance(id) {
+            finances = finances.filter(f => f.id !== id);
+            localStorage.setItem('chay_finances', JSON.stringify(finances));
+            renderAll();
+            showToast('ลบรายการเงินเรียบร้อย');
+        }
+
+        function triggerVoiceCommand() {
+            if(userPlan !== 'senior') {
+                showToast('ฟีเจอร์ "สั่งงานด้วยเสียง" เฉพาะแพ็กเกจซีเนียร์เท่านั้น!');
+                switchTab('compare');
+                return;
+            }
+            showToast('🎙️️ กำลังฟังเสียง: "นัดประชุมด่วนพรุ่งนี้ 9 โมง"... บันทึกสำเร็จ!');
+            tasks.push({ id: Date.now(), title: '[สั่งด้วยเสียง] นัดประชุมด่วน', date: '2026-10-03T09:00', completed: false });
+            localStorage.setItem('chay_tasks', JSON.stringify(tasks));
+            renderAll();
+        }
+
+        function simulateMorningCard() {
+            alert('☀️ สวัสดีตอนเช้า คุณชายลึกลับ!\n\n📅 วันนี้คุณมีนัดหมาย 2 รายการ\n💰 ยอดเงินคงเหลือและสรุปบัญชีพร้อมใช้งาน\n\nขอให้วันนี้เป็นวันที่ยอดเยี่ยม!');
+        }
+
+        function simulateDailySummary() {
+            let totalIncome = finances.filter(f => f.type === 'income').reduce((a, b) => a + b.amount, 0);
+            let totalExpense = finances.filter(f => f.type === 'expense').reduce((a, b) => a + b.amount, 0);
+            alert(`📊 สรุปภาพรวมวันนี้:\n\n- งานที่ต้องทำ: ${tasks.filter(t => !t.completed).length} รายการ\n- รายรับรวม: ฿${totalIncome.toLocaleString()}\n- รายจ่ายรวม: ฿${totalExpense.toLocaleString()}\n- พื้นที่จัดเก็บใช้งานปกติ`);
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, function(ch) {
+                return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch];
+            });
+        }
+
+        function renderAll() {
+            renderTasks();
+            renderFinances();
+            renderStorage();
+        }
+
+        function renderTasks() {
+            const listEl = document.getElementById('todayTaskList');
+            const fullEl = document.getElementById('fullTaskList');
+            const countBadge = document.getElementById('taskCountBadge');
+            
+            if(countBadge) countBadge.innerText = `${tasks.length} รายการ`;
+
+            if(tasks.length === 0) {
+                if(listEl) listEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-3">ไม่มีรายการงานวันนี้</p>`;
+                if(fullEl) fullEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">ยังไม่มีการบันทึกงาน</p>`;
+                return;
+            }
+
+            let htmlToday = '';
+            let htmlFull = '';
+
+            tasks.forEach(t => {
+                let itemHtml = `
+                    <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition">
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" ${t.completed ? 'checked' : ''} onclick="toggleTask(${t.id})" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 cursor-pointer">
+                            <div>
+                                <p class="text-xs font-bold ${t.completed ? 'line-through text-slate-400' : 'text-slate-800'}">${escapeHtml(t.title)}</p>
+                                <span class="text-[10px] text-slate-400"><i class="fa-regular fa-clock mr-1"></i>${t.date.replace('T', ' ')}</span>
+                            </div>
+                        </div>
+                        <button onclick="deleteTask(${t.id})" class="text-slate-300 hover:text-red-500 text-xs px-2 py-1 transition"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                htmlFull += itemHtml;
+                if(!t.completed) htmlToday += itemHtml;
+            });
+
+            if(listEl) listEl.innerHTML = htmlToday || `<p class="text-xs text-emerald-600 text-center py-2 font-semibold">ยอดเยี่ยม! คุณเคลียร์งานหมดแล้ววันนี้ 🎉</p>`;
+            if(fullEl) fullEl.innerHTML = htmlFull;
+        }
+
+        function renderFinances() {
+            const fullEl = document.getElementById('fullFinanceList');
+            const countBadge = document.getElementById('financeCountBadge');
+            if(countBadge) countBadge.innerText = `${finances.length} รายการ`;
+
+            if(!fullEl) return;
+            if(finances.length === 0) {
+                fullEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">ยังไม่มีรายการการเงิน</p>`;
+                return;
+            }
+
+            let html = '';
+            finances.forEach(f => {
+                let isInc = f.type === 'income';
+                html += `
+                    <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50/50">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center ${isInc ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}">
+                                <i class="fa-solid ${isInc ? 'fa-arrow-down' : 'fa-arrow-up'} text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">${escapeHtml(f.title)}</p>
+                                <span class="text-[10px] text-slate-400">${f.slip ? '<i class="fa-solid fa-receipt text-blue-500 mr-1"></i>แนบสลิปแล้ว' : 'ไม่มีสลิปแนบ'}</span>
+                            </div>
+                        </div>
+                        <div class="text-right flex items-center space-x-2">
+                            <span class="text-xs font-bold ${isInc ? 'text-emerald-600' : 'text-slate-700'}">${isInc ? '+' : '-'}฿${f.amount.toLocaleString()}</span>
+                            <button onclick="deleteFinance(${f.id})" class="text-slate-300 hover:text-red-500 text-xs px-1"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            fullEl.innerHTML = html;
+        }
+
+        function renderStorage() {
+            const listEl = document.getElementById('fileManagerList');
+            const groupEl = document.getElementById('lineGroupsContainer');
+            const summaryText = document.getElementById('storageSummaryText');
+            const usedLabel = document.getElementById('storageUsedLabel');
+            const percentLabel = document.getElementById('storagePercentLabel');
+            const bar = document.getElementById('storageBar');
+            const groupCountLabel = document.getElementById('lineGroupCountLabel');
+            const groupMaxLabel = document.getElementById('lineGroupMaxLabel');
+
+            let maxLimit = userPlan === 'senior' ? 5120 : 100; // MB
+            let maxGroups = userPlan === 'senior' ? 3 : 1;
+            let usedMB = 12 + (files.length * 2);
+            let percent = Math.min(Math.round((usedMB / maxLimit) * 100), 100);
+
+            if(summaryText) summaryText.innerText = `ใช้ไป ${usedMB} MB / ${maxLimit >= 1024 ? (maxLimit/1024) + ' GB' : maxLimit + ' MB'}`;
+            if(usedLabel) usedLabel.innerText = `พื้นที่ใช้งาน: ${usedMB} MB / ${maxLimit >= 1024 ? (maxLimit/1024) + ' GB' : maxLimit + ' MB'}`;
+            if(percentLabel) percentLabel.innerText = `${percent}%`;
+            if(bar) bar.style.width = `${percent}%`;
+            if(groupCountLabel) groupCountLabel.innerText = lineGroups.length;
+            if(groupMaxLabel) groupMaxLabel.innerText = maxGroups;
+
+            // Render LINE Groups
+            if(groupEl) {
+                let gHtml = '';
+                lineGroups.forEach(g => {
+                    gHtml += `
+                        <div class="bg-white border border-emerald-100 p-3 rounded-xl flex items-center justify-between shadow-sm">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="text-white bg-line-500 p-2 rounded-lg text-xs"><i class="fa-brands fa-line"></i></div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800">${escapeHtml(g.name)}</p>
+                                    <span class="text-[10px] text-slate-400">โน้ต: ${escapeHtml(g.note)}</span>
+                                </div>
+                            </div>
+                            <span class="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-1 rounded-md">ซิงค์แล้ว</span>
+                        </div>
+                    `;
+                });
+                groupEl.innerHTML = gHtml;
+            }
+
+            if(!listEl) return;
+            let html = '';
+            files.forEach(file => {
+                html += `
+                    <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center space-x-2.5 overflow-hidden">
+                            <div class="text-emerald-600 bg-emerald-50 p-2 rounded-lg"><i class="fa-solid fa-file-lines"></i></div>
+                            <div class="truncate">
+                                <p class="text-xs font-bold text-slate-800 truncate">${escapeHtml(file.name)}</p>
+                                <span class="text-[10px] text-slate-400">${file.size} • ${file.date}</span>
+                            </div>
+                        </div>
+                        <span class="text-xs text-emerald-600 font-semibold cursor-pointer hover:underline" onclick="showToast('ดาวน์โหลดไฟล์สำเร็จ')">เปิด</span>
+                    </div>
+                `;
+            });
+            listEl.innerHTML = html;
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

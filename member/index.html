@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07100c">
+  <title>CHAYLUEKLAB • AI Life OS</title>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config={theme:{extend:{colors:{gold:"#D4AF37",ink:"#07100C",panel:"#0B120E",panel2:"#101A14",soft:"#7DD3A6"}}}}
+  </script>
+
+  <style>
+    :root{
+      --bg:#050907;--panel:#0b120e;--panel2:#101a14;--panel3:#142019;
+      --soft:#7dd3a6;--gold:#d4af37;--muted:#8fa49a;--green:#16a34a;--red:#ef4444;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;background:#050907;color:#f4f7f5}
+    body{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",sans-serif;
+      background:
+        radial-gradient(circle at 10% -5%,rgba(22,163,74,.18),transparent 28%),
+        radial-gradient(circle at 90% 0%,rgba(212,175,55,.10),transparent 24%),
+        linear-gradient(180deg,#07100c,#050907 55%,#08100c);
+    }
+    body:before{
+      content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;
+      background-image:linear-gradient(rgba(125,211,166,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(125,211,166,.18) 1px,transparent 1px);
+      background-size:34px 34px;mask-image:linear-gradient(#000,transparent 86%);
+    }
+    .shell{max-width:980px;margin:auto;min-height:100dvh;padding-bottom:92px}
+    .sticky{position:sticky;top:0;z-index:30;background:rgba(5,9,7,.90);backdrop-filter:blur(18px);border-bottom:1px solid rgba(212,175,55,.10)}
+    .glass{
+      background:linear-gradient(145deg,rgba(15,25,19,.95),rgba(7,13,10,.97));
+      border:1px solid rgba(212,175,55,.13);
+      box-shadow:0 16px 42px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.02);
+    }
+    .card{border-radius:24px}
+    .muted{color:var(--muted)} .gold{color:var(--gold)} .soft{color:var(--soft)}
+    .pill{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;font-size:11px;font-weight:800;background:rgba(22,163,74,.10);border:1px solid rgba(125,211,166,.17);color:#a2e8bc}
+    .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 5px rgba(34,197,94,.10)}
+    .btn{border:0;border-radius:16px;padding:12px 15px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+    .btn:active{transform:scale(.98)}
+    .btn-green{background:linear-gradient(135deg,#0e6b3b,#16a34a);color:#fff}
+    .btn-gold{background:linear-gradient(135deg,#c99d23,#e1bd4d);color:#10130f}
+    .btn-ghost{background:rgba(255,255,255,.035);color:#dbe8e0;border:1px solid rgba(255,255,255,.075)}
+    .section-title{font-size:18px;font-weight:900;letter-spacing:-.02em}
+    .page{display:none}.page.active{display:block}
+    .task{display:flex;gap:12px;align-items:center;padding:14px;border-radius:18px;background:rgba(15,25,19,.78);border:1px solid rgba(125,211,166,.09)}
+    .check{width:24px;height:24px;border-radius:8px;border:2px solid #67786f;display:flex;align-items:center;justify-content:center;flex:0 0 auto;cursor:pointer}
+    .check.done{background:#16a34a;border-color:#16a34a}
+    .tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800;background:rgba(255,255,255,.05);color:#9fb1a8}
+    .tag.cloud{background:rgba(22,163,74,.12);color:#8be2aa;border:1px solid rgba(125,211,166,.13)}
+    .tag.fail{background:rgba(239,68,68,.10);color:#ff9d9d}
+    input,textarea,select{
+      width:100%;background:#09110d;border:1px solid rgba(125,211,166,.16);color:#f5f7f6;border-radius:14px;padding:12px 13px;outline:none
+    }
+    input:focus,textarea:focus,select:focus{border-color:rgba(212,175,55,.48);box-shadow:0 0 0 3px rgba(212,175,55,.07)}
+    .bottom{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(5,9,7,.94);backdrop-filter:blur(18px);border-top:1px solid rgba(212,175,55,.12);padding:8px 8px calc(8px + env(safe-area-inset-bottom))}
+    .navbtn{color:#6f8178}.navbtn.active{color:#d4af37}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:flex-end;z-index:100;backdrop-filter:blur(7px)}
+    .modal.show{display:flex}
+    .sheet{width:100%;max-height:88dvh;overflow:auto;border-radius:28px 28px 0 0;background:linear-gradient(180deg,#0e1712,#07100c);border-top:1px solid rgba(212,175,55,.18);padding:20px 18px calc(24px + env(safe-area-inset-bottom))}
+    .month{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+    .day{min-height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;position:relative;color:#c6d3cc;font-weight:800;font-size:13px}
+    .day.dim{color:#46544d}.day.sel{background:#153724;border:1px solid rgba(212,175,55,.25)}.day.has:after{content:"";position:absolute;bottom:5px;width:4px;height:4px;border-radius:50%;background:#d4af37}
+    .toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,20px);width:min(92vw,520px);background:#0d1711;color:#eaf4ed;border:1px solid rgba(125,211,166,.16);border-radius:18px;padding:13px 15px;z-index:200;opacity:0;pointer-events:none;transition:.2s;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    .hero{background:radial-gradient(circle at 90% 0%,rgba(212,175,55,.17),transparent 30%),radial-gradient(circle at 10% 100%,rgba(22,163,74,.22),transparent 38%),linear-gradient(135deg,#08110d,#0d2518 56%,#0b1711)}
+    @media(min-width:760px){.modal{align-items:center;justify-content:center}.sheet{max-width:560px;border-radius:28px}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="sticky">
+    <div class="px-4 pt-[max(12px,env(safe-area-inset-top))] pb-3 flex items-center justify-between gap-3">
+      <div>
+        <div class="font-black tracking-[.05em]">CHAYLUEKLAB</div>
+        <div class="text-[10px] muted mt-1">AI LIFE OS • CLOUD REMINDER</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="lineBadge" class="pill"><span class="dot"></span><span>LINE</span></span>
+        <span id="cloudBadge" class="pill"><span class="dot"></span><span>CLOUD</span></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="px-4 py-4 space-y-5">
+    <section id="homePage" class="page active space-y-5">
+      <div class="glass card hero p-5">
+        <div class="pill mb-3"><span class="dot"></span><span id="systemText">ระบบพร้อมใช้งาน</span></div>
+        <h1 class="text-2xl font-black">สวัสดี <span id="helloName" class="gold">ผู้ใช้ LINE</span></h1>
+        <p class="muted text-sm mt-2">เพิ่มงานจาก LIFF → เช็กเพื่อน OA → Supabase + LINE OA เตือนจริง แม้ปิดหน้าเว็บ</p>
+        <div class="grid grid-cols-2 gap-2 mt-4">
+          <button class="btn btn-green" onclick="openTaskModal()">＋ เพิ่มงาน</button>
+          <button class="btn btn-ghost" onclick="testCloudLine()">ทดสอบ LINE</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="glass card p-4"><div class="text-[10px] muted">งานค้าง</div><div id="pendingCount" class="text-2xl font-black mt-1">0</div></div>
+        <div class="glass card p-4"><div class="text-[10px] muted">วันนี้</div><div id="todayCount" class="text-2xl font-black mt-1">0</div></div>
+      </div>
+
+      <div class="glass card p-4">
+        <div class="flex items-center justify-between mb-3">
+          <div><div class="section-title">งานล่าสุด</div><div class="text-[10px] muted">Cloud ✓ = LINE จะเตือนจริง</div></div>
+          <button class="gold text-xs font-black" onclick="switchPage('tasksPage')">ดูทั้งหมด</button>
+        </div>
+        <div id="homeTasks" class="space-y-2"></div>
+      </div>
+
+      <div class="glass card p-4">
+        <div class="section-title">วิธีใช้กับคนอื่น</div>
+        <div class="text-sm muted leading-relaxed mt-2">
+          ส่งลิงก์ LIFF นี้ให้คนอื่น → เขาเปิดด้วย LINE ของตัวเอง → ระบบเช็กสถานะเพื่อน OA → ถ้ายังไม่เป็นเพื่อน ระบบจะให้เพิ่มเพื่อนก่อน → จากนั้นเพิ่มงาน → ถึงเวลา LINE OA เตือนไปหาคนนั้นเอง
+        </div>
+        <div class="mt-3 p-3 rounded-2xl bg-white/[.03] text-xs soft">
+          กลุ่ม LINE: เชิญบอทเข้ากลุ่ม แล้วพิมพ์คำสั่งในกลุ่ม ระบบจะเตือนกลับกลุ่มเดิม
+        </div>
+      </div>
+    </section>
+
+    <section id="calendarPage" class="page space-y-5">
+      <div class="flex items-center justify-between">
+        <div><div class="section-title">ปฏิทิน</div><div class="text-[10px] muted">งานทั้งหมดจากเครื่องนี้</div></div>
+        <button class="btn btn-green !py-2 !px-3 text-xs" onclick="openTaskModal(selectedYmd())">＋ งาน</button>
+      </div>
+      <div class="glass card p-4">
+        <div class="flex items-center justify-between mb-4">
+          <button class="btn btn-ghost !p-2" onclick="moveMonth(-1)">‹</button>
+          <div id="monthTitle" class="font-black"></div>
+          <button class="btn btn-ghost !p-2" onclick="moveMonth(1)">›</button>
+        </div>
+        <div class="month text-[10px] muted mb-2">
+          <div class="text-center">อา</div><div class="text-center">จ</div><div class="text-center">อ</div><div class="text-center">พ</div><div class="text-center">พฤ</div><div class="text-center">ศ</div><div class="text-center">ส</div>
+        </div>
+        <div id="calendarGrid" class="month"></div>
+      </div>
+      <div class="glass card p-4">
+        <div id="selectedDateTitle" class="font-black mb-3"></div>
+        <div id="selectedTasks" class="space-y-2"></div>
+      </div>
+    </section>
+
+    <section id="tasksPage" class="page space-y-5">
+      <div class="flex items-center justify-between">
+        <div><div class="section-title">งาน & นัดหมาย</div><div class="text-[10px] muted">เพิ่มงานแล้วซิงก์ Cloud อัตโนมัติ</div></div>
+        <button class="btn btn-green !py-2 !px-3 text-xs" onclick="openTaskModal()">＋ เพิ่ม</button>
+      </div>
+      <div class="glass card p-4">
+        <div class="flex justify-between">
+          <div><div class="text-[10px] muted">ทั้งหมด</div><div id="allCount" class="text-2xl font-black">0</div></div>
+          <div><div class="text-[10px] muted">Cloud Sync</div><div id="cloudCount" class="text-2xl font-black soft">0</div></div>
+          <div><div class="text-[10px] muted">เสร็จ</div><div id="doneCount" class="text-2xl font-black gold">0</div></div>
+        </div>
+      </div>
+      <div id="allTasks" class="space-y-2"></div>
+    </section>
+
+    <section id="financePage" class="page space-y-5">
+      <div class="flex items-center justify-between">
+        <div><div class="section-title">การเงิน</div><div class="text-[10px] muted">บันทึกในเครื่องนี้</div></div>
+        <button class="btn btn-green !py-2 !px-3 text-xs" onclick="openFinanceModal()">＋ เพิ่ม</button>
+      </div>
+      <div class="glass card p-5">
+        <div class="text-[10px] muted">คงเหลือ</div>
+        <div id="balance" class="text-3xl font-black mt-1">฿0</div>
+        <div class="grid grid-cols-2 gap-3 mt-4">
+          <div class="p-3 rounded-2xl bg-white/[.03]"><div class="text-[10px] muted">รายรับ</div><div id="income" class="soft font-black mt-1">฿0</div></div>
+          <div class="p-3 rounded-2xl bg-white/[.03]"><div class="text-[10px] muted">รายจ่าย</div><div id="expense" class="text-red-400 font-black mt-1">฿0</div></div>
+        </div>
+      </div>
+      <div class="glass card p-4"><div class="section-title mb-3">รายการ</div><div id="financeList" class="space-y-2"></div></div>
+    </section>
+
+    <section id="settingsPage" class="page space-y-5">
+      <div><div class="section-title">ตั้งค่าระบบ</div><div class="text-[10px] muted">พร้อมให้คนอื่นใช้</div></div>
+
+      <div class="glass card p-4">
+        <div class="flex items-center gap-3">
+          <img id="profilePic" class="w-14 h-14 rounded-2xl object-cover hidden" alt="">
+          <div id="profileFallback" class="w-14 h-14 rounded-2xl bg-emerald-950 flex items-center justify-center gold font-black">CL</div>
+          <div class="min-w-0">
+            <div id="profileName" class="font-black truncate">ผู้ใช้ LINE</div>
+            <div id="profileState" class="text-[10px] muted mt-1">กำลังตรวจสอบ LIFF</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass card p-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-black">Supabase Cloud Sync</div>
+            <div class="text-[10px] muted mt-1">LINE Reminder 24 ชม. แม้ปิดเว็บ</div>
+          </div>
+          <span class="tag cloud">ON</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3 mt-4">
+          <div class="p-3 rounded-2xl bg-white/[.03]"><div class="text-[10px] muted">LIFF ID</div><div class="font-black text-xs mt-1">2011681452-k1lfYGsF</div></div>
+          <div class="p-3 rounded-2xl bg-white/[.03]"><div class="text-[10px] muted">Backend</div><div class="font-black text-xs mt-1 soft">Supabase</div></div>
+        </div>
+        <button class="btn btn-green w-full mt-4" onclick="testCloudLine()">ทดสอบ Cloud + LINE</button>
+      </div>
+
+      <div class="glass card p-4">
+        <div class="font-black">คำสั่งในกลุ่ม LINE</div>
+        <div class="text-xs muted mt-3 leading-7">
+          <div>• <b class="text-white">นอนวันนี้ 22.30น.</b></div>
+          <div>• <b class="text-white">เตือนอีก 10 นาที พักสายตา</b></div>
+          <div>• <b class="text-white">/เมนู</b></div>
+          <div>• <b class="text-white">/งาน</b></div>
+          <div>• <b class="text-white">ไฟล์</b></div>
+        </div>
+      </div>
+
+
+      <div id="friendCard" class="glass card p-4">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <div class="font-black">LINE OA สำหรับแจ้งเตือน</div>
+            <div id="friendStateText" class="text-[10px] muted mt-1 leading-relaxed">กำลังตรวจสอบสถานะเพื่อน…</div>
+          </div>
+          <span id="friendStateTag" class="tag">CHECK</span>
+        </div>
+        <button id="addFriendBtn" class="btn btn-gold w-full mt-4 hidden" onclick="requestFriendship()">เพิ่มเพื่อนเพื่อเปิดการแจ้งเตือน</button>
+      </div>
+
+      <div class="glass card p-4">
+        <div class="font-black mb-2">ระบบความปลอดภัย</div>
+        <div class="text-xs muted leading-relaxed">ไฟล์นี้ไม่มี LINE Channel Access Token และไม่มี Channel Secret ทุก Secret อยู่ฝั่ง Supabase เท่านั้น</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav class="bottom">
+  <div class="max-w-[980px] mx-auto grid grid-cols-5">
+    <button class="navbtn active py-1 text-xs font-bold" data-page="homePage" onclick="switchPage('homePage')">⌂<div class="text-[10px] mt-1">หน้าแรก</div></button>
+    <button class="navbtn py-1 text-xs font-bold" data-page="calendarPage" onclick="switchPage('calendarPage')">▦<div class="text-[10px] mt-1">ปฏิทิน</div></button>
+    <button class="navbtn py-1 text-xs font-bold" data-page="tasksPage" onclick="switchPage('tasksPage')">✓<div class="text-[10px] mt-1">งาน</div></button>
+    <button class="navbtn py-1 text-xs font-bold" data-page="financePage" onclick="switchPage('financePage')">฿<div class="text-[10px] mt-1">การเงิน</div></button>
+    <button class="navbtn py-1 text-xs font-bold" data-page="settingsPage" onclick="switchPage('settingsPage')">⚙<div class="text-[10px] mt-1">ตั้งค่า</div></button>
+  </div>
+</nav>
+
+<div id="taskModal" class="modal" onclick="backdropClose(event,'taskModal')">
+  <div class="sheet">
+    <div class="flex items-center justify-between">
+      <div><div class="section-title">เพิ่มงาน</div><div class="text-[10px] muted">บันทึก + Cloud Sync + LINE Reminder</div></div>
+      <button class="btn btn-ghost !p-2" onclick="closeModal('taskModal')">×</button>
+    </div>
+    <div class="space-y-3 mt-5">
+      <div><div class="text-[11px] muted mb-1">ชื่องาน</div><input id="taskTitle" placeholder="เช่น โทรหาลูกค้า"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><div class="text-[11px] muted mb-1">วันที่</div><input id="taskDate" type="date"></div>
+        <div><div class="text-[11px] muted mb-1">เวลา</div><input id="taskTime" type="time"></div>
+      </div>
+      <div><div class="text-[11px] muted mb-1">หมายเหตุ</div><textarea id="taskNote" rows="3" placeholder="รายละเอียดเพิ่มเติม"></textarea></div>
+      <button id="saveTaskBtn" class="btn btn-green w-full" onclick="saveTask()">บันทึกและตั้ง LINE Reminder</button>
+    </div>
+  </div>
+</div>
+
+<div id="financeModal" class="modal" onclick="backdropClose(event,'financeModal')">
+  <div class="sheet">
+    <div class="flex items-center justify-between">
+      <div><div class="section-title">เพิ่มรายการเงิน</div><div class="text-[10px] muted">บันทึกในเครื่องนี้</div></div>
+      <button class="btn btn-ghost !p-2" onclick="closeModal('financeModal')">×</button>
+    </div>
+    <div class="space-y-3 mt-5">
+      <select id="financeType"><option value="income">รายรับ</option><option value="expense">รายจ่าย</option></select>
+      <input id="financeTitle" placeholder="รายการ">
+      <input id="financeAmount" type="number" inputmode="decimal" placeholder="จำนวนเงิน">
+      <input id="financeDate" type="date">
+      <button class="btn btn-green w-full" onclick="saveFinance()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"><div id="toastText" class="font-bold text-sm"></div></div>
+
+<script>
+const LIFF_ID='2011681452-k1lfYGsF';
+const API='https://bxaplhrunxiadjsdobyl.supabase.co/functions/v1';
+const TASK_KEY='chaylueklab_cloud_tasks_v1';
+const MONEY_KEY='chaylueklab_finance_v1';
+
+let profile=null,liffReady=false,isFriend=false,friendshipChecked=false;
+let tasks=load(TASK_KEY,[]);
+let moneyRows=load(MONEY_KEY,[]);
+let cursor=new Date(),selected=new Date();
+
+function load(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}}
+function persist(){localStorage.setItem(TASK_KEY,JSON.stringify(tasks));localStorage.setItem(MONEY_KEY,JSON.stringify(moneyRows))}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function pad(n){return String(n).padStart(2,'0')}
+function ymd(d=new Date()){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function money(v){return '฿'+Number(v||0).toLocaleString('th-TH',{maximumFractionDigits:2})}
+function thDate(d){return new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'long',year:'numeric'}).format(d)}
+function thMonth(d){return new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric'}).format(d)}
+
+function toast(msg){const t=document.getElementById('toast'),x=document.getElementById('toastText');x.textContent=msg;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),2600)}
+function openModal(id){document.getElementById(id).classList.add('show')}
+function closeModal(id){document.getElementById(id).classList.remove('show')}
+function backdropClose(e,id){if(e.target.id===id)closeModal(id)}
+function switchPage(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.page===id));renderAll();window.scrollTo({top:0,behavior:'smooth'})}
+
+
+function renderFriendState(){
+  const text=document.getElementById('friendStateText');
+  const tag=document.getElementById('friendStateTag');
+  const btn=document.getElementById('addFriendBtn');
+  if(!text||!tag||!btn)return;
+  if(!friendshipChecked){
+    text.textContent='กำลังตรวจสอบสถานะเพื่อน…';
+    tag.textContent='CHECK';tag.className='tag';btn.classList.add('hidden');
+    return;
+  }
+  if(isFriend){
+    text.textContent='เป็นเพื่อนกับ OA แล้ว • Cloud Reminder พร้อมส่งแจ้งเตือนส่วนตัว';
+    tag.textContent='READY';tag.className='tag cloud';btn.classList.add('hidden');
+  }else{
+    text.textContent='ยังไม่ได้เป็นเพื่อนกับ OA • ต้องเพิ่มเพื่อนก่อน จึงจะรับ LINE Reminder ส่วนตัวได้';
+    tag.textContent='ADD FRIEND';tag.className='tag fail';btn.classList.remove('hidden');
+  }
+}
+
+async function checkFriendship(){
+  friendshipChecked=false;renderFriendState();
+  try{
+    if(!window.liff||!liff.isLoggedIn())throw new Error('LINE login required');
+    const data=await liff.getFriendship();
+    isFriend=!!data?.friendFlag;
+    friendshipChecked=true;
+    renderFriendState();
+    return isFriend;
+  }catch(e){
+    console.warn('getFriendship failed',e);
+    friendshipChecked=true;
+    isFriend=false;
+    renderFriendState();
+    return false;
+  }
+}
+
+async function requestFriendship(){
+  try{
+    if(!window.liff||!liff.isLoggedIn())throw new Error('กรุณาเปิดผ่าน LINE');
+    if(typeof liff.requestFriendship!=='function')throw new Error('LIFF SDK นี้ยังไม่รองรับ requestFriendship');
+    await liff.requestFriendship();
+    await new Promise(r=>setTimeout(r,700));
+    const ok=await checkFriendship();
+    toast(ok?'✅ เพิ่มเพื่อนแล้ว • LINE Reminder พร้อมใช้งาน':'ยังไม่ได้เพิ่มเพื่อน กรุณากดเพิ่มเพื่อนให้เรียบร้อย');
+  }catch(e){
+    console.error(e);
+    toast('เปิดหน้าเพิ่มเพื่อนไม่สำเร็จ: '+(e.message||e));
+  }
+}
+
+async function initLiff(){
+  try{
+    await liff.init({liffId:LIFF_ID});liffReady=true;
+    if(!liff.isLoggedIn()){
+      document.getElementById('lineBadge').innerHTML='<span class="dot" style="background:#f59e0b"></span><span>LOGIN</span>';
+      document.getElementById('profileState').textContent='ยังไม่ได้เข้าสู่ระบบ LINE';
+      liff.login({redirectUri:location.href});return;
+    }
+    profile=await liff.getProfile();
+    document.getElementById('helloName').textContent=profile.displayName||'ผู้ใช้ LINE';
+    document.getElementById('profileName').textContent=profile.displayName||'ผู้ใช้ LINE';
+    document.getElementById('profileState').textContent='LINE เชื่อมแล้ว • Cloud พร้อม';
+    if(profile.pictureUrl){
+      const img=document.getElementById('profilePic');img.src=profile.pictureUrl;img.classList.remove('hidden');document.getElementById('profileFallback').classList.add('hidden');
+    }
+    await checkFriendship();
+  }catch(e){
+    console.error(e);
+    document.getElementById('systemText').textContent='LIFF เชื่อมต่อไม่สำเร็จ';
+    document.getElementById('lineBadge').innerHTML='<span class="dot" style="background:#ef4444"></span><span>ERROR</span>';
+  }
+}
+
+function openTaskModal(dateStr){
+  const n=new Date();document.getElementById('taskTitle').value='';document.getElementById('taskNote').value='';
+  document.getElementById('taskDate').value=dateStr||ymd(n);
+  const m=new Date(n.getTime()+5*60000);document.getElementById('taskTime').value=pad(m.getHours())+':'+pad(m.getMinutes());
+  openModal('taskModal');
+}
+
+async function saveTask(){
+  const title=document.getElementById('taskTitle').value.trim();
+  const date=document.getElementById('taskDate').value;
+  const time=document.getElementById('taskTime').value;
+  const note=document.getElementById('taskNote').value.trim();
+  if(!title||!date||!time){toast('กรอกชื่องาน วันที่ และเวลาให้ครบ');return}
+  const due=new Date(date+'T'+time+':00');if(Number.isNaN(due.getTime())){toast('วันเวลาไม่ถูกต้อง');return}
+  if(!liffReady||!liff.isLoggedIn()){toast('กรุณาเปิด Dashboard ผ่าน LINE ก่อน');return}
+  const friendOk=friendshipChecked?isFriend:await checkFriendship();
+  if(!friendOk){
+    closeModal('taskModal');
+    toast('ต้องเพิ่มเพื่อน OA ก่อน เพื่อให้ LINE ส่งแจ้งเตือนได้');
+    await requestFriendship();
+    return;
+  }
+  const item={id:Date.now(),title,date,time,note,done:false,cloud:'syncing',remoteId:null,createdAt:new Date().toISOString()};
+  tasks.unshift(item);persist();renderAll();closeModal('taskModal');toast('กำลังซิงก์ขึ้น Cloud…');
+
+  try{
+    if(!liffReady||!liff.isLoggedIn())throw new Error('กรุณาเปิดผ่าน LINE');
+    const accessToken=liff.getAccessToken?.()||'';
+    const idToken=liff.getIDToken?.()||'';
+    const res=await fetch(API+'/create-reminder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accessToken,idToken,title,remindAt:due.toISOString()})});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok||!data.ok)throw new Error(data.error||('HTTP '+res.status));
+    item.cloud='synced';item.remoteId=data.reminder?.id||null;persist();renderAll();toast('✅ Cloud ✓ • LINE จะเตือนตามเวลา');
+  }catch(e){
+    console.error(e);item.cloud='failed';persist();renderAll();toast('เก็บในเครื่องแล้ว แต่ Cloud ยังไม่ซิงก์');
+  }
+}
+
+function taskHtml(t){
+  const cloud=t.cloud==='synced'?'<span class="tag cloud">Cloud ✓ • LINE ✓</span>':t.cloud==='syncing'?'<span class="tag">Syncing…</span>':t.cloud==='failed'?'<span class="tag fail">Cloud ✕</span>':'<span class="tag">Local เดิม</span>';
+  return '<div class="task"><div class="check '+(t.done?'done':'')+'" onclick="toggleTask('+t.id+')">'+(t.done?'✓':'')+'</div><div class="min-w-0 flex-1"><div class="font-black text-sm '+(t.done?'line-through opacity-50':'')+'">'+esc(t.title)+'</div><div class="text-[10px] muted mt-1">'+esc(t.date)+' '+esc(t.time)+'</div><div class="mt-2">'+cloud+'</div></div><button class="text-red-400/70 p-2" onclick="deleteTask('+t.id+')">×</button></div>';
+}
+function toggleTask(id){const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;persist();renderAll()}
+function deleteTask(id){tasks=tasks.filter(x=>x.id!==id);persist();renderAll()}
+
+function renderTasks(){
+  const sorted=[...tasks].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  document.getElementById('allTasks').innerHTML=sorted.length?sorted.map(taskHtml).join(''):'<div class="glass card p-6 text-center muted text-sm">ยังไม่มีงาน</div>';
+  document.getElementById('homeTasks').innerHTML=sorted.length?sorted.slice(0,5).map(taskHtml).join(''):'<div class="text-center muted text-sm py-5">ยังไม่มีงาน</div>';
+  const today=ymd();document.getElementById('pendingCount').textContent=tasks.filter(x=>!x.done).length;
+  document.getElementById('todayCount').textContent=tasks.filter(x=>x.date===today&&!x.done).length;
+  document.getElementById('allCount').textContent=tasks.length;
+  document.getElementById('cloudCount').textContent=tasks.filter(x=>x.cloud==='synced').length;
+  document.getElementById('doneCount').textContent=tasks.filter(x=>x.done).length;
+}
+
+function moveMonth(n){cursor=new Date(cursor.getFullYear(),cursor.getMonth()+n,1);renderCalendar()}
+function selectDay(y,m,d){selected=new Date(y,m,d);renderCalendar()}
+function selectedYmd(){return ymd(selected)}
+function renderCalendar(){
+  document.getElementById('monthTitle').textContent=thMonth(cursor);document.getElementById('selectedDateTitle').textContent=thDate(selected);
+  const y=cursor.getFullYear(),m=cursor.getMonth(),first=new Date(y,m,1),start=first.getDay(),days=new Date(y,m+1,0).getDate(),prev=new Date(y,m,0).getDate();
+  let out='';
+  for(let i=0;i<42;i++){
+    let d,cm=m,cy=y,dim=false;
+    if(i<start){d=prev-start+i+1;cm=m-1;dim=true}else if(i>=start+days){d=i-(start+days)+1;cm=m+1;dim=true}else d=i-start+1;
+    const x=new Date(cy,cm,d);cy=x.getFullYear();cm=x.getMonth();d=x.getDate();const k=ymd(x),has=tasks.some(t=>t.date===k),sel=ymd(selected)===k;
+    out+='<button class="day '+(dim?'dim ':'')+(has?'has ':'')+(sel?'sel':'')+'" onclick="selectDay('+cy+','+cm+','+d+')">'+d+'</button>';
+  }
+  document.getElementById('calendarGrid').innerHTML=out;
+  const rows=tasks.filter(t=>t.date===ymd(selected));document.getElementById('selectedTasks').innerHTML=rows.length?rows.map(taskHtml).join(''):'<div class="text-center muted text-sm py-5">ไม่มีงานในวันนี้</div>';
+}
+
+function openFinanceModal(){document.getElementById('financeTitle').value='';document.getElementById('financeAmount').value='';document.getElementById('financeDate').value=ymd();openModal('financeModal')}
+function saveFinance(){
+  const type=document.getElementById('financeType').value,title=document.getElementById('financeTitle').value.trim(),amount=Number(document.getElementById('financeAmount').value),date=document.getElementById('financeDate').value;
+  if(!title||!amount||!date){toast('กรอกรายการ จำนวน และวันที่');return}
+  moneyRows.unshift({id:Date.now(),type,title,amount,date});persist();closeModal('financeModal');renderFinance();toast('บันทึกแล้ว')
+}
+function deleteFinance(id){moneyRows=moneyRows.filter(x=>x.id!==id);persist();renderFinance()}
+function renderFinance(){
+  const inc=moneyRows.filter(x=>x.type==='income').reduce((s,x)=>s+Number(x.amount),0),exp=moneyRows.filter(x=>x.type==='expense').reduce((s,x)=>s+Number(x.amount),0);
+  document.getElementById('income').textContent=money(inc);document.getElementById('expense').textContent=money(exp);document.getElementById('balance').textContent=money(inc-exp);
+  document.getElementById('financeList').innerHTML=moneyRows.length?moneyRows.map(x=>'<div class="task"><div class="flex-1 min-w-0"><div class="font-black text-sm">'+esc(x.title)+'</div><div class="text-[10px] muted mt-1">'+esc(x.date)+'</div></div><div class="font-black '+(x.type==='income'?'soft':'text-red-400')+'">'+(x.type==='income'?'+':'-')+money(x.amount)+'</div><button class="text-red-400/70 p-2" onclick="deleteFinance('+x.id+')">×</button></div>').join(''):'<div class="text-center muted text-sm py-5">ยังไม่มีรายการ</div>';
+}
+
+async function testCloudLine(){
+  try{
+    if(!liffReady||!liff.isLoggedIn())throw new Error('กรุณาเปิดผ่าน LINE');
+    const friendOk=friendshipChecked?isFriend:await checkFriendship();
+    if(!friendOk){await requestFriendship();throw new Error('ต้องเพิ่มเพื่อน OA ก่อนทดสอบการแจ้งเตือน');}
+    const accessToken=liff.getAccessToken?.()||'',idToken=liff.getIDToken?.()||'';
+    const res=await fetch(API+'/line-test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accessToken,idToken})});
+    const data=await res.json().catch(()=>({}));if(!res.ok||!data.ok)throw new Error(data.error||('HTTP '+res.status));
+    toast('✅ Supabase + LINE พร้อมใช้งาน');
+  }catch(e){console.error(e);toast('Cloud test ไม่สำเร็จ: '+(e.message||e))}
+}
+
+function renderAll(){renderTasks();renderCalendar();renderFinance()}
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  document.getElementById('financeDate').value=ymd();
+  renderAll();
+  await initLiff();
+});
+</script>
+</body>
+</html>
