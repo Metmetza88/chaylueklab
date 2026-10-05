@@ -1,5 +1,5 @@
 import Stripe from "npm:stripe@23.0.0";
-import {adminDb,PLAN} from "../_shared/membership.ts";
+import {adminDb,PLAN} from "./_shared/membership.ts";
 
 export function subscriptionSnapshot(sub:any){
   const item=sub.items?.data?.[0];

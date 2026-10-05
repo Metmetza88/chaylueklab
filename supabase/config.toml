@@ -1,0 +1,5 @@
+[functions.video-create]
+verify_jwt = false
+
+[functions.video-status]
+verify_jwt = false
