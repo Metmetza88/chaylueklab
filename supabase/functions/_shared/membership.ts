@@ -15,7 +15,7 @@ export function adminDb(){
 }
 
 export async function lineIdentity(body:any):Promise<string|null>{
-  const channel=Deno.env.get("LINE_LOGIN_CHANNEL_ID")||"2011681452";
+  const channel=Deno.env.get("LINE_CHANNEL_ID")||Deno.env.get("LINE_LOGIN_CHANNEL_ID")||"2011681452";
   if(typeof body?.idToken==="string"&&body.idToken){
     const r=await fetch("https://api.line.me/oauth2/v2.1/verify",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({id_token:body.idToken,client_id:channel})});
     if(r.ok){const p=await r.json();if(typeof p.sub==="string")return p.sub;}
@@ -30,7 +30,7 @@ export async function lineIdentity(body:any):Promise<string|null>{
 }
 
 export async function isOwner(db:any,user:string){
-  if((Deno.env.get("LINE_OWNER_USER_ID")||"").split(",").map(s=>s.trim()).filter(Boolean).includes(user))return true;
+  if((Deno.env.get("NEWSROOM_OWNER_LINE_ID")||Deno.env.get("LINE_OWNER_USER_ID")||"").split(",").map(s=>s.trim()).filter(Boolean).includes(user))return true;
   const owner=await db.from("app_owner").select("line_user_id").eq("singleton",true).maybeSingle();
   if(owner.error)throw owner.error;
   return owner.data?.line_user_id===user;

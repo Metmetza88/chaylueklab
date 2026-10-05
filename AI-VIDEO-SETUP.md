@@ -41,7 +41,7 @@ RUNWAYML_API_SECRET
 RUNWAY_VIDEO_MODEL        # defaults to gen4.5
 ```
 
-These values belong in **Supabase Dashboard → Project Settings → Edge Functions → Secrets** (or `supabase secrets set`). Do not place them in HTML, browser storage, GitHub, or the static host. `SUPABASE_URL`, the service-role secret, and `LINE_LOGIN_CHANNEL_ID` remain server-side as before.
+These values belong in **Supabase Dashboard → Project Settings → Edge Functions → Secrets** (or `supabase secrets set`). Do not place them in HTML, browser storage, GitHub, or the static host. The functions accept the existing names plus the supplied aliases `LINE_CHANNEL_ID` and `NEWSROOM_OWNER_LINE_ID`. Keep the Supabase server key under `SUPABASE_SECRET_KEYS`/`SUPABASE_SERVICE_ROLE_KEY`; never put it in the frontend.
 
 ## 4. Runtime behavior
 
