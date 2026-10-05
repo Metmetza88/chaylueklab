@@ -1,0 +1,3 @@
+export const NEWSROOM_TRANSITIONS:Record<string,string[]>={pitched:['assigned','killed'],assigned:['drafting','killed'],drafting:['factcheck','killed'],factcheck:['editing','drafting','killed'],editing:['ready','drafting','killed'],ready:['published','editing','killed'],published:[],killed:[]};
+export function validSources(s:unknown){return Array.isArray(s)&&s.length>0&&s.length<=10&&s.every(x=>{try{return ['http:','https:'].includes(new URL(typeof x==='string'?x:(x as {url:string}).url).protocol)}catch{return false}})}
+export function readyRequirements(s:any){return Boolean(s?.title?.trim()&&s?.body?.trim()&&validSources(s.sources)&&s?.social_copy?.trim()&&s?.image_brief?.trim())}
