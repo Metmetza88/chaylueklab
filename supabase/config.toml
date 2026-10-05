@@ -1,0 +1,7 @@
+project_id = "bxaplhrunxiadjsdobyl"
+
+# LINE tokens are verified inside billing; Stripe signs webhook payloads.
+[functions.billing]
+verify_jwt = false
+[functions.stripe-webhook]
+verify_jwt = false
