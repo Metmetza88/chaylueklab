@@ -5,7 +5,7 @@ export const CORS = {"Access-Control-Allow-Origin":"*","Access-Control-Allow-Hea
 export const json = (body:unknown,status=200) => Response.json(body,{status,headers:CORS});
 export function adminDb(){
   const keys=Deno.env.get("SUPABASE_SECRET_KEYS");
-  const key=keys?JSON.parse(keys).default:Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const key=keys?JSON.parse(keys).default:(Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")||Deno.env.get("SUPABASE_SECRET_KEY"));
   if(!key)throw new Error("admin key unavailable");
   return createClient(Deno.env.get("SUPABASE_URL")!,key);
 }

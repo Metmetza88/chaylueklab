@@ -6,7 +6,7 @@ export const json = (body:unknown,status=200) => Response.json(body,{status,head
 
 export function adminDb(){
   const keys=Deno.env.get("SUPABASE_SECRET_KEYS");
-  let key=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  let key=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")||Deno.env.get("SUPABASE_SECRET_KEY");
   if(keys){try{key=JSON.parse(keys).default||key}catch{ /* use the explicit key */ }}
   if(!key)throw new Error("admin key unavailable");
   const url=Deno.env.get("SUPABASE_URL");
