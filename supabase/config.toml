@@ -3,3 +3,7 @@ verify_jwt = false
 
 [functions.video-status]
 verify_jwt = false
+
+# LINE tokens are verified server-side; owner/staff access is checked for every request.
+[functions.retail-control]
+verify_jwt = false
