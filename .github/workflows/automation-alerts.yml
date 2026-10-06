@@ -1,0 +1,88 @@
+name: Automation failure alerts
+
+on:
+  workflow_run:
+    workflows: [Quality checks, CodeQL, Control Center CI, Publish existing CHAYLUEKLAB site]
+    types: [completed]
+  workflow_call:
+    inputs:
+      run_id:
+        description: The failed workflow run in this repository
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: automation-alert-${{ github.event.workflow_run.name || github.workflow }}-${{ github.event.workflow_run.head_branch || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  notify-owner:
+    name: Report verified automation failures
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    steps:
+      # No checkout or artifact execution: workflow_run can be triggered by forks.
+      - name: Create or update the owner issue
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        env:
+          ALERT_RUN_ID: ${{ inputs.run_id || github.event.workflow_run.id }}
+        with:
+          script: |
+            const runId = Number(process.env.ALERT_RUN_ID);
+            if (!Number.isSafeInteger(runId) || runId <= 0) throw new Error('A workflow run ID is required');
+            const { owner, repo } = context.repo;
+            const fullName = `${owner}/${repo}`;
+            const { data: run } = await github.rest.actions.getWorkflowRun({ owner, repo, run_id: runId });
+            const workflows = new Set(['Quality checks', 'CodeQL', 'Control Center CI', 'Publish existing CHAYLUEKLAB site']);
+            const branches = new Set(['main', 'fix/control-center-plus59', 'codex/retail-control-center']);
+            if (run.head_repository?.full_name !== fullName || !workflows.has(run.name) || !branches.has(run.head_branch)) {
+              core.info('Skipped: only existing repository workflows on approved branches can notify');
+              return;
+            }
+            if (!/^[a-f0-9]{40}$/.test(run.head_sha)) throw new Error('Invalid workflow commit');
+            let failed = ['failure', 'timed_out'].includes(run.conclusion);
+            // A reusable notification runs before its parent receives a conclusion.
+            if (!failed && run.status === 'in_progress' && String(context.runId) === String(runId)) {
+              const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, { owner, repo, run_id: runId, per_page: 100 });
+              failed = jobs.some(job => ['failure', 'timed_out'].includes(job.conclusion));
+            }
+            if (!failed) {
+              core.info('Skipped: no verified failure');
+              return;
+            }
+            const marker = `<!-- chaylueklab-automation-run:${runId} -->`;
+            const title = `[Automation] ${run.name} (${run.head_branch})`;
+            const url = `https://github.com/${fullName}/actions/runs/${runId}`;
+            const body = [
+              'ระบบอัตโนมัติพบข้อผิดพลาด กรุณาเปิดลิงก์เพื่อดูขั้นตอนที่ล้มเหลว',
+              '',
+              `Workflow: ${run.name}`,
+              `Branch: ${run.head_branch}`,
+              `Commit: ${run.head_sha}`,
+              `Run: ${url}`,
+              '',
+              'หากขั้นตอนทดสอบ ตรวจความปลอดภัย หรือ build ล้มเหลว ระบบจะไม่ Deploy รุ่นนั้น',
+              'Issue นี้ไม่แนบ log หรือ secret',
+              '',
+              marker
+            ].join('\n');
+            const issues = await github.paginate(github.rest.issues.listForRepo, { owner, repo, state: 'open', per_page: 100 });
+            const existing = issues.find(issue => !issue.pull_request && issue.title === title);
+            if (existing) {
+              if ((existing.body || '').includes(marker)) return;
+              const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number: existing.number, per_page: 100 });
+              if (comments.some(comment => (comment.body || '').includes(marker))) return;
+              await github.rest.issues.createComment({ owner, repo, issue_number: existing.number, body });
+              core.notice(`Updated automation issue #${existing.number}`);
+            } else {
+              const { data: issue } = await github.rest.issues.create({ owner, repo, title, body, assignees: [owner] });
+              core.notice(`Created automation issue #${issue.number}`);
+            }

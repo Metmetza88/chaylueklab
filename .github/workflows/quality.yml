@@ -4,8 +4,9 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main, fix/control-center-plus59]
+    branches: [fix/control-center-plus59]
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
@@ -35,5 +36,7 @@ jobs:
           git diff --exit-code -- control.html supabase/functions/_shared/membership.ts supabase/functions/_shared/billing-core.ts supabase/functions/billing/index.ts supabase/functions/stripe-webhook/index.ts
       - name: Run unit and security checks
         run: node --test tests/*.test.mjs
+      - name: Verify public site configuration
+        run: node scripts/verify-public-site.mjs
       - name: Type-check Edge Functions
-        run: npx --yes deno@2.5.2 check supabase/functions/stock/index.ts supabase/functions/video-create/index.ts supabase/functions/video-status/index.ts supabase/functions/billing/index.ts supabase/functions/stripe-webhook/index.ts
+        run: npx --yes deno@2.5.2 check supabase/functions/stock/index.ts supabase/functions/video-create/index.ts supabase/functions/video-status/index.ts supabase/functions/billing/index.ts supabase/functions/stripe-webhook/index.ts supabase/functions/newsroom/index.ts supabase/functions/retail-control/index.ts

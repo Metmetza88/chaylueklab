@@ -10,9 +10,9 @@
 - `?view=control` และ `?view=stock` ในหน้าแรกส่งไปหน้าที่ตรงกันหลัง `liff.init()` เสร็จ เพื่อไม่ขัดจังหวะ LINE callback
 - `stock.html` เป็นแหล่ง HTML หลัก; รัน `node scripts/prepare-control.mjs` เมื่อแก้หน้าเพื่อสร้าง `control.html` ให้ตรงกัน ทั้งสองหน้าโหลด SDK เองโดยไม่เปลี่ยน URL ก่อน SDK ประมวลผล callback
 
-งานนี้ส่งให้ตรวจผ่าน branch `fix/control-center-plus59` ใน repository เดิม เจ้าของเปิด PR #6 พร้อมตรวจแล้ว งานรวมล่าสุดรักษาโค้ด PR #5 ที่เพิ่ง Merge เข้า `main` การเชื่อม [ChatGPT Codex Connector](https://github.com/apps/chatgpt-codex-connector) มีสิทธิ์เขียน source และ tree ที่ส่งตรวจต้องตรงกับชุดที่ทดสอบ หน้า production ยังไม่ได้เผยแพร่จากงานนี้
+งานนี้ส่งให้ตรวจผ่าน branch `fix/control-center-plus59` ใน repository เดิม เจ้าของเปิด PR #6 พร้อมตรวจแล้ว งานรวมล่าสุดรักษาโค้ด PR #5 ที่เพิ่ง Merge เข้า `main` และการแก้ CI ที่เจ้าของเพิ่มระหว่างตรวจงาน หน้าเว็บจากงานรวมถูกเผยแพร่แล้วที่ `https://metmetza88.github.io/chaylueklab/` ผ่าน publishing branch เดิม `codex/retail-control-center` ส่วน PR #6 ยังไม่ Merge เข้า `main`
 
-เจ้าของบันทึกข้อยกเว้น `refs/heads/fix/control-center-plus59` ใน [กฎ M](https://github.com/Metmetza88/chaylueklab/settings/rules/24528302) แล้วผ่าน **Target branches → Add a target → Exclude by pattern** ทำให้ส่ง branch สำหรับตรวจงานได้ `main` ยังคงอยู่ในเป้าหมายของกฎ ข้อกำหนดการสร้าง/อัปเดต/ลบและ code coverage หายไปจากกฎที่บันทึกล่าสุด ต้องคืน **Restrict creations, Restrict updates, Restrict deletions, Restrict code coverage** ให้เหมือนค่าก่อนแก้ก่อน Merge การเชื่อมต่อนี้ไม่มีสิทธิ์ administration จึงไม่ได้แก้ ruleset เอง
+เจ้าของบันทึกข้อยกเว้น branch สำหรับตรวจงานใน [กฎ M](https://github.com/Metmetza88/chaylueklab/settings/rules/24528302) แล้ว `main` ยังคงอยู่ในเป้าหมายของกฎ การเชื่อมต่อนี้ไม่มีสิทธิ์ administration และไม่ได้แก้ ruleset เอง เจ้าของตรวจค่ากฎที่ต้องการใช้ก่อน Merge ได้จากลิงก์เดิม
 
 ## ส่วนที่นำมารวม
 
@@ -43,7 +43,7 @@ node scripts/verify-lifeos-premium-browser.mjs
 
 Browser suite ใช้ LINE/API fixtures ที่ระบุชัด ไม่มีรายการขาย เงิน หรือสมาชิก production ถูกใช้ ตรวจหน้าจอ 320/360/390/412/1280 px, ฟอนต์ไทย, ช่องทาง STORE/LINE ใช้ยอดเดียวกันผ่านสอง route, สินค้าหมด, ขอสิทธิ์, จำนวนหลังขาย, retry, double request, permissions และ callback path เดิม ผ่าน 17 Stock checks และ 11 Life OS checks การเข้า LINE ด้วยเจ้าของ/พนักงานจริงบน iPhone/Android และ Stripe test/live ยังต้องตรวจหลังเผยแพร่และตั้งค่า Secrets
 
-GitHub Actions `Quality checks` ตรวจ generated source, Node tests และ Deno type checks ของ PR โดยใช้สิทธิ์อ่าน source เท่านั้น ไม่ใช้ production Secrets และไม่ deploy หลังบ้านหรือหน้าเว็บ
+GitHub Actions ตรวจ generated source, Node tests และ Deno type checks ของ 7 Edge Functions โดยไม่ใช้ production Secrets ขั้นตอนเผยแพร่เรียก quality และ CodeQL ก่อน build และตรวจไฟล์บนเว็บจริงหลัง deploy รายละเอียดการแจ้ง Issue และขอบเขตการเผยแพร่อยู่ใน [AUTOMATION.md](AUTOMATION.md)
 
 ## Publication from the existing repository
 

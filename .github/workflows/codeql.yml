@@ -1,10 +1,9 @@
 name: CodeQL
 on:
-  push:
-    branches: [main, codex/retail-control-center]
   pull_request:
     branches: [main]
   workflow_dispatch:
+  workflow_call:
 permissions:
   contents: read
 jobs:
@@ -18,23 +17,21 @@ jobs:
       security-events: write
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - name: Initialize CodeQL
         uses: github/codeql-action/init@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4
         with:
           languages: javascript-typescript
           build-mode: none
-      - name: Run application tests
+      - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24'
-      - name: Check shared generated source
-        run: |
-          node scripts/prepare-control.mjs
-          node scripts/prepare-billing.mjs
-          git diff --exit-code -- control.html supabase/functions/_shared/membership.ts supabase/functions/_shared/billing-core.ts supabase/functions/billing/index.ts supabase/functions/stripe-webhook/index.ts
-          node --check control.js
-      - run: node --test tests/*.test.mjs
       - name: Analyze
         uses: github/codeql-action/analyze@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4
         with:
           category: /language:javascript-typescript
+          output: codeql-results
+      - name: Block deployment on error or high severity findings
+        run: node scripts/verify-codeql-results.mjs codeql-results

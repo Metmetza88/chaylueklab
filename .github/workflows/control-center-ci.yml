@@ -6,6 +6,10 @@ on:
     paths:
       - 'control.html'
       - 'control.js'
+      - 'stock.html'
+      - 'assets/stock*'
+      - 'data/*config.js'
+      - 'scripts/**'
       - 'tests/**'
       - '.github/workflows/control-center-ci.yml'
   push:
@@ -13,14 +17,12 @@ on:
     paths:
       - 'control.html'
       - 'control.js'
+      - 'stock.html'
+      - 'assets/stock*'
+      - 'data/*config.js'
+      - 'scripts/**'
       - 'tests/**'
       - '.github/workflows/control-center-ci.yml'
-      - 'stock.html'
-      - 'assets/stock.js'
-      - 'assets/stock-client.js'
-      - 'data/stock-config.js'
-      - 'data/newsroom-config.js'
-      - 'scripts/prepare-control.mjs'
   workflow_dispatch:
 
 permissions:
@@ -33,43 +35,41 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24'
 
       - name: Check JavaScript syntax
+        id: syntax
         run: node --check control.js
 
       - name: Run automated tests
+        id: tests
         run: node --test tests/*.test.mjs
 
       - name: Verify required Control Center files
+        id: configuration
         shell: bash
         run: |
           set -euo pipefail
-          test -f control.html
-          test -f control.js
-          test -f stock.html
-          test -f assets/stock.js
-          test -f assets/stock-client.js
-          test -f data/stock-config.js
-          test -f data/newsroom-config.js
-          test -f scripts/prepare-control.mjs
           node scripts/prepare-control.mjs
           git diff --exit-code -- control.html
-          grep -Fq "2011681452-yexLrODy" data/newsroom-config.js
-          grep -Fq "new URL('stock'" data/stock-config.js
-          grep -Fq "static.line-scdn.net/liff" control.html
+          node scripts/verify-public-site.mjs
 
       - name: Write CI summary
         if: always()
+        env:
+          SYNTAX_RESULT: ${{ steps.syntax.outcome }}
+          TEST_RESULT: ${{ steps.tests.outcome }}
+          CONFIG_RESULT: ${{ steps.configuration.outcome }}
         run: |
           {
             echo "## CHAYLUEKLAB Control Center CI"
             echo
-            echo "- JavaScript syntax checked"
-            echo "- Automated tests executed"
-            echo "- LIFF configuration presence checked"
-            echo "- Shared Stock endpoint reference checked"
+            echo "- JavaScript syntax: $SYNTAX_RESULT"
+            echo "- Automated tests: $TEST_RESULT"
+            echo "- Public files, existing LIFF and shared Stock: $CONFIG_RESULT"
           } >> "$GITHUB_STEP_SUMMARY"
