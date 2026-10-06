@@ -1,0 +1,66 @@
+name: Control Center CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'control.html'
+      - 'control.js'
+      - 'tests/**'
+      - '.github/workflows/control-center-ci.yml'
+  push:
+    branches: [codex/retail-control-center]
+    paths:
+      - 'control.html'
+      - 'control.js'
+      - 'tests/**'
+      - '.github/workflows/control-center-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-control-center:
+    name: Validate CHAYLUEKLAB Control Center
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+
+      - name: Check JavaScript syntax
+        run: node --check control.js
+
+      - name: Run automated tests
+        run: node --test tests/*.test.mjs
+
+      - name: Verify required Control Center files
+        shell: bash
+        run: |
+          test -f control.html
+          test -f control.js
+          test -f stock.html
+          test -f assets/stock.js
+          test -f assets/stock-client.js
+          test -f data/stock-config.js
+          node scripts/prepare-control.mjs
+          git diff --exit-code -- control.html
+          rg -q "2011681452-yexLrODy" data/newsroom-config.js
+          rg -q "new URL\('stock'" data/stock-config.js
+          grep -q "static.line-scdn.net/liff" control.html
+
+      - name: Write CI summary
+        if: always()
+        run: |
+          {
+            echo "## CHAYLUEKLAB Control Center CI"
+            echo
+            echo "- JavaScript syntax checked"
+            echo "- Automated tests executed"
+            echo "- LIFF configuration presence checked"
+            echo "- Shared Stock endpoint reference checked"
+          } >> "$GITHUB_STEP_SUMMARY"
