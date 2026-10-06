@@ -1,0 +1,11 @@
+# CHAYLUEKLAB · Obsidian edition
+
+Life OS, Control Center/Stock, Video Studio, Newsroom and the Vault entry use `assets/premium.css` and the existing Thai font. The update adds graphite surfaces, champagne controls, a C/circuit brand composition, larger stock numbers and a floating mobile navigation. Public styles carry an edition query so the new stylesheet has its own cache URL. Stock keeps the working dashboard visible after authorization; the welcome composition is shown before login.
+
+The website root shows its design before an external browser signs in. Its primary button opens the existing LINE Login. LINE clients and existing deep links retain their automatic login. Existing identities, APIs, payment gates, data and production domains are preserved.
+
+The uploaded `create-reminder` handler is recorded in the existing repository with only its confirmation renderer changed to `_shared/line-flex.ts`. It still sends a confirmation only after the existing reminder RPC succeeds, and retains request replay protection. Money and daily-summary templates are reusable but are not installed in the inaccessible dispatcher. No LINE test message or broadcast was sent.
+
+Validation: 84 Node tests; 28 Stock/Life OS browser fixture checks at mobile widths; 8 Edge Function type checks; preview pages without horizontal overflow; 68 Flex components validated against LINE's published OpenAPI schemas. These checks do not claim an authenticated production transaction or actual LINE rendering.
+
+Publication boundaries: the existing GitHub Pages/LIFF web app can be updated. The main Site `chaylueklab.com` is not found in the connected Sites account. The original Life OS project `bxaplhrunxiadjsdobyl` rejects management access, so the new reminder Flex has not been deployed there. Apply the renderer to that project's existing `create-reminder` deployment once the account with project access is connected; do not deploy a replacement membership project or new bot.

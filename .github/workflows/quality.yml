@@ -39,4 +39,4 @@ jobs:
       - name: Verify public site configuration
         run: node scripts/verify-public-site.mjs
       - name: Type-check Edge Functions
-        run: npx --yes deno@2.5.2 check supabase/functions/stock/index.ts supabase/functions/video-create/index.ts supabase/functions/video-status/index.ts supabase/functions/billing/index.ts supabase/functions/stripe-webhook/index.ts supabase/functions/newsroom/index.ts supabase/functions/retail-control/index.ts
+        run: npx --yes deno@2.5.2 check supabase/functions/stock/index.ts supabase/functions/video-create/index.ts supabase/functions/video-status/index.ts supabase/functions/billing/index.ts supabase/functions/stripe-webhook/index.ts supabase/functions/newsroom/index.ts supabase/functions/retail-control/index.ts supabase/functions/create-reminder/index.ts

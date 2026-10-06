@@ -1,6 +1,7 @@
 // Explicit UI/API fixtures only: no production LINE login, reminder, charge,
 // membership change, or Supabase credential is exercised by this verifier.
 import assert from 'node:assert/strict';
+import { newsroomConfig } from '../data/newsroom-config.js';
 import { mkdir, readFile } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -8,7 +9,7 @@ import { promisify } from 'node:util';
 const { chromium } = await import(process.env.LIFEOS_PLAYWRIGHT_MODULE || '/opt/codex/runtimes/cua/lib/node_modules/playwright-core/index.mjs');
 const base = process.env.LIFEOS_BROWSER_BASE || 'http://127.0.0.1:4175';
 const api = 'https://bxaplhrunxiadjsdobyl.supabase.co/functions/v1';
-const liffId = '2011681452-k1lfYGsF';
+const liffId = newsroomConfig.liffId;
 const reminderId = '30000000-0000-4000-8000-000000000001';
 const replacementId = '30000000-0000-4000-8000-000000000002';
 const screenshotDir = process.env.LIFEOS_SCREENSHOT_DIR || '/tmp/chaylueklab-lifeos-qa';
@@ -133,7 +134,7 @@ try {
       const rows = await page.locator('#membershipPage table tbody tr').evaluateAll(rows => rows.map(row => [...row.cells].map(cell => cell.textContent.trim())));
       assert.deepEqual(rows, [['สร้างงาน','10','200'],['ตั้งเตือน','3','30'],['บันทึกเงิน','30','500'],['โน้ต','10','200'],['อัปโหลดรวม','5 MB','100 MB'],['ต่อไฟล์','1 MB','10 MB']]);
       assert.match(await page.locator('#membershipPage').textContent(), /59\s*บาท/);
-      assert.ok(await page.locator('a[href$="control.html"]').count(), 'Control Center using the central Stock API remains linked');
+      assert.ok(await page.locator('a[href="./?view=control"]').count(), 'Control Center uses the registered LIFF entry route for the central Stock API');
       assert.ok(await page.locator('a[href$="newsroom.html"]').count(), 'Newsroom module remains linked');
       assert.ok(await page.locator('a[href$="ai-video.html"]').count(), 'Existing Studio module remains linked');
       await mobileCheck(page);

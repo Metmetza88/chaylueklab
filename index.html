@@ -103,33 +103,11 @@
 
 #snoozeDialog{width:min(92vw,470px);border:1px solid #bca57466;border-radius:28px;background:radial-gradient(at top,#263025,#090f13 65%);color:#f5f3ec;padding:26px;box-shadow:0 24px 100px #000a}#snoozeDialog::backdrop{background:#000b;backdrop-filter:blur(8px)}.snooze-clock{font-size:54px;text-align:center;color:#e9ce96;text-shadow:0 0 24px #bca57455;animation:snooze-arrival 1s ease-out}.snooze-options{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.snooze-options button{flex:1;min-height:48px;border:1px solid #e3c99355;border-radius:14px;background:#18221d;color:#eed5a3}.snooze-options button[aria-pressed=true]{background:#ecd09b;color:#111}.snooze-field{width:100%;padding:12px;border-radius:12px;border:1px solid #9b895c;background:#111b1c;color:#fff;color-scheme:dark}.snooze-note{color:#b8c7bf;font-size:13px;line-height:1.7;margin:16px 0}.snooze-action{width:100%;min-height:52px;margin-top:10px;border-radius:14px;background:#ecd09b;color:#101716;font-weight:800}.snooze-action.secondary{background:#192521;color:#dfc994;border:1px solid #8d805355}.snooze-action:disabled{opacity:.45}.snooze-close{float:right;min-width:44px;min-height:44px;background:transparent;color:#eee;border:0;font-size:24px}@keyframes snooze-arrival{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}@media(prefers-reduced-motion:reduce){.snooze-clock{animation:none}}
 
-    /* CHAYLUEKLAB public-facing command hero */
-    .brand-hero{position:relative;overflow:hidden;border:1px solid #4b4637;border-radius:26px;padding:24px;background:
-      radial-gradient(circle at 92% 10%,rgba(232,210,163,.16),transparent 34%),
-      radial-gradient(circle at 8% 100%,rgba(145,229,193,.12),transparent 32%),
-      linear-gradient(135deg,#0b1013 0%,#101a18 54%,#090d10 100%);box-shadow:0 24px 60px #0007}
-    .brand-hero:after{content:"";position:absolute;inset:auto -30px -70px auto;width:220px;height:220px;border:1px solid #e8d2a326;border-radius:50%;pointer-events:none}
-    .hero-kicker{font-size:10px;letter-spacing:.24em;color:#91e5c1;font-weight:850}
-    .hero-title{font-size:clamp(28px,7vw,48px);line-height:1.05;letter-spacing:-.04em;font-weight:900;margin:10px 0 12px}
-    .hero-title span{color:#e8d2a3}
-    .hero-copy{max-width:58ch;color:#aebdc3;font-size:13px;line-height:1.75}
-    .flag-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
-    .flag-chip{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:8px 11px;border:1px solid #3a4c49;background:#0b1315;color:#d8e4df;font-size:10px;font-weight:850;letter-spacing:.08em}
-    .flag-chip:before{content:"";width:7px;height:7px;border-radius:50%;background:#91e5c1;box-shadow:0 0 14px #91e5c188}
-    .flag-chip.gold:before{background:#e8d2a3;box-shadow:0 0 14px #e8d2a377}
-    .module-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
-    .module-card{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:104px;padding:18px;border:1px solid #34454b;border-radius:20px;background:linear-gradient(145deg,#10191d,#0b1114);text-decoration:none;color:#f6f3ea}
-    .module-card:hover{border-color:#7f755d;transform:translateY(-1px)}
-    .module-card strong{display:block;font-size:16px;line-height:1.45}.module-card small{display:block;color:#91a3ab;margin-top:5px;line-height:1.55}
-    .module-badge{flex:0 0 auto;font-size:10px;font-weight:900;letter-spacing:.11em;color:#11191d;background:#e8d2a3;padding:7px 9px;border-radius:999px}
-    .catalog-strip{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-    .catalog-card{padding:16px;border-radius:18px;border:1px solid #2d3d43;background:#0c1317}
-    .catalog-card b{display:block;color:#e8d2a3;font-size:13px}.catalog-card span{display:block;color:#8fa2aa;font-size:11px;margin-top:5px;line-height:1.5}
-    @media(min-width:760px){.module-grid{grid-template-columns:repeat(3,1fr)}.catalog-strip{grid-template-columns:repeat(4,1fr)}}
 
 </style>
+<link rel="stylesheet" href="./assets/premium.css?v=20261007-obsidian">
 </head>
-<body>
+<body data-surface="lifeos">
 <a class="skip-link" href="#homePage">ข้ามไปพื้นที่ทำงาน</a>
 <div class="shell">
   <header class="sticky">
@@ -144,37 +122,31 @@
   </header>
 
   <main class="px-4 py-4 space-y-5">
-    <section class="brand-hero" aria-label="CHAYLUEKLAB command hub">
-      <p class="hero-kicker">CHAYLUEKLAB / COMMAND HUB</p>
-      <h1 class="hero-title">ระบบของแบรนด์ <span>ที่ทำงานแทนคุณ</span></h1>
-      <p class="hero-copy">ศูนย์รวม Life OS, หลังร้าน, AI Studio และ Newsroom ในโทน Dark Premium เดียวกัน ใช้งานผ่าน LINE เป็นหลัก</p>
-      <div class="flag-row" aria-label="สถานะระบบ">
-        <span class="flag-chip">LIVE</span>
-        <span class="flag-chip">LINE READY</span>
-        <span class="flag-chip gold">OWNER MODE</span>
-        <span class="flag-chip">STOCK</span>
-        <span class="flag-chip gold">AI</span>
-      </div>
-    </section>
-
-    <section class="module-grid" aria-label="ระบบหลักของ CHAYLUEKLAB">
-      <a href="./?view=control" class="module-card"><span><strong>CONTROL CENTER</strong><small>ขาย · รับเข้า · สต๊อก · รายงาน</small></span><span class="module-badge">OPEN</span></a>
-      <a href="./ai-video.html" class="module-card"><span><strong>AI VIDEO STUDIO</strong><small>สร้างวิดีโอจากภาพและคอนเทนต์</small></span><span class="module-badge">AI</span></a>
-      <a href="./newsroom.html" class="module-card"><span><strong>NEWSROOM</strong><small>กองบรรณาธิการ AI และ Tech</small></span><span class="module-badge">DESK</span></a>
-    </section>
-
+    <aside id="connectionNotice" class="desk-panel hidden" role="status" aria-live="polite">
+      <p id="connectionTitle" class="panel-title">เชื่อมต่อบัญชี LINE</p>
+      <p id="connectionMessage" class="desk-caption mt-2"></p>
+      <div class="row-actions mt-3"><button id="connectLineBtn" type="button" class="btn btn-gold" onclick="initLiff(true)">เข้าใช้งานด้วย LINE <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 15 15 5M5 5h10v10"/></svg></button><a class="btn btn-ghost" href="https://liff.line.me/2011681452-yexLrODy">เปิดผ่าน LINE</a></div>
+    </aside>
+    <section id="homePage" class="page active" aria-labelledby="dashboardHeading" tabindex="-1">
+      <section class="brand-stage" aria-labelledby="brandStageTitle">
+        <div class="edition-pill">CHAYLUEKLAB · OBSIDIAN EDITION</div>
+        <div class="stage-mark" aria-hidden="true"><img src="./assets/brand-mark.svg" alt=""></div>
+        <h2 id="brandStageTitle">ทุกเรื่อง<br><em>อยู่ในมือคุณ.</em></h2>
+        <p>งาน เตือน เงิน และร้านของคุณ<br>เริ่มจัดการได้ด้วย LINE บัญชีเดิม</p>
+        <div class="brand-stage-actions"><button type="button" class="btn btn-gold" onclick="profile?document.getElementById('todayWorkHeading').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}):initLiff(true)">เปิดพื้นที่ของฉัน <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 15 15 5M5 5h10v10"/></svg></button><button type="button" class="btn btn-ghost" onclick="switchPage('membershipPage');loadMembership()">ดูสิทธิ์ Plus</button></div>
+        <div class="stage-signature"><span>PERSONAL LIFE OS / ชีวิตและธุรกิจ</span><span>DESIGNED FOR YOUR EVERYDAY</span></div>
+      </section>
+      <nav class="workspace-switcher" aria-label="พื้นที่ CHAYLUEKLAB">
+        <a href="./?view=control" class="workspace-card"><span class="workspace-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 7 9-4 9 4v10l-9 4-9-4V7Zm0 0 9 4 9-4M12 11v10"/></svg></span><span><strong>ระบบหลังร้าน</strong><small>ขาย · รับเข้า · สต๊อกกลาง</small></span><span class="workspace-index">01</span></a>
+        <a href="./ai-video.html" class="workspace-card"><span class="workspace-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m10 8 6 4-6 4V8Z"/></svg></span><span><strong>AI Video Studio</strong><small>ภาพของคุณ → วิดีโอ</small></span><span class="workspace-index">02</span></a>
+        <a href="./newsroom.html" class="workspace-card"><span class="workspace-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h4"/></svg></span><span><strong>Newsroom</strong><small>ข่าว AI · Tech · Social</small></span><span class="workspace-index">03</span></a>
+      </nav>
     <section class="catalog-strip" aria-label="หมวดของแบรนด์">
       <div class="catalog-card"><b>DIGITAL PRODUCTS</b><span>E‑Book · ไฟล์ดาวน์โหลด · เครื่องมือ</span></div>
       <div class="catalog-card"><b>MERCHANDISE</b><span>FIRST CHAPTER · เสื้อ · ของสะสม</span></div>
       <div class="catalog-card"><b>AI / WEB SYSTEMS</b><span>LIFF · Automation · Business Tools</span></div>
       <div class="catalog-card"><b>CHAYLUEKLAB WORKS</b><span>ผลงานและระบบที่กำลังพัฒนา</span></div>
     </section>
-    <aside id="connectionNotice" class="desk-panel hidden" role="status" aria-live="polite">
-      <p id="connectionTitle" class="panel-title">เชื่อมต่อบัญชี LINE</p>
-      <p id="connectionMessage" class="desk-caption mt-2"></p>
-      <div class="row-actions mt-3"><button id="connectLineBtn" type="button" class="btn btn-gold" onclick="initLiff()">เชื่อมต่อ LINE อีกครั้ง</button><a class="btn btn-ghost" href="https://liff.line.me/2011681452-yexLrODy">เปิดผ่าน LINE</a></div>
-    </aside>
-    <section id="homePage" class="page active" aria-labelledby="dashboardHeading" tabindex="-1">
       <div class="desk-intro"><div><p class="eyebrow">YOUR DAILY COMMAND DESK</p><h1 id="dashboardHeading" class="desk-title">วันนี้ จัดการได้</h1><p class="desk-sub"><span id="dashboardDate"></span> · สวัสดี <span id="helloName">ผู้ใช้ LINE</span></p></div><button id="dashboardRefresh" class="iconbtn" onclick="refreshDesk()" aria-label="โหลดข้อมูลแดชบอร์ดอีกครั้ง"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L3 9M3 4v5h5M4 13a8 8 0 0 0 14 5l3-3M21 20v-5h-5"/></svg></button></div>
       <div class="desk-grid">
         <div class="desk-main">
@@ -482,7 +454,7 @@ function connectionNotice(message,title='เชื่อมต่อบัญช
   document.getElementById('connectionNotice').classList.remove('hidden');
 }
 async function waitForResult(promise,ms,message){let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(message)),ms)})])}finally{clearTimeout(timer)}}
-async function initLiff(){
+async function initLiff(startLogin=false){
   if(liffBusy)return;liffBusy=true;document.getElementById('connectLineBtn').disabled=true;
   try{
     if(authExpired){location.assign('https://liff.line.me/'+LIFF_ID);return}
@@ -494,8 +466,9 @@ async function initLiff(){
       document.getElementById('lineBadge').innerHTML='<span class="dot" style="background:#f59e0b"></span><span>LOGIN</span>';
       document.getElementById('profileState').textContent='ยังไม่ได้เข้าสู่ระบบ LINE';
       document.getElementById('systemText').textContent='กรุณาเข้าสู่ระบบ LINE';
-      connectionNotice('กำลังเปิดหน้าเข้าสู่ระบบ หากหน้าไม่เปลี่ยน กดเชื่อมต่อ LINE อีกครั้งได้');
-      liff.login({redirectUri:location.href});return;
+      connectionNotice(startLogin||liff.isInClient()?'กำลังเปิดหน้าเข้าสู่ระบบ LINE':'ใช้ LINE บัญชีเดิมเพื่อเปิดงาน เตือน และข้อมูลส่วนตัวของคุณ');
+      if(startLogin||liff.isInClient()||['stock','control','snooze','membership','vault'].includes(retailView))liff.login({redirectUri:location.href});
+      return;
     }
     if(retailView==='stock'||retailView==='control'){
       location.replace(new URL(retailView==='control'?'./control.html':'./stock.html',location.href));
