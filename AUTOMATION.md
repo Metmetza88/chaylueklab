@@ -13,10 +13,12 @@ Push เข้า branch ของ PR `fix/control-center-plus59` ตรวจ�
 1. Quality checks และ CodeQL ทำงานก่อน หากล้มเหลวจะไม่ build หรือ deploy
 2. CodeQL gate บล็อก findings ระดับ error หรือ security severity ตั้งแต่ 7 ขึ้นไป
 3. Build เฉพาะหน้าเว็บและ assets ไม่บรรจุ Edge Functions, SQL, tests หรือไฟล์ environment
-4. ตั้ง Source ของ Pages เดิมเป็น GitHub Actions โดยรักษา URL/domain แล้ว Deploy เข้า environment `github-pages` เดิม ทำให้ branch publisher แบบเก่าไม่ข้ามขั้นตอนตรวจ
+4. Deploy เข้า environment `github-pages` เดิม โดยรักษา URL/domain
 5. ตรวจ HTTP และ SHA-256 ของ 7 route บนเว็บจริงให้ตรงกับ release manifest และ commit ที่ผ่านการตรวจ
 
 ดูผลและสั่งรัน workflow เดิมอีกครั้งได้ที่ [GitHub Actions](https://github.com/Metmetza88/chaylueklab/actions)
+
+เจ้าของต้องเลือก [Settings → Pages](https://github.com/Metmetza88/chaylueklab/settings/pages) → **Source → GitHub Actions** ครั้งเดียวก่อน Merge เพื่อปิด branch publisher แบบเก่าที่อาจข้าม CI การลองตั้ง Source ผ่าน workflow ได้ HTTP 403 `Resource not accessible by integration` จึงนำขั้นตอนที่ไม่มีสิทธิ์ออกและคง deployment ที่ใช้งานได้ ไม่ได้เปลี่ยน domain, ruleset หรือสร้าง Site ใหม่
 
 ## เมื่อเกิดข้อผิดพลาด
 

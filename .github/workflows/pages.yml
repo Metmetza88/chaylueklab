@@ -41,6 +41,7 @@ jobs:
         run: |
           {
             echo "## CHAYLUEKLAB checked artifact"
+            echo "One-time owner setup: Settings > Pages > Source > GitHub Actions before merging this release."
             echo "Commit: $RELEASE_SHA"
             echo "Branch: $RELEASE_BRANCH"
             echo "Tests, type checks and CodeQL passed before this build."
@@ -68,20 +69,6 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24'
-      - name: Use Actions as the existing Pages publisher
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const { data: before } = await github.rest.repos.getPages({ owner, repo });
-            if (before.build_type !== 'workflow') {
-              await github.rest.repos.updateInformationAboutPagesSite({ owner, repo, build_type: 'workflow' });
-            }
-            const { data: after } = await github.rest.repos.getPages({ owner, repo });
-            if (after.build_type !== 'workflow' || after.html_url !== before.html_url || after.cname !== before.cname) {
-              throw new Error('Verify the existing Pages source and preserve its URL and custom domain');
-            }
-            core.info('Existing Pages site uses the checked Actions artifact; URL and domain preserved');
       - name: Deploy to existing GitHub Pages
         id: deployment
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
