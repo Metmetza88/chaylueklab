@@ -13,7 +13,7 @@ Push เข้า branch ของ PR `fix/control-center-plus59` ตรวจ�
 1. Quality checks และ CodeQL ทำงานก่อน หากล้มเหลวจะไม่ build หรือ deploy
 2. CodeQL gate บล็อก findings ระดับ error หรือ security severity ตั้งแต่ 7 ขึ้นไป
 3. Build เฉพาะหน้าเว็บและ assets ไม่บรรจุ Edge Functions, SQL, tests หรือไฟล์ environment
-4. Deploy เข้า environment `github-pages` เดิม
+4. ตั้ง Source ของ Pages เดิมเป็น GitHub Actions โดยรักษา URL/domain แล้ว Deploy เข้า environment `github-pages` เดิม ทำให้ branch publisher แบบเก่าไม่ข้ามขั้นตอนตรวจ
 5. ตรวจ HTTP และ SHA-256 ของ 7 route บนเว็บจริงให้ตรงกับ release manifest และ commit ที่ผ่านการตรวจ
 
 ดูผลและสั่งรัน workflow เดิมอีกครั้งได้ที่ [GitHub Actions](https://github.com/Metmetza88/chaylueklab/actions)
