@@ -68,9 +68,9 @@ export async function requireMember(db:any,user:string){
   const m=await membership(db,user);
   if(m.owner)return null;
   if(m.status!=="blocked")return null;
-  return json({ok:false,error:m.status==="blocked"?"account_suspended":"membership_required",price:59,membershipUrl:"https://liff.line.me/2011681452-k1lfYGsF?view=membership"},402);
+  return json({ok:false,error:m.status==="blocked"?"account_suspended":"membership_required",price:59,membershipUrl:"https://liff.line.me/2011681452-yexLrODy?view=membership"},402);
 }
 
 export const LIMITS={free:{tasks:10,reminders:3,finance:30,notes:10,uploadBytes:5242880,fileBytes:1048576},plus:{tasks:200,reminders:30,finance:500,notes:200,uploadBytes:104857600,fileBytes:10485760}};
-export async function requirePremium(db:any,user:string){const m=await membership(db,user);if(m.owner||(m.active&&m.status!=="blocked"))return null;return json({ok:false,error:m.status==="blocked"?"account_suspended":"premium_required",price:59,membershipUrl:"https://liff.line.me/2011681452-k1lfYGsF?view=membership"},402);}
+export async function requirePremium(db:any,user:string){const m=await membership(db,user);if(m.owner||(m.active&&m.status!=="blocked"))return null;return json({ok:false,error:m.status==="blocked"?"account_suspended":"premium_required",price:59,membershipUrl:"https://liff.line.me/2011681452-yexLrODy?view=membership"},402);}
 export async function accountPlan(db:any,user:string){const m=await membership(db,user);const r=await db.from("member_monthly_usage").select("resource,used").eq("line_user_id",user).eq("month_start",new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Bangkok",year:"numeric",month:"2-digit"}).format(new Date())+"-01");if(r.error)throw r.error;return {tier:m.owner?"owner":m.active?m.status==="trialing"?"trial":"plus":"free",limits:m.owner?null:m.active?LIMITS.plus:LIMITS.free,usage:Object.fromEntries((r.data||[]).map((x:any)=>[x.resource,Number(x.used)]))};}
