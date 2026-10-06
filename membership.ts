@@ -18,14 +18,14 @@ export function adminDb(){
 export async function lineIdentity(body:any):Promise<string|null>{
   const channel=Deno.env.get("LINE_LOGIN_CHANNEL_ID")||"2011681452";
   if(typeof body?.idToken==="string"&&body.idToken){
-    const r=await fetch("https://api.line.me/oauth2/v2.1/verify",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({id_token:body.idToken,client_id:channel})});
+    const r=await fetch("https://api.line.me/oauth2/v2.1/verify",{signal:AbortSignal.timeout(15000),method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({id_token:body.idToken,client_id:channel})});
     if(r.ok){const p=await r.json();if(typeof p.sub==="string")return p.sub;}
   }
   if(typeof body?.accessToken!=="string"||!body.accessToken)return null;
-  const r=await fetch("https://api.line.me/oauth2/v2.1/verify?"+new URLSearchParams({access_token:body.accessToken}));
+  const r=await fetch("https://api.line.me/oauth2/v2.1/verify?"+new URLSearchParams({access_token:body.accessToken}),{signal:AbortSignal.timeout(15000)});
   if(!r.ok)return null;
   const p=await r.json();if(String(p.client_id)!==channel||Number(p.expires_in)<=0)return null;
-  const profile=await fetch("https://api.line.me/v2/profile",{headers:{Authorization:"Bearer "+body.accessToken}});
+  const profile=await fetch("https://api.line.me/v2/profile",{signal:AbortSignal.timeout(15000),headers:{Authorization:"Bearer "+body.accessToken}});
   if(!profile.ok)return null;
   const user=await profile.json();return typeof user.userId==="string"?user.userId:null;
 }

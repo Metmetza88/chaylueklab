@@ -17,7 +17,7 @@ for (const endpoint of ['video-create', 'video-status']) {
     const denied = () => { throw new Error('Preflight must not authenticate or call the database/provider'); };
     const source = readFileSync(new URL(`../supabase/functions/${endpoint}/index.ts`, import.meta.url), 'utf8').replace(/^import .*;\s*$/mg, '');
     vm.runInNewContext(stripTypeScriptTypes(source), { Request, Response, Set, json, requirePost, CORS,
-      Deno: { serve: fn => { handle = fn; } }, lineIdentity: denied, adminDb: denied,
+      Deno: { serve: fn => { handle = fn; }, env: { get: () => undefined } }, lineIdentity: denied, adminDb: denied,
       createProviderJob: denied, pollProviderJob: denied, downloadProviderVideo: denied, membership: denied });
     const response = await handle(new Request('https://test.invalid', { method: 'OPTIONS' }));
     assert.equal(response.status, 204);
@@ -25,8 +25,13 @@ for (const endpoint of ['video-create', 'video-status']) {
     assert.equal(response.headers.get('access-control-allow-origin'), '*');
     assert.match(response.headers.get('access-control-allow-methods'), /POST/);
     const unsupported = await handle(new Request('https://test.invalid', { method: 'GET' }));
-    assert.equal(unsupported.status, 405);
-    assert.equal((await unsupported.json()).error, 'method_not_allowed');
+    if (endpoint === 'video-status') {
+      assert.equal(unsupported.status, 200);
+      assert.deepEqual(await unsupported.json(), { ok: true, models: { veo: false, runway: false } });
+    } else {
+      assert.equal(unsupported.status, 405);
+      assert.equal((await unsupported.json()).error, 'method_not_allowed');
+    }
   });
 }
 

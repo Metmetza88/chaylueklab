@@ -8,21 +8,23 @@ const publicJob=(j:any,url:string|null=null)=>({id:j.id,status:j.status,progress
 async function failJob(db:any,id:string,code:string,message?:string){await db.rpc("video_release_credit",{p_job:id,p_code:code,p_message:message||code});}
 
 async function signedUrl(db:any,path:string){
-  const r=await db.storage.from(BUCKET).createSignedUrl(path,3600,{download:`chaylueklab-${path.split("/").pop()||"video"}.mp4`});
+  const r=await db.storage.from(BUCKET).createSignedUrl(path,3600);
   return r.error?null:r.data?.signedUrl||null;
 }
 
 Deno.serve(async(req)=>{
+  if(req.method==="GET")return json({ok:true,models:{veo:!!Deno.env.get("GEMINI_API_KEY"),runway:!!Deno.env.get("RUNWAYML_API_SECRET")}});
   const method=requirePost(req);if(method)return method;
   let body:any;try{body=await req.json();}catch{return errorResponse("invalid_json",400);}
-  const user=await lineIdentity(body);if(!user)return errorResponse("invalid_line_login",401);
   const id=typeof body.jobId==="string"?body.jobId:"";
-  if(!/^[0-9a-f-]{36}$/i.test(id))return errorResponse("invalid_job_id",400);
   try{
+    const user=await lineIdentity(body);if(!user)return errorResponse("invalid_line_login",401);
+    if(!/^[0-9a-f-]{36}$/i.test(id))return errorResponse("invalid_job_id",400);
     const db=adminDb();let q=await db.from("video_jobs").select("*").eq("id",id).eq("line_user_id",user).maybeSingle();
     if(q.error)throw q.error;if(!q.data)return errorResponse("video_job_not_found",404);
     let job=q.data;
     if(job.status==="completed")return json({ok:true,job:publicJob(job,await signedUrl(db,job.video_path))});
+    if(job.status==="failed")return json({ok:true,job:publicJob(job)});
     const timeoutAt=Date.parse(job.accepted_at||job.created_at)+Number(Deno.env.get("VIDEO_JOB_TIMEOUT_SECONDS")||900)*1000;
     if(Date.now()>timeoutAt){await failJob(db,id,"video_timeout","provider_timeout");q=await db.from("video_jobs").select("*").eq("id",id).eq("line_user_id",user).maybeSingle();return json({ok:true,job:publicJob(q.data)});}
     if(!job.provider_job_id)return json({ok:true,job:publicJob(job),retryAfterMs:2500});
