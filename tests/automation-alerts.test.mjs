@@ -31,7 +31,7 @@ test('real failed CI creates an issue assigned to the repository owner without l
   await f.run();
   assert.equal(f.writes.length, 1);
   assert.deepEqual(f.writes[0].assignees, ['Metmetza88']);
-  assert.ok(f.writes[0].body.includes('https://github.com/Metmetza88/chaylueklab/actions/runs/42'));
+  const runLine = f.writes[0].body.split('\\n').find(line => line.startsWith('Run: '));\n  assert.equal(runLine, 'Run: https://github.com/Metmetza88/chaylueklab/actions/runs/42');
 });
 
 test('forks and unrelated branches cannot write privileged failure notifications', async () => {
