@@ -140,7 +140,7 @@ export function createStockClient({ onChange = () => {}, onStatus = () => {} } =
     const endpoint = new URL(config.liffEndpointUrl), current = new URL(location.href);
     if (current.origin !== endpoint.origin || !current.pathname.startsWith(endpoint.pathname)) {
       status('เปิดระบบหลังร้านผ่านแอป LINE เดิม', 'login_required');
-      if (startLogin) location.assign(`https://liff.line.me/${encodeURIComponent(config.liffId)}/stock.html`);
+      if (startLogin) location.assign(`https://liff.line.me/${encodeURIComponent(config.liffId)}?view=control`);
       return null;
     }
     if (!window.liff) throw new StockError('line_login_not_configured', 503);
@@ -155,7 +155,7 @@ export function createStockClient({ onChange = () => {}, onStatus = () => {} } =
     if (needsReauth && startLogin) { window.liff.logout(); needsReauth = false; }
     if (!window.liff.isLoggedIn()) {
       status('เชื่อมต่อ LINE เพื่อใช้บัญชีเดิมของคุณ', 'login_required');
-      if (startLogin) window.liff.login({ redirectUri: location.href });
+      if (startLogin) window.liff.login({ redirectUri: new URL('?view=control', config.liffEndpointUrl).href });
       return null;
     }
     const data = await refresh();
