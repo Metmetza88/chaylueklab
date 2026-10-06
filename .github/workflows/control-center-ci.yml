@@ -9,12 +9,18 @@ on:
       - 'tests/**'
       - '.github/workflows/control-center-ci.yml'
   push:
-    branches: [codex/retail-control-center]
+    branches: [codex/retail-control-center, fix/control-center-plus59]
     paths:
       - 'control.html'
       - 'control.js'
       - 'tests/**'
       - '.github/workflows/control-center-ci.yml'
+      - 'stock.html'
+      - 'assets/stock.js'
+      - 'assets/stock-client.js'
+      - 'data/stock-config.js'
+      - 'data/newsroom-config.js'
+      - 'scripts/prepare-control.mjs'
   workflow_dispatch:
 
 permissions:
@@ -41,17 +47,20 @@ jobs:
       - name: Verify required Control Center files
         shell: bash
         run: |
+          set -euo pipefail
           test -f control.html
           test -f control.js
           test -f stock.html
           test -f assets/stock.js
           test -f assets/stock-client.js
           test -f data/stock-config.js
+          test -f data/newsroom-config.js
+          test -f scripts/prepare-control.mjs
           node scripts/prepare-control.mjs
           git diff --exit-code -- control.html
-          rg -q "2011681452-yexLrODy" data/newsroom-config.js
-          rg -q "new URL\('stock'" data/stock-config.js
-          grep -q "static.line-scdn.net/liff" control.html
+          grep -Fq "2011681452-yexLrODy" data/newsroom-config.js
+          grep -Fq "new URL('stock'" data/stock-config.js
+          grep -Fq "static.line-scdn.net/liff" control.html
 
       - name: Write CI summary
         if: always()
