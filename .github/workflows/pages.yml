@@ -1,0 +1,50 @@
+name: Publish existing CHAYLUEKLAB site
+on:
+  push:
+    branches: [main, codex/retail-control-center]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: chaylueklab-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+      - name: Check shared generated source
+        run: |
+          node scripts/prepare-control.mjs
+          node scripts/prepare-billing.mjs
+          git diff --exit-code -- control.html supabase/functions/_shared/membership.ts supabase/functions/_shared/billing-core.ts supabase/functions/billing/index.ts supabase/functions/stripe-webhook/index.ts
+          node --check control.js
+      - run: node --test tests/*.test.mjs
+      - name: Stage public site files
+        run: |
+          mkdir -p _site
+          find . -maxdepth 1 -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' \) -exec cp {} _site/ \;
+          cp -R assets data news _site/
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to existing GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

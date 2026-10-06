@@ -10,7 +10,7 @@
 - `?view=control` และ `?view=stock` ในหน้าแรกส่งไปหน้าที่ตรงกันหลัง `liff.init()` เสร็จ เพื่อไม่ขัดจังหวะ LINE callback
 - `stock.html` เป็นแหล่ง HTML หลัก; รัน `node scripts/prepare-control.mjs` เมื่อแก้หน้าเพื่อสร้าง `control.html` ให้ตรงกัน ทั้งสองหน้าโหลด SDK เองโดยไม่เปลี่ยน URL ก่อน SDK ประมวลผล callback
 
-งานนี้ส่งให้ตรวจผ่าน branch `fix/control-center-plus59` ใน repository เดิม เจ้าของตรวจ Draft PR ก่อน Merge เข้า `main` และเผยแพร่หน้าเว็บ การเชื่อม [ChatGPT Codex Connector](https://github.com/apps/chatgpt-codex-connector) มีสิทธิ์เขียน source และ tree ที่ส่งตรวจต้องตรงกับชุดที่ทดสอบ หน้า production ยังไม่ได้เผยแพร่จากงานนี้
+งานนี้ส่งให้ตรวจผ่าน branch `fix/control-center-plus59` ใน repository เดิม เจ้าของเปิด PR #6 พร้อมตรวจแล้ว งานรวมล่าสุดรักษาโค้ด PR #5 ที่เพิ่ง Merge เข้า `main` การเชื่อม [ChatGPT Codex Connector](https://github.com/apps/chatgpt-codex-connector) มีสิทธิ์เขียน source และ tree ที่ส่งตรวจต้องตรงกับชุดที่ทดสอบ หน้า production ยังไม่ได้เผยแพร่จากงานนี้
 
 เจ้าของบันทึกข้อยกเว้น `refs/heads/fix/control-center-plus59` ใน [กฎ M](https://github.com/Metmetza88/chaylueklab/settings/rules/24528302) แล้วผ่าน **Target branches → Add a target → Exclude by pattern** ทำให้ส่ง branch สำหรับตรวจงานได้ `main` ยังคงอยู่ในเป้าหมายของกฎ ข้อกำหนดการสร้าง/อัปเดต/ลบและ code coverage หายไปจากกฎที่บันทึกล่าสุด ต้องคืน **Restrict creations, Restrict updates, Restrict deletions, Restrict code coverage** ให้เหมือนค่าก่อนแก้ก่อน Merge การเชื่อมต่อนี้ไม่มีสิทธิ์ administration จึงไม่ได้แก้ ruleset เอง
 
@@ -44,3 +44,11 @@ node scripts/verify-lifeos-premium-browser.mjs
 Browser suite ใช้ LINE/API fixtures ที่ระบุชัด ไม่มีรายการขาย เงิน หรือสมาชิก production ถูกใช้ ตรวจหน้าจอ 320/360/390/412/1280 px, ฟอนต์ไทย, ช่องทาง STORE/LINE ใช้ยอดเดียวกันผ่านสอง route, สินค้าหมด, ขอสิทธิ์, จำนวนหลังขาย, retry, double request, permissions และ callback path เดิม ผ่าน 17 Stock checks และ 11 Life OS checks การเข้า LINE ด้วยเจ้าของ/พนักงานจริงบน iPhone/Android และ Stripe test/live ยังต้องตรวจหลังเผยแพร่และตั้งค่า Secrets
 
 GitHub Actions `Quality checks` ตรวจ generated source, Node tests และ Deno type checks ของ PR โดยใช้สิทธิ์อ่าน source เท่านั้น ไม่ใช้ production Secrets และไม่ deploy หลังบ้านหรือหน้าเว็บ
+
+## Publication from the existing repository
+
+PR #5 added the existing `github-pages` publishing and CodeQL workflows to `main` while PR #6 was under review. This integration preserves those workflows and the existing legacy API/data, resolves the overlapping Control Center route to the single `stock` API, and keeps both `control.html` and `stock.html` on the same inventory ledger. The legacy `retail-control` endpoint is retained for compatibility, but the active Control Center does not create another inventory.
+
+The publishing workflow stages only public pages and assets. It excludes server functions, database SQL, test fixtures, and scripts from the Pages artifact. The existing `codex/retail-control-center` branch is already allowed by the `github-pages` environment. Deploy the reviewed commit through that branch with a normal fast-forward after unit and CodeQL checks; do not fake deployment statuses or change branch protections.
+
+`https://chaylueklab.com` is hosted separately from this repository's GitHub Pages. The selected Sites account currently exposes only the Video Studio project and cannot access the owner's main Site. Publishing GitHub Pages does not update that domain. No replacement Site or domain is created. Real Stripe checkout is blocked by missing Stripe Secrets and access to the existing Life OS Supabase project; AI generation requires a configured provider key.

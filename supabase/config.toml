@@ -1,5 +1,4 @@
-# Use explicit --project-ref when deploying; existing modules use existing projects.
-# Custom LINE identity verification or Stripe signature verification is in each function.
+# LINE tokens and Stripe signatures are verified by the existing server functions.
 [functions.video-create]
 verify_jwt = false
 
@@ -16,4 +15,8 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.stripe-webhook]
+verify_jwt = false
+
+# Keep the existing legacy API; the Control Center UI uses the shared stock API.
+[functions.retail-control]
 verify_jwt = false
