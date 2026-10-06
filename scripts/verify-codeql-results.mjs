@@ -18,7 +18,8 @@ for (const name of files) {
       const security = Number(result.properties?.['security-severity'] ?? rule?.properties?.['security-severity'] ?? 0);
       if (level === 'error' || security >= 7) {
         blocked++;
-        console.error(`Blocked deployment: CodeQL ${result.ruleId}, security severity ${security}, level ${level}`);
+        const location = result.locations?.[0]?.physicalLocation;
+        console.error(`Blocked deployment: CodeQL ${result.ruleId}, security severity ${security}, level ${level}, file ${location?.artifactLocation?.uri || 'unknown'}:${location?.region?.startLine || '?'}`);
       }
     }
   }

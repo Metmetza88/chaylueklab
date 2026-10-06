@@ -27,11 +27,12 @@ function fixture(changes = {}, issues = [], comments = [], jobs = []) {
 }
 
 test('real failed CI creates an issue assigned to the repository owner without logs', async () => {
-  const f = fixture();
+  const f = fixture({ html_url: 'https://unexpected.example/other-run' });
   await f.run();
   assert.equal(f.writes.length, 1);
   assert.deepEqual(f.writes[0].assignees, ['Metmetza88']);
-  const runLine = f.writes[0].body.split('\\n').find(line => line.startsWith('Run: '));\n  assert.equal(runLine, 'Run: https://github.com/Metmetza88/chaylueklab/actions/runs/42');
+  const line = f.writes[0].body.split('\n').find(value => value.startsWith('Run: '));
+  assert.equal(line, 'Run: https://github.com/Metmetza88/chaylueklab/actions/runs/42');
 });
 
 test('forks and unrelated branches cannot write privileged failure notifications', async () => {
@@ -68,7 +69,7 @@ test('new failed run updates an existing owner issue', async () => {
 });
 
 test('reusable notification requires a failed job in its own running workflow', async () => {
-  const changes = { status: 'in_progress', conclusion: null, name: 'Publish existing CHAYLUEKLAB site' };
+  const changes = { status: 'queued', conclusion: null, name: 'Publish existing CHAYLUEKLAB site' };
   const own = fixture(changes, [], [], [{ conclusion: 'failure' }]);
   await own.run(42);
   assert.equal(own.writes.length, 1);

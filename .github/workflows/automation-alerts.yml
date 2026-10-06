@@ -50,10 +50,12 @@ jobs:
             if (!/^[a-f0-9]{40}$/.test(run.head_sha)) throw new Error('Invalid workflow commit');
             let failed = ['failure', 'timed_out'].includes(run.conclusion);
             // A reusable notification runs before its parent receives a conclusion.
-            if (!failed && run.status === 'in_progress' && String(context.runId) === String(runId)) {
+            const ownRun = String(context.runId || process.env.GITHUB_RUN_ID) === String(runId);
+            if (!failed && !run.conclusion && ownRun) {
               const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, { owner, repo, run_id: runId, per_page: 100 });
               failed = jobs.some(job => ['failure', 'timed_out'].includes(job.conclusion));
             }
+            core.info(`Verified run ${runId}: status=${run.status}, conclusion=${run.conclusion || 'pending'}, ownRun=${ownRun}, failed=${failed}`);
             if (!failed) {
               core.info('Skipped: no verified failure');
               return;
