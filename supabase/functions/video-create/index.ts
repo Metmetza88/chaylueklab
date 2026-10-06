@@ -41,7 +41,7 @@ Deno.serve(async(req)=>{
     const created=await db.rpc("video_create_job",{p_user:user,p_request_id:requestId,p_model:model,p_ratio:ratio,p_duration:duration,p_prompt:prompt});
     if(created.error){
       const code=String(created.error.message||"").replace(/^.*?video_/i,"video_");
-      if(code.includes("quota_exceeded"))return errorResponse("video_quota_exceeded",402,{price:59,membershipUrl:"https://liff.line.me/2011681452-k1lfYGsF?view=membership"});
+      if(code.includes("quota_exceeded"))return errorResponse("video_quota_exceeded",402,{price:59,membershipUrl:"https://liff.line.me/2011681452-yexLrODy?view=membership"});
       if(code.includes("invalid_")||code.includes("unsupported_"))return errorResponse(code,400);
       throw created.error;
     }
