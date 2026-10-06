@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { reminderConfirmationFlex, dailySummaryFlex, financeConfirmationFlex } from '../supabase/functions/_shared/line-flex.ts';
 import { newsroomConfig } from '../data/newsroom-config.js';
 
@@ -30,4 +31,27 @@ test('summary and money templates reject invalid authoritative values', () => {
   assert.throws(() => financeConfirmationFlex({ title: 'เงินเข้า', type: 'income', amount: NaN }));
   const summary = dailySummaryFlex({ completed: 4, pending: 7, overdue: 2 });
   assert.match(summary.altText, /เสร็จ 4 ค้าง 7 เลยกำหนด 2/);
+});
+test('animated brand header meets LINE image and APNG playback limits', () => {
+  const png = readFileSync(new URL('../assets/line-header.png', import.meta.url));
+  assert.ok(png.length <= 300 * 1024, 'LINE animated images must be at most 300 KB');
+  assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
+  let frames = 0, plays = -1, duration = 0;
+  for (let offset = 8; offset < png.length;) {
+    const length = png.readUInt32BE(offset), type = png.toString('ascii', offset + 4, offset + 8), start = offset + 8;
+    assert.ok(start + length + 4 <= png.length, 'PNG chunks must fit the file');
+    if (type === 'IHDR') {
+      assert.equal(png.readUInt32BE(start), 640);
+      assert.equal(png.readUInt32BE(start + 4), 240);
+    }
+    if (type === 'acTL') { frames = png.readUInt32BE(start); plays = png.readUInt32BE(start + 4); }
+    if (type === 'fcTL') duration += png.readUInt16BE(start + 20) / (png.readUInt16BE(start + 22) || 100);
+    offset = start + length + 4;
+  }
+  assert.equal(frames, 16);
+  assert.equal(plays, 1, 'The subtle light pass plays once');
+  assert.equal(duration, 4);
+  const hero = reminderConfirmationFlex('ทดสอบ', '2026-10-07T02:00:00Z').contents.hero;
+  assert.equal(hero.animated, true);
+  assert.equal(new URL(hero.url).protocol, 'https:');
 });

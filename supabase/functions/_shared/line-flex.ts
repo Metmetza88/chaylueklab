@@ -17,8 +17,14 @@ function liffUrl(view?: string): string {
 }
 function row(label: string, value: string): Component {
   return { type: 'box', layout: 'horizontal', spacing: 'md', contents: [
-    text(label, 'xs', FLEX_THEME.muted, { flex: 1 }),
-    text(value, 'sm', FLEX_THEME.text, { flex: 2, align: 'end', weight: 'bold' }),
+    text(label, 'sm', FLEX_THEME.muted, { flex: 2 }),
+    text(value, 'xl', FLEX_THEME.goldLight, { flex: 1, align: 'end', weight: 'bold' }),
+  ] };
+}
+function stat(label: string, value: number): Component {
+  return { type: 'box', layout: 'vertical', flex: 1, paddingAll: '14px', cornerRadius: '12px', backgroundColor: FLEX_THEME.background, borderColor: FLEX_THEME.line, borderWidth: '1px', spacing: 'sm', contents: [
+    text(label, 'xxs', FLEX_THEME.muted),
+    text(String(value), '3xl', FLEX_THEME.goldLight, { weight: 'bold', adjustMode: 'shrink-to-fit' }),
   ] };
 }
 function shell(input: { eyebrow: string; title: string; description: string; altText: string; content: Component[]; label: string; view?: string }) {
@@ -26,20 +32,13 @@ function shell(input: { eyebrow: string; title: string; description: string; alt
     type: 'flex', altText: Array.from(input.altText).slice(0, 400).join(''),
     contents: {
       type: 'bubble', size: 'mega',
-      styles: { header: { backgroundColor: FLEX_THEME.background }, body: { backgroundColor: FLEX_THEME.surface }, footer: { backgroundColor: FLEX_THEME.background } },
-      header: {
-        type: 'box', layout: 'vertical', paddingAll: '22px', spacing: 'sm',
-        background: { type: 'linearGradient', angle: '120deg', startColor: '#27241E', endColor: FLEX_THEME.background },
-        contents: [
-          { type: 'box', layout: 'horizontal', alignItems: 'center', contents: [
-            text('C / LAB', 'xl', FLEX_THEME.goldLight, { flex: 1, weight: 'bold' }),
-            text('CHAYLUEKLAB', 'xxs', FLEX_THEME.gold, { flex: 2, align: 'end', weight: 'bold' }),
-          ] },
-          { type: 'separator', color: '#5A5040', margin: 'md' },
-          text(input.eyebrow, 'xxs', FLEX_THEME.gold, { margin: 'md', weight: 'bold' }),
-        ],
+      styles: { hero: { backgroundColor: FLEX_THEME.background }, body: { backgroundColor: FLEX_THEME.surface }, footer: { backgroundColor: FLEX_THEME.background } },
+      hero: {
+        type: 'image', url: 'https://metmetza88.github.io/chaylueklab/assets/line-header.png',
+        size: 'full', aspectRatio: '8:3', aspectMode: 'cover', backgroundColor: FLEX_THEME.background, animated: true,
       },
       body: { type: 'box', layout: 'vertical', paddingAll: '22px', spacing: 'md', contents: [
+        text(input.eyebrow, 'xxs', FLEX_THEME.gold, { weight: 'bold' }),
         text(input.title, 'xl', FLEX_THEME.text, { weight: 'bold' }),
         text(input.description, 'xs', FLEX_THEME.muted),
         ...input.content,
@@ -63,7 +62,7 @@ export function reminderConfirmationFlex(title: string, remindAt: string) {
     content: [
       { type: 'box', layout: 'vertical', paddingAll: '18px', cornerRadius: '14px', backgroundColor: FLEX_THEME.background, borderColor: FLEX_THEME.line, borderWidth: '1px', spacing: 'sm', contents: [
         text('เวลาประเทศไทย', 'xxs', FLEX_THEME.muted),
-        text(time, 'xxl', FLEX_THEME.goldLight, { weight: 'bold' }),
+        text(time, '3xl', FLEX_THEME.goldLight, { weight: 'bold' }),
         text(date, 'sm', FLEX_THEME.text),
       ] },
       { type: 'box', layout: 'horizontal', spacing: 'sm', contents: [
@@ -77,10 +76,18 @@ export function reminderConfirmationFlex(title: string, remindAt: string) {
 export function financeConfirmationFlex(input: { title: string; type: 'income' | 'expense'; amount: number }) {
   if (!Number.isFinite(input.amount) || input.amount < 0) throw new TypeError('Invalid amount');
   const amount = new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(input.amount);
-  return shell({ eyebrow: 'MONEY / บันทึกสำเร็จ', title: input.title, description: input.type === 'income' ? 'รายรับที่บันทึกในบัญชีของคุณ' : 'รายจ่ายที่บันทึกในบัญชีของคุณ', altText: `บันทึก${input.type === 'income' ? 'รายรับ' : 'รายจ่าย'}: ${input.title} ${amount}`, label: 'เปิดบัญชีของฉัน', content: [text(amount, 'xxl', FLEX_THEME.goldLight, { weight: 'bold' })] });
+  return shell({ eyebrow: 'MONEY / บันทึกสำเร็จ', title: input.title, description: input.type === 'income' ? 'รายรับที่บันทึกในบัญชีของคุณ' : 'รายจ่ายที่บันทึกในบัญชีของคุณ', altText: `บันทึก${input.type === 'income' ? 'รายรับ' : 'รายจ่าย'}: ${input.title} ${amount}`, label: 'เปิดบัญชีของฉัน', content: [
+    { type: 'box', layout: 'vertical', backgroundColor: FLEX_THEME.background, paddingAll: '18px', cornerRadius: '14px', borderColor: FLEX_THEME.line, borderWidth: '1px', spacing: 'sm', contents: [
+      text(input.type === 'income' ? 'รายรับ / THB' : 'รายจ่าย / THB', 'xxs', FLEX_THEME.muted),
+      text(amount, '3xl', FLEX_THEME.goldLight, { weight: 'bold', adjustMode: 'shrink-to-fit' }),
+    ] },
+  ] });
 }
 
 export function dailySummaryFlex(input: { completed: number; pending: number; overdue: number }) {
   if (Object.values(input).some(value => !Number.isSafeInteger(value) || value < 0)) throw new TypeError('Invalid summary');
-  return shell({ eyebrow: 'TODAY / ภาพรวมของคุณ', title: 'วันนี้ จัดการได้.', description: 'ภาพรวมจากรายการจริงในบัญชีของคุณ', altText: `วันนี้: เสร็จ ${input.completed} ค้าง ${input.pending} เลยกำหนด ${input.overdue}`, label: 'เปิดพื้นที่ของฉัน', content: [row('งานที่เสร็จ', String(input.completed)), row('งานที่ยังค้าง', String(input.pending)), row('เลยกำหนด', String(input.overdue))] });
+  return shell({ eyebrow: 'TODAY / ภาพรวมของคุณ', title: 'วันนี้ จัดการได้.', description: 'ภาพรวมจากรายการจริงในบัญชีของคุณ', altText: `วันนี้: เสร็จ ${input.completed} ค้าง ${input.pending} เลยกำหนด ${input.overdue}`, label: 'เปิดพื้นที่ของฉัน', content: [
+    { type: 'box', layout: 'horizontal', spacing: 'sm', contents: [stat('งานที่เสร็จ', input.completed), stat('งานที่ยังค้าง', input.pending)] },
+    row('เลยกำหนด', String(input.overdue)),
+  ] });
 }
