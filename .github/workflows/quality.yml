@@ -1,0 +1,42 @@
+name: Quality checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [fix/control-center-plus59]
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-and-unit:
+    name: Static source and unit checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+      - name: Verify generated source is synchronized
+        run: |
+          node scripts/prepare-control.mjs
+          node scripts/prepare-billing.mjs
+          git diff --exit-code -- control.html supabase/functions/_shared/membership.ts supabase/functions/_shared/billing-core.ts supabase/functions/billing/index.ts supabase/functions/stripe-webhook/index.ts
+      - name: Run unit and security checks
+        run: node --test tests/*.test.mjs
+      - name: Verify public site configuration
+        run: node scripts/verify-public-site.mjs
+      - name: Type-check Edge Functions
+        run: npx --yes deno@2.5.2 check supabase/functions/stock/index.ts supabase/functions/video-create/index.ts supabase/functions/video-status/index.ts supabase/functions/billing/index.ts supabase/functions/stripe-webhook/index.ts supabase/functions/newsroom/index.ts supabase/functions/retail-control/index.ts

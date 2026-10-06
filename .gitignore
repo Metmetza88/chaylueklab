@@ -1,0 +1,8 @@
+supabase/.temp/
+node_modules/
+.env
+.env.*
+!.env.example
+_site/
+_site-*/
+codeql-results/

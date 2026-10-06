@@ -1,7 +1,7 @@
 name: Publish existing CHAYLUEKLAB site
 on:
   push:
-    branches: [main, codex/retail-control-center]
+    branches: [main, codex/retail-control-center, fix/control-center-plus59]
   workflow_dispatch:
 permissions:
   contents: read
@@ -9,27 +9,50 @@ concurrency:
   group: chaylueklab-pages
   cancel-in-progress: false
 jobs:
+  validation:
+    name: Validate application
+    uses: ./.github/workflows/quality.yml
+    permissions:
+      contents: read
+  security:
+    name: Scan application
+    uses: ./.github/workflows/codeql.yml
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
   build:
+    needs: [validation, security]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          node-version: '22'
-      - run: node --check control.js
-      - run: node --test tests/*.test.mjs
-      - name: Stage public site files
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+      - name: Build public artifact without server files
+        run: node scripts/build-public-site.mjs
+      - name: Summarize the checked artifact
+        env:
+          RELEASE_SHA: ${{ github.sha }}
+          RELEASE_BRANCH: ${{ github.ref_name }}
         run: |
-          mkdir -p _site
-          find . -maxdepth 1 -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' \) -exec cp {} _site/ \;
-          cp -R assets data news _site/
-          touch _site/.nojekyll
-      - uses: actions/upload-pages-artifact@v4
+          {
+            echo "## CHAYLUEKLAB checked artifact"
+            echo "One-time owner setup: Settings > Pages > Source > GitHub Actions before merging this release."
+            echo "Commit: $RELEASE_SHA"
+            echo "Branch: $RELEASE_BRANCH"
+            echo "Tests, type checks and CodeQL passed before this build."
+            echo "Production deployment uses main or codex/retail-control-center, as allowed by the existing github-pages environment."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
           path: _site
   deploy:
     needs: build
+    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/codex/retail-control-center' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -40,6 +63,27 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
       - name: Deploy to existing GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+      - name: Verify the deployed release and public routes
+        env:
+          SITE_URL: ${{ steps.deployment.outputs.page_url }}
+          EXPECTED_RELEASE_SHA: ${{ github.sha }}
+        run: node scripts/verify-deployed-site.mjs
+  notify-failure:
+    needs: [validation, security, build, deploy]
+    if: ${{ always() && (needs.validation.result == 'failure' || needs.security.result == 'failure' || needs.build.result == 'failure' || needs.deploy.result == 'failure') }}
+    uses: ./.github/workflows/automation-alerts.yml
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    with:
+      run_id: ${{ github.run_id }}

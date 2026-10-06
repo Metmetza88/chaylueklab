@@ -1,6 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.117.2";
 
-export const PLAN = {name:"CHAYLUEKLAB Plus",amount:5900,currency:"thb",interval:"month",trialDays:7};
+import {PLAN} from "./billing-core.ts";
+export {PLAN};
 export const CORS = {"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"content-type","Access-Control-Allow-Methods":"GET, POST, OPTIONS"};
 export const json = (body:unknown,status=200) => status===204 ? new Response(null,{status,headers:CORS}) : Response.json(body,{status,headers:CORS});
 
@@ -15,16 +16,16 @@ export function adminDb(){
 }
 
 export async function lineIdentity(body:any):Promise<string|null>{
-  const channel=Deno.env.get("LINE_CHANNEL_ID")||Deno.env.get("LINE_LOGIN_CHANNEL_ID")||"2011681452";
+  const channel=Deno.env.get("LINE_LOGIN_CHANNEL_ID")||"2011681452";
   if(typeof body?.idToken==="string"&&body.idToken){
-    const r=await fetch("https://api.line.me/oauth2/v2.1/verify",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({id_token:body.idToken,client_id:channel})});
+    const r=await fetch("https://api.line.me/oauth2/v2.1/verify",{signal:AbortSignal.timeout(15000),method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({id_token:body.idToken,client_id:channel})});
     if(r.ok){const p=await r.json();if(typeof p.sub==="string")return p.sub;}
   }
   if(typeof body?.accessToken!=="string"||!body.accessToken)return null;
-  const r=await fetch("https://api.line.me/oauth2/v2.1/verify?"+new URLSearchParams({access_token:body.accessToken}));
+  const r=await fetch("https://api.line.me/oauth2/v2.1/verify?"+new URLSearchParams({access_token:body.accessToken}),{signal:AbortSignal.timeout(15000)});
   if(!r.ok)return null;
   const p=await r.json();if(String(p.client_id)!==channel||Number(p.expires_in)<=0)return null;
-  const profile=await fetch("https://api.line.me/v2/profile",{headers:{Authorization:"Bearer "+body.accessToken}});
+  const profile=await fetch("https://api.line.me/v2/profile",{signal:AbortSignal.timeout(15000),headers:{Authorization:"Bearer "+body.accessToken}});
   if(!profile.ok)return null;
   const user=await profile.json();return typeof user.userId==="string"?user.userId:null;
 }
@@ -60,3 +61,16 @@ export function requirePost(req:Request){
   if(req.method!=="POST")return json({ok:false,error:"method_not_allowed"},405);
   return null;
 }
+
+export function billingEnabled(){return Deno.env.get("BILLING_ENFORCED")==="true";}
+export function billingReady(){return !!Deno.env.get("STRIPE_SECRET_KEY")&&!!Deno.env.get("STRIPE_WEBHOOK_SECRET");}
+export async function requireMember(db:any,user:string){
+  const m=await membership(db,user);
+  if(m.owner)return null;
+  if(m.status!=="blocked")return null;
+  return json({ok:false,error:m.status==="blocked"?"account_suspended":"membership_required",price:59,membershipUrl:"https://liff.line.me/2011681452-k1lfYGsF?view=membership"},402);
+}
+
+export const LIMITS={free:{tasks:10,reminders:3,finance:30,notes:10,uploadBytes:5242880,fileBytes:1048576},plus:{tasks:200,reminders:30,finance:500,notes:200,uploadBytes:104857600,fileBytes:10485760}};
+export async function requirePremium(db:any,user:string){const m=await membership(db,user);if(m.owner||(m.active&&m.status!=="blocked"))return null;return json({ok:false,error:m.status==="blocked"?"account_suspended":"premium_required",price:59,membershipUrl:"https://liff.line.me/2011681452-k1lfYGsF?view=membership"},402);}
+export async function accountPlan(db:any,user:string){const m=await membership(db,user);const r=await db.from("member_monthly_usage").select("resource,used").eq("line_user_id",user).eq("month_start",new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Bangkok",year:"numeric",month:"2-digit"}).format(new Date())+"-01");if(r.error)throw r.error;return {tier:m.owner?"owner":m.active?m.status==="trialing"?"trial":"plus":"free",limits:m.owner?null:m.active?LIMITS.plus:LIMITS.free,usage:Object.fromEntries((r.data||[]).map((x:any)=>[x.resource,Number(x.used)]))};}

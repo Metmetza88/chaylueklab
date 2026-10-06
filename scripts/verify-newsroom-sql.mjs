@@ -1,0 +1,71 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const {PGlite}=await import(process.env.NEWSROOM_PGLITE_MODULE || '@electric-sql/pglite');
+import {createNewsroomHandler} from '../supabase/functions/newsroom/core.ts';
+const db=new PGlite();
+await db.exec('create role anon; create role authenticated; create role service_role bypassrls; alter default privileges grant all on tables to service_role;');
+for(const name of ['202610060004_newsroom.sql','202610060005_newsroom_approval.sql','202610060006_newsroom_editorial.sql'])await db.exec(readFileSync(new URL('../supabase/migrations/'+name,import.meta.url),'utf8'));
+// Repeat ordered migrations: policy guards/additive columns/indexes/functions must safely replay.
+for(const name of ['202610060004_newsroom.sql','202610060005_newsroom_approval.sql','202610060006_newsroom_editorial.sql'])await db.exec(readFileSync(new URL('../supabase/migrations/'+name,import.meta.url),'utf8'));
+const env={SUPABASE_URL:'https://example.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'disposable-test-only',LINE_CHANNEL_ID:'test-channel',NEWSROOM_OWNER_LINE_ID:'owner'};
+await db.exec('set role service_role');
+const handler=createNewsroomHandler({env:k=>env[k],verifyLine:async()=> 'owner',rpc:async(name,args)=>{try{const r=await db.query(`select public.${name}($1::text,$2::text,$3::jsonb) data`,[args.p_action,args.p_actor,JSON.stringify(args.p_input)]);return {data:r.rows[0].data}}catch(error){return {error:{message:error.message,code:error.code}}}},published:async()=>{const r=await db.query("select id,slug,title,summary,body,sources,media,verified,published_at from public.newsroom_stories where status='published' and owner_approved_at is not null and owner_approved_by is not null and verified order by published_at desc");return {data:r.rows}}});
+const send=async(body,method='POST')=>{const res=await handler(new Request('https://example.supabase.co/functions/v1/newsroom',{method,headers:{'x-line-id-token':'disposable-token','content-type':'application/json'},...(method==='POST'?{body:JSON.stringify(body)}:{})}));return {status:res.status,body:await res.json()}};
+const requestId='b35a0b61-8b6c-4a2f-a539-e66f8d419dc5';
+const fields={slug:'disposable-newsroom-fixture',category:'AI',title:'Local SQL fixture',summary:'Never published externally',body:'Only in a disposable PostgreSQL database.',sources:[{url:'https://example.com/source',label:'Fixture'}],social_copy:'Social copy fixture',image_brief:'Image brief fixture',reporter:'Reporter fixture'};
+const create={action:'create',request_id:requestId,fields};
+const results=await Promise.all([send(create),send(create)]);assert.deepEqual(results.map(r=>r.status),[200,200]);
+let story=results[0].body.story;assert.equal(results[1].body.story.id,story.id);
+const scalar=async sql=>(await db.query(sql)).rows[0].n;
+assert.equal(await scalar('select count(*)::int n from public.newsroom_stories'),1);
+assert.equal(await scalar('select count(*)::int n from public.newsroom_story_history'),1);
+assert.equal((await send({...create,fields:{...fields,title:'Changed retry'}})).status,409);
+assert.equal((await send({},'GET')).body.length,0);
+const act=async(action,extra={})=>{const r=await send({action,story_id:story.id,expected_revision:story.revision,...extra});if(r.status===200)story=r.body.story;return r};
+assert.equal((await act('publish')).body.error,'owner_approval_required');
+assert.equal((await act('transition',{to_status:'assigned'})).status,200);
+assert.equal((await act('transition',{to_status:'drafting'})).status,200);
+assert.equal((await act('transition',{to_status:'factcheck'})).status,200);
+assert.equal((await act('transition',{to_status:'editing'})).body.error,'factcheck_required');
+assert.equal((await act('factcheck',{verdict:'verified',note:'Checked the official source and date in this isolated test.'})).status,200);
+assert.equal(story.factchecked_content_revision,story.content_revision);
+assert.equal((await act('transition',{to_status:'editing'})).status,200);
+assert.equal((await act('update',{patch:{body:'Changed factual body requires a new factcheck.'}})).status,200);
+assert.equal(story.verified,false);assert.equal((await act('transition',{to_status:'ready'})).body.error,'ready_requirements_missing');
+assert.equal((await act('transition',{to_status:'drafting'})).status,200);
+assert.equal((await act('transition',{to_status:'factcheck'})).status,200);
+assert.equal((await act('factcheck',{verdict:'verified',note:'Rechecked changed facts against the same official source.'})).status,200);
+assert.equal((await act('transition',{to_status:'editing'})).status,200);
+assert.equal((await act('update',{patch:{social_copy:'Edited social caption, facts unchanged.'}})).status,200);assert.equal(story.verified,true);
+assert.equal((await act('transition',{to_status:'ready'})).status,200);
+assert.equal((await act('update',{patch:{title:'Hidden change'}})).body.error,'ready_locked');
+assert.equal((await act('publish')).body.error,'owner_approval_required');
+const reviewedRevision=story.revision;
+assert.equal((await act('approve')).status,200);assert.equal(story.owner_approved_revision,reviewedRevision);
+const firstApproval=story.owner_approved_at;assert.equal((await act('approve')).status,200);assert.equal(story.owner_approved_at,firstApproval);
+assert.equal((await act('transition',{to_status:'editing'})).status,200);assert.equal(story.owner_approved_at,null);
+assert.equal((await send({action:'publish',story_id:story.id,expected_revision:reviewedRevision})).body.error,'revision_conflict');
+assert.equal((await act('transition',{to_status:'ready'})).status,200);assert.equal((await act('publish')).body.error,'owner_approval_required');
+assert.equal((await act('approve')).status,200);assert.equal((await act('publish')).status,200);
+const publishedAt=story.published_at;const historyCount=await scalar('select count(*)::int n from public.newsroom_story_history');
+assert.equal((await act('publish')).status,200);assert.equal(story.published_at,publishedAt);assert.equal(await scalar('select count(*)::int n from public.newsroom_story_history'),historyCount);
+assert.equal((await send({},'GET')).body.length,1);
+assert.equal((await send({action:'list'})).body.stories.length,1);
+console.log('PASS real PostgreSQL + handler: migration replay; create retry deduplication; staged editing/factcheck; factual change invalidation; content lock; stale revision/approval denied; approval/publish retries idempotent; public excludes drafts.');
+
+for(const role of ['anon','authenticated','service_role']){
+ await db.exec(`reset role; set role ${role}`);
+ await assert.rejects(db.query("update public.newsroom_stories set verified=true"),/permission denied/);
+ await assert.rejects(db.query("select public.newsroom_approve($1::uuid,'forged')",[story.id]),/permission denied/);
+ if(role!=='service_role'){
+  await assert.rejects(db.query('select * from public.newsroom_stories'),/permission denied/);
+  await assert.rejects(db.query("select public.newsroom_owner_action('list','forged','{}'::jsonb)"),/permission denied/);
+ }
+}
+await db.exec('reset role; set role service_role');
+const newCreate={action:'create',request_id:'f7957470-38af-4cb0-8e18-75d80c2ed073',fields:{...fields,slug:'concurrency-fixture'}};
+story=(await send(newCreate)).body.story;
+const sameRevision={action:'update',story_id:story.id,expected_revision:story.revision,patch:{title:'Same expected revision update'}};
+const concurrent=await Promise.all([send(sameRevision),send(sameRevision)]);assert.deepEqual(concurrent.map(r=>r.status).sort(),[200,409]);
+console.log('PASS real PostgreSQL: anonymous/authenticated and direct service mutation denied; old unsafe RPC denied; concurrent revision-based writes yield one success and one conflict.');
+await db.close();

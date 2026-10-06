@@ -100,6 +100,8 @@
     @media(max-width:380px){.masthead{padding-inline:12px!important;gap:7px!important}.brand{gap:7px}.brand-mark{display:block;width:33px;height:33px}.brand-name{font-size:11px;letter-spacing:.07em}.brand-sub{font-size:8px;letter-spacing:.1em}.masthead .pill{font-size:9px;padding:6px 6px;gap:5px}.masthead>.flex{gap:5px}}
     @media(prefers-reduced-motion:reduce){.logo-sweep{animation:none;opacity:0}.logo-core{animation:none;opacity:1}}
 
+
+#snoozeDialog{width:min(92vw,470px);border:1px solid #bca57466;border-radius:28px;background:radial-gradient(at top,#263025,#090f13 65%);color:#f5f3ec;padding:26px;box-shadow:0 24px 100px #000a}#snoozeDialog::backdrop{background:#000b;backdrop-filter:blur(8px)}.snooze-clock{font-size:54px;text-align:center;color:#e9ce96;text-shadow:0 0 24px #bca57455;animation:snooze-arrival 1s ease-out}.snooze-options{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.snooze-options button{flex:1;min-height:48px;border:1px solid #e3c99355;border-radius:14px;background:#18221d;color:#eed5a3}.snooze-options button[aria-pressed=true]{background:#ecd09b;color:#111}.snooze-field{width:100%;padding:12px;border-radius:12px;border:1px solid #9b895c;background:#111b1c;color:#fff;color-scheme:dark}.snooze-note{color:#b8c7bf;font-size:13px;line-height:1.7;margin:16px 0}.snooze-action{width:100%;min-height:52px;margin-top:10px;border-radius:14px;background:#ecd09b;color:#101716;font-weight:800}.snooze-action.secondary{background:#192521;color:#dfc994;border:1px solid #8d805355}.snooze-action:disabled{opacity:.45}.snooze-close{float:right;min-width:44px;min-height:44px;background:transparent;color:#eee;border:0;font-size:24px}@keyframes snooze-arrival{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}@media(prefers-reduced-motion:reduce){.snooze-clock{animation:none}}
 </style>
 </head>
 <body>
@@ -117,8 +119,9 @@
   </header>
 
   <main class="px-4 py-4 space-y-5">
-    <a href="./control.html" class="btn btn-gold">CHAYLUEKLAB Control Center · ขาย / รับเข้า / สต๊อกกลาง</a>
+    <a href="./control.html" class="btn btn-gold">CHAYLUEKLAB CONTROL CENTER · ระบบหลังร้าน</a>
     <a href="./ai-video.html" class="btn btn-gold">AI Video Studio · สร้างวิดีโอจากภาพ</a>
+    <a href="./newsroom.html" class="btn btn-gold">CHAYLUEKLAB NEWSROOM · ข่าว AI และ Tech</a>
     <aside id="connectionNotice" class="desk-panel hidden" role="status" aria-live="polite">
       <p id="connectionTitle" class="panel-title">เชื่อมต่อบัญชี LINE</p>
       <p id="connectionMessage" class="desk-caption mt-2"></p>
@@ -438,6 +441,9 @@ async function initLiff(){
     if(authExpired){location.assign('https://liff.line.me/'+LIFF_ID);return}
     if(!window.liff)throw new Error('โหลดระบบเข้าสู่ LINE ไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วเปิดผ่าน LINE อีกครั้ง');
     if(!liffReady){await waitForResult(liff.init({liffId:LIFF_ID}),20000,'เชื่อมต่อ LINE นานเกินไป กดลองอีกครั้งได้');liffReady=true}
+    // Handle the added back-office view only after LIFF has completed its callback.
+    const retailView=new URL(location.href).searchParams.get('view');
+    if(retailView==='stock'||retailView==='control'){location.replace(new URL(retailView==='control'?'./control.html':'./stock.html',location.href));return}
     if(!liff.isLoggedIn()){
       document.getElementById('lineBadge').innerHTML='<span class="dot" style="background:#f59e0b"></span><span>LOGIN</span>';
       document.getElementById('profileState').textContent='ยังไม่ได้เข้าสู่ระบบ LINE';
@@ -474,7 +480,7 @@ async function initLiff(){
   }finally{liffBusy=false;document.getElementById('connectLineBtn').disabled=false}
 }
 
-const apiErrors={owner_only:'สำหรับบัญชีเจ้าของที่ยืนยันแล้วเท่านั้น',invalid_line_login:'การเข้าสู่ระบบ LINE หมดอายุ กรุณากดเชื่อมต่อ LINE อีกครั้ง',membership_required:'กรุณาตรวจสอบสิทธิ์ใช้งาน',account_suspended:'บัญชีถูกระงับสิทธิ์ กรุณาติดต่อผู้ดูแล',not_found_or_in_transit:'รายการไม่พบหรือกำลังส่งแจ้งเตือน กรุณาโหลดอีกครั้ง',billing_not_configured:'ยังไม่เชื่อมบัญชีรับชำระเงิน',admin_unavailable:'จัดการไม่สำเร็จ กรุณาลองใหม่',premium_required:'เครื่องมือนี้สำหรับ Plus หรือช่วงทดลองฟรี',recurring_limit_reached:'ตั้งเตือนประจำได้สูงสุด 10 รายการที่เปิดใช้งาน',debt_limit_reached:'ติดตามเงินค้างได้สูงสุด 100 รายการที่ยังไม่ปิดยอด',reminder_time_in_past:'เวลานี้ผ่านไปแล้ว กรุณาเลือกเวลาในอนาคต',request_payload_conflict:'ข้อมูลรายการเปลี่ยนไป กรุณาเพิ่มรายการใหม่',quota_exceeded:'โควตารอบเดือนนี้เต็มแล้ว ตรวจยอดได้ที่สิทธิ์ของฉัน',settlement_exceeds_balance:'ยอดชำระมากกว่ายอดคงเหลือ กรุณาโหลดรายการอีกครั้ง',debt_not_found:'ไม่พบเงินค้างนี้ กรุณาโหลดรายการอีกครั้ง',rule_not_found:'ไม่พบรายการประจำนี้ กรุณาโหลดอีกครั้ง',request_conflict:'ข้อมูลเปลี่ยนไป กรุณาเปิดรายการใหม่แล้วลองอีกครั้ง',invalid_debt:'ตรวจชื่อเรื่อง จำนวนเงิน และกำหนดชำระให้ถูกต้อง',invalid_settlement:'กรอกยอดชำระมากกว่า 0 และไม่เกินยอดคงเหลือ',invalid_schedule:'ตรวจเวลา วันในสัปดาห์ หรือวันที่ในเดือน',invalid_title:'กรอกชื่อเรื่องก่อนบันทึก',invalid_request:'ตรวจข้อมูลที่กรอกแล้วลองใหม่',invalid_finance:'ตรวจชื่อรายการ จำนวนเงิน และวันที่ให้ถูกต้อง',invalid_reminder:'ตรวจชื่อเรื่องและเลือกเวลาในอนาคต',not_found:'ไม่พบรายการนี้ กรุณาโหลดข้อมูลอีกครั้ง',server_error:'ระบบขัดข้องชั่วคราว กรุณาลองอีกครั้ง',checkout_in_progress:'กำลังเตรียมหน้าชำระเงิน รอสักครู่แล้วลองอีกครั้ง',billing_unavailable:'เปิดหน้าชำระเงินไม่สำเร็จ กรุณาลองใหม่',forbidden:'หน้านี้สำหรับผู้ดูแลระบบ',no_subscription:'ยังไม่พบรายการสมัครสมาชิก'};
+const apiErrors={consent_required:'กรุณายืนยันการต่ออายุอัตโนมัติก่อนสมัคร',already_subscribed:'มีรายการสมัครสมาชิกอยู่แล้ว กรุณาจัดการบัตรและการต่ออายุ',reminder_not_found:'ไม่พบการเตือนนี้ในบัญชีของคุณ',reminder_in_transit:'กำลังส่งแจ้งเตือน กรุณารอแล้วตรวจสอบอีกครั้ง',reminder_not_active:'การเตือนนี้ปิดหรือเลื่อนไปแล้ว กรุณาเปิดรายการใหม่',snoozed_reminder_removed:'รายการที่เลื่อนไปถูกลบแล้ว',request_id_conflict:'คำขอเดิมมีข้อมูลต่างกัน กรุณาเปิดรายการใหม่',invalid_snooze:'เลือกเวลาเลื่อนเตือนให้ถูกต้อง',invalid_snooze_time:'เลือกเวลาในอนาคตไม่เกิน 366 วัน',owner_only:'สำหรับบัญชีเจ้าของที่ยืนยันแล้วเท่านั้น',invalid_line_login:'การเข้าสู่ระบบ LINE หมดอายุ กรุณากดเชื่อมต่อ LINE อีกครั้ง',membership_required:'กรุณาตรวจสอบสิทธิ์ใช้งาน',account_suspended:'บัญชีถูกระงับสิทธิ์ กรุณาติดต่อผู้ดูแล',not_found_or_in_transit:'รายการไม่พบหรือกำลังส่งแจ้งเตือน กรุณาโหลดอีกครั้ง',billing_not_configured:'ยังไม่เชื่อมบัญชีรับชำระเงิน',admin_unavailable:'จัดการไม่สำเร็จ กรุณาลองใหม่',premium_required:'เครื่องมือนี้สำหรับ Plus หรือช่วงทดลองฟรี',recurring_limit_reached:'ตั้งเตือนประจำได้สูงสุด 10 รายการที่เปิดใช้งาน',debt_limit_reached:'ติดตามเงินค้างได้สูงสุด 100 รายการที่ยังไม่ปิดยอด',reminder_time_in_past:'เวลานี้ผ่านไปแล้ว กรุณาเลือกเวลาในอนาคต',request_payload_conflict:'ข้อมูลรายการเปลี่ยนไป กรุณาเพิ่มรายการใหม่',quota_exceeded:'โควตารอบเดือนนี้เต็มแล้ว ตรวจยอดได้ที่สิทธิ์ของฉัน',settlement_exceeds_balance:'ยอดชำระมากกว่ายอดคงเหลือ กรุณาโหลดรายการอีกครั้ง',debt_not_found:'ไม่พบเงินค้างนี้ กรุณาโหลดรายการอีกครั้ง',rule_not_found:'ไม่พบรายการประจำนี้ กรุณาโหลดอีกครั้ง',request_conflict:'ข้อมูลเปลี่ยนไป กรุณาเปิดรายการใหม่แล้วลองอีกครั้ง',invalid_debt:'ตรวจชื่อเรื่อง จำนวนเงิน และกำหนดชำระให้ถูกต้อง',invalid_settlement:'กรอกยอดชำระมากกว่า 0 และไม่เกินยอดคงเหลือ',invalid_schedule:'ตรวจเวลา วันในสัปดาห์ หรือวันที่ในเดือน',invalid_title:'กรอกชื่อเรื่องก่อนบันทึก',invalid_request:'ตรวจข้อมูลที่กรอกแล้วลองใหม่',invalid_finance:'ตรวจชื่อรายการ จำนวนเงิน และวันที่ให้ถูกต้อง',invalid_reminder:'ตรวจชื่อเรื่องและเลือกเวลาในอนาคต',not_found:'ไม่พบรายการนี้ กรุณาโหลดข้อมูลอีกครั้ง',server_error:'ระบบขัดข้องชั่วคราว กรุณาลองอีกครั้ง',checkout_in_progress:'กำลังเตรียมหน้าชำระเงิน รอสักครู่แล้วลองอีกครั้ง',billing_unavailable:'เปิดหน้าชำระเงินไม่สำเร็จ กรุณาลองใหม่',forbidden:'หน้านี้สำหรับผู้ดูแลระบบ',no_subscription:'ยังไม่พบรายการสมัครสมาชิก'};
 async function lineRequest(endpoint,body){
   if(!liffReady||!profile||!window.liff?.isLoggedIn()){
     connectionNotice('กรุณาเข้าสู่ระบบ LINE ก่อนใช้งาน');throw new Error('กรุณาเข้าสู่ระบบ LINE ก่อน');
@@ -585,7 +591,7 @@ async function submitAdminEdit(event){
   catch(e){document.getElementById('adminEditError').textContent=e.message;}finally{adminBusy=false;document.getElementById('adminEditSave').disabled=false;}
 }
 
-async function billingRequest(action){return lineRequest('billing',{action})}
+async function billingRequest(action){return lineRequest('billing',{action,...(action==='checkout'?{recurringConsent:document.getElementById('recurringConsent').checked}:{})})}
 
 async function loadMembership(){
   try{
@@ -701,7 +707,7 @@ async function saveTask(){
 
 function taskHtml(t){
   const cloud=t.cloud==='synced'?'<span class="tag cloud">'+(t.done?'เสร็จแล้ว • Cloud ✓':t.kind==='task'?'งาน • Cloud ✓':t.status==='sent'?'ส่งแจ้งเตือนแล้ว':t.status==='failed'?'ส่งแจ้งเตือนไม่สำเร็จ':t.status==='queued'?'กำลังส่งแจ้งเตือน':'ตั้งเตือน • Cloud ✓')+'</span>':t.cloud==='syncing'?'<span class="tag">Syncing…</span>':t.cloud==='failed'?'<span class="tag fail">Cloud ✕</span>':'<span class="tag">Local เดิม</span>';
-  return '<div class="task"><button type="button" class="check '+(t.done?'done':'')+'" aria-label="'+esc((t.done?'เปิดงานอีกครั้ง: ':'ทำเสร็จ: ')+t.title)+'" onclick="toggleTask(\''+t.id+'\')">'+(t.done?'✓':'')+'</button><div class="min-w-0 flex-1"><div class="font-black text-sm '+(t.done?'line-through opacity-50':'')+'">'+esc(t.title)+'</div><div class="text-[10px] muted mt-1">'+esc(t.date)+' '+esc(t.time)+'</div><div class="mt-2">'+cloud+(t.cloud==='failed'&&t.error?'<p class="form-error mt-2">'+esc(t.error)+'</p>':'')+(t.cloud==='failed'&&t.requestId?'<button type="button" class="btn btn-ghost mt-2" '+(t.busy?'disabled ':'')+'onclick="retryTask(\''+t.id+'\')">'+(t.busy?'กำลังตรวจสอบ…':'ตรวจสอบและลองตั้งเตือนอีกครั้ง')+'</button>':'')+'</div></div><button class="text-red-400/70 p-2" style="min-width:44px;min-height:44px" aria-label="ลบงาน" onclick="deleteTask(\''+t.id+'\')">×</button></div>';
+  return '<div class="task"><button type="button" class="check '+(t.done?'done':'')+'" aria-label="'+esc((t.done?'เปิดงานอีกครั้ง: ':'ทำเสร็จ: ')+t.title)+'" onclick="toggleTask(\''+t.id+'\')">'+(t.done?'✓':'')+'</button><div class="min-w-0 flex-1"><div class="font-black text-sm '+(t.done?'line-through opacity-50':'')+'">'+esc(t.title)+'</div><div class="text-[10px] muted mt-1">'+esc(t.date)+' '+esc(t.time)+'</div><div class="mt-2">'+cloud+(t.cloud==='failed'&&t.error?'<p class="form-error mt-2">'+esc(t.error)+'</p>':'')+(t.cloud==='failed'&&t.requestId?'<button type="button" class="btn btn-ghost mt-2" '+(t.busy?'disabled ':'')+'onclick="retryTask(\''+t.id+'\')">'+(t.busy?'กำลังตรวจสอบ…':'ตรวจสอบและลองตั้งเตือนอีกครั้ง')+'</button>':'')+(t.kind==='reminder'&&t.remoteId&&['pending','sent','failed'].includes(t.status)?'<button type="button" class="btn btn-ghost mt-2" onclick="openSnooze(\''+t.remoteId+'\')">◷ เลื่อนเตือน</button>':'')+'</div></div><button class="text-red-400/70 p-2" style="min-width:44px;min-height:44px" aria-label="ลบงาน" onclick="deleteTask(\''+t.id+'\')">×</button></div>';
 }
 async function retryTask(id){
   const item=tasks.find(t=>String(t.id)===String(id));if(!item||item.busy||item.cloud!=='failed'||!item.requestId)return;
@@ -908,16 +914,46 @@ document.addEventListener('keydown',event=>{const modal=document.querySelector('
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&profile){syncCloud();loadMembership();loadLifeTools()}});
 window.addEventListener('focus',()=>{if(profile){syncCloud();loadMembership();loadLifeTools()}});
 
+
+let snoozeState=null;
+function closeSnooze(){if(!snoozeState?.busy)document.getElementById('snoozeDialog').close()}
+function snoozeTime(at){return new Intl.DateTimeFormat('th-TH',{timeZone:'Asia/Bangkok',dateStyle:'medium',timeStyle:'short'}).format(new Date(at))}
+async function openSnooze(id){
+ const dlg=document.getElementById('snoozeDialog');if(snoozeState?.busy)return;
+ snoozeState={id,busy:false,choice:10,request:null};if(!dlg.open)dlg.showModal();document.getElementById('snoozeBody').textContent='กำลังอ่านรายการจาก Cloud…';
+ try{const d=await cloudRequest('get_reminder',{id});if(snoozeState.id!==id)return;snoozeState.data=d;renderSnooze()}catch(e){document.getElementById('snoozeBody').innerHTML='<p class="snooze-note">'+esc(e.message)+'</p><button class="snooze-action secondary" onclick="openSnooze(snoozeState.id)">ตรวจสอบอีกครั้ง</button>'}
+}
+function renderSnooze(){
+ const d=snoozeState.data,r=d.reminder,b=document.getElementById('snoozeBody');
+ b.innerHTML='<h3 style="font-size:20px;margin-top:18px">'+esc(r.title)+'</h3><p class="snooze-note">เวลาเดิม: '+esc(snoozeTime(r.remind_at))+'</p>';
+ if(d.replacement){b.innerHTML+='<p class="snooze-note">เลื่อนไปเป็น '+esc(snoozeTime(d.replacement.remind_at))+' แล้ว</p><button class="snooze-action" onclick="openSnooze(snoozeState.data.replacement.id)">เปิดรายการใหม่</button>';return}
+ if(!d.canSnooze){b.innerHTML+='<p class="snooze-note">'+(!d.premium?'การเลื่อนเตือนเป็นสิทธิ์ Plus 59 บาท/เดือน หรือช่วงทดลอง 7 วัน':'รายการนี้ปิดแล้วหรือกำลังส่ง จึงเลื่อนไม่ได้')+'</p>';if(!d.premium)b.innerHTML+='<button class="snooze-action" onclick="closeSnooze();switchPage(\'membershipPage\');loadMembership()">ดูสิทธิ์สมาชิก</button>';return}
+ b.innerHTML+='<div class="snooze-options">'+[10,30,60].map(n=>'<button type="button" aria-pressed="'+(snoozeState.choice===n)+'" onclick="chooseSnooze('+n+')">'+n+' นาที</button>').join('')+'</div><label for="snoozeCustom">หรือเลือกวันและเวลา (ประเทศไทย)</label><input id="snoozeCustom" class="snooze-field" type="datetime-local" onchange="chooseCustomSnooze(this.value)"><p class="snooze-note">เลื่อนหนึ่งครั้งนับเป็นการตั้งเตือนใหม่ 1 รายการจากโควตาเดือนนี้ การเตือนประจำจะเปลี่ยนเฉพาะครั้งนี้</p><p id="snoozeResult" class="snooze-note" role="status"></p><button id="snoozeSave" class="snooze-action" onclick="saveSnooze()">ยืนยันเลื่อนเตือน</button><button id="snoozeCancel" class="snooze-action secondary" onclick="cancelSnoozeReminder()">ยกเลิกการเตือนนี้</button>';
+}
+function chooseSnooze(minutes){if(snoozeState.busy)return;snoozeState.choice=minutes;snoozeState.custom=null;snoozeState.request=null;renderSnooze()}
+function chooseCustomSnooze(value){if(snoozeState.busy)return;if(!value){chooseSnooze(10);return;}snoozeState.custom=value;snoozeState.choice=null;snoozeState.request=null;document.querySelectorAll('.snooze-options button').forEach(b=>b.setAttribute('aria-pressed','false'))}
+function lockSnooze(busy){snoozeState.busy=busy;document.querySelectorAll('#snoozeDialog button,#snoozeDialog input').forEach(b=>b.disabled=busy)}
+async function saveSnooze(){
+ if(snoozeState.busy)return;const result=document.getElementById('snoozeResult');
+ if(!snoozeState.request){let payload={id:snoozeState.id,requestId:crypto.randomUUID()};if(snoozeState.custom){const at=new Date(snoozeState.custom+':00+07:00');if(!Number.isFinite(at.getTime())||at.getTime()<=Date.now()){result.textContent='เลือกเวลาหลังจากตอนนี้';return}payload.remindAt=at.toISOString()}else payload.minutes=snoozeState.choice;snoozeState.request=payload}
+ lockSnooze(true);result.textContent='กำลังบันทึกเวลาใหม่…';
+ try{const d=await cloudRequest('snooze_reminder',snoozeState.request);document.getElementById('snoozeBody').innerHTML='<h3 style="font-size:22px;margin-top:18px">บันทึกเวลาใหม่แล้ว ✓</h3><p class="snooze-note">'+esc(d.reminder.title)+'<br>'+esc(snoozeTime(d.reminder.remind_at))+'<br>ระบบจะแจ้งผ่าน LINE ตามเวลานี้</p><button class="snooze-action" onclick="closeSnooze()">เรียบร้อย</button>';await syncCloud();loadMembership()}catch(e){result.textContent=e.message+' หากเครือข่ายขัดข้อง กดยืนยันอีกครั้งเพื่อเช็กรายการเดิม'}finally{lockSnooze(false)}
+}
+async function cancelSnoozeReminder(){if(snoozeState.busy||!confirm('ยกเลิกการเตือนนี้จริงหรือไม่?'))return;lockSnooze(true);try{await cloudRequest('update_task',{kind:'reminder',id:snoozeState.id,status:'cancelled'});document.getElementById('snoozeBody').innerHTML='<p class="snooze-note">ยกเลิกการเตือนแล้ว ✓</p><button class="snooze-action" onclick="closeSnooze()">เรียบร้อย</button>';await syncCloud()}catch(e){document.getElementById('snoozeResult').textContent=e.message}finally{lockSnooze(false)}}
+document.addEventListener('DOMContentLoaded',()=>document.getElementById('snoozeDialog').addEventListener('cancel',e=>{if(snoozeState?.busy)e.preventDefault()}));
+
 document.addEventListener('DOMContentLoaded',async()=>{
   document.getElementById('financeDate').value=ymd();
   renderAll();
   if(new URLSearchParams(location.search).get('view')==='membership')switchPage('membershipPage');
   await initLiff();
   const view=new URLSearchParams(location.search).get('view');
+  if(view==='snooze')await openSnooze(new URLSearchParams(location.search).get('id'));
   if(view==='vault'){switchPage('vaultPage');loadVault()}
   if(view==='admin'){switchPage('adminPage');loadAdmin()}
   if(['debts','recurring','report','tools'].includes(view))openLifeTools(view==='tools'?'':view);
 });
 </script>
+<dialog id="snoozeDialog" aria-labelledby="snoozeHeading"><button class="snooze-close" aria-label="ปิดหน้าต่าง" onclick="closeSnooze()">×</button><div class="snooze-clock" aria-hidden="true">◷</div><p class="snooze-note">CHAYLUEKLAB · SMART SNOOZE</p><h2 id="snoozeHeading" style="font-size:26px;font-weight:800">เลื่อนเตือนอย่างมีสไตล์</h2><div id="snoozeBody" aria-live="polite"></div></dialog>
 </body>
 </html>

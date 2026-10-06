@@ -12,17 +12,19 @@ export class ProviderError extends Error{
 
 function timeoutSignal(ms:number){const c=new AbortController();const timer=setTimeout(()=>c.abort(),ms);return {signal:c.signal,clear:()=>clearTimeout(timer)};}
 async function request(url:string,init:RequestInit,timeout=30000){
-  for(let attempt=0;attempt<3;attempt++){
+  // Creating a paid job is not idempotent at the provider. Never retry POST.
+  const attempts=init.method==="GET"?3:1;
+  for(let attempt=0;attempt<attempts;attempt++){
     const t=timeoutSignal(timeout);
     try{
       const r=await fetch(url,{...init,signal:t.signal});
       const text=await r.text();let data:any={};try{data=text?JSON.parse(text):{}}catch{data={message:text};}
       if(r.ok)return data;
       const retryable=r.status===408||r.status===409||r.status===425||r.status===429||r.status>=500;
-      if(!retryable||attempt===2)throw new ProviderError(data?.error?.message||data?.message||`provider_http_${r.status}`,r.status,retryable);
+      if(!retryable||attempt===attempts-1)throw new ProviderError(data?.error?.message||data?.message||`provider_http_${r.status}`,r.status,retryable);
     }catch(e){
-      if(e instanceof ProviderError){if(!e.retryable||attempt===2)throw e;}
-      else if(attempt===2)throw new ProviderError(e instanceof Error&&e.name==="AbortError"?"provider_timeout":"provider_network_error",504,true);
+      if(e instanceof ProviderError){if(!e.retryable||attempt===attempts-1)throw e;}
+      else if(attempt===attempts-1)throw new ProviderError(e instanceof Error&&e.name==="AbortError"?"provider_timeout":"provider_network_error",504,true);
     }finally{t.clear();}
     await new Promise(resolve=>setTimeout(resolve,500*(attempt+1)));
   }
@@ -45,6 +47,7 @@ export async function createProviderJob(input:VideoInput):Promise<ProviderJob>{
   }
   if(input.model==="runway"){
     const apiKey=key("RUNWAYML_API_SECRET");
+    if(input.prompt.length>1000)throw new ProviderError("runway_prompt_too_long",400,false);
     if(input.imageBase64.length>4_500_000)throw new ProviderError("runway_image_too_large",413,false);
     const ratio=input.ratio==="9:16"?"720:1280":"1280:720";
     const data=await request(`${RUNWAY_BASE}/image_to_video`,{method:"POST",headers:{Authorization:`Bearer ${apiKey}`,"X-Runway-Version":"2024-11-06","Content-Type":"application/json"},body:JSON.stringify({model:Deno.env.get("RUNWAY_VIDEO_MODEL")||"gen4.5",promptImage:toDataUri(input),promptText:input.prompt,ratio,duration:Math.min(10,Math.max(2,input.duration))})});
@@ -81,11 +84,17 @@ export async function downloadProviderVideo(url:string):Promise<Uint8Array>{
     let current=url;
     for(let hop=0;hop<4;hop++){
       const u=new URL(current);const headers:Record<string,string>={};
+      if(u.protocol!=="https:")throw new ProviderError("provider_video_url_invalid",502,false);
       if(u.hostname==="generativelanguage.googleapis.com")headers["x-goog-api-key"]=key("GEMINI_API_KEY");
       const r=await fetch(current,{headers,signal:t.signal,redirect:"manual"});
       if(r.status>=300&&r.status<400){const location=r.headers.get("location");if(!location)throw new ProviderError("provider_video_redirect_missing",502,true);current=new URL(location,current).toString();continue;}
       if(!r.ok)throw new ProviderError("provider_video_download_failed",r.status,r.status>=500||r.status===429);
-      return new Uint8Array(await r.arrayBuffer());
+      const limit=50*1024*1024;
+      if(Number(r.headers.get("content-length"))>limit)throw new ProviderError("provider_video_too_large",413,false);
+      if(!r.body)throw new ProviderError("provider_video_empty",502,true);
+      const reader=r.body.getReader();const chunks:Uint8Array[]=[];let size=0;
+      while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>limit){await reader.cancel();throw new ProviderError("provider_video_too_large",413,false);}chunks.push(value);}
+      const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length;}return bytes;
     }
     throw new ProviderError("provider_video_redirect_loop",502,false);
   }catch(e){if(e instanceof ProviderError)throw e;throw new ProviderError("provider_video_download_failed",504,true);}finally{t.clear();}

@@ -1,34 +1,42 @@
 import { createClient } from "npm:@supabase/supabase-js@2.117.2";
 
-export const PLAN = {name:"CHAYLUEKLAB Plus",amount:5900,currency:"thb",interval:"month",trialDays:7};
+import {PLAN} from "./billing-core.ts";
+export {PLAN};
 export const CORS = {"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"content-type","Access-Control-Allow-Methods":"GET, POST, OPTIONS"};
-export const json = (body:unknown,status=200) => Response.json(body,{status,headers:CORS});
+export const json = (body:unknown,status=200) => status===204 ? new Response(null,{status,headers:CORS}) : Response.json(body,{status,headers:CORS});
+
 export function adminDb(){
   const keys=Deno.env.get("SUPABASE_SECRET_KEYS");
-  const key=keys?JSON.parse(keys).default:(Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")||Deno.env.get("SUPABASE_SECRET_KEY"));
+  let key=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")||Deno.env.get("SUPABASE_SECRET_KEY");
+  if(keys){try{key=JSON.parse(keys).default||key}catch{ /* use the explicit key */ }}
   if(!key)throw new Error("admin key unavailable");
-  return createClient(Deno.env.get("SUPABASE_URL")!,key);
+  const url=Deno.env.get("SUPABASE_URL");
+  if(!url)throw new Error("Supabase URL unavailable");
+  return createClient(url,key);
 }
+
 export async function lineIdentity(body:any):Promise<string|null>{
-  const channel=Deno.env.get("LINE_CHANNEL_ID")||Deno.env.get("LINE_LOGIN_CHANNEL_ID")||"2011681452";
+  const channel=Deno.env.get("LINE_LOGIN_CHANNEL_ID")||"2011681452";
   if(typeof body?.idToken==="string"&&body.idToken){
-    const r=await fetch("https://api.line.me/oauth2/v2.1/verify",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({id_token:body.idToken,client_id:channel})});
+    const r=await fetch("https://api.line.me/oauth2/v2.1/verify",{signal:AbortSignal.timeout(15000),method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({id_token:body.idToken,client_id:channel})});
     if(r.ok){const p=await r.json();if(typeof p.sub==="string")return p.sub;}
   }
   if(typeof body?.accessToken!=="string"||!body.accessToken)return null;
-  const r=await fetch("https://api.line.me/oauth2/v2.1/verify?"+new URLSearchParams({access_token:body.accessToken}));
+  const r=await fetch("https://api.line.me/oauth2/v2.1/verify?"+new URLSearchParams({access_token:body.accessToken}),{signal:AbortSignal.timeout(15000)});
   if(!r.ok)return null;
   const p=await r.json();if(String(p.client_id)!==channel||Number(p.expires_in)<=0)return null;
-  const profile=await fetch("https://api.line.me/v2/profile",{headers:{Authorization:"Bearer "+body.accessToken}});
+  const profile=await fetch("https://api.line.me/v2/profile",{signal:AbortSignal.timeout(15000),headers:{Authorization:"Bearer "+body.accessToken}});
   if(!profile.ok)return null;
   const user=await profile.json();return typeof user.userId==="string"?user.userId:null;
 }
+
 export async function isOwner(db:any,user:string){
   if((Deno.env.get("NEWSROOM_OWNER_LINE_ID")||Deno.env.get("LINE_OWNER_USER_ID")||"").split(",").map(s=>s.trim()).filter(Boolean).includes(user))return true;
   const owner=await db.from("app_owner").select("line_user_id").eq("singleton",true).maybeSingle();
   if(owner.error)throw owner.error;
   return owner.data?.line_user_id===user;
 }
+
 export async function membership(db:any,user:string){
   const owner=await isOwner(db,user);
   const override=await db.from("member_access_overrides").select("mode,expires_at").eq("line_user_id",user).maybeSingle();
@@ -47,6 +55,13 @@ export async function membership(db:any,user:string){
   const available=new Date(t.expires_at).getTime()>Date.now();
   return {active:available,owner:false,status:available?"trialing":"trial_expired",periodEnd:t.expires_at,cancelAtPeriodEnd:false,trialDays:7};
 }
+
+export function requirePost(req:Request){
+  if(req.method==="OPTIONS")return json({},204);
+  if(req.method!=="POST")return json({ok:false,error:"method_not_allowed"},405);
+  return null;
+}
+
 export function billingEnabled(){return Deno.env.get("BILLING_ENFORCED")==="true";}
 export function billingReady(){return !!Deno.env.get("STRIPE_SECRET_KEY")&&!!Deno.env.get("STRIPE_WEBHOOK_SECRET");}
 export async function requireMember(db:any,user:string){

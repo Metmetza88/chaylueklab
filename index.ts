@@ -1,14 +1,9 @@
 import Stripe from "npm:stripe@23.0.0";
-import {adminDb,PLAN} from "./_shared/membership.ts";
+import {adminDb,PLAN} from "./membership.ts";
 
-export function subscriptionSnapshot(sub:any){
-  const item=sub.items?.data?.[0];
-  const price=item?.price;
-  const valid=sub.items?.data?.length===1&&item.quantity===1&&price?.unit_amount===PLAN.amount&&price?.currency===PLAN.currency&&price?.recurring?.interval==="month"&&price?.recurring?.interval_count===1;
-  if(!valid||sub.metadata?.plan!=="chaylueklab_monthly_99")return null;
-  const end=item.current_period_end??sub.current_period_end;
-  return {id:sub.id,line_user_id:sub.metadata?.line_user_id,customer:typeof sub.customer==="string"?sub.customer:sub.customer.id,status:sub.status,paid:sub.latest_invoice?.status==="paid",period_end:end?new Date(end*1000).toISOString():null,cancel_at_period_end:!!sub.cancel_at_period_end};
-}
+import {subscriptionSnapshot} from './billing-core.ts';
+export {subscriptionSnapshot};
+
 Deno.serve(async(req:Request)=>{
   if(req.method!=="POST")return new Response("Method not allowed",{status:405});
   const key=Deno.env.get("STRIPE_SECRET_KEY"),secret=Deno.env.get("STRIPE_WEBHOOK_SECRET");
