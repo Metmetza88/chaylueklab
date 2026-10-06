@@ -1,0 +1,60 @@
+name: Control Center CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'control.html'
+      - 'control.js'
+      - 'tests/**'
+      - '.github/workflows/control-center-ci.yml'
+  push:
+    branches: [codex/retail-control-center]
+    paths:
+      - 'control.html'
+      - 'control.js'
+      - 'tests/**'
+      - '.github/workflows/control-center-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-control-center:
+    name: Validate CHAYLUEKLAB Control Center
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check JavaScript syntax
+        run: node --check control.js
+
+      - name: Run automated tests
+        run: node --test tests/*.test.mjs
+
+      - name: Verify required Control Center files
+        shell: bash
+        run: |
+          test -f control.html
+          test -f control.js
+          grep -q "2011681452-k1lfYGsF" control.js
+          grep -q "retail-control" control.js
+          grep -q "static.line-scdn.net/liff" control.html
+
+      - name: Write CI summary
+        if: always()
+        run: |
+          {
+            echo "## CHAYLUEKLAB Control Center CI"
+            echo
+            echo "- JavaScript syntax checked"
+            echo "- Automated tests executed"
+            echo "- LIFF configuration presence checked"
+            echo "- Supabase retail-control endpoint reference checked"
+          } >> "$GITHUB_STEP_SUMMARY"
