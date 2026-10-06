@@ -1,15 +1,38 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { NEWSROOM_TRANSITIONS, validSources, readyRequirements } from './core.ts';
-const cors={ 'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization,apikey,content-type,x-line-id-token','Access-Control-Allow-Methods':'GET,POST,OPTIONS' };
-const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,'Content-Type':'application/json'}});
-const db=createClient(Deno.env.get('SUPABASE_URL')!,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
-function owner(id:string|null){return Boolean(id && Deno.env.get('NEWSROOM_OWNER_LINE_ID')===id)}
-async function actor(req:Request){const token=req.headers.get('x-line-id-token'); if(!token)return null; const r=await fetch('https://api.line.me/oauth2/v2.1/verify',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({id_token:token,client_id:Deno.env.get('LINE_CHANNEL_ID')||''})}); if(!r.ok)return null; return (await r.json()).sub||null}
-function cleanSources(s:unknown){return validSources(s)?s:null}
-Deno.serve(async req=>{if(req.method==='OPTIONS')return new Response('ok',{headers:cors}); const url=new URL(req.url);
- if(req.method==='GET'){const {data,error}=await db.from('newsroom_stories').select('id,slug,category,title,summary,media,sources,verified,published_at').eq('status','published').not('owner_approved_at','is',null).eq('verified',true).order('published_at',{ascending:false}); return error?json({error:error.message},500):json(data||[])}
- const id=await actor(req); if(!owner(id))return json({error:'owner approval required'},403); let b; try{b=await req.json()}catch{return json({error:'invalid json'},400)}
- if(b.action==='approve'){const {data:s,error}=await db.from('newsroom_stories').select('*').eq('id',b.story_id).single(); if(error||!s)return json({error:'story not found'},404); if(s.status!=='ready'||!readyRequirements(s))return json({error:'story is not ready'},409); await db.from('newsroom_approvals').upsert({story_id:s.id,action:'owner_approved',actor:id},{onConflict:'story_id,action'}); const {data,error:e}=await db.from('newsroom_stories').update({owner_approved_at:new Date().toISOString(),owner_approved_by:id}).eq('id',s.id).select().single(); return e?json({error:e.message},500):json(data)}
- if(b.action==='transition'){const {data:s,error}=await db.from('newsroom_stories').select('*').eq('id',b.story_id).single(); if(error||!s)return json({error:'story not found'},404); if(!NEWSROOM_TRANSITIONS[s.status]?.includes(b.to_status))return json({error:'invalid transition'},409); if(b.to_status==='ready'&&!readyRequirements({...s,...b.patch}))return json({error:'ready requirements missing'},409); const patch={...(b.patch||{}),status:b.to_status,updated_at:new Date().toISOString(),...(b.to_status==='published'?{published_at:new Date().toISOString()}: {})}; const {data,error:e}=await db.from('newsroom_stories').update(patch).eq('id',s.id).select().single(); if(e)return json({error:e.message},500); await db.from('newsroom_story_history').insert({story_id:s.id,from_status:s.status,to_status:b.to_status,note:b.note||null,actor:id}); return json(data)}
- return json({error:'unknown action'},400);
-});
+import { createClient } from 'npm:@supabase/supabase-js@2.117.2';
+import { createNewsroomHandler } from './core.ts';
+import { runWorkforceStage, type WorkforceStage } from './workforce.ts';
+import { resolveLineLoginChannel } from './line-config.ts';
+import { newsroomConfig } from '../../../data/newsroom-config.js';
+
+// LINE ID tokens are verified here; they are not Supabase session JWTs.
+// Supabase injects its URL/service key. Neither credential is sent to the browser.
+const url = Deno.env.get('SUPABASE_URL');
+let key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+try { key = JSON.parse(Deno.env.get('SUPABASE_SECRET_KEYS') || '{}').default || key; } catch { /* Fail closed if neither built-in key is valid. */ }
+const db = url && key ? createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } }) : null;
+// The owner-supplied LIFF is trusted bundled public config, never request input.
+// Other integrations' LINE_CHANNEL_ID remains untouched and cannot select this audience.
+const loginChannel = resolveLineLoginChannel(newsroomConfig.liffId, Deno.env.get('LINE_LOGIN_CHANNEL_ID'));
+Deno.serve(createNewsroomHandler({
+  env: name => name === 'SUPABASE_SERVICE_ROLE_KEY' ? key
+    : ['LINE_LOGIN_CHANNEL_ID', 'LINE_CHANNEL_ID'].includes(name) ? loginChannel : Deno.env.get(name),
+  verifyLine: async (token, channelId) => {
+    const response = await fetch('https://api.line.me/oauth2/v2.1/verify', {
+      method: 'POST', signal: AbortSignal.timeout(10000),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ id_token: token, client_id: channelId }),
+    });
+    if (!response.ok) return null;
+    const identity = await response.json();
+    return typeof identity.sub === 'string' ? identity.sub : null;
+  },
+  rpc: async (name, args) => db ? await db.rpc(name, args) : { error: { message: 'unconfigured' } },
+  getStory: async id => db ? await db.from('newsroom_stories').select('*').eq('id', id).maybeSingle() : { error: { message: 'unconfigured' } },
+  workforce: input => runWorkforceStage({ ...input, stage: input.stage as WorkforceStage }, { env: name => Deno.env.get(name) }),
+  published: async () => db
+    ? await db.from('newsroom_stories')
+      .select('id,slug,category,title,summary,body,media,sources,verified,published_at')
+      .eq('status', 'published').not('owner_approved_at', 'is', null).not('owner_approved_by', 'is', null)
+      .eq('verified', true).order('published_at', { ascending: false }).limit(100)
+    : { error: { message: 'unconfigured' } },
+}));

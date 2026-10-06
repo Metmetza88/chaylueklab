@@ -17,4 +17,8 @@ create index if not exists newsroom_published_idx on public.newsroom_stories(sta
 alter table public.newsroom_stories enable row level security;
 alter table public.newsroom_story_history enable row level security;
 alter table public.newsroom_approvals enable row level security;
-create policy newsroom_public_published on public.newsroom_stories for select using (status='published' and owner_approved_at is not null and verified=true);
+do $$ begin
+ if not exists(select 1 from pg_policies where schemaname='public' and tablename='newsroom_stories' and policyname='newsroom_public_published') then
+  create policy newsroom_public_published on public.newsroom_stories for select using (status='published' and owner_approved_at is not null and owner_approved_by is not null and verified=true);
+ end if;
+end $$;

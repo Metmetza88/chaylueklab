@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0b0d">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex,nofollow">
+  <title>CHAYLUEKLAB · CONTROL CENTER</title>
+  <link rel="preload" href="./assets/fonts/control-thai.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="./assets/stock.css">
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" defer></script>
+  <script type="module" src="./assets/stock.js"></script>
+</head>
+<body>
+  <main class="stock-shell" id="stockApp">
+    <header class="stock-header">
+      <div><p class="brand-mark">CHAYLUEKLAB</p><p class="control-center-label">CONTROL CENTER</p><p class="muted">ระบบหลังร้าน</p></div>
+      <div class="header-actions"><button class="button button-quiet" id="teamButton" type="button" hidden>ทีมงาน</button><button class="button button-quiet" id="refreshStock" type="button" aria-label="ดึงข้อมูลสต๊อกล่าสุด">↻</button></div>
+    </header>
+    <div class="status-line"><span class="status-dot" aria-hidden="true"></span><p id="connectionStatus" role="status" aria-live="polite">กำลังเชื่อมต่อข้อมูลร้าน…</p><span class="muted" id="currentMember"></span></div>
+
+    <section id="appGate" class="card empty-state" aria-labelledby="gateTitle" hidden>
+      <p class="eyebrow">LINE ACCOUNT</p><h1 id="gateTitle">เข้าใช้งานร้านด้วย LINE</h1><p class="muted" id="gateMessage">ใช้บัญชี LINE เดิมเพื่อเข้าถึงสต๊อกของร้าน</p>
+      <button id="loginButton" class="button button-primary" type="button">เข้าใช้งานด้วย LINE</button>
+      <button id="joinButton" class="button button-primary" type="button" hidden>ขอสิทธิ์ใช้งานร้าน</button>
+    </section>
+
+    <section id="pendingTransaction" class="pending-panel" hidden aria-labelledby="pendingTitle">
+      <h2 id="pendingTitle">มีรายการที่กำลังตรวจสอบ</h2><p class="muted">ตรวจสอบรายการเดิมก่อนทำรายการใหม่ เพื่อไม่ให้สต๊อกเปลี่ยนซ้ำ</p>
+      <div class="pending-actions"><button id="stockCheckPending" class="button" type="button">ตรวจสอบรายการเดิม</button><button id="stockRetryPending" class="button button-primary" type="button">ลองส่งรายการเดิมอีกรอบ</button></div>
+    </section>
+
+    <div id="authorizedContent" hidden>
+      <section class="section" id="stockSearchSection"><label class="field-label" for="stockSearch">ค้นหาแบบรวดเร็ว</label><input id="stockSearch" class="field search-field" type="search" placeholder="ค้นหาสินค้า / สี / ไซซ์" autocomplete="off"></section>
+
+      <section id="screenHome" data-stock-screen="home">
+        <div class="overview-card" aria-label="ภาพรวมสต๊อกวันนี้">
+        <div class="overview-heading"><span>STORE OVERVIEW</span><span>สต๊อกกลางของร้าน</span></div>
+        <div class="summary-grid" aria-label="ภาพรวมสต๊อกวันนี้">
+          <article class="summary-card"><p>ขายวันนี้</p><strong class="summary-value" id="metricSoldToday">—</strong><p class="muted">ชิ้น · วันนี้</p></article>
+          <article class="summary-card"><p>คงเหลือ</p><strong class="summary-value" id="metricTotalStock">—</strong><p class="muted">ชิ้น · ทุกช่องทาง</p></article>
+          <article class="summary-card summary-card-compact"><p>ใกล้หมด</p><strong class="summary-value" id="metricLowStock">—</strong><p class="muted">รายการ</p></article>
+          <article class="summary-card summary-card-compact"><p>หมดแล้ว</p><strong class="summary-value" id="metricOutStock">—</strong><p class="muted">รายการ</p></article>
+        </div>
+        <div class="overview-footer"><span>CHAYLUEKLAB / CONTROL</span><span>ข้อมูลร้านชุดเดียวกัน</span></div>
+        </div>
+        <div class="quick-actions" aria-label="เริ่มทำรายการ">
+          <button class="quick-action quick-action-primary" type="button" data-screen="sell" data-testid="action-sell"><span class="action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2 12h12l2-8H6M9 20h.01M18 20h.01"/></svg></span><span>ขายสินค้า</span><span class="quick-action-description">เลือกช่องทาง แล้วขายได้เลย</span></button>
+          <button class="quick-action" type="button" data-screen="receive" data-testid="action-receive"><span class="action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-4-4 4 4 4-4M4 15v5h16v-5"/></svg></span><span>รับสินค้าเข้า</span><span class="quick-action-description">เพิ่มจำนวนจากของที่รับจริง</span></button>
+          <button class="quick-action" type="button" data-screen="check" data-testid="action-check"><span class="action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 7 9-4 9 4v10l-9 4-9-4V7Zm0 0 9 4 9-4M12 11v10m-5-16 9 4"/></svg></span><span>เช็กสต๊อก</span><span class="quick-action-description">ดูสี ไซซ์ และของคงเหลือ</span></button>
+          <button class="quick-action" type="button" data-screen="history" data-testid="action-history"><span class="action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M7 16v-5m5 5V4m5 12V8"/></svg></span><span>รายงาน</span><span class="quick-action-description">ยอดแต่ละช่องทางและประวัติ</span></button>
+        </div>
+        <section class="section" id="homeSearchResultsSection" hidden><div class="section-heading"><h2>ผลการค้นหา</h2><span class="muted">แตะเพื่อดูสินค้า</span></div><div id="homeSearchResults" class="variant-list"></div></section>
+        <section class="section"><div class="section-heading"><h2>ใกล้หมดและหมดแล้ว</h2><span class="muted">แตะเพื่อดูสินค้า</span></div><div id="lowStockList" class="variant-list"></div></section>
+        <section class="section"><div class="section-heading"><h2>ขายวันนี้แต่ละช่องทาง</h2><span class="muted">จำนวนชิ้น</span></div><div id="channelSummary" class="channel-summary"></div></section>
+      </section>
+
+      <section id="screenSell" data-stock-screen="sell" hidden>
+        <div class="screen-heading"><h1>ขายสินค้า</h1><p class="muted">เลือกช่องทาง → สินค้าและสี → ไซซ์</p></div>
+        <section id="channelPicker" class="section"><h2>ขายช่องทางไหน?</h2><div class="channel-primary-grid"><button class="channel-button" data-channel="STORE" type="button" data-testid="channel-store"><strong>หน้าร้าน</strong><span class="muted">STORE</span></button><button class="channel-button" data-channel="LINE" type="button" data-testid="channel-line"><strong>LINE</strong><span class="muted">ออนไลน์</span></button></div>
+          <details class="details-fields"><summary>ช่องทางออนไลน์อื่น</summary><div class="channel-grid"><button class="channel-button" data-channel="FACEBOOK" type="button">Facebook</button><button class="channel-button" data-channel="TIKTOK" type="button">TikTok</button><button class="channel-button" data-channel="SHOPEE" type="button">Shopee</button><button class="channel-button" data-channel="OTHER" type="button">อื่น ๆ</button></div></details>
+        </section>
+        <div class="section-heading"><h2 id="sellSelectionTitle">เลือกช่องทางก่อนเริ่มขาย</h2><button id="changeChannel" class="button button-quiet" type="button" hidden>เปลี่ยนช่องทาง</button></div><div id="sellProducts" class="product-grid"></div>
+      </section>
+
+      <section id="screenReceive" data-stock-screen="receive" hidden><div class="screen-heading"><h1>รับสินค้าเข้า</h1><p class="muted">เลือกสินค้า สี และไซซ์ที่รับมา</p></div><div id="receiveProducts" class="product-grid"></div></section>
+
+      <section id="screenCheck" data-stock-screen="check" hidden><div class="screen-heading"><h1>เช็กสต๊อก</h1><p class="muted">ยอดคงเหลือจากข้อมูลกลางของร้าน</p></div><div class="section-heading"><h2>สินค้าในร้าน</h2><button id="addVariantButton" type="button" class="button button-primary" hidden>＋ เพิ่มสินค้า / ไซซ์</button></div><div id="checkList" class="variant-list"></div></section>
+
+      <section id="screenHistory" data-stock-screen="history" hidden><div class="screen-heading"><h1>รายงานและประวัติ</h1><p class="muted">รายการขาย รับเข้า และยอดนับจริง</p></div><div class="toolbar"><div id="historyDays" class="filter-tabs" aria-label="ช่วงเวลาประวัติ"><button class="filter-button" type="button" data-days="1" aria-pressed="true">วันนี้</button><button class="filter-button" type="button" data-days="7" aria-pressed="false">7 วัน</button><button class="filter-button" type="button" data-days="30" aria-pressed="false">30 วัน</button></div><label class="field-label" for="historyChannel">ช่องทางขาย<select id="historyChannel" class="field"><option value="">ทุกช่องทาง</option><option value="STORE">หน้าร้าน</option><option value="LINE">LINE</option><option value="FACEBOOK">Facebook</option><option value="TIKTOK">TikTok</option><option value="SHOPEE">Shopee</option><option value="OTHER">อื่น ๆ</option></select></label></div><div id="historyList" class="history-list" aria-live="polite"></div></section>
+    </div>
+    <footer class="app-footer"><a href="./index.html">กลับ Life OS</a><span>CHAYLUEKLAB · CONTROL CENTER</span></footer>
+  </main>
+  <nav id="stockNavigation" class="bottom-nav" aria-label="เมนูร้าน" hidden><button class="nav-button nav-active" type="button" data-screen="home" aria-current="page">หน้าแรก</button><button class="nav-button" type="button" data-screen="sell">ขาย</button><button class="nav-button" type="button" data-screen="check">สต๊อก</button><button class="nav-button" type="button" data-screen="history">รายงาน</button></nav>
+  <dialog id="stockSheet" class="sheet" aria-labelledby="sheetTitle"><header class="sheet-header"><h2 id="sheetTitle" class="sheet-title"></h2><button id="sheetClose" class="close-button" type="button" aria-label="ปิดหน้าต่าง">×</button></header><div id="sheetBody" class="sheet-body"></div><div id="sheetFooter" class="sheet-footer"></div></dialog>
+  <div id="stockToast" class="toast" role="status" aria-live="polite" hidden></div>
+  <noscript><p class="card">กรุณาเปิด JavaScript เพื่อเชื่อมข้อมูลสต๊อกกับร้าน</p></noscript>
+</body>
+</html>

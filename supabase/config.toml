@@ -1,5 +1,19 @@
+# Use explicit --project-ref when deploying; existing modules use existing projects.
+# Custom LINE identity verification or Stripe signature verification is in each function.
 [functions.video-create]
 verify_jwt = false
 
 [functions.video-status]
+verify_jwt = false
+
+[functions.newsroom]
+verify_jwt = false
+
+[functions.stock]
+verify_jwt = false
+
+[functions.billing]
+verify_jwt = false
+
+[functions.stripe-webhook]
 verify_jwt = false

@@ -1,7 +1,7 @@
 import Stripe from "npm:stripe@23.0.0";
-import {adminDb,PLAN} from "./membership.ts";
+import {adminDb,PLAN} from "../_shared/membership.ts";
 
-import {subscriptionSnapshot} from './billing-core.ts';
+import {subscriptionSnapshot} from '../_shared/billing-core.ts';
 export {subscriptionSnapshot};
 
 Deno.serve(async(req:Request)=>{

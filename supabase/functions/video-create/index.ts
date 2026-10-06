@@ -44,7 +44,8 @@ Deno.serve(async(req)=>{
       if(code.includes("invalid_")||code.includes("unsupported_"))return errorResponse(code,400);
       throw created.error;
     }
-    const info=created.data;jobId=info.job_id;
+    const info=created.data;jobId=typeof info?.job_id==="string"?info.job_id:undefined;
+    if(!jobId)throw new Error("video_job_not_recorded");
     if(info.replayed&&info.status!=="queued")return json({ok:true,job:{id:jobId,status:info.status,progress:info.status==="completed"?1:0},replayed:true});
     const provider=await createProviderJob({model,prompt,imageBase64:image.imageBase64,mimeType:image.mimeType,ratio,duration});
     const persisted=await db.from("video_jobs").update({provider_job_id:provider.providerJobId,provider_operation:provider.operation||null,updated_at:new Date().toISOString()}).eq("id",jobId).eq("status","queued").select("id").maybeSingle();
