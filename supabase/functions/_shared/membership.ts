@@ -2,7 +2,7 @@ import { createClient } from "npm:@supabase/supabase-js@2.117.2";
 
 export const PLAN = {name:"CHAYLUEKLAB Plus",amount:5900,currency:"thb",interval:"month",trialDays:7};
 export const CORS = {"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"content-type","Access-Control-Allow-Methods":"GET, POST, OPTIONS"};
-export const json = (body:unknown,status=200) => Response.json(body,{status,headers:CORS});
+export const json = (body:unknown,status=200) => status===204 ? new Response(null,{status,headers:CORS}) : Response.json(body,{status,headers:CORS});
 
 export function adminDb(){
   const keys=Deno.env.get("SUPABASE_SECRET_KEYS");

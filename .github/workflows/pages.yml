@@ -1,0 +1,45 @@
+name: Publish existing CHAYLUEKLAB site
+on:
+  push:
+    branches: [main, codex/retail-control-center]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: chaylueklab-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check control.js
+      - run: node --test tests/*.test.mjs
+      - name: Stage public site files
+        run: |
+          mkdir -p _site
+          find . -maxdepth 1 -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' \) -exec cp {} _site/ \;
+          cp -R assets data news _site/
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to existing GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
