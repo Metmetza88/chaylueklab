@@ -6,7 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 export const sourceRoot = resolve(fileURLToPath(new URL('../', import.meta.url)));
 
 export async function verifyPublicSite(directory = sourceRoot) {
-  const required = ['index.html', 'notes.html', 'control.html', 'stock.html', 'ai-video.html', 'newsroom.html', 'news/index.html', 'assets/stock.js', 'assets/stock-client.js', 'assets/stock.css', 'assets/video-media.js', 'data/stock-config.js', 'data/newsroom-config.js'];
+  const required = ['index.html', 'app-20261007.html', 'notes.html', 'control.html', 'stock.html', 'ai-video.html', 'newsroom.html', 'news/index.html', 'assets/premium.css', 'assets/site-entry.js', 'assets/brand-sculpture.webp', 'assets/stock.js', 'assets/stock-client.js', 'assets/stock.css', 'assets/video-media.js', 'data/stock-config.js', 'data/newsroom-config.js'];
   await Promise.all(required.map(name => access(resolve(directory, name))));
   const stock = await readFile(resolve(directory, 'stock.html'), 'utf8');
   const control = await readFile(resolve(directory, 'control.html'), 'utf8');

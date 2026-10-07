@@ -3,7 +3,7 @@ import { newsroomConfig } from '../../../data/newsroom-config.js';
 // Presentation only. Existing handlers own identity, quotas, delivery and approvals.
 export const FLEX_THEME = Object.freeze({
   background: '#090A0C', surface: '#141518', raised: '#1E1F22',
-  line: '#343338', gold: '#CFB587', goldLight: '#EBD9B7',
+  line: '#343338', gold: '#C7AD80', goldLight: '#E4D5B9',
   text: '#F2F0EB', muted: '#AAA9A5', success: '#B4D8BD',
 });
 type Component = Record<string, unknown>;
@@ -34,7 +34,7 @@ function shell(input: { eyebrow: string; title: string; description: string; alt
       type: 'bubble', size: 'mega',
       styles: { hero: { backgroundColor: FLEX_THEME.background }, body: { backgroundColor: FLEX_THEME.surface }, footer: { backgroundColor: FLEX_THEME.background } },
       hero: {
-        type: 'image', url: 'https://metmetza88.github.io/chaylueklab/assets/line-header.png',
+        type: 'image', url: 'https://metmetza88.github.io/chaylueklab/assets/line-header.png?v=20261007-sculpture',
         size: 'full', aspectRatio: '8:3', aspectMode: 'cover', backgroundColor: FLEX_THEME.background, animated: true,
       },
       body: { type: 'box', layout: 'vertical', paddingAll: '22px', spacing: 'md', contents: [

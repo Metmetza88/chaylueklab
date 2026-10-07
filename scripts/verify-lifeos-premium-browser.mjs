@@ -15,9 +15,9 @@ const replacementId = '30000000-0000-4000-8000-000000000002';
 const screenshotDir = process.env.LIFEOS_SCREENSHOT_DIR || '/tmp/chaylueklab-lifeos-qa';
 await mkdir(screenshotDir, { recursive: true });
 try {
-  const response = await fetch(`${base}/index.html`, { signal: AbortSignal.timeout(5000) });
+  const response = await fetch(`${base}/app-20261007.html`, { signal: AbortSignal.timeout(5000) });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
-} catch { throw new Error(`Start the repository static server first: python3 -m http.server 4175 --bind 127.0.0.1 (expected ${base}/index.html)`); }
+} catch { throw new Error(`Start the repository static server first: python3 -m http.server 4175 --bind 127.0.0.1 (expected ${base}/app-20261007.html)`); }
 
 const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium', args: ['--no-sandbox'] });
 const failures = [], passed = [];
@@ -117,7 +117,7 @@ async function test(name, task) {
   catch (error) { failures.push({ name, error }); console.error(`FAIL ${name}: ${error.stack}`); }
 }
 async function start(page, query = '') {
-  await page.goto(`${base}/index.html${query}`);
+  await page.goto(`${base}/app-20261007.html${query}`);
   await page.waitForFunction(() => document.querySelector('#deskPlan')?.textContent === 'FREE' || document.querySelector('#deskPlan')?.textContent === 'PLUS');
 }
 async function startSnooze(page) {
@@ -134,7 +134,7 @@ try {
       const rows = await page.locator('#membershipPage table tbody tr').evaluateAll(rows => rows.map(row => [...row.cells].map(cell => cell.textContent.trim())));
       assert.deepEqual(rows, [['สร้างงาน','10','200'],['ตั้งเตือน','3','30'],['บันทึกเงิน','30','500'],['โน้ต','10','200'],['อัปโหลดรวม','5 MB','100 MB'],['ต่อไฟล์','1 MB','10 MB']]);
       assert.match(await page.locator('#membershipPage').textContent(), /59\s*บาท/);
-      assert.ok(await page.locator('a[href="./?view=control"]').count(), 'Control Center uses the registered LIFF entry route for the central Stock API');
+      assert.ok(await page.locator('a[href="./app-20261007.html?view=control"]').count(), 'Control Center uses the same existing Life OS app and central Stock API');
       assert.ok(await page.locator('a[href$="newsroom.html"]').count(), 'Newsroom module remains linked');
       assert.ok(await page.locator('a[href$="ai-video.html"]').count(), 'Existing Studio module remains linked');
       await mobileCheck(page);
@@ -161,7 +161,7 @@ try {
   });
   await test('membership remains unconfirmed until the status API responds', async () => {
     await withPage({ holdBilling: true }, async (page, state) => {
-      await page.goto(`${base}/index.html?view=membership&payment=success`);
+      await page.goto(`${base}/app-20261007.html?view=membership&payment=success`);
       await waitState(() => state.held.some(held => held.kind === 'billing'), 'Membership status request reached fixture');
       assert.notEqual(await page.locator('#deskPlan').textContent(), 'PLUS');
       assert.equal(await page.locator('#subscribeBtn').isDisabled(), true);
@@ -261,7 +261,9 @@ try {
       await page.getByRole('button', { name: 'ดูสิทธิ์สมาชิก', exact: true }).click();
       assert.equal(await page.locator('#membershipPage').isVisible(), true);
       await page.locator('#membershipPage').getByRole('button', { name: '← กลับหน้าหลัก', exact: true }).click();
-      await page.getByRole('button', { name: '＋ ตั้งเตือนประจำ', exact: true }).click();
+      await page.locator('.core-action').filter({ hasText: 'เพิ่มเติม' }).click();
+      assert.equal(await page.locator('#lifeToolsPage').isVisible(), true);
+      await page.locator('#recurringPanel').getByRole('button', { name: '＋ เพิ่ม', exact: true }).click();
       assert.equal(await page.locator('#lifeDialog').isVisible(), false);
       assert.equal(await page.locator('#membershipPage').isVisible(), true);
       assert.equal(state.requests.some(request => request.body.action === 'snooze_reminder' || request.body.action === 'create'), false);
