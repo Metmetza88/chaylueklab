@@ -176,6 +176,7 @@
       .brand-showcase{margin-top:2px}
     }
 
+
 /* SIMPLIFIED LIFE OS — function first */
 .core-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 16px}
 .core-action{appearance:none;text-align:left;text-decoration:none;border:1px solid #33444b;background:#0d1519;color:#f3f4ef;border-radius:16px;padding:14px;min-height:84px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer}
@@ -198,18 +199,29 @@
 }
 
 
+/* CHAYLUEKLAB Atelier · daily operations before decoration */
+@font-face{font-family:ControlThai;src:url('./assets/fonts/control-thai.woff2') format('woff2');font-display:swap;font-weight:100 900;unicode-range:U+0E00-0E7F}
+:root{--bg:#080d11;--gold:#e8d3aa;--text:#f3f5f1;--muted:#acbac1;--line:#2c3b43;--surface:#111b21}
+body{background:radial-gradient(ellipse at 90% 0,#17453730,transparent 40%),#080d11;font-family:ControlThai,system-ui,sans-serif;line-height:1.65}
+.shell{max-width:1280px}.masthead{max-width:1280px;flex-wrap:wrap}.brand-name{font-size:17px;letter-spacing:.08em}.brand-sub{font-size:9px;letter-spacing:.16em}.pill{font-size:10px;padding:6px 8px}.brand-mark{width:40px;height:40px}
+.desktop-nav button{color:#b9c6cc;background:transparent;min-height:44px;padding:6px 9px;font-size:14px;border:0;border-radius:9px}.desktop-nav button:hover{color:var(--gold);background:#e8d3aa0c}
+main{max-width:1280px;margin:auto}.desk-intro{margin:8px 0 22px}.desk-title{font-size:clamp(30px,4vw,46px);font-weight:750;letter-spacing:-.025em}.eyebrow{font-size:10px;color:#90d6b5;letter-spacing:.18em}.desk-sub{font-size:14px}.desk-panel,.glass{background:#111b21;border-color:#2c3b43;border-radius:20px;box-shadow:0 8px 32px #00000016}.panel-title{font-size:18px;font-weight:700}.desk-caption,.quiet-state{font-size:14px;line-height:1.8}.command-panel{background:linear-gradient(120deg,#14332c,#101c23 80%);border-color:#47665b}.command-panel:after{width:210px;height:210px;top:-110px;right:-110px;border-color:#e8d3aa20}.command-heading{font-size:23px;font-weight:700}.metric-value{font-size:35px;font-weight:650}.metric-label{font-size:12px}.btn{min-height:48px;font-size:14px;font-weight:650;border-radius:12px}.btn-gold{background:#e8d3aa}.text-action{font-size:13px}.plan-chip{min-height:36px;font-size:12px}.task{padding:15px;border-radius:14px;background:#0d161d}.task .text-sm{font-size:15px}.task .text-\[10px\]{font-size:12px}.tag{font-size:11px}.check{min-width:44px;min-height:44px}.bottom{background:#0b131af5;border-top-color:#34454d;padding-top:9px}.navbtn{min-height:56px}.navbtn.active{background:#e8d3aa10;color:#f4ddb1}.navbtn div{font-size:11px}.field,input,select,textarea{font-size:16px!important}.desktop-nav{gap:2px}.utility-link small{font-size:12px}.utility-link{font-size:14px}.weekly-total{font-size:32px}.quiet-state{padding:22px 0}#connectionNotice{border-color:#836f4c;background:#211e17}#connectionTitle{color:#f3dab0}#connectionMessage{font-size:14px;color:#d4c9b4}.row-actions .btn{font-size:13px;min-height:46px}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #f1d6a2;outline-offset:4px}
+@media(min-width:900px){.bottom{display:block;left:50%;right:auto;transform:translateX(-50%);width:min(640px,90vw);bottom:18px;border:1px solid #34454d;border-radius:20px;padding-bottom:8px}.shell{padding-bottom:125px}.desk-grid{grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr)}.desk-side{display:grid!important}.advanced-panel{display:block!important}}
+@media(max-width:799px){.masthead{gap:10px}.brand-name{font-size:15px}.brand-sub{font-size:8px}.masthead>.flex{margin-left:auto}.pill{font-size:9px;padding:5px 7px}.desk-intro{margin-bottom:16px}.desk-title{font-size:30px}.desk-panel{padding:19px}.command-heading{font-size:21px}.metric-value{font-size:30px}.desk-side{display:grid!important}.desk-side>section:not(.utility-links){display:none}.command-actions{gap:8px}.command-actions .btn{font-size:13px;padding-inline:9px}.desk-metrics{gap:8px}.metric-cell:not(:first-child){padding-left:8px}.desk-sub{font-size:13px}.panel-head{flex-wrap:wrap}.text-action{white-space:normal}.shell{padding-bottom:105px}.statusline{font-size:11px}}
+@media(max-width:350px){.masthead>.flex{width:100%;justify-content:flex-end}.command-actions{grid-template-columns:1fr}.desk-metrics{gap:6px}.metric-label{font-size:11px}.utility-links{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
-<link rel="stylesheet" href="./assets/premium.css?v=20261007-sculpture">
+<link rel="icon" type="image/svg+xml" href="./assets/brand/quantum/icon-compact.svg">
 </head>
-<body data-surface="lifeos" data-account="guest">
+<body>
 <a class="skip-link" href="#homePage">ข้ามไปพื้นที่ทำงาน</a>
 <div class="shell">
   <header class="sticky">
     <div class="masthead px-4 pt-[max(12px,env(safe-area-inset-top))] pb-3 flex items-center justify-between gap-3">
-      <div class="brand"><div class="brand-mark" aria-hidden="true"><svg class="brand-emblem" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><defs><linearGradient id="brandGold" x1="18" y1="12" x2="85" y2="90" gradientUnits="userSpaceOnUse"><stop stop-color="#F3E5C9"/><stop offset=".48" stop-color="#CFAC73"/><stop offset="1" stop-color="#E8D2A3"/></linearGradient><linearGradient id="brandSurface" x2="1" y2="1"><stop stop-color="#152520"/><stop offset="1" stop-color="#080C0F"/></linearGradient></defs><rect x="1.5" y="1.5" width="97" height="97" rx="24" fill="url(#brandSurface)" stroke="#6C6250" stroke-width="1.2"/><path d="M76 27A34 34 0 1 0 76 73" fill="none" stroke="url(#brandGold)" stroke-width="9.5"/><path d="M67 34A23 23 0 1 0 67 66" fill="none" stroke="#E8D2A3" stroke-width="1.4" opacity=".45"/><path d="M53 50H79V43H84" fill="none" stroke="#79DAB2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><rect class="logo-core" x="47" y="40" width="6" height="20" rx="3" fill="#91E5C1"/><circle cx="84" cy="43" r="2.8" fill="#91E5C1"/><path d="M15 18V11H22M78 89H85V82" fill="none" stroke="#C9AD79" stroke-width="1" opacity=".55"/><path class="logo-sweep" d="M76 27A34 34 0 1 0 76 73" fill="none" stroke="#FFF4DC" stroke-width="2" opacity="0"/></svg>
+      <div class="brand"><div class="brand-mark" aria-hidden="true"><img src="./assets/brand/quantum/icon.svg" width="40" height="40" alt="" style="display:block;width:100%;height:100%">
 </div><div><div class="brand-name">CHAYLUEKLAB</div><div class="brand-sub">PERSONAL LIFE OS</div></div></div>
       <nav class="desktop-nav" aria-label="เมนูเว็บไซต์">
-        <a href="#homePage">หน้าแรก</a><a href="./index.html#products">สินค้า</a><a href="./index.html#services">งาน AI / เว็บไซต์</a><a href="./newsroom.html">Newsroom</a><a href="./app-20261007.html?view=control">Control Center</a>
+        <button type="button" onclick="switchPage('homePage')">วันนี้</button><button type="button" onclick="switchPage('tasksPage')">งาน</button><button type="button" onclick="switchPage('calendarPage')">ปฏิทิน</button><button type="button" onclick="switchPage('financePage')">การเงิน</button><button type="button" onclick="switchPage('settingsPage')">ตั้งค่า</button>
       </nav>
       <div class="flex items-center gap-2">
         <span id="lineBadge" class="pill"><span class="dot" style="background:#c79957"></span><span>รอ LINE</span></span>
@@ -219,23 +231,14 @@
   </header>
 
   <main class="px-4 py-4 space-y-5">
-<aside id="connectionNotice" class="desk-panel hidden" role="status" aria-live="polite">
+    <aside id="connectionNotice" class="desk-panel hidden" role="status" aria-live="polite">
       <p id="connectionTitle" class="panel-title">เชื่อมต่อบัญชี LINE</p>
       <p id="connectionMessage" class="desk-caption mt-2"></p>
       <div class="row-actions mt-3"><button id="connectLineBtn" type="button" class="btn btn-gold" onclick="initLiff()">เชื่อมต่อ LINE อีกครั้ง</button><a class="btn btn-ghost" href="https://liff.line.me/2011681452-yexLrODy">เปิดผ่าน LINE</a></div>
     </aside>
     <section id="homePage" class="page active" aria-labelledby="dashboardHeading" tabindex="-1">
-      <section class="brand-stage app-welcome" aria-labelledby="brandStageTitle"><img class="sculpture-art" src="./assets/brand-sculpture.webp" alt="" width="1400" height="788"><div class="stage-copy"><p class="eyebrow">YOUR PERSONAL SPACE</p><h2 id="brandStageTitle">ทุกเรื่อง.<br><em>อยู่ในมือคุณ.</em></h2><p>งาน เตือน เงิน และร้านของคุณ<br>ใช้ LINE บัญชีเดียว จัดการได้ทุกวัน</p><div class="brand-stage-actions"><button type="button" class="btn btn-gold" onclick="initLiff()">เข้าใช้งานด้วย LINE <svg class="outbound-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="btn btn-ghost" onclick="switchPage('membershipPage');loadMembership()">ดูสิทธิ์ Plus</button></div></div></section>
       <div class="desk-intro"><div><p class="eyebrow">YOUR DAILY COMMAND DESK</p><h1 id="dashboardHeading" class="desk-title">วันนี้ จัดการได้</h1><p class="desk-sub"><span id="dashboardDate"></span> · สวัสดี <span id="helloName">ผู้ใช้ LINE</span></p></div><button id="dashboardRefresh" class="iconbtn" onclick="refreshDesk()" aria-label="โหลดข้อมูลแดชบอร์ดอีกครั้ง"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L3 9M3 4v5h5M4 13a8 8 0 0 0 14 5l3-3M21 20v-5h-5"/></svg></button></div>
-      <section class="core-actions" aria-label="ทางลัดหลัก">
-  <a class="core-action core-primary" href="./app-20261007.html?view=control"><strong>หลังร้าน</strong><span>ขาย · รับเข้า · สต๊อก</span></a>
-  <button class="core-action" type="button" onclick="openTaskModal()"><strong>เพิ่มงาน</strong><span>งาน + เตือน LINE</span></button>
-  <button class="core-action" type="button" onclick="openFinanceModal()"><strong>บันทึกเงิน</strong><span>รายรับ · รายจ่าย</span></button>
-  <a class="core-action" href="./ai-video.html"><strong>AI Video</strong><span>สร้างคอนเทนต์</span></a>
-  <a class="core-action" href="./newsroom.html"><strong>Newsroom</strong><span>ข่าวและงานเขียน</span></a>
-  <button class="core-action" type="button" onclick="openLifeTools()"><strong>เพิ่มเติม</strong><span>เงินค้าง · เตือนประจำ · รายงาน</span></button>
-</section>
-      <div class="desk-grid">
+<div class="desk-grid">
         <div class="desk-main">
           <section class="desk-panel command-panel" aria-labelledby="commandHeading"><div class="command-top"><div><div class="statusline"><span class="dot" aria-hidden="true"></span><span id="systemText">กำลังเชื่อมต่อ LINE</span></div><h2 id="commandHeading" class="command-heading">พื้นที่ส่วนตัวของคุณ</h2><p class="desk-caption mt-1">งานสำคัญอยู่ตรงนี้ ถึงเวลาเตือนใน LINE</p></div><button id="deskPlan" class="plan-chip" onclick="switchPage('membershipPage');loadMembership()">ตรวจสิทธิ์</button></div>
             <div class="command-actions"><button class="btn btn-gold" onclick="openTaskModal()">＋ เพิ่มงานและเตือน</button><button class="btn btn-ghost" onclick="openFinanceModal()">＋ บันทึกเงิน</button></div>
@@ -407,7 +410,7 @@
       <button class="btn btn-green w-full" onclick="switchPage('membershipPage');loadMembership()">สมาชิก 59 บาท/เดือน</button>
       <button class="btn btn-ghost w-full" onclick="openLifeTools()">แจ้งเตือนประจำ · เงินค้าง · รายงาน</button>
       <button class="btn btn-ghost w-full" onclick="switchPage('vaultPage');loadVault()">ไฟล์และโน้ตส่วนตัว</button>
-      <div><div class="section-title">ตั้งค่าระบบ</div><div class="text-[10px] muted">พร้อมให้คนอื่นใช้</div></div>
+      <div><div class="section-title">บัญชีและการตั้งค่า</div><div class="text-[10px] muted">พื้นที่ส่วนตัวที่ผูกกับบัญชี LINE ของคุณ</div></div>
 
       <div class="glass card p-4">
         <div class="flex items-center gap-3">
@@ -446,6 +449,7 @@
         </div>
       </div>
 
+      <details class="glass card p-4"><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:650">ระบบธุรกิจและสตูดิโอแยกต่างหาก</summary><p class="desk-caption mt-2">หลังร้าน วิดีโอ และข่าว เปิดใช้งานผ่านหน้าแยก</p><a class="btn btn-ghost mt-3" style="display:inline-flex;align-items:center" href="./business.html">เปิดศูนย์ธุรกิจ →</a></details>
       <div class="glass card p-4">
         <div class="font-black mb-2">ระบบความปลอดภัย</div>
         <div class="text-xs muted leading-relaxed">ไฟล์นี้ไม่มี LINE Channel Access Token และไม่มี Channel Secret ทุก Secret อยู่ฝั่ง Supabase เท่านั้น</div>
@@ -541,11 +545,17 @@ function connectionNotice(message,title='เชื่อมต่อบัญช
   document.getElementById('connectionNotice').classList.remove('hidden');
 }
 async function waitForResult(promise,ms,message){let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(message)),ms)})])}finally{clearTimeout(timer)}}
+let lineSdkLoad=null;
+async function ensureLineSdk(){
+ if(window.liff)return;
+ if(!lineSdkLoad)lineSdkLoad=new Promise((resolve,reject)=>{const tag=document.createElement('script');tag.src='https://static.line-scdn.net/liff/edge/2/sdk.js';tag.onload=()=>window.liff?resolve():reject(new Error('โหลด LINE ไม่ครบ กรุณาเปิดผ่าน LINE อีกครั้ง'));tag.onerror=()=>reject(new Error('โหลดระบบ LINE ไม่สำเร็จ กรุณาตรวจอินเทอร์เน็ตแล้วลองอีกครั้ง'));document.head.append(tag)}).finally(()=>{lineSdkLoad=null});
+ await waitForResult(lineSdkLoad,15000,'โหลด LINE นานเกินไป กรุณาลองอีกครั้ง');
+}
 async function initLiff(){
-  if(liffBusy)return;liffBusy=true;document.getElementById('connectLineBtn').disabled=true;
+  if(liffBusy)return;liffBusy=true;document.getElementById('connectLineBtn').disabled=true;document.getElementById('connectLineBtn').textContent='กำลังเชื่อมต่อ…';
   try{
     if(authExpired){location.assign('https://liff.line.me/'+LIFF_ID);return}
-    if(!window.liff)throw new Error('โหลดระบบเข้าสู่ LINE ไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วเปิดผ่าน LINE อีกครั้ง');
+    await ensureLineSdk();
     if(!liffReady){await waitForResult(liff.init({liffId:LIFF_ID}),20000,'เชื่อมต่อ LINE นานเกินไป กดลองอีกครั้งได้');liffReady=true}
     // Keep the requested back-office view through LINE Login, then route only after LIFF is authenticated.
     const retailView=new URL(location.href).searchParams.get('view');
@@ -561,7 +571,6 @@ async function initLiff(){
       return;
     }
     profile=await waitForResult(liff.getProfile(),15000,'โหลดบัญชี LINE ไม่สำเร็จ กดลองอีกครั้งได้');
-    document.body.dataset.account='connected';
     accountKey=':'+profile.userId;
     tasks=load(TASK_KEY+accountKey,[]);moneyRows=load(MONEY_KEY+accountKey,[]);
     const legacyOwner=localStorage.getItem('chaylueklab_legacy_owner');
@@ -584,10 +593,10 @@ async function initLiff(){
     document.getElementById('systemText').textContent='ยังเชื่อมต่อ LINE ไม่สำเร็จ';
     document.querySelector('.statusline .dot').style.background='#ef4444';
     document.getElementById('profileState').textContent='กดเชื่อมต่อ LINE อีกครั้ง';
-    document.getElementById('lineBadge').innerHTML='<span class="dot" style="background:#ef4444"></span><span>ERROR</span>';
+    document.getElementById('lineBadge').innerHTML='<span class="dot" style="background:#ef4444"></span><span>เชื่อมใหม่</span>';
     connectionNotice(/[ก-๙]/.test(e.message||'')?e.message:'เชื่อมต่อ LINE ไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วกดเชื่อมต่ออีกครั้ง หรือเปิดผ่าน LINE');
     deskError='กรุณาเชื่อมต่อ LINE เพื่อโหลดข้อมูลส่วนตัว';rulesError=deskError;renderLifeTools();
-  }finally{liffBusy=false;document.getElementById('connectLineBtn').disabled=false}
+  }finally{liffBusy=false;document.getElementById('connectLineBtn').disabled=false;document.getElementById('connectLineBtn').textContent='เชื่อมต่อ LINE อีกครั้ง'}
 }
 
 const apiErrors={consent_required:'กรุณายืนยันการต่ออายุอัตโนมัติก่อนสมัคร',already_subscribed:'มีรายการสมัครสมาชิกอยู่แล้ว กรุณาจัดการบัตรและการต่ออายุ',reminder_not_found:'ไม่พบการเตือนนี้ในบัญชีของคุณ',reminder_in_transit:'กำลังส่งแจ้งเตือน กรุณารอแล้วตรวจสอบอีกครั้ง',reminder_not_active:'การเตือนนี้ปิดหรือเลื่อนไปแล้ว กรุณาเปิดรายการใหม่',snoozed_reminder_removed:'รายการที่เลื่อนไปถูกลบแล้ว',request_id_conflict:'คำขอเดิมมีข้อมูลต่างกัน กรุณาเปิดรายการใหม่',invalid_snooze:'เลือกเวลาเลื่อนเตือนให้ถูกต้อง',invalid_snooze_time:'เลือกเวลาในอนาคตไม่เกิน 366 วัน',owner_only:'สำหรับบัญชีเจ้าของที่ยืนยันแล้วเท่านั้น',invalid_line_login:'การเข้าสู่ระบบ LINE หมดอายุ กรุณากดเชื่อมต่อ LINE อีกครั้ง',membership_required:'กรุณาตรวจสอบสิทธิ์ใช้งาน',account_suspended:'บัญชีถูกระงับสิทธิ์ กรุณาติดต่อผู้ดูแล',not_found_or_in_transit:'รายการไม่พบหรือกำลังส่งแจ้งเตือน กรุณาโหลดอีกครั้ง',billing_not_configured:'ยังไม่เชื่อมบัญชีรับชำระเงิน',admin_unavailable:'จัดการไม่สำเร็จ กรุณาลองใหม่',premium_required:'เครื่องมือนี้สำหรับ Plus หรือช่วงทดลองฟรี',recurring_limit_reached:'ตั้งเตือนประจำได้สูงสุด 10 รายการที่เปิดใช้งาน',debt_limit_reached:'ติดตามเงินค้างได้สูงสุด 100 รายการที่ยังไม่ปิดยอด',reminder_time_in_past:'เวลานี้ผ่านไปแล้ว กรุณาเลือกเวลาในอนาคต',request_payload_conflict:'ข้อมูลรายการเปลี่ยนไป กรุณาเพิ่มรายการใหม่',quota_exceeded:'โควตารอบเดือนนี้เต็มแล้ว ตรวจยอดได้ที่สิทธิ์ของฉัน',settlement_exceeds_balance:'ยอดชำระมากกว่ายอดคงเหลือ กรุณาโหลดรายการอีกครั้ง',debt_not_found:'ไม่พบเงินค้างนี้ กรุณาโหลดรายการอีกครั้ง',rule_not_found:'ไม่พบรายการประจำนี้ กรุณาโหลดอีกครั้ง',request_conflict:'ข้อมูลเปลี่ยนไป กรุณาเปิดรายการใหม่แล้วลองอีกครั้ง',invalid_debt:'ตรวจชื่อเรื่อง จำนวนเงิน และกำหนดชำระให้ถูกต้อง',invalid_settlement:'กรอกยอดชำระมากกว่า 0 และไม่เกินยอดคงเหลือ',invalid_schedule:'ตรวจเวลา วันในสัปดาห์ หรือวันที่ในเดือน',invalid_title:'กรอกชื่อเรื่องก่อนบันทึก',invalid_request:'ตรวจข้อมูลที่กรอกแล้วลองใหม่',invalid_finance:'ตรวจชื่อรายการ จำนวนเงิน และวันที่ให้ถูกต้อง',invalid_reminder:'ตรวจชื่อเรื่องและเลือกเวลาในอนาคต',not_found:'ไม่พบรายการนี้ กรุณาโหลดข้อมูลอีกครั้ง',server_error:'ระบบขัดข้องชั่วคราว กรุณาลองอีกครั้ง',checkout_in_progress:'กำลังเตรียมหน้าชำระเงิน รอสักครู่แล้วลองอีกครั้ง',billing_unavailable:'เปิดหน้าชำระเงินไม่สำเร็จ กรุณาลองใหม่',forbidden:'หน้านี้สำหรับผู้ดูแลระบบ',no_subscription:'ยังไม่พบรายการสมัครสมาชิก'};

@@ -221,7 +221,8 @@ function clearPrivateInventory() {
 function renderGate() {
   const user = state.snapshot?.user;
   const permitted = active();
-  $('controlWelcome').hidden = permitted;
+  const welcome = $('controlWelcome');
+  if (welcome) welcome.hidden = permitted;
   $('authorizedContent').hidden = !permitted;
   $('stockNavigation').hidden = !permitted;
   $('appGate').hidden = permitted;

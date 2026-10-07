@@ -134,9 +134,11 @@ try {
       const rows = await page.locator('#membershipPage table tbody tr').evaluateAll(rows => rows.map(row => [...row.cells].map(cell => cell.textContent.trim())));
       assert.deepEqual(rows, [['สร้างงาน','10','200'],['ตั้งเตือน','3','30'],['บันทึกเงิน','30','500'],['โน้ต','10','200'],['อัปโหลดรวม','5 MB','100 MB'],['ต่อไฟล์','1 MB','10 MB']]);
       assert.match(await page.locator('#membershipPage').textContent(), /59\s*บาท/);
-      assert.ok(await page.locator('a[href="./app-20261007.html?view=control"]').count(), 'Control Center uses the same existing Life OS app and central Stock API');
-      assert.ok(await page.locator('a[href$="newsroom.html"]').count(), 'Newsroom module remains linked');
-      assert.ok(await page.locator('a[href$="ai-video.html"]').count(), 'Existing Studio module remains linked');
+      assert.ok(await page.locator('a[href="./business.html"]').count(), 'The personal account links to the existing separate business workspace');
+      const business = await (await fetch(`${base}/business.html`)).text();
+      assert.ok(business.includes('./control.html'), 'Control Center remains linked from the business workspace');
+      assert.ok(business.includes('./newsroom.html'), 'Newsroom remains linked from the business workspace');
+      assert.ok(business.includes('./ai-video.html'), 'Studio remains linked from the business workspace');
       await mobileCheck(page);
       await page.screenshot({ path: `${screenshotDir}/lifeos-membership-${width}.png`, fullPage: true });
       assert.equal(state.requests.some(request => request.endpoint !== 'billing' && request.body.action === 'checkout'), false);
@@ -261,7 +263,7 @@ try {
       await page.getByRole('button', { name: 'ดูสิทธิ์สมาชิก', exact: true }).click();
       assert.equal(await page.locator('#membershipPage').isVisible(), true);
       await page.locator('#membershipPage').getByRole('button', { name: '← กลับหน้าหลัก', exact: true }).click();
-      await page.locator('.core-action').filter({ hasText: 'เพิ่มเติม' }).click();
+      await page.locator('#homePage .utility-link').filter({ hasText: 'รายงานสัปดาห์' }).click();
       assert.equal(await page.locator('#lifeToolsPage').isVisible(), true);
       await page.locator('#recurringPanel').getByRole('button', { name: '＋ เพิ่ม', exact: true }).click();
       assert.equal(await page.locator('#lifeDialog').isVisible(), false);

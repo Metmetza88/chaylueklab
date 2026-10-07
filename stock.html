@@ -11,22 +11,14 @@
   <link rel="stylesheet" href="./assets/stock.css">
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js" defer></script>
   <script type="module" src="./assets/stock.js"></script>
-<link rel="stylesheet" href="./assets/premium.css?v=20261007-sculpture">
+<link rel="stylesheet" href="./assets/workspace-premium.css"><link rel="icon" type="image/svg+xml" href="./assets/brand/quantum/icon-compact.svg">
 </head>
-<body data-surface="control">
+<body>
   <main class="stock-shell" id="stockApp">
-    <header class="stock-header">
+    <a class="workspace-back" href="./app-20261007.html">← พื้นที่ส่วนตัว</a><header class="stock-header">
       <div><p class="brand-mark">CHAYLUEKLAB</p><p class="control-center-label">CONTROL CENTER</p><p class="muted">ระบบหลังร้าน</p></div>
       <div class="header-actions"><button class="button button-quiet" id="teamButton" type="button" hidden>ทีมงาน</button><button class="button button-quiet" id="refreshStock" type="button" aria-label="ดึงข้อมูลสต๊อกล่าสุด">↻</button></div>
     </header>
-    <section id="controlWelcome" class="brand-stage" aria-labelledby="controlEditionTitle">
-      <div class="edition-pill">CHAYLUEKLAB · RETAIL CONTROL</div>
-      <img class="sculpture-art" src="./assets/brand-sculpture.webp" alt="" width="1400" height="788">
-      <h1 id="controlEditionTitle">ร้านของคุณ.<br><em>พร้อมทุกช่องทาง.</em></h1>
-      <p>ขายหน้าร้านและออนไลน์ ใช้สต๊อกเดียวกัน<br>ทุกการขาย รู้ว่าใครทำ เหลือเท่าไร</p>
-      <div class="stage-signature"><span>ONE STOCK / ONE TEAM</span><span>CHAYLUEKLAB CONTROL</span></div>
-    </section>
-
     <div class="status-line"><span class="status-dot" aria-hidden="true"></span><p id="connectionStatus" role="status" aria-live="polite">กำลังเชื่อมต่อข้อมูลร้าน…</p><span class="muted" id="currentMember"></span></div>
 
     <section id="appGate" class="card empty-state" aria-labelledby="gateTitle" hidden>
