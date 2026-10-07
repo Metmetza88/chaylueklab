@@ -12,14 +12,14 @@ for (let attempt = 0; attempt < 5; attempt++) {
     assert.equal(manifestResponse.status, 200);
     const manifest = await manifestResponse.json();
     assert.equal(manifest.commit, expected, 'Published commit must match the checked commit');
-    const paths = ['index.html', 'control.html', 'stock.html', 'notes.html', 'ai-video.html', 'newsroom.html', 'news/index.html'];
+    const paths = ['index.html', 'app-20261007.html', 'control.html', 'stock.html', 'notes.html', 'ai-video.html', 'newsroom.html', 'news/index.html'];
     await Promise.all(paths.map(async path => {
       const response = await fetch(new URL(`${path}?release=${expected}`, base), { signal: AbortSignal.timeout(10000), redirect: 'error' });
       assert.equal(response.status, 200, path);
       const digest = createHash('sha256').update(Buffer.from(await response.arrayBuffer())).digest('hex');
       assert.equal(digest, manifest.hashes[path], `Published ${path} must match the built artifact`);
     }));
-    console.log(`PASS deployed ${expected}: seven public routes match the checked artifact`);
+    console.log(`PASS deployed ${expected}: eight public routes match the checked artifact`);
     lastError = null;
     break;
   } catch (error) { lastError = error; if (attempt < 4) await new Promise(resolve => setTimeout(resolve, 1500 * (attempt + 1))); }
