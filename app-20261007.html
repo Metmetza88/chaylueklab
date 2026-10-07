@@ -176,6 +176,28 @@
       .brand-showcase{margin-top:2px}
     }
 
+
+/* SIMPLIFIED LIFE OS — function first */
+.core-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 16px}
+.core-action{appearance:none;text-align:left;text-decoration:none;border:1px solid #33444b;background:#0d1519;color:#f3f4ef;border-radius:16px;padding:14px;min-height:84px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer}
+.core-action strong{font-size:14px;line-height:1.45}.core-action span{font-size:10px;line-height:1.45;color:#9fb0b7}.core-primary{background:linear-gradient(135deg,#e8d2a3,#c7a86b);color:#101417;border-color:transparent}.core-primary span{color:#3e3b34}
+@media(max-width:799px){
+  .shell{max-width:680px}
+  main{padding-top:16px!important}
+  .desk-intro{margin-bottom:12px}
+  .desk-title{font-size:30px}
+  .core-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .core-action{min-height:78px;padding:12px}
+  .desk-side,.advanced-panel{display:none!important}
+  .desk-main{gap:12px}.desk-panel{padding:16px}
+  .command-panel{order:-1}
+  .utility-links{grid-template-columns:1fr 1fr}
+}
+@media(max-width:390px){
+  .core-action{min-height:72px}
+  .core-action strong{font-size:13px}
+}
+
 </style>
 </head>
 <body>
@@ -186,7 +208,7 @@
       <div class="brand"><div class="brand-mark" aria-hidden="true"><svg class="brand-emblem" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><defs><linearGradient id="brandGold" x1="18" y1="12" x2="85" y2="90" gradientUnits="userSpaceOnUse"><stop stop-color="#F3E5C9"/><stop offset=".48" stop-color="#CFAC73"/><stop offset="1" stop-color="#E8D2A3"/></linearGradient><linearGradient id="brandSurface" x2="1" y2="1"><stop stop-color="#152520"/><stop offset="1" stop-color="#080C0F"/></linearGradient></defs><rect x="1.5" y="1.5" width="97" height="97" rx="24" fill="url(#brandSurface)" stroke="#6C6250" stroke-width="1.2"/><path d="M76 27A34 34 0 1 0 76 73" fill="none" stroke="url(#brandGold)" stroke-width="9.5"/><path d="M67 34A23 23 0 1 0 67 66" fill="none" stroke="#E8D2A3" stroke-width="1.4" opacity=".45"/><path d="M53 50H79V43H84" fill="none" stroke="#79DAB2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><rect class="logo-core" x="47" y="40" width="6" height="20" rx="3" fill="#91E5C1"/><circle cx="84" cy="43" r="2.8" fill="#91E5C1"/><path d="M15 18V11H22M78 89H85V82" fill="none" stroke="#C9AD79" stroke-width="1" opacity=".55"/><path class="logo-sweep" d="M76 27A34 34 0 1 0 76 73" fill="none" stroke="#FFF4DC" stroke-width="2" opacity="0"/></svg>
 </div><div><div class="brand-name">CHAYLUEKLAB</div><div class="brand-sub">AI LIFE OS · PREMIUM LIVE</div></div></div>
       <nav class="desktop-nav" aria-label="เมนูเว็บไซต์">
-        <a href="#homePage">หน้าแรก</a><a href="#shop">สินค้า</a><a href="#services">งาน AI / เว็บไซต์</a><a href="./newsroom.html">Newsroom</a><a href="./?view=control">Control Center</a>
+        <a href="#homePage">หน้าแรก</a><a href="#shop">สินค้า</a><a href="#services">งาน AI / เว็บไซต์</a><a href="./newsroom.html">Newsroom</a><a href="./app-20261007.html?view=control">Control Center</a>
       </nav>
       <div class="flex items-center gap-2">
         <span id="lineBadge" class="pill"><span class="dot" style="background:#c79957"></span><span>รอ LINE</span></span>
@@ -196,41 +218,6 @@
   </header>
 
   <main class="px-4 py-4 space-y-5">
-    <section class="brand-hero" aria-label="CHAYLUEKLAB command hub">
-      <p class="hero-kicker">CHAYLUEKLAB · PREMIUM LIVE · 07.10.2026</p>
-      <h1 class="hero-title">วันนี้ <span>จัดการได้</span><br>ทั้งงานและแบรนด์</h1>
-      <p class="hero-copy">AI Life OS, ระบบหลังร้าน, Website, LINE, Automation และคอนเทนต์ — รวมไว้ในที่เดียวสำหรับ CHAYLUEKLAB</p>
-      <div class="flag-row" aria-label="สถานะระบบ">
-        <span class="flag-chip">LINE READY</span>
-        <span class="flag-chip gold">OWNER MODE</span>
-        <span class="flag-chip">AI SYSTEM</span>
-      </div>
-    </section>
-
-    <section class="module-grid" aria-label="ระบบหลักของ CHAYLUEKLAB">
-      <a href="./?view=control" class="module-card"><span><strong>CONTROL CENTER</strong><small>ขาย · รับเข้า · สต๊อก · รายงาน</small></span><span class="module-badge">OPEN</span></a>
-      <a href="./ai-video.html" class="module-card"><span><strong>AI VIDEO STUDIO</strong><small>สร้างวิดีโอจากภาพและคอนเทนต์</small></span><span class="module-badge">AI</span></a>
-      <a href="./newsroom.html" class="module-card"><span><strong>NEWSROOM</strong><small>กองบรรณาธิการ AI และ Tech</small></span><span class="module-badge">DESK</span></a>
-    </section>
-
-    <section id="shop" class="brand-showcase" aria-label="สินค้าและบริการเด่น">
-      <a class="feature-image" href="#homePage" style="text-decoration:none">
-        <div><p class="hero-kicker">FIRST CHAPTER</p><h2>FOOTBALL CULTURE FOR EVERYDAY</h2><p>01 IVORY · 02 NOIR · 03 FOREST</p></div>
-      </a>
-      <div id="services" class="service-rail">
-        <a class="service-chip" href="./?view=control" style="text-decoration:none"><b>CONTROL CENTER</b><span>ขาย · รับเข้า · สต๊อก · รายงาน</span></a>
-        <a class="service-chip" href="./ai-video.html" style="text-decoration:none"><b>AI VIDEO</b><span>สร้างภาพ วิดีโอ และคอนเทนต์</span></a>
-        <a class="service-chip" href="./newsroom.html" style="text-decoration:none"><b>NEWSROOM</b><span>ข่าว AI / Tech และระบบอนุมัติ</span></a>
-        <a class="service-chip" href="https://line.me/R/ti/p/@215pcisl" style="text-decoration:none"><b>LINE CONSULT</b><span>ปรึกษา AI · เว็บ · ระบบธุรกิจ</span></a>
-      </div>
-    </section>
-
-    <section class="catalog-strip" aria-label="หมวดของแบรนด์">
-      <div class="catalog-card"><b>DIGITAL PRODUCTS</b><span>E‑Book · ไฟล์ดาวน์โหลด · เครื่องมือ</span></div>
-      <div class="catalog-card"><b>MERCHANDISE</b><span>FIRST CHAPTER · เสื้อ · ของสะสม</span></div>
-      <div class="catalog-card"><b>AI / WEB SYSTEMS</b><span>LIFF · Automation · Business Tools</span></div>
-      <div class="catalog-card"><b>CHAYLUEKLAB WORKS</b><span>ผลงานและระบบที่กำลังพัฒนา</span></div>
-    </section>
     <aside id="connectionNotice" class="desk-panel hidden" role="status" aria-live="polite">
       <p id="connectionTitle" class="panel-title">เชื่อมต่อบัญชี LINE</p>
       <p id="connectionMessage" class="desk-caption mt-2"></p>
@@ -238,14 +225,21 @@
     </aside>
     <section id="homePage" class="page active" aria-labelledby="dashboardHeading" tabindex="-1">
       <div class="desk-intro"><div><p class="eyebrow">YOUR DAILY COMMAND DESK</p><h1 id="dashboardHeading" class="desk-title">วันนี้ จัดการได้</h1><p class="desk-sub"><span id="dashboardDate"></span> · สวัสดี <span id="helloName">ผู้ใช้ LINE</span></p></div><button id="dashboardRefresh" class="iconbtn" onclick="refreshDesk()" aria-label="โหลดข้อมูลแดชบอร์ดอีกครั้ง"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L3 9M3 4v5h5M4 13a8 8 0 0 0 14 5l3-3M21 20v-5h-5"/></svg></button></div>
-      <div class="desk-grid">
+      <section class="core-actions" aria-label="ทางลัดหลัก">
+  <a class="core-action core-primary" href="./app-20261007.html?view=control"><strong>หลังร้าน</strong><span>ขาย · รับเข้า · สต๊อก</span></a>
+  <button class="core-action" type="button" onclick="openTaskModal()"><strong>เพิ่มงาน</strong><span>งาน + เตือน LINE</span></button>
+  <button class="core-action" type="button" onclick="openFinanceModal()"><strong>บันทึกเงิน</strong><span>รายรับ · รายจ่าย</span></button>
+  <a class="core-action" href="./ai-video.html"><strong>AI Video</strong><span>สร้างคอนเทนต์</span></a>
+  <a class="core-action" href="./newsroom.html"><strong>Newsroom</strong><span>ข่าวและงานเขียน</span></a>
+  <button class="core-action" type="button" onclick="openLifeTools()"><strong>เพิ่มเติม</strong><span>เงินค้าง · เตือนประจำ · รายงาน</span></button>
+</section><div class="desk-grid">
         <div class="desk-main">
           <section class="desk-panel command-panel" aria-labelledby="commandHeading"><div class="command-top"><div><div class="statusline"><span class="dot" aria-hidden="true"></span><span id="systemText">กำลังเชื่อมต่อ LINE</span></div><h2 id="commandHeading" class="command-heading">พื้นที่ส่วนตัวของคุณ</h2><p class="desk-caption mt-1">งานสำคัญอยู่ตรงนี้ ถึงเวลาเตือนใน LINE</p></div><button id="deskPlan" class="plan-chip" onclick="switchPage('membershipPage');loadMembership()">ตรวจสิทธิ์</button></div>
             <div class="command-actions"><button class="btn btn-gold" onclick="openTaskModal()">＋ เพิ่มงานและเตือน</button><button class="btn btn-ghost" onclick="openFinanceModal()">＋ บันทึกเงิน</button></div>
             <div class="desk-metrics"><div class="metric-cell"><p class="metric-label">งานวันนี้</p><p id="todayCount" class="metric-value">—</p></div><div class="metric-cell"><p class="metric-label">งานที่ยังค้าง</p><p id="pendingCount" class="metric-value">—</p></div><div class="metric-cell"><p class="metric-label">เลยกำหนด</p><p id="overdueCount" class="metric-value warning">—</p></div></div>
           </section>
           <section class="desk-panel" aria-labelledby="todayWorkHeading"><div class="panel-head"><div><h2 id="todayWorkHeading" class="panel-title">งานถัดไป</h2><p class="desk-caption">เรียงตามวันและเวลาที่บันทึก</p></div><button class="text-action" onclick="switchPage('tasksPage')">ดูงานทั้งหมด <svg class="inline-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div><div id="homeTasks" class="space-y-2"><p class="quiet-state">กำลังโหลดงานของคุณ…</p></div></section>
-          <section class="desk-panel" aria-labelledby="recurringPreviewHeading"><div class="panel-head"><div><p class="eyebrow">SET ONCE · REPEAT</p><h2 id="recurringPreviewHeading" class="panel-title mt-1">เรื่องเดิม ให้เตือนเอง</h2><p class="desk-caption">เตือนทุกวัน ทุกสัปดาห์ หรือทุกเดือน</p></div><button class="text-action" onclick="openLifeTools('recurring')">จัดการ <svg class="inline-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div><div id="recurringPreview"><p class="quiet-state">กำลังโหลดรายการประจำ…</p></div><button class="btn btn-ghost w-full mt-4" onclick="openLifeDialog('recurring')">＋ ตั้งเตือนประจำ</button></section>
+          <section class="desk-panel advanced-panel" aria-labelledby="recurringPreviewHeading"><div class="panel-head"><div><p class="eyebrow">SET ONCE · REPEAT</p><h2 id="recurringPreviewHeading" class="panel-title mt-1">เรื่องเดิม ให้เตือนเอง</h2><p class="desk-caption">เตือนทุกวัน ทุกสัปดาห์ หรือทุกเดือน</p></div><button class="text-action" onclick="openLifeTools('recurring')">จัดการ <svg class="inline-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div><div id="recurringPreview"><p class="quiet-state">กำลังโหลดรายการประจำ…</p></div><button class="btn btn-ghost w-full mt-4" onclick="openLifeDialog('recurring')">＋ ตั้งเตือนประจำ</button></section>
         </div>
         <div class="desk-side">
           <section class="desk-panel" aria-labelledby="weeklyPreviewHeading"><div class="panel-head"><div><p class="eyebrow">WEEKLY INSIGHT</p><h2 id="weeklyPreviewHeading" class="panel-title mt-1">สัปดาห์นี้ของคุณ</h2></div><button class="text-action" onclick="openLifeTools('report')">ดูรายงาน <svg class="inline-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div><div id="weeklyPreview"><p class="quiet-state">กำลังคำนวณจากรายการจริง…</p></div></section>
