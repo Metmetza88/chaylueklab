@@ -1,0 +1,37 @@
+/* Quantum Leap: public brand entrance. Personal accounts keep their own workspace. */
+[data-surface=brand]{--premium-gold:#8daaff;--premium-gold-light:#c5d0ff;--premium-muted:#a7b4cf;background:#080e20}
+[data-surface=brand] .nav{background:#080e20ed;border-color:#849edf24}
+.quantum-wordmark{display:block;width:220px;height:auto;max-height:63px;object-fit:contain}
+.brand-workspace-link{color:#a6b8dc;font-size:12px;line-height:1.6;padding-block:12px}
+.brand-workspace-link a{display:inline-flex;align-items:center;min-height:32px;color:#c7d4ec;text-decoration:none}
+[data-surface=brand] .navlinks a{color:#b1bdda}
+[data-surface=brand] .btn.gold{color:#071b25;background:linear-gradient(115deg,#67ecc7,#32cfac);border-color:#94f7d330;box-shadow:none}
+[data-surface=brand] .btn.dark{background:#10204480;border-color:#7898da4a;color:#e7edff}
+[data-surface=brand] .hero.quantum-hero{background:radial-gradient(ellipse at 78% 34%,#5432b41c,transparent 54%),#080e20;border-color:#7898da28}
+[data-surface=brand] .quantum-hero .heroVisual{background:none;inset:0 -95px 0 20%;z-index:-1}
+[data-surface=brand] .quantum-hero .heroVisual img{object-position:65% center;opacity:1}
+[data-surface=brand] .quantum-hero .heroVisual:after{background:linear-gradient(90deg,#080e20,transparent 51%),linear-gradient(0deg,#080e20,transparent 16%)}
+[data-surface=brand] .quantum-hero .hero .eyebrow,[data-surface=brand] .quantum-hero .eyebrow{color:#9fafed;letter-spacing:.2em}
+[data-surface=brand] .quantum-hero h1{font-size:clamp(50px,5.8vw,76px);font-weight:550;line-height:1.35;letter-spacing:-.05em}
+[data-surface=brand] .quantum-hero h1 em{color:#c5c3ff}
+[data-surface=brand] .quantum-hero .lead{color:#b0bdd7;font-size:16px}
+[data-surface=brand] .quantum-hero .hero-note{border-color:#829cdc2b;color:#9faece}
+[data-surface=brand] .eyebrow{color:#9dacdd}
+[data-surface=brand] .section{border-color:#7898da1d}
+[data-surface=brand] .collectionMain,[data-surface=brand] .sideCard,[data-surface=brand] .service,[data-surface=brand] .work{background:linear-gradient(140deg,#111c33,#0d1527);border-color:#7b92bf28}
+[data-surface=brand] .ico{color:#c4c7ff}
+[data-surface=brand] .service a{color:#71e2c3}
+[data-surface=brand] .cta{background:linear-gradient(115deg,#11283a,#11152d);border-color:#729ecc45}
+[data-surface=brand] .footer{border-color:#729ecc25;color:#9cacca}
+@media(max-width:900px){.quantum-wordmark{width:205px}[data-surface=brand] .quantum-hero .heroVisual{inset:0 -100px 0 15%}}
+@media(max-width:600px){
+ .quantum-wordmark{width:195px;height:auto;max-height:57px}
+ [data-surface=brand] .quantum-hero .heroGrid{padding-top:248px}
+ [data-surface=brand] .quantum-hero .heroVisual{inset:0 -20px auto;height:315px}
+ [data-surface=brand] .quantum-hero .heroVisual img{object-position:76% center}
+ [data-surface=brand] .quantum-hero .heroVisual:after{background:linear-gradient(0deg,#080e20,transparent 66%)}
+ [data-surface=brand] .quantum-hero h1{font-size:44px;line-height:1.3;letter-spacing:-.045em}
+ [data-surface=brand] .quantum-hero .lead{font-size:13px;line-height:1.9}
+ [data-surface=brand] .quantum-hero .hero-note{font-size:7px;letter-spacing:.06em}
+}
+@media(max-width:360px){.quantum-wordmark{width:175px}[data-surface=brand] .quantum-hero h1{font-size:39px}}

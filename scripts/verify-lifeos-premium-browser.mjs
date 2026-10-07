@@ -1,6 +1,7 @@
 // Explicit UI/API fixtures only: no production LINE login, reminder, charge,
 // membership change, or Supabase credential is exercised by this verifier.
 import assert from 'node:assert/strict';
+import { newsroomConfig } from '../data/newsroom-config.js';
 import { mkdir, readFile } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -8,15 +9,15 @@ import { promisify } from 'node:util';
 const { chromium } = await import(process.env.LIFEOS_PLAYWRIGHT_MODULE || '/opt/codex/runtimes/cua/lib/node_modules/playwright-core/index.mjs');
 const base = process.env.LIFEOS_BROWSER_BASE || 'http://127.0.0.1:4175';
 const api = 'https://bxaplhrunxiadjsdobyl.supabase.co/functions/v1';
-const liffId = '2011681452-k1lfYGsF';
+const liffId = newsroomConfig.liffId;
 const reminderId = '30000000-0000-4000-8000-000000000001';
 const replacementId = '30000000-0000-4000-8000-000000000002';
 const screenshotDir = process.env.LIFEOS_SCREENSHOT_DIR || '/tmp/chaylueklab-lifeos-qa';
 await mkdir(screenshotDir, { recursive: true });
 try {
-  const response = await fetch(`${base}/index.html`, { signal: AbortSignal.timeout(5000) });
+  const response = await fetch(`${base}/app-20261007.html`, { signal: AbortSignal.timeout(5000) });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
-} catch { throw new Error(`Start the repository static server first: python3 -m http.server 4175 --bind 127.0.0.1 (expected ${base}/index.html)`); }
+} catch { throw new Error(`Start the repository static server first: python3 -m http.server 4175 --bind 127.0.0.1 (expected ${base}/app-20261007.html)`); }
 
 const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium', args: ['--no-sandbox'] });
 const failures = [], passed = [];
@@ -116,7 +117,7 @@ async function test(name, task) {
   catch (error) { failures.push({ name, error }); console.error(`FAIL ${name}: ${error.stack}`); }
 }
 async function start(page, query = '') {
-  await page.goto(`${base}/index.html${query}`);
+  await page.goto(`${base}/app-20261007.html${query}`);
   await page.waitForFunction(() => document.querySelector('#deskPlan')?.textContent === 'FREE' || document.querySelector('#deskPlan')?.textContent === 'PLUS');
 }
 async function startSnooze(page) {
@@ -133,9 +134,11 @@ try {
       const rows = await page.locator('#membershipPage table tbody tr').evaluateAll(rows => rows.map(row => [...row.cells].map(cell => cell.textContent.trim())));
       assert.deepEqual(rows, [['สร้างงาน','10','200'],['ตั้งเตือน','3','30'],['บันทึกเงิน','30','500'],['โน้ต','10','200'],['อัปโหลดรวม','5 MB','100 MB'],['ต่อไฟล์','1 MB','10 MB']]);
       assert.match(await page.locator('#membershipPage').textContent(), /59\s*บาท/);
-      assert.ok(await page.locator('a[href$="control.html"]').count(), 'Control Center using the central Stock API remains linked');
-      assert.ok(await page.locator('a[href$="newsroom.html"]').count(), 'Newsroom module remains linked');
-      assert.ok(await page.locator('a[href$="ai-video.html"]').count(), 'Existing Studio module remains linked');
+      assert.ok(await page.locator('a[href="./business.html"]').count(), 'The personal account links to the existing separate business workspace');
+      const business = await (await fetch(`${base}/business.html`)).text();
+      assert.ok(business.includes('./control.html'), 'Control Center remains linked from the business workspace');
+      assert.ok(business.includes('./newsroom.html'), 'Newsroom remains linked from the business workspace');
+      assert.ok(business.includes('./ai-video.html'), 'Studio remains linked from the business workspace');
       await mobileCheck(page);
       await page.screenshot({ path: `${screenshotDir}/lifeos-membership-${width}.png`, fullPage: true });
       assert.equal(state.requests.some(request => request.endpoint !== 'billing' && request.body.action === 'checkout'), false);
@@ -160,7 +163,7 @@ try {
   });
   await test('membership remains unconfirmed until the status API responds', async () => {
     await withPage({ holdBilling: true }, async (page, state) => {
-      await page.goto(`${base}/index.html?view=membership&payment=success`);
+      await page.goto(`${base}/app-20261007.html?view=membership&payment=success`);
       await waitState(() => state.held.some(held => held.kind === 'billing'), 'Membership status request reached fixture');
       assert.notEqual(await page.locator('#deskPlan').textContent(), 'PLUS');
       assert.equal(await page.locator('#subscribeBtn').isDisabled(), true);
@@ -260,7 +263,9 @@ try {
       await page.getByRole('button', { name: 'ดูสิทธิ์สมาชิก', exact: true }).click();
       assert.equal(await page.locator('#membershipPage').isVisible(), true);
       await page.locator('#membershipPage').getByRole('button', { name: '← กลับหน้าหลัก', exact: true }).click();
-      await page.getByRole('button', { name: '＋ ตั้งเตือนประจำ', exact: true }).click();
+      await page.locator('#homePage .utility-link').filter({ hasText: 'รายงานสัปดาห์' }).click();
+      assert.equal(await page.locator('#lifeToolsPage').isVisible(), true);
+      await page.locator('#recurringPanel').getByRole('button', { name: '＋ เพิ่ม', exact: true }).click();
       assert.equal(await page.locator('#lifeDialog').isVisible(), false);
       assert.equal(await page.locator('#membershipPage').isVisible(), true);
       assert.equal(state.requests.some(request => request.body.action === 'snooze_reminder' || request.body.action === 'create'), false);
