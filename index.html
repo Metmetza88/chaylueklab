@@ -3,119 +3,80 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#070808">
+<meta name="theme-color" content="#08090a">
 <title>CHAYLUEKLAB — AI · SYSTEM · AUTOMATION</title>
-<meta name="description" content="CHAYLUEKLAB — แบรนด์ สินค้า งาน AI เว็บไซต์ ระบบ LINE และ Automation">
+<meta name="description" content="CHAYLUEKLAB — สินค้า งาน AI เว็บไซต์ LINE และระบบธุรกิจ">
 <style>
-:root{--bg:#070808;--panel:#0d0f10;--panel2:#121416;--line:#2a2a28;--gold:#d9b46f;--gold2:#f3dfb0;--text:#f7f4ed;--muted:#a6abad;--green:#2dd67b}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Noto Sans Thai",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+:root{--bg:#08090a;--panel:#0f1113;--panel2:#14171a;--line:#2c2f31;--gold:#d9b875;--gold2:#f1ddb0;--text:#f5f2ea;--muted:#9ea5a8;--green:#21c66f}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Noto Sans Thai",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 a{color:inherit}.wrap{width:min(1180px,calc(100% - 32px));margin:auto}
-.nav{position:sticky;top:0;z-index:50;background:rgba(7,8,8,.88);backdrop-filter:blur(18px);border-bottom:1px solid #ffffff10}
-.navin{height:74px;display:flex;align-items:center;gap:24px}.logo{display:flex;align-items:center;gap:12px;text-decoration:none;white-space:nowrap}.mark{width:42px;height:42px;border:1px solid #6f5935;border-radius:50%;display:grid;place-items:center;color:var(--gold2);font-family:Georgia,serif;font-size:23px;box-shadow:inset 0 0 24px #d9b46f18}.brand{font-family:Georgia,"Times New Roman",serif;letter-spacing:.12em;font-size:18px}.navlinks{margin-left:auto;display:flex;gap:22px;align-items:center}.navlinks a{text-decoration:none;color:#c9cccd;font-size:13px}.navlinks a:hover{color:var(--gold2)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:0 18px;border-radius:999px;text-decoration:none;font-weight:800;font-size:14px;border:1px solid #49433a}.btn.gold{background:linear-gradient(135deg,#f1dca6,#c89b4d);color:#111;border:0;box-shadow:0 8px 30px #c99b4d26}.btn.dark{background:#0c0e0f;color:#f4efe4}.btn.line{background:#16c765;color:#06150d;border:0}
-.hero{padding:34px 0 26px}.heroGrid{display:grid;grid-template-columns:1.05fr .95fr;gap:20px;align-items:stretch}.heroCopy,.heroVisual{border:1px solid var(--line);border-radius:30px;overflow:hidden;min-height:570px}
-.heroCopy{padding:56px;background:radial-gradient(circle at 15% 0,#4e38201c,transparent 38%),linear-gradient(145deg,#101112,#080909);display:flex;flex-direction:column;justify-content:center}
-.eyebrow{font-size:11px;letter-spacing:.24em;color:var(--gold);font-weight:900}.hero h1{font-size:clamp(48px,6vw,82px);line-height:.98;letter-spacing:-.055em;margin:15px 0 18px;max-width:700px}.hero h1 em{font-style:normal;color:var(--gold2)}.lead{max-width:620px;color:#c1c6c8;font-size:16px}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
-.miniStats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:36px}.miniStat{padding:14px;border:1px solid #2c2d2c;border-radius:16px;background:#0a0b0c}.miniStat b{display:block;color:var(--gold2);font-size:12px}.miniStat span{color:#8f989b;font-size:11px}
-.heroVisual{position:relative;background:#0a0a0a}.heroVisual img{width:100%;height:100%;object-fit:cover;display:block}.heroVisual:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 48%,rgba(0,0,0,.58))}
-.heroCaption{position:absolute;z-index:2;left:24px;right:24px;bottom:24px;background:rgba(7,8,8,.78);backdrop-filter:blur(12px);border:1px solid #ffffff1c;border-radius:18px;padding:16px}.heroCaption b{font-size:14px}.heroCaption span{display:block;color:#b3b9bb;font-size:12px;margin-top:4px}
-.section{padding:58px 0;border-top:1px solid #ffffff0c}.sectionHead{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:20px}.sectionHead h2{font-size:clamp(30px,4vw,48px);letter-spacing:-.04em;margin:5px 0 0}.sectionHead p{color:var(--muted);max-width:590px;margin:0}
-.productHero{display:grid;grid-template-columns:1.35fr .65fr;gap:16px}.mediaCard{border:1px solid var(--line);border-radius:26px;overflow:hidden;background:var(--panel);position:relative}.mediaCard img{display:block;width:100%;height:100%;object-fit:cover}.shirt{min-height:520px}.mediaLabel{position:absolute;left:20px;right:20px;bottom:20px;padding:18px;border:1px solid #ffffff1c;border-radius:18px;background:#070808d9;backdrop-filter:blur(12px)}.mediaLabel h3{margin:0;font-size:24px}.mediaLabel p{margin:5px 0 0;color:#b8bcbc}
-.stack{display:grid;grid-template-rows:1fr 1fr;gap:16px}.infoCard{border:1px solid var(--line);border-radius:26px;background:linear-gradient(145deg,#141516,#0c0d0e);padding:28px;display:flex;flex-direction:column;justify-content:space-between}.infoCard h3{font-size:28px;margin:10px 0}.infoCard p{color:#adb4b6}.tagrow{display:flex;flex-wrap:wrap;gap:7px}.tag{border:1px solid #554a37;border-radius:999px;padding:7px 10px;font-size:10px;color:#e9d4a3}
-.services{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.service{border:1px solid var(--line);border-radius:22px;padding:24px;background:var(--panel);min-height:210px;display:flex;flex-direction:column}.ico{width:48px;height:48px;border-radius:14px;background:#151719;border:1px solid #665336;display:grid;place-items:center;color:var(--gold2);font-size:22px}.service h3{margin:24px 0 8px;font-size:18px}.service p{color:#9da4a6;font-size:13px;margin:0}.service a{margin-top:auto;padding-top:18px;color:var(--gold2);text-decoration:none;font-size:12px;font-weight:800}
-.works{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}.work{border:1px solid var(--line);border-radius:22px;padding:22px;min-height:230px;background:linear-gradient(145deg,#141516,#0b0c0d);display:flex;flex-direction:column;justify-content:end;position:relative;overflow:hidden}.work.big{min-height:360px}.work:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 10%,#d6a95422,transparent 38%)}.work>*{position:relative;z-index:2}.work b{font-size:18px}.work span{color:#9ba3a6;font-size:12px;margin-top:6px}
-.cta{margin:42px auto 70px;border:1px solid #6a5638;border-radius:30px;padding:36px;background:radial-gradient(circle at 85% 20%,#d5aa5321,transparent 35%),#0c0e0f;display:flex;align-items:center;justify-content:space-between;gap:24px}.cta h2{font-size:clamp(30px,4vw,54px);margin:0}.cta p{color:#aab0b2;margin:8px 0 0}
-.footer{border-top:1px solid #ffffff0d;padding:26px 0 40px;color:#858c8f;font-size:12px}.footerin{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-.mobileMenu{display:none}
-@media(max-width:900px){.navlinks{display:none}.navin{height:64px}.brand{font-size:15px}.wrap{width:min(100% - 22px,1180px)}.hero{padding-top:16px}.heroGrid{grid-template-columns:1fr}.heroCopy,.heroVisual{min-height:auto;border-radius:22px}.heroCopy{padding:28px 22px}.hero h1{font-size:44px}.heroVisual{height:340px}.miniStats{grid-template-columns:1fr 1fr 1fr}.productHero{grid-template-columns:1fr}.shirt{min-height:360px}.stack{grid-template-rows:auto}.infoCard{min-height:220px}.services{grid-template-columns:1fr 1fr}.works{grid-template-columns:1fr 1fr}.work.big{grid-column:1/-1;min-height:260px}.cta{padding:26px 22px;flex-direction:column;align-items:flex-start}.mobileMenu{display:inline-flex;margin-left:auto}}
-@media(max-width:560px){.heroCopy{padding:24px 18px}.hero h1{font-size:38px}.lead{font-size:14px}.heroVisual{height:285px}.miniStats{gap:6px}.miniStat{padding:11px 9px}.section{padding:44px 0}.sectionHead{align-items:flex-start;flex-direction:column}.productHero{gap:10px}.shirt{min-height:280px}.mediaLabel{left:12px;right:12px;bottom:12px;padding:13px}.mediaLabel h3{font-size:18px}.services{grid-template-columns:1fr}.service{min-height:170px}.works{grid-template-columns:1fr}.work.big{grid-column:auto}.nav .btn.gold{display:none}}
+.nav{position:sticky;top:0;z-index:30;background:#08090af2;backdrop-filter:blur(14px);border-bottom:1px solid #ffffff0b}.navin{height:70px;display:flex;align-items:center;gap:22px}.logo{display:flex;align-items:center;gap:11px;text-decoration:none}.mark{width:39px;height:39px;border:1px solid #6a5a3f;border-radius:50%;display:grid;place-items:center;color:var(--gold2);font-family:Georgia,serif;font-size:22px}.brand{font-family:Georgia,"Times New Roman",serif;letter-spacing:.12em;font-size:17px}.links{display:flex;gap:20px;margin-left:auto}.links a{text-decoration:none;color:#c6cbcd;font-size:12px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 17px;border-radius:999px;text-decoration:none;font-weight:800;font-size:13px;border:1px solid #46423c}.btn.gold{background:linear-gradient(135deg,#efdba7,#c9a35f);color:#111;border:0}.btn.dark{background:#101214}
+.hero{padding:42px 0 30px}.heroBox{min-height:560px;border:1px solid #343230;border-radius:30px;overflow:hidden;position:relative;background:
+radial-gradient(circle at 78% 28%,#cda76122 0 12%,transparent 13% 100%),
+radial-gradient(circle at 78% 28%,transparent 0 25%,#d9b87518 26% 26.7%,transparent 27%),
+linear-gradient(135deg,#111214 0%,#0b0d0f 60%,#17130d 100%);padding:64px;display:flex;align-items:center}
+.heroBox:after{content:"C";position:absolute;right:5%;bottom:-8%;font-family:Georgia,serif;font-size:min(36vw,420px);line-height:1;color:#d9b87508;pointer-events:none}
+.eyebrow{font-size:10px;letter-spacing:.25em;color:var(--gold);font-weight:900}.hero h1{position:relative;z-index:2;font-size:clamp(50px,7vw,88px);line-height:.98;letter-spacing:-.055em;margin:14px 0 18px;max-width:760px}.hero h1 em{font-style:normal;color:var(--gold2)}.lead{position:relative;z-index:2;max-width:610px;color:#b9c0c2;font-size:16px;line-height:1.8}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;position:relative;z-index:2}.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:40px;max-width:760px;position:relative;z-index:2}.trust div{border-top:1px solid #5b4d35;padding-top:12px}.trust b{display:block;color:var(--gold2);font-size:11px}.trust span{display:block;color:#899194;font-size:10px;margin-top:4px}
+.section{padding:56px 0;border-top:1px solid #ffffff0b}.head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:20px}.head h2{font-size:clamp(30px,4vw,48px);letter-spacing:-.04em;margin:5px 0 0}.head p{color:var(--muted);max-width:560px;margin:0;line-height:1.7}
+.collection{display:grid;grid-template-columns:1.35fr .65fr;gap:14px}.collectionMain{min-height:440px;border:1px solid #383632;border-radius:26px;background:linear-gradient(135deg,#131416,#0a0b0c);padding:30px;display:flex;flex-direction:column;justify-content:space-between}.shirts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.shirt{border:1px solid #34302a;border-radius:18px;min-height:245px;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}.shirt:before{content:"";position:absolute;left:50%;top:18%;transform:translateX(-50%);width:54%;height:54%;border-radius:18px 18px 30px 30px;clip-path:polygon(22% 0,40% 0,45% 10%,55% 10%,60% 0,78% 0,100% 22%,82% 34%,76% 100%,24% 100%,18% 34%,0 22%);background:var(--shirt);box-shadow:inset 0 0 0 2px var(--trim),0 18px 40px #0008}.shirt b,.shirt span{position:relative;z-index:2}.shirt b{font-size:13px}.shirt span{color:#9ba1a4;font-size:10px;margin-top:3px}.ivory{--shirt:#e9dfca;--trim:#17191a}.noir{--shirt:#111214;--trim:#d7b46e}.forest{--shirt:#153e2b;--trim:#e6dcc3}
+.sideStack{display:grid;gap:14px}.sideCard{border:1px solid #343230;border-radius:26px;padding:28px;background:linear-gradient(145deg,#151719,#0c0d0f);display:flex;flex-direction:column;justify-content:space-between;min-height:210px}.sideCard h3{font-size:26px;margin:10px 0}.sideCard p{color:#a4abad;line-height:1.7;margin:0}
+.services{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.service{border:1px solid #303336;border-radius:20px;padding:22px;background:#0f1113;min-height:210px;display:flex;flex-direction:column}.ico{width:44px;height:44px;border-radius:13px;border:1px solid #66573d;display:grid;place-items:center;color:var(--gold2);font-weight:900}.service h3{margin:22px 0 8px;font-size:17px}.service p{color:#989fa2;font-size:12px;line-height:1.7;margin:0}.service a{margin-top:auto;color:var(--gold2);text-decoration:none;font-size:11px;font-weight:800;padding-top:18px}
+.workgrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}.work{border:1px solid #303336;border-radius:20px;padding:22px;min-height:230px;background:linear-gradient(145deg,#141618,#0b0c0d);display:flex;flex-direction:column;justify-content:flex-end;text-decoration:none}.work.big{min-height:330px}.work b{font-size:18px}.work span{color:#959da0;font-size:11px;margin-top:5px}
+.cta{margin:42px auto 70px;border:1px solid #6b593b;border-radius:28px;padding:34px;background:radial-gradient(circle at 90% 20%,#d6ad6320,transparent 35%),#0d0f10;display:flex;align-items:center;justify-content:space-between;gap:24px}.cta h2{font-size:clamp(30px,4vw,52px);margin:6px 0}.cta p{color:#a3aaad;margin:0}.footer{border-top:1px solid #ffffff0b;padding:26px 0 40px;color:#858d90;font-size:11px}.footerin{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.mobileLife{display:none;margin-left:auto}
+@media(max-width:900px){.links{display:none}.nav .btn.gold{display:none}.mobileLife{display:inline-flex}.hero{padding-top:16px}.heroBox{min-height:480px;padding:32px 24px;border-radius:24px}.hero h1{font-size:48px}.trust{grid-template-columns:1fr 1fr}.collection{grid-template-columns:1fr}.services{grid-template-columns:1fr 1fr}.workgrid{grid-template-columns:1fr 1fr}.work.big{grid-column:1/-1}.cta{flex-direction:column;align-items:flex-start}}
+@media(max-width:560px){.wrap{width:min(100% - 22px,1180px)}.navin{height:62px}.brand{font-size:14px}.heroBox{min-height:420px;padding:26px 18px}.hero h1{font-size:39px}.lead{font-size:14px}.section{padding:44px 0}.head{flex-direction:column;align-items:flex-start}.shirts{gap:6px}.shirt{min-height:180px;padding:10px}.collectionMain{padding:18px}.services{grid-template-columns:1fr}.workgrid{grid-template-columns:1fr}.work.big{grid-column:auto}.cta{padding:25px 20px}}
 </style>
 </head>
 <body>
-<header class="nav">
-  <div class="wrap navin">
-    <a class="logo" href="#"><span class="mark">C</span><span class="brand">CHAYLUEKLAB</span></a>
-    <nav class="navlinks"><a href="#products">สินค้า</a><a href="#services">งาน AI / เว็บไซต์</a><a href="#works">ผลงาน</a><a href="#story">เรื่องราวแบรนด์</a><a href="#contact">ติดต่อ</a></nav>
-    <a class="btn gold" href="./app-20261007.html">เปิด AI Life OS ↗</a>
-    <a class="btn dark mobileMenu" href="./app-20261007.html">Life OS</a>
-  </div>
-</header>
+<header class="nav"><div class="wrap navin">
+<a class="logo" href="#"><span class="mark">C</span><span class="brand">CHAYLUEKLAB</span></a>
+<nav class="links"><a href="#products">สินค้า</a><a href="#services">งาน AI / เว็บไซต์</a><a href="#works">ผลงาน</a><a href="#story">เรื่องราวแบรนด์</a><a href="#contact">ติดต่อ</a></nav>
+<a class="btn gold" href="https://liff.line.me/2011681452-yexLrODy/app-20261007.html">เปิด AI Life OS</a>
+<a class="btn dark mobileLife" href="https://liff.line.me/2011681452-yexLrODy/app-20261007.html">Life OS</a>
+</div></header>
 
 <main>
-<section class="hero">
-  <div class="wrap heroGrid">
-    <div class="heroCopy">
-      <div class="eyebrow">CHAYLUEKLAB · AI · SYSTEM · AUTOMATION</div>
-      <h1>ไอเดียของคุณ<br><em>ให้เป็นจริงได้</em></h1>
-      <p class="lead">แบรนด์ สินค้า เว็บไซต์ ระบบ LINE และ AI Automation ที่ออกแบบให้ใช้งานจริง — ไม่ใช่แค่สวย แต่ต้องทำงานแทนคุณได้</p>
-      <div class="actions">
-        <a class="btn gold" href="#products">ดูสินค้า</a>
-        <a class="btn dark" href="https://line.me/R/ti/p/@215pcisl">ปรึกษางาน AI ↗</a>
-      </div>
-      <div class="miniStats">
-        <div class="miniStat"><b>AI SYSTEM</b><span>ผู้ช่วยและ Automation</span></div>
-        <div class="miniStat"><b>LINE / LIFF</b><span>ใช้งานผ่าน LINE</span></div>
-        <div class="miniStat"><b>DARK PREMIUM</b><span>ดีไซน์แบบ CHAYLUEKLAB</span></div>
-      </div>
-    </div>
-    <div class="heroVisual">
-      <img alt="CHAYLUEKLAB AI creative studio" src="data:image/webp;base64,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">
-      <div class="heroCaption"><b>CREATE WITHOUT LIMITS</b><span>AI · Content · Website · Automation</span></div>
-    </div>
-  </div>
-</section>
-
-<section id="products" class="section">
-  <div class="wrap">
-    <div class="sectionHead"><div><div class="eyebrow">PRODUCTS / FIRST CHAPTER</div><h2>สินค้าของเรา</h2></div><p>แฟชั่นและสินค้าดิจิทัลที่ต่อยอดจากโลกของ CHAYLUEKLAB โดยคุมภาพลักษณ์เดียวกันทั้งออนไลน์และของจริง</p></div>
-    <div class="productHero">
-      <article class="mediaCard shirt">
-        <img alt="CHAYLUEKLAB FIRST CHAPTER football collection" src="data:image/webp;base64,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">
-        <div class="mediaLabel"><h3>FIRST CHAPTER</h3><p>01 IVORY · 02 NOIR · 03 FOREST · Football Culture for Everyday</p></div>
-      </article>
-      <div class="stack">
-        <article class="infoCard"><div><div class="eyebrow">DIGITAL PRODUCT</div><h3>Chay.Luek.Lab</h3><p>E‑Book และสินทรัพย์ดิจิทัลสำหรับคนที่อยากใช้ AI, LINE และ Automation ทำงานให้เป็นระบบ</p></div><div class="tagrow"><span class="tag">E‑BOOK</span><span class="tag">AI</span><span class="tag">AUTOMATION</span></div></article>
-        <article class="infoCard"><div><div class="eyebrow">BRAND UNIVERSE</div><h3>สินค้า × ระบบ × คอนเทนต์</h3><p>CHAYLUEKLAB ไม่แยกแฟชั่นออกจากเทค — ทุกอย่างอยู่ในจักรวาลแบรนด์เดียวกัน</p></div><a class="btn dark" href="./app-20261007.html">เข้า AI Life OS ↗</a></article>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="services" class="section">
-  <div class="wrap">
-    <div class="sectionHead"><div><div class="eyebrow">AI / WEB / BUSINESS SYSTEM</div><h2>งาน AI และเว็บไซต์</h2></div><p>สร้างระบบที่ลูกค้าและเจ้าของใช้งานได้จริง ตั้งแต่หน้าเว็บไปจนถึงหลังบ้านและ LINE</p></div>
-    <div class="services">
-      <article class="service"><div class="ico">◎</div><h3>LINE / LIFF</h3><p>Mini App, Rich Menu, ระบบสมาชิก และหน้าทำงานผ่าน LINE</p><a href="./app-20261007.html">เปิด Life OS →</a></article>
-      <article class="service"><div class="ico">⌘</div><h3>Website</h3><p>เว็บไซต์ Mobile First ที่ขายสินค้า แสดงผลงาน และเชื่อมระบบธุรกิจ</p><a href="#contact">คุยงาน →</a></article>
-      <article class="service"><div class="ico">AI</div><h3>AI Content</h3><p>ภาพ วิดีโอ คอนเทนต์ และ workflow สำหรับทำงานได้เร็วขึ้น</p><a href="./ai-video.html">AI Video Studio →</a></article>
-      <article class="service"><div class="ico">↻</div><h3>Automation</h3><p>เชื่อมข้อมูล งานขาย การแจ้งเตือน และหลังบ้านให้ทำงานต่อเนื่อง</p><a href="./app-20261007.html?view=control">Control Center →</a></article>
-    </div>
-  </div>
-</section>
-
-<section id="works" class="section">
-  <div class="wrap">
-    <div class="sectionHead"><div><div class="eyebrow">SELECTED WORKS</div><h2>ผลงานและระบบ</h2></div><p>เลือกดูส่วนที่ต้องการได้ทันที โดยหน้าเว็บหลักไม่บังคับล็อกอิน LINE อีกต่อไป</p></div>
-    <div class="works">
-      <a class="work big" href="./app-20261007.html" style="text-decoration:none"><div class="eyebrow">AI LIFE OS</div><b>พื้นที่จัดการงาน เตือน และการเงิน</b><span>เปิดใน LINE หรือเว็บ</span></a>
-      <a class="work" href="./newsroom.html" style="text-decoration:none"><div class="eyebrow">NEWSROOM</div><b>กองบรรณาธิการ AI</b><span>Draft → Fact Check → Approve</span></a>
-      <a class="work" href="./ai-video.html" style="text-decoration:none"><div class="eyebrow">STUDIO</div><b>AI Video Studio</b><span>สร้างคอนเทนต์จากภาพ</span></a>
-    </div>
-  </div>
-</section>
-
-<section id="story" class="section">
-  <div class="wrap">
-    <div class="sectionHead"><div><div class="eyebrow">ABOUT CHAYLUEKLAB</div><h2>ไม่ใช่แค่แบรนด์.<br>แต่เป็นระบบ.</h2></div><p>จากสินค้าและงานออกแบบ สู่เว็บไซต์, LINE, AI และระบบอัตโนมัติ — เป้าหมายคือให้สิ่งที่สร้างขึ้นใช้งานและต่อยอดได้จริง</p></div>
-  </div>
-</section>
-
-<div id="contact" class="wrap cta">
-  <div><div class="eyebrow">START A PROJECT</div><h2>มีไอเดีย? เอามาทำให้ใช้ได้จริง.</h2><p>คุยเรื่อง AI, เว็บไซต์, LINE, ระบบธุรกิจ หรือแบรนด์ได้โดยตรง</p></div>
-  <div class="actions"><a class="btn line" href="https://line.me/R/ti/p/@215pcisl">คุยทาง LINE</a><a class="btn dark" href="https://line.me/R/ti/p/@137vkvdz">สั่งสินค้า</a></div>
+<section class="hero"><div class="wrap"><div class="heroBox">
+<div>
+<div class="eyebrow">CHAYLUEKLAB · CREATE WITHOUT LIMITS</div>
+<h1>ไอเดียของคุณ<br><em>ให้เป็นจริงได้</em><br>ด้วย AI และระบบ</h1>
+<p class="lead">สินค้า แบรนด์ เว็บไซต์ LINE และ Automation — ออกแบบให้ดูดี ใช้งานง่าย และต่อยอดเป็นระบบที่ทำงานแทนคุณได้จริง</p>
+<div class="actions"><a class="btn gold" href="#products">ดูสินค้า</a><a class="btn dark" href="https://line.me/R/ti/p/@215pcisl">ปรึกษางาน AI</a></div>
+<div class="trust"><div><b>LINE / LIFF</b><span>ระบบใช้งานผ่าน LINE</span></div><div><b>AI SYSTEM</b><span>คอนเทนต์และผู้ช่วย</span></div><div><b>WEBSITE</b><span>หน้าเว็บและหลังบ้าน</span></div><div><b>AUTOMATION</b><span>เชื่อมงานให้ทำต่อเอง</span></div></div>
 </div>
+</div></div></section>
+
+<section id="products" class="section"><div class="wrap">
+<div class="head"><div><div class="eyebrow">PRODUCTS / FIRST CHAPTER</div><h2>สินค้าของเรา</h2></div><p>คุมภาพลักษณ์เรียบ ดำ ทอง และใช้งานได้จริง ตั้งแต่เสื้อไปจนถึงสินค้าดิจิทัล</p></div>
+<div class="collection">
+<article class="collectionMain"><div><div class="eyebrow">FIRST CHAPTER</div><h3 style="font-size:32px;margin:8px 0">FOOTBALL CULTURE FOR EVERYDAY</h3></div>
+<div class="shirts"><div class="shirt ivory"><b>01 IVORY</b><span>ครีม / ดำ / ทอง</span></div><div class="shirt noir"><b>02 NOIR</b><span>ดำ / ทองหม่น</span></div><div class="shirt forest"><b>03 FOREST</b><span>เขียวเข้ม / ครีม</span></div></div>
+</article>
+<div class="sideStack"><article class="sideCard"><div><div class="eyebrow">DIGITAL PRODUCT</div><h3>Chay.Luek.Lab</h3><p>E‑Book, Template และเครื่องมือสำหรับ AI, LINE และ Automation</p></div><a class="btn dark" href="#contact">ดูรายละเอียด</a></article>
+<article class="sideCard"><div><div class="eyebrow">AI LIFE OS</div><h3>งาน · เตือน · เงิน</h3><p>เปิดระบบส่วนตัวผ่าน LINE โดยแยกจากเว็บหลักชัดเจน</p></div><a class="btn gold" href="https://liff.line.me/2011681452-yexLrODy/app-20261007.html">เปิดระบบ</a></article></div>
+</div></div></section>
+
+<section id="services" class="section"><div class="wrap">
+<div class="head"><div><div class="eyebrow">AI / WEB / BUSINESS SYSTEM</div><h2>งาน AI และเว็บไซต์</h2></div><p>เลือกเฉพาะสิ่งที่ต้องใช้ ไม่ยัดทุกอย่างไว้หน้าเดียว</p></div>
+<div class="services">
+<article class="service"><div class="ico">LI</div><h3>LINE / LIFF</h3><p>Mini App, Rich Menu, สมาชิก และระบบใช้งานผ่าน LINE</p><a href="https://liff.line.me/2011681452-yexLrODy/app-20261007.html">เปิด Life OS →</a></article>
+<article class="service"><div class="ico">WEB</div><h3>Website</h3><p>เว็บ Mobile First สำหรับสินค้า บริการ และผลงาน</p><a href="#contact">คุยงาน →</a></article>
+<article class="service"><div class="ico">AI</div><h3>AI Content</h3><p>ภาพ วิดีโอ และคอนเทนต์สำหรับแบรนด์</p><a href="./ai-video.html">AI Video Studio →</a></article>
+<article class="service"><div class="ico">↻</div><h3>Automation</h3><p>หลังร้าน สต๊อก แจ้งเตือน และข้อมูลธุรกิจ</p><a href="https://liff.line.me/2011681452-yexLrODy/app-20261007.html?view=control">Control Center →</a></article>
+</div></div></section>
+
+<section id="works" class="section"><div class="wrap">
+<div class="head"><div><div class="eyebrow">SELECTED SYSTEMS</div><h2>ระบบที่ใช้งานอยู่</h2></div><p>กดเข้าระบบตรง ไม่ต้องผ่านเมนูซ้อนหลายชั้น</p></div>
+<div class="workgrid"><a class="work big" href="https://liff.line.me/2011681452-yexLrODy/app-20261007.html"><div class="eyebrow">AI LIFE OS</div><b>งาน เตือน การเงิน และเครื่องมือส่วนตัว</b><span>เปิดใน LINE</span></a>
+<a class="work" href="./newsroom.html"><div class="eyebrow">NEWSROOM</div><b>กองบรรณาธิการ AI</b><span>Draft → Check → Approve</span></a>
+<a class="work" href="./ai-video.html"><div class="eyebrow">STUDIO</div><b>AI Video Studio</b><span>สร้างคอนเทนต์จากภาพ</span></a></div>
+</div></section>
+
+<section id="story" class="section"><div class="wrap"><div class="head"><div><div class="eyebrow">ABOUT</div><h2>แบรนด์ที่มีระบบอยู่ข้างหลัง</h2></div><p>CHAYLUEKLAB รวมสินค้า งานสร้างสรรค์ และระบบดิจิทัลไว้ด้วยกัน แต่หน้าเว็บและหลังบ้านแยกหน้าที่ชัดเจนเพื่อให้ใช้ง่าย</p></div></div></section>
+
+<div id="contact" class="wrap cta"><div><div class="eyebrow">CONTACT</div><h2>อยากทำอะไร บอกโจทย์มาได้เลย</h2><p>AI · Website · LINE · Automation · Brand</p></div><div class="actions"><a class="btn gold" href="https://line.me/R/ti/p/@215pcisl">คุยงานทาง LINE</a><a class="btn dark" href="https://line.me/R/ti/p/@137vkvdz">สั่งสินค้า</a></div></div>
 </main>
 
 <footer class="footer"><div class="wrap footerin"><span>© CHAYLUEKLAB · Create Without Limits</span><span>AI · SYSTEM · AUTOMATION · FIRST CHAPTER</span></div></footer>
-</body>
-</html>
+</body></html>
