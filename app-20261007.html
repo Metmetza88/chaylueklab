@@ -211,8 +211,9 @@ main{max-width:1280px;margin:auto}.desk-intro{margin:8px 0 22px}.desk-title{font
 @media(max-width:350px){.masthead>.flex{width:100%;justify-content:flex-end}.command-actions{grid-template-columns:1fr}.desk-metrics{gap:6px}.metric-label{font-size:11px}.utility-links{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
+<link rel="stylesheet" href="./assets/workspace-signature.css?v=20261008">
 </head>
-<body>
+<body class="signature-workspace">
 <a class="skip-link" href="#homePage">ข้ามไปพื้นที่ทำงาน</a>
 <div class="shell">
   <header class="sticky">
@@ -239,7 +240,7 @@ main{max-width:1280px;margin:auto}.desk-intro{margin:8px 0 22px}.desk-title{font
       <div class="desk-intro"><div><p class="eyebrow">YOUR DAILY COMMAND DESK</p><h1 id="dashboardHeading" class="desk-title">วันนี้ จัดการได้</h1><p class="desk-sub"><span id="dashboardDate"></span> · สวัสดี <span id="helloName">ผู้ใช้ LINE</span></p></div><button id="dashboardRefresh" class="iconbtn" onclick="refreshDesk()" aria-label="โหลดข้อมูลแดชบอร์ดอีกครั้ง"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L3 9M3 4v5h5M4 13a8 8 0 0 0 14 5l3-3M21 20v-5h-5"/></svg></button></div>
 <div class="desk-grid">
         <div class="desk-main">
-          <section class="desk-panel command-panel" aria-labelledby="commandHeading"><div class="command-top"><div><div class="statusline"><span class="dot" aria-hidden="true"></span><span id="systemText">กำลังเชื่อมต่อ LINE</span></div><h2 id="commandHeading" class="command-heading">พื้นที่ส่วนตัวของคุณ</h2><p class="desk-caption mt-1">งานสำคัญอยู่ตรงนี้ ถึงเวลาเตือนใน LINE</p></div><button id="deskPlan" class="plan-chip" onclick="switchPage('membershipPage');loadMembership()">ตรวจสิทธิ์</button></div>
+          <section class="desk-panel command-panel" aria-labelledby="commandHeading"><div class="signature-banner" aria-hidden="true"><span>CHAYLUEKLAB <b>SIGNATURE</b></span></div><div class="command-top"><div><div class="statusline"><span class="dot" aria-hidden="true"></span><span id="systemText">กำลังเชื่อมต่อ LINE</span></div><h2 id="commandHeading" class="command-heading">พื้นที่ส่วนตัวของคุณ</h2><p class="desk-caption mt-1">งานสำคัญอยู่ตรงนี้ ถึงเวลาเตือนใน LINE</p></div><button id="deskPlan" class="plan-chip" onclick="switchPage('membershipPage');loadMembership()">ตรวจสิทธิ์</button></div>
             <div class="command-actions"><button class="btn btn-gold" onclick="openTaskModal()">＋ เพิ่มงานและเตือน</button><button class="btn btn-ghost" onclick="openFinanceModal()">＋ บันทึกเงิน</button></div>
             <div class="desk-metrics"><div class="metric-cell"><p class="metric-label">งานวันนี้</p><p id="todayCount" class="metric-value">—</p></div><div class="metric-cell"><p class="metric-label">งานที่ยังค้าง</p><p id="pendingCount" class="metric-value">—</p></div><div class="metric-cell"><p class="metric-label">เลยกำหนด</p><p id="overdueCount" class="metric-value warning">—</p></div></div>
           </section>
