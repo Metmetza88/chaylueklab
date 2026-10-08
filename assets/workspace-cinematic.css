@@ -20,7 +20,6 @@ body.cinematic-workspace{background:#080909;color:#f8f1e5;background-image:radia
 .cinematic-title{font-size:clamp(46px,5.7vw,76px);font-weight:800;line-height:1.1;letter-spacing:-.055em;margin:0 0 18px;color:#ffe6b6;text-shadow:0 2px 14px #0008}
 .cinematic-title span{display:block}
 .cinematic-description{color:#ece1cf;font-size:17px;line-height:1.7;margin:0;max-width:28ch;text-shadow:0 2px 8px #000}
-.cinematic-hero-action{display:inline-flex;align-items:center;justify-content:center;gap:12px;border:1px solid #d7ac69;border-radius:8px;background:#f0c98e;color:#201609;padding:10px 14px;font-size:14px;line-height:1.6;font-weight:650;min-height:44px;margin-top:20px;box-shadow:0 0 18px #edb16a20}.cinematic-hero-action svg{width:18px;height:18px;flex-shrink:0}.cinematic-hero-action:hover{background:#ffe2b2}
 .cinematic-hero .iconbtn{position:absolute;right:22px;top:22px;background:#08090988;color:#f9d8a2;border:1px solid #b9925d88;border-radius:50%;width:46px;height:46px}
 .cinematic-greeting{position:relative;width:100%;margin:20px 0 0;overflow-wrap:anywhere;color:#e0d0b7;font-size:13px;display:flex;justify-content:space-between;gap:14px;line-height:1.7}.cinematic-greeting strong{font-weight:600;color:#ffe6b8}
 .cinematic-business{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid #6b53364d}
@@ -85,4 +84,204 @@ body.cinematic-workspace{background:#080909;color:#f8f1e5;background-image:radia
 @media(min-width:900px){.cinematic-workspace .desk-grid{grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr)}.cinematic-workspace .desk-side{display:grid!important}.cinematic-workspace .bottom{width:min(680px,88vw);border:1px solid #8f6d3d88;border-radius:16px;bottom:18px;padding-bottom:8px}.cinematic-workspace .desk-side>.desk-panel{padding:22px}.cinematic-workspace .desk-side>.desk-panel .panel-head{flex-wrap:wrap}.cinematic-workspace .advanced-panel{display:block!important}}
 @media(max-width:899px){.cinematic-workspace main{padding-inline:16px!important}.cinematic-workspace .masthead{padding-inline:16px;min-height:76px;gap:10px}.cinematic-workspace .brand-name{font-size:16px;letter-spacing:.11em}.cinematic-workspace .brand-sub{font-size:9px;letter-spacing:.18em}.cinematic-workspace .brand-mark{width:41px;height:41px}.cinematic-workspace .pill{font-size:10px;padding:6px 8px}.cinematic-hero{min-height:315px;padding:25px 21px 16px;margin-inline:-16px;margin-bottom:15px;background-size:auto 100%;background-position:65% center}.cinematic-hero:before{background:linear-gradient(90deg,#080909ed 0%,#080909bc 35%,#08090928 64%,transparent),linear-gradient(0deg,#080909 0%,transparent 27%)}.cinematic-hero-copy{max-width:57%}.cinematic-kicker{font-size:9px;letter-spacing:.1em;max-width:175px;margin-bottom:14px}.cinematic-title{font-size:49px;line-height:1.13;letter-spacing:-.07em;margin-bottom:14px}.cinematic-description{font-size:14px;line-height:1.65;max-width:23ch}.cinematic-hero-action{margin-top:17px;padding:9px 11px;gap:8px}.cinematic-greeting{font-size:12px;gap:6px 12px;flex-wrap:wrap;margin-top:20px}.cinematic-hero .iconbtn{right:16px;top:16px}.cinematic-business{margin-bottom:18px;padding-bottom:18px}.cinematic-section-head{margin-bottom:10px;gap:8px}.cinematic-section-head h2{font-size:17px}.cinematic-section-head p{font-size:12px}.cinematic-all-link{font-size:14px;padding:6px 10px;gap:6px}.cinematic-business-grid{gap:9px}.cinematic-tile-art{height:106px}.cinematic-tile-art svg{width:30px;height:30px;padding:6px;right:7px;top:7px}.cinematic-tile-copy{padding:8px 8px 11px;min-height:93px}.cinematic-tile-tag{font-size:8px;letter-spacing:.015em;margin-bottom:4px;min-height:25px}.cinematic-tile-copy h3{font-size:14px;line-height:1.45;padding:0;overflow-wrap:anywhere}.cinematic-tile-copy p{font-size:12px;line-height:1.55;padding:0;margin-top:4px}.cinematic-tile-arrow{display:none}.cinematic-business-card{border-radius:9px}.cinematic-workspace .desk-grid,.cinematic-workspace .desk-main{gap:17px}.cinematic-workspace .desk-panel{padding:18px}.cinematic-workspace .command-panel{padding:0}.cinematic-workspace .command-top{padding:18px 18px 0;gap:8px;align-items:flex-start}.cinematic-workspace .command-heading{font-size:21px;gap:8px;line-height:1.5}.cinematic-personal-icon{width:22px;height:22px}.cinematic-workspace .command-top .desk-caption{font-size:13px}.cinematic-workspace .command-top .statusline{font-size:11px}.cinematic-workspace .plan-chip{padding:8px 10px;font-size:14px;min-height:44px}.cinematic-workspace .command-actions{padding:15px 18px 0;gap:10px}.cinematic-workspace .cinematic-primary-action{padding:13px 10px;gap:8px;min-height:106px;flex-wrap:wrap;align-content:center;justify-content:flex-start}.cinematic-workspace .cinematic-primary-action>svg{width:30px;height:30px}.cinematic-primary-action span{font-size:14px;line-height:1.5}.cinematic-primary-action small{font-size:11px;line-height:1.5;max-width:17ch}.cinematic-primary-action b{position:absolute;right:8px;top:13px;width:23px;height:23px;font-size:16px}.cinematic-workspace .cinematic-primary-action span{width:100%}.cinematic-workspace .desk-metrics{margin:15px 18px 0;gap:9px;padding-bottom:16px}.cinematic-workspace .metric-label{font-size:12px}.cinematic-workspace .metric-value{font-size:29px}.cinematic-workspace .metric-cell:not(:first-child){padding-left:9px}.cinematic-workspace .utility-links{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.cinematic-workspace .utility-link{min-height:136px;padding:13px 7px;gap:10px;font-size:14px}.cinematic-workspace .utility-link small{font-size:11px;line-height:1.6}.cinematic-workspace .tool-icon{width:45px;height:45px}.cinematic-workspace .tool-icon svg{width:23px;height:23px}.cinematic-workspace .panel-head{margin:0 0 15px;padding:0 0 12px;flex-wrap:wrap}.cinematic-workspace .panel-head .panel-title{font-size:18px}.cinematic-workspace .panel-head .desk-caption{font-size:13px}.cinematic-workspace .panel-head .text-action{font-size:14px}.cinematic-workspace .desk-side{display:grid!important;gap:0}.cinematic-workspace .desk-side>section{display:none}.cinematic-workspace .bottom{padding-inline:5px}.cinematic-workspace .navbtn div{font-size:14px}.cinematic-workspace .sheet{border-radius:20px 20px 0 0}}
 @media(max-width:359px){.cinematic-workspace .masthead{flex-wrap:wrap;gap:7px;padding-inline:14px!important;padding-block:12px}.cinematic-workspace .masthead>.flex{width:100%;justify-content:flex-end;margin-top:-2px}.cinematic-workspace .brand-name{font-size:16px}.cinematic-workspace .brand-sub{font-size:9px}.cinematic-workspace .brand-mark{width:40px;height:40px}.cinematic-hero{min-height:305px;padding-inline:17px}.cinematic-title{font-size:42px}.cinematic-hero-copy{max-width:60%}.cinematic-description{font-size:14px}.cinematic-kicker{font-size:8px;margin-bottom:15px}.cinematic-hero-action{font-size:14px;padding-inline:9px;gap:6px}.cinematic-greeting{font-size:11px}.cinematic-section-head{align-items:flex-start}.cinematic-section-head h2{font-size:15px}.cinematic-section-head p{font-size:12px}.cinematic-all-link{font-size:14px;padding-inline:9px}.cinematic-business-grid{gap:7px}.cinematic-tile-art{height:90px}.cinematic-tile-copy{padding-inline:7px;min-height:111px}.cinematic-tile-tag{font-size:7px;min-height:23px}.cinematic-tile-copy h3{font-size:14px}.cinematic-tile-copy p{font-size:11px}.cinematic-workspace .command-heading{font-size:18px}.cinematic-workspace .command-top{padding-inline:15px;gap:6px}.cinematic-workspace .plan-chip{font-size:14px;padding-inline:8px}.cinematic-workspace .command-actions{padding-inline:15px;gap:8px;grid-template-columns:1fr 1fr}.cinematic-workspace .cinematic-primary-action{padding-inline:10px;min-height:108px}.cinematic-primary-action small{font-size:11px}.cinematic-workspace .desk-metrics{margin-inline:15px;gap:6px}.cinematic-workspace .metric-cell:not(:first-child){padding-left:7px}.cinematic-workspace .metric-label{font-size:11px}.cinematic-workspace .metric-value{font-size:26px}.cinematic-workspace .utility-link{min-height:140px;padding-inline:5px;font-size:14px}.cinematic-workspace .tool-icon{width:43px;height:43px}.cinematic-workspace .utility-link small{font-size:11px}.cinematic-workspace .task{padding:12px;gap:10px}.cinematic-workspace .task .text-sm{font-size:14px}.cinematic-workspace .navbtn div{font-size:14px}}
+
+/* Daily desk refinement: the day's work comes first; business has its own lane. */
+.cinematic-workspace #connectionNotice.hidden+#homePage{margin-top:0!important}
+.cinematic-workspace .brand-mark{filter:drop-shadow(0 1px 5px #d1a76320)}
+.cinematic-workspace .brand-emblem>rect{fill:transparent;stroke:transparent}
+.cinematic-workspace .brand-emblem path:nth-of-type(3),
+.cinematic-workspace .brand-emblem circle{stroke:#e6c48f;fill:#e6c48f}
+.cinematic-workspace .brand-emblem path:nth-of-type(3){fill:none}
+.cinematic-workspace .pill{box-shadow:none;border-color:#354e3e;background:#102017}
+.cinematic-hero{min-height:320px;padding:28px 34px 22px;margin-bottom:26px;border-bottom-color:#a8864f55;background-position:right 43%}
+.cinematic-hero:after{animation-duration:3.4s;animation-delay:.35s}
+.cinematic-hero-copy{max-width:50%}
+.cinematic-kicker{font-size:10px;letter-spacing:.17em;margin-bottom:11px}
+.cinematic-title{font-size:clamp(42px,5vw,64px);margin-bottom:12px;line-height:1.08}
+.cinematic-description{font-size:16px;line-height:1.65;max-width:23ch;color:#e4d8c7}
+.cinematic-greeting{font-size:14px;line-height:1.65;align-items:flex-end;margin-top:20px;gap:6px 20px}
+.cinematic-greeting>span{min-width:0;max-width:100%;overflow-wrap:anywhere}
+.cinematic-greeting #dashboardDate{flex-shrink:0}
+.cinematic-workspace .desk-grid{align-items:start;gap:32px}
+.cinematic-workspace .desk-main{gap:26px;min-width:0}
+.cinematic-workspace .desk-side{gap:26px;min-width:0}
+.cinematic-workspace .desk-panel{box-shadow:none;border-color:#7a68462e;background:#101210;border-radius:12px}
+.cinematic-workspace .command-panel{border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.cinematic-workspace .command-panel:after{display:none}
+.cinematic-workspace .command-top{padding:0;align-items:center;gap:12px}
+.cinematic-workspace .command-heading{font-size:25px;color:#f4e9d8;gap:9px;margin-top:3px}
+.cinematic-workspace .command-heading svg{width:23px;height:23px;filter:none;color:#d7b57e}
+.cinematic-workspace .command-top .desk-caption{font-size:14px;color:#b7b6ab}
+.cinematic-workspace .command-top .statusline{font-size:12px;color:#bfd3c6}
+.cinematic-workspace .plan-chip{border-radius:6px;background:#181b16;border-color:#70634260;color:#e3c995;padding:7px 11px;font-size:14px;min-height:44px}
+.cinematic-workspace .command-actions{padding:16px 0 0;gap:12px}
+.cinematic-workspace .cinematic-primary-action{min-height:82px;padding:13px 15px;border-radius:8px;border:1px solid #6f624343;background:#171915;color:#e9dfcc;box-shadow:none;gap:12px}
+.cinematic-workspace .cinematic-primary-action:first-child{background:linear-gradient(125deg,#f1dab0,#dcb880);color:#221b10;border-color:#f0d5a1}
+.cinematic-workspace .cinematic-primary-action>svg{width:29px;height:29px;filter:none;transition:transform .16s ease}
+.cinematic-primary-action span{font-size:17px;line-height:1.5}
+.cinematic-primary-action small{font-size:14px;color:#bdbaae;line-height:1.5;margin-top:2px;max-width:none}
+.cinematic-primary-action:first-child small{color:#4b402b}
+.cinematic-primary-action b{width:24px;height:24px;background:transparent;box-shadow:none;color:currentColor;border-radius:0;margin-left:auto}
+.cinematic-primary-action b svg{width:18px;height:18px}
+.cinematic-workspace .cinematic-primary-action:hover:not(:disabled){background:#23261f;border-color:#b6a277;transform:none}
+.cinematic-workspace .cinematic-primary-action:first-child:hover:not(:disabled){background:#f8e4bf;border-color:#fff0d3}
+.cinematic-workspace .cinematic-primary-action:hover>svg{transform:translateY(-2px)}
+.cinematic-workspace .cinematic-primary-action:active>svg{transform:translateY(1px)}
+.cinematic-workspace .desk-metrics{margin:18px 0 0;padding:0 0 18px;border-top:0;border-bottom:1px solid #96733e4d;gap:14px}
+.cinematic-workspace .metric-cell:not(:first-child){border-left:1px solid #78603a44;padding-left:14px}
+.cinematic-workspace .metric-label{font-size:14px;color:#b9b4a7;line-height:1.65}
+.cinematic-workspace .metric-value{font-size:32px;font-variant-numeric:tabular-nums;color:#f2e8d8;margin-top:3px}
+.cinematic-workspace .metric-value.warning{color:#f3c39e}
+.cinematic-workspace section[aria-labelledby="todayWorkHeading"]{padding:0;border:0;background:transparent;border-radius:0}
+.cinematic-workspace section[aria-labelledby="todayWorkHeading"] .panel-head{border-bottom:0;padding-bottom:0;margin-bottom:13px;align-items:flex-start}
+.cinematic-workspace .panel-head .panel-title{color:#ede4d3;font-size:20px}
+.cinematic-workspace .panel-head .desk-caption{font-size:14px;color:#b5b3a6}
+.cinematic-workspace #homeTasks{display:grid;gap:0}
+.cinematic-workspace #homeTasks>*+*{margin-top:0}
+.cinematic-workspace #homeTasks .task{padding:13px 0;background:transparent;border:0;border-bottom:1px solid #5e604c45;border-radius:0;gap:13px}
+.cinematic-workspace #homeTasks .task:first-child{padding-top:0}
+.cinematic-workspace #homeTasks .task .text-sm{font-size:16px;color:#f1ecdf;line-height:1.6}
+.cinematic-workspace #homeTasks .task .text-\[10px\]{font-size:14px;color:#aaa99d}
+.cinematic-workspace #homeTasks .tag{font-size:11px;line-height:1.6;border-radius:3px}
+.cinematic-workspace #homeTasks .check{border-radius:6px;border-color:#81714955;background:#191b15}
+.cinematic-workspace .cinematic-personal-tools{padding-top:6px}
+.cinematic-personal-tools .cinematic-section-head{border-left:0;padding-left:0;margin-bottom:5px}
+.cinematic-section-head h2{font-size:19px;color:#eee4d3}
+.cinematic-all-link{border:0;border-radius:5px;background:transparent;padding:7px 3px;color:#dbc395}
+.cinematic-all-link:hover{background:#dfc38e0b;color:#ffdfaa}
+.cinematic-workspace .utility-links{grid-template-columns:repeat(3,minmax(0,1fr));gap:0 20px}
+.cinematic-workspace .utility-link{min-height:82px;padding:13px 0;flex-direction:row;justify-content:flex-start;text-align:left;gap:10px;border:0;border-bottom:1px solid #67614b3b;border-radius:0;background:transparent;box-shadow:none;font-size:14px;line-height:1.55}
+.cinematic-workspace .utility-link:hover{background:#d1b88009;border-color:#ba9d5b66}
+.cinematic-workspace .utility-link small{font-size:14px;line-height:1.5;color:#aaa99c;display:block;margin-top:3px}
+.cinematic-workspace .tool-icon{width:36px;height:40px;background:none;border:0;border-radius:0;box-shadow:none;flex-shrink:0;color:#d8be8e}
+.cinematic-workspace .tool-icon svg{width:23px;height:23px;filter:none;transition:transform .16s ease}
+.cinematic-workspace .utility-link:hover .tool-icon svg{transform:translateY(-2px)}
+.cinematic-workspace .utility-link:active .tool-icon svg{transform:translateY(1px)}
+.cinematic-workspace .desk-side>.desk-panel{border:0;background:#131610;border-radius:10px;padding:22px}
+.cinematic-workspace .desk-side .panel-head{border-bottom-color:#7c745047}
+.cinematic-workspace .eyebrow{color:#baab8c}
+.cinematic-business{margin-top:34px;margin-bottom:0;padding-top:24px;padding-bottom:20px;border-top:1px solid #9a7b434f;border-bottom:0}
+.cinematic-business .cinematic-section-head{margin-bottom:15px;align-items:flex-start}
+.cinematic-business .cinematic-section-head p{font-size:14px;color:#aaa99f;max-width:38ch}
+.cinematic-business-grid{grid-template-columns:1.35fr 1fr 1fr;gap:16px}
+.cinematic-business-card{border:0;border-radius:9px;background:#10120e;box-shadow:none;transition:background .18s ease,transform .18s ease}
+.cinematic-business-card:hover{background:#202217;transform:translateY(-2px)}
+.cinematic-tile-art{height:auto;aspect-ratio:2/3;background-size:300% 100%;border-bottom:0}
+.cinematic-tile-art svg{width:38px;height:38px;padding:8px;border:0;background:#080c099c;color:#f1d5a2;filter:none}
+.cinematic-tile-copy{padding:12px 15px 17px;min-height:105px;border-top:1px solid #ad874139}
+.cinematic-tile-copy h3{font-size:18px;padding-right:22px;line-height:1.5}
+.cinematic-tile-copy p{font-size:14px;line-height:1.6;padding-right:0;color:#bbb6a5}
+.cinematic-tile-tag{font-size:10px;letter-spacing:.06em;min-height:0;color:#bdb39c;margin-bottom:4px}
+.cinematic-tile-arrow{right:13px;top:13px;width:26px;height:26px;border:0;color:#e4c18a}
+.cinematic-control-card .cinematic-tile-art{aspect-ratio:2/3;background-size:300% 100%;background-position:left center}
+.cinematic-control-card{border:1px solid #b4945c55;background:#181a13}
+.cinematic-control-card .cinematic-tile-copy{flex:1;padding:16px 18px 18px;border-top-color:#b4945c55}
+.cinematic-control-card h3{font-size:24px;color:#f4dfb8}
+.cinematic-control-card .cinematic-tile-tag{color:#d4b476}
+.cinematic-workspace .bottom{border-top-color:#8f79514d;box-shadow:0 -4px 18px #0006}
+.cinematic-workspace .navbtn.active{background:transparent;color:#e8ca90}
+.cinematic-workspace .navbtn.active svg{filter:drop-shadow(0 0 3px #e1b96830)}
+.cinematic-workspace .navbtn:hover{background:#d8bc830c;color:#f4d8a5}
+.cinematic-workspace .navbtn:active svg{transform:translateY(1px)}
+@media(min-width:900px){
+  .cinematic-workspace .desk-grid{grid-template-columns:minmax(0,1.65fr) minmax(295px,1fr)}
+  .cinematic-workspace .desk-side{padding-left:24px;border-left:1px solid #73694d3b}
+  .cinematic-workspace .bottom{border-color:#8f79514d}
+  .cinematic-business-grid{grid-template-columns:1.7fr 1fr 1fr;align-items:stretch}
+  .cinematic-control-card{display:grid;grid-template-columns:130px minmax(0,1fr);align-items:stretch}
+  .cinematic-control-card .cinematic-tile-art{width:130px;height:195px;aspect-ratio:2/3;background-size:300% 100%;background-position:left center;align-self:center}
+  .cinematic-control-card .cinematic-tile-copy{display:flex;flex-direction:column;justify-content:center;border-top:0;border-left:1px solid #b4945c3b;min-width:0}
+  .cinematic-video-card,.cinematic-news-card{display:grid;grid-template-columns:104px 1fr;align-items:stretch}
+  .cinematic-video-card .cinematic-tile-art,.cinematic-news-card .cinematic-tile-art{width:104px;height:156px;align-self:center}
+  .cinematic-video-card .cinematic-tile-copy,.cinematic-news-card .cinematic-tile-copy{padding:13px 13px 13px 12px;border-top:0;display:flex;flex-direction:column;justify-content:center}
+  .cinematic-tile-copy h3{padding-right:0}
+  .cinematic-video-card .cinematic-tile-tag,.cinematic-news-card .cinematic-tile-tag{font-size:9px;overflow-wrap:anywhere}
+  .cinematic-business-card .cinematic-tile-arrow{display:none}
+}
+@media(max-width:899px){
+  .cinematic-hero{min-height:220px;padding:18px 20px 14px;margin-bottom:18px;background-position:64% center;background-size:auto 100%}
+  .cinematic-hero-copy{max-width:58%}
+  .cinematic-kicker{font-size:9px;letter-spacing:.1em;margin-bottom:10px;max-width:175px}
+  .cinematic-title{font-size:41px;line-height:1.1;margin-bottom:9px;letter-spacing:-.06em}
+  .cinematic-description{font-size:14px;line-height:1.6;max-width:22ch}
+  .cinematic-greeting{font-size:14px;line-height:1.6;margin-top:15px;gap:3px 12px;align-items:flex-start;flex-wrap:wrap}
+  .cinematic-greeting>span:last-child{margin-left:auto;text-align:right}
+  .cinematic-workspace .desk-grid,.cinematic-workspace .desk-main{gap:23px}
+  .cinematic-workspace .command-top{padding:0;gap:9px}
+  .cinematic-workspace .command-heading{font-size:22px;line-height:1.5}
+  .cinematic-workspace .command-top .desk-caption{font-size:14px;line-height:1.6}
+  .cinematic-workspace .plan-chip{font-size:14px;min-height:44px;padding:6px 9px}
+  .cinematic-workspace .command-actions{padding:13px 0 0;gap:10px}
+  .cinematic-workspace .cinematic-primary-action{padding:12px 10px;min-height:88px;gap:6px 8px;flex-wrap:wrap;align-content:center}
+  .cinematic-workspace .cinematic-primary-action>svg{width:24px;height:24px}
+  .cinematic-primary-action span{font-size:15px;line-height:1.5;min-width:0;width:100%}
+  .cinematic-primary-action small{font-size:14px;line-height:1.5;margin-top:2px;max-width:none}
+  .cinematic-primary-action b{top:11px;right:8px;width:22px;height:22px;background:transparent}
+  .cinematic-workspace .desk-metrics{margin:16px 0 0;padding:0 0 16px;gap:10px}
+  .cinematic-workspace .metric-cell:not(:first-child){padding-left:10px}
+  .cinematic-workspace .metric-label{font-size:14px}
+  .cinematic-workspace .metric-value{font-size:29px}
+  .cinematic-workspace section[aria-labelledby="todayWorkHeading"] .panel-head{flex-wrap:nowrap;gap:10px;align-items:flex-start}
+  .cinematic-workspace .panel-head .panel-title{font-size:19px}
+  .cinematic-workspace .panel-head .desk-caption{font-size:14px}
+  .cinematic-workspace #homeTasks .task{padding:13px 0;gap:11px}
+  .cinematic-workspace #homeTasks .task .text-sm{font-size:16px}
+  .cinematic-personal-tools .cinematic-section-head{margin-bottom:0;gap:8px}
+  .cinematic-section-head h2{font-size:18px}
+  .cinematic-workspace .utility-links{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 13px}
+  .cinematic-workspace .utility-link{min-height:88px;padding:12px 0;gap:8px;flex-direction:row;text-align:left;justify-content:flex-start;font-size:14px}
+  .cinematic-workspace .tool-icon{width:29px;height:37px;border:0;background:none;box-shadow:none}
+  .cinematic-workspace .tool-icon svg{width:22px;height:22px}
+  .cinematic-workspace .utility-link small{font-size:14px;line-height:1.6}
+  .cinematic-business{margin-top:25px;padding-top:22px;padding-bottom:8px}
+  .cinematic-business .cinematic-section-head{gap:10px;margin-bottom:13px}
+  .cinematic-business .cinematic-section-head h2{font-size:18px}
+  .cinematic-business-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .cinematic-control-card{grid-column:1/-1;display:grid;grid-template-columns:112px minmax(0,1fr)}
+  .cinematic-control-card .cinematic-tile-art{width:112px;height:168px;min-height:0;aspect-ratio:2/3;background-size:300% 100%;background-position:left center;align-self:center}
+  .cinematic-control-card .cinematic-tile-copy{border-top:0;border-left:1px solid #b4945c3b;padding:18px 14px;display:flex;flex-direction:column;justify-content:center;min-height:169px}
+  .cinematic-control-card h3{font-size:21px;line-height:1.5;padding-right:0}
+  .cinematic-control-card .cinematic-tile-tag{font-size:9px;letter-spacing:.05em;min-height:0}
+  .cinematic-control-card .cinematic-tile-copy p{font-size:14px;line-height:1.65;margin-top:4px}
+  .cinematic-tile-art{height:auto;aspect-ratio:2/3;background-size:300% 100%}
+  .cinematic-video-card .cinematic-tile-art,.cinematic-news-card .cinematic-tile-art{aspect-ratio:4/3;background-size:300% auto}
+  .cinematic-video-card .cinematic-tile-art{background-position:center 42%}
+  .cinematic-news-card .cinematic-tile-art{background-position:right 42%}
+  .cinematic-tile-art svg{width:34px;height:34px;padding:7px;right:9px;top:9px;border:0}
+  .cinematic-tile-copy{padding:12px 12px 15px;min-height:115px}
+  .cinematic-tile-tag{font-size:9px;min-height:0;line-height:1.6;letter-spacing:.02em;margin-bottom:4px}
+  .cinematic-tile-copy h3{font-size:17px;line-height:1.55;padding-right:0}
+  .cinematic-tile-copy p{font-size:14px;line-height:1.6;margin-top:4px}
+  .cinematic-business-card{border-radius:8px}
+}
+@media(max-width:359px){
+  .cinematic-hero{min-height:220px;padding-inline:17px}
+  .cinematic-title{font-size:37px;line-height:1.12}
+  .cinematic-hero-copy{max-width:60%}
+  .cinematic-kicker{font-size:8px;margin-bottom:10px}
+  .cinematic-description{font-size:14px}
+  .cinematic-greeting{font-size:14px;flex-direction:column;gap:2px}
+  .cinematic-greeting>span:last-child{margin-left:0;text-align:left}
+  .cinematic-workspace .command-heading{font-size:21px;gap:7px}
+  .cinematic-workspace .command-heading svg{width:21px;height:21px}
+  .cinematic-workspace .command-top .desk-caption{font-size:14px;max-width:21ch}
+  .cinematic-workspace .command-actions{padding-inline:0;gap:9px}
+  .cinematic-workspace .cinematic-primary-action{padding:11px 9px;min-height:107px}
+  .cinematic-primary-action span{font-size:14px}
+  .cinematic-primary-action small{font-size:14px}
+  .cinematic-workspace .desk-metrics{margin-inline:0;gap:8px}
+  .cinematic-workspace .metric-cell:not(:first-child){padding-left:8px}
+  .cinematic-workspace .metric-label{font-size:14px;line-height:1.6}
+  .cinematic-workspace .metric-value{font-size:28px}
+  .cinematic-workspace .utility-link{min-height:91px;padding-inline:0;gap:7px;font-size:14px}
+  .cinematic-workspace .tool-icon{width:25px;height:34px}
+  .cinematic-workspace .utility-link small{font-size:14px}
+  .cinematic-business .cinematic-section-head h2{font-size:17px}
+  .cinematic-business .cinematic-section-head p{font-size:14px}
+  .cinematic-control-card .cinematic-tile-copy{padding:15px 12px}
+  .cinematic-control-card h3{font-size:19px}
+  .cinematic-tile-copy{padding:11px 10px 13px}
+  .cinematic-tile-copy h3{font-size:16px}
+}
+
 @media(prefers-reduced-motion:reduce){.cinematic-workspace *, .cinematic-workspace *:before,.cinematic-workspace *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.cinematic-workspace .btn:active,.cinematic-business-card:hover{transform:none}}
