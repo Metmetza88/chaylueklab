@@ -32,7 +32,7 @@ async function copyPublic(path) {
 for (const name of await readdir(sourceRoot)) {
   if (!name.startsWith('.') && ['.html', '.css', '.js'].includes(extname(name))) await copyPublic(resolve(sourceRoot, name));
 }
-for (const name of ['assets', 'data', 'news']) await copyPublic(resolve(sourceRoot, name));
+for (const name of ['assets', 'data', 'news', 'affiliate']) await copyPublic(resolve(sourceRoot, name));
 await writeFile(resolve(output, '.nojekyll'), '');
 await writeFile(resolve(output, 'release.json'), JSON.stringify({ commit: process.env.GITHUB_SHA || 'local-verification', files: Object.keys(hashes).length, hashes }));
 await verifyPublicSite(output);
