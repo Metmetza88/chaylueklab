@@ -20,3 +20,7 @@ verify_jwt = false
 # Keep the existing legacy API; the Control Center UI uses the shared stock API.
 [functions.retail-control]
 verify_jwt = false
+
+# LINE Messaging webhook uses its own HMAC verification; scheduled dispatch uses a separate bearer secret.
+[functions.line-group-assistant]
+verify_jwt = false
