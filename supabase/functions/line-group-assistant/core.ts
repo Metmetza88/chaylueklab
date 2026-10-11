@@ -1,6 +1,7 @@
 /** Testable LINE group assistant. Only opt-in group events are processed. */
 export type GroupMessage = {message_id:string;content:string;is_note:boolean;created_at:string};
 export type GroupTask = {id:string;title:string;due_at:string|null;status:string};
+export type GroupMemory = {id:string;content:string;created_at:string};
 export type GroupDeps = {
  secret:string|undefined; now:()=>Date; isOwner:(user:string)=>Promise<boolean>;
  getGroup:(group:string)=>Promise<{enabled:boolean}|null>;
@@ -9,6 +10,10 @@ export type GroupDeps = {
  addTask:(group:string,user:string|null,message:string,title:string,due:string|null)=>Promise<GroupTask>;
  tasks:(group:string)=>Promise<GroupTask[]>;
  notes:(group:string)=>Promise<GroupMessage[]>;
+ remember:(group:string,user:string|null,message:string,content:string)=>Promise<GroupMemory>;
+ memories:(group:string)=>Promise<GroupMemory[]>;
+ forget:(group:string,idPrefix:string)=>Promise<'done'|'not_found'|'ambiguous'>;
+ clearMemories:(group:string)=>Promise<void>;
  recent:(group:string)=>Promise<GroupMessage[]>;
  finish:(group:string,idPrefix:string)=>Promise<'done'|'not_found'|'ambiguous'>;
  clear:(group:string)=>Promise<void>;
@@ -18,7 +23,7 @@ export type GroupDeps = {
  appUrl?:string;
 };
 
-const help='คำสั่งผู้ช่วย:\n• ผู้ช่วย เพิ่มงาน ส่งของ กำหนด พรุ่งนี้ 09:00\n• ผู้ช่วย งาน\n• ผู้ช่วย เสร็จ รหัสงาน\n• ผู้ช่วย จด ข้อความ\n• ผู้ช่วย โน้ต\n• ผู้ช่วย สรุป\n• ผู้ช่วย ถาม วันนี้ตกลงอะไรกัน\n• ผู้ช่วย ปิด (เจ้าของเท่านั้น)';
+const help='ผู้ช่วยจำและเตือนอัตโนมัติ\n• เตือน ส่งของ พรุ่งนี้ 09:00\n• จำไว้ว่า ลูกค้ารับของวันศุกร์\n• จำอะไรไว้บ้าง\n• ผู้ช่วย งาน (ดูรายการเตือน)\n• ผู้ช่วย สรุป (สรุปแชตย้อนหลังที่ได้รับ)\n• ผู้ช่วย เปิด / ปิด (เฉพาะเจ้าของ)';
 const enc=new TextEncoder();
 export async function verifyLineSignature(secret:string|undefined,raw:string,signature:string|null):Promise<boolean>{
  if(!secret||!signature||!/^[A-Za-z0-9+/]+={0,2}$/.test(signature))return false;
@@ -30,8 +35,11 @@ export async function verifyLineSignature(secret:string|undefined,raw:string,sig
  }catch{return false;}
 }
 export function parseAssistantCommand(text:string):string|null{
- const match=text.trim().match(/^(?:@?ผู้ช่วย|\/(?:assistant|bot))(?:\s+|$)([\s\S]*)/iu);
- return match?match[1].trim():null;
+ const input=text.trim();
+ const match=input.match(/^(?:@?ผู้ช่วย|\/(?:assistant|bot))(?:\s+|$)([\s\S]*)/iu);
+ if(match)return match[1].trim();
+ // Short explicit requests without the assistant prefix; ordinary chat remains silent.
+ return /^(?:เตือน(?:ฉัน|หน่อย|ด้วย)?\s+.+|จำไว้ว่า\s+.+|จำ\s+.+|จำอะไรไว้บ้าง)$/su.test(input)?input:null;
 }
 function thaiDay(now:Date,addDays:number):{y:number;m:number;d:number}{
  const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);
@@ -88,7 +96,7 @@ export function createGroupAssistantHandler(deps:GroupDeps){
      if(!await owner()){await reply('เฉพาะเจ้าของระบบที่เปิดผู้ช่วยในกลุ่มได้');continue;}
      if(state?.enabled){await reply('ผู้ช่วยเปิดอยู่แล้วครับ');continue;}
      await deps.setGroup(group,user!,true);
-     await reply('เปิดผู้ช่วยกลุ่มแล้ว ✅\nระบบจะเก็บข้อความใหม่ในกลุ่มเพื่อช่วยสรุปและติดตามงาน เก็บประวัติสูงสุด 30 วัน สมาชิกใช้คำสั่ง “ผู้ช่วย ช่วย” ดูวิธีใช้ได้ เจ้าของสั่ง “ผู้ช่วย ปิด” ได้ทุกเมื่อ');
+     await reply('เปิดผู้ช่วยกลุ่มแล้ว ✅\nหลังจากนี้ ระบบจะอ่านแชตใหม่เพื่อช่วยสรุป (ประวัติ 30 วัน) บันทึกที่สั่ง “จำไว้ว่า” จะเก็บจนสั่งลืม และแจ้งเตือนรายการที่ระบุวันเวลา กรุณาแจ้งสมาชิกว่าระบบเริ่มเก็บข้อความในกลุ่มแล้ว');
      continue;
     }
     if(!state?.enabled)continue; // Never record or answer in unapproved groups.
@@ -100,7 +108,8 @@ export function createGroupAssistantHandler(deps:GroupDeps){
      if(!await owner()){await reply('เฉพาะเจ้าของระบบที่ล้างประวัติได้');continue;}
      await deps.clear(group);await reply('ลบประวัติข้อความของผู้ช่วยในกลุ่มนี้แล้ว (รายการงานยังอยู่)');continue;
     }
-    const isNote=command!==null&&/^จด\s+.+/su.test(command);
+    const memoryText=command?.match(/^(?:จด|จำ|จำไว้ว่า)\s+(.+)$/su)?.[1]?.trim()||null;
+    const isNote=!!memoryText;
     if(!await deps.record(group,msg,user,rawText,isNote))continue; // LINE redelivery is idempotent.
     if(command===null)continue; // Silent observer until addressed.
     if(command==='ช่วย'||command==='คำสั่ง'||command==='') {await reply(help);continue;}
@@ -109,8 +118,12 @@ export function createGroupAssistantHandler(deps:GroupDeps){
      await reply(tasks.length?'งานที่ยังไม่เสร็จ ('+tasks.length+'):\n'+tasks.slice(0,20).map(formatTask).join('\n'):'ไม่มีงานค้างครับ');
      continue;
     }
-    if(/^เพิ่มงาน\s+|^งานใหม่\s+/u.test(command)){
-     const taskText=command.replace(/^(?:เพิ่มงาน|งานใหม่)\s+/u,'');
+    if(/^(?:เพิ่มงาน\s+|งานใหม่\s+|เตือน(?:ฉัน|หน่อย|ด้วย)?\s+)/u.test(command)){
+     const direct=command.match(/^เตือน(?:ฉัน|หน่อย|ด้วย)?\s+(.+?)\s+(วันนี้|พรุ่งนี้|\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2})$/u);
+     const directReminder=/^เตือน(?:ฉัน|หน่อย|ด้วย)?\s+/u.test(command);
+     if(directReminder&&!direct){await reply('ระบุวันเวลาให้ชัด เช่น “เตือน ส่งของ พรุ่งนี้ 09:00”');continue;}
+     const taskText=direct?direct[1]+' กำหนด '+direct[2]+' '+direct[3]:
+       command.replace(/^(?:เพิ่มงาน|งานใหม่)\s+/u,'');
      const parsed=parseTaskText(taskText,deps.now());
      if(parsed.error){await reply(parsed.error+' ลองใช้ “กำหนด พรุ่งนี้ 09:00”');continue;}
      if(!parsed.title||parsed.title.length>300){await reply('ชื่อรายการต้องมี 1–300 ตัวอักษร');continue;}
@@ -124,10 +137,29 @@ export function createGroupAssistantHandler(deps:GroupDeps){
      const done=await deps.finish(group,id.toLowerCase());
      await reply(done==='done'?'ปิดงานเรียบร้อย ✅':done==='ambiguous'?'รหัสซ้ำ กรุณาลองใหม่':'ไม่พบงานค้างที่มีรหัสนี้');continue;
     }
-    if(isNote){await reply('จดบันทึกไว้แล้ว 📝');continue;}
-    if(command==='โน้ต'||command==='ดูโน้ต'){
-     const notes=await deps.notes(group);
-     await reply(notes.length?'บันทึกล่าสุด:\n'+notes.slice(0,10).map(n=>'• '+n.content.replace(/^ผู้ช่วย\s+จด\s+/u,'')).join('\n'):'ยังไม่มีโน้ต');continue;
+    if(isNote){
+     if(memoryText!.length>1000){await reply('ข้อความที่ให้จำยาวเกิน 1,000 ตัวอักษร');continue;}
+     await deps.remember(group,user,msg,memoryText!);
+     await reply('จำไว้แล้ว ✅ (เก็บจนกว่าจะสั่งลืม)');
+     continue;
+    }
+    if(command==='โน้ต'||command==='ดูโน้ต'||command==='จำอะไรไว้บ้าง'||command==='ความจำ'){
+     const memories=await deps.memories(group);
+     await reply(memories.length?'สิ่งที่จำไว้:\n'+memories.slice(0,15).map(m=>'• '+m.id.slice(0,8)+' '+m.content).join('\n'):
+       'ยังไม่มีข้อมูลที่สั่งให้จำครับ');
+     continue;
+    }
+    if(command==='ลืมทั้งหมด'){
+     if(!await owner()){await reply('เฉพาะเจ้าของที่ล้างความจำทั้งหมดได้');continue;}
+     await deps.clearMemories(group);
+     await reply('ลบความจำที่บันทึกไว้ทั้งหมดในกลุ่มนี้แล้ว');continue;
+    }
+    if(/^ลืม\s+/u.test(command)){
+     if(!await owner()){await reply('เฉพาะเจ้าของที่ลบความจำได้');continue;}
+     const id=command.replace(/^ลืม\s+/u,'').trim();
+     if(!/^[a-f0-9]{8}$/i.test(id)){await reply('ใช้รหัส 8 ตัวจาก “จำอะไรไว้บ้าง” เช่น “ผู้ช่วย ลืม abcdef01”');continue;}
+     const result=await deps.forget(group,id.toLowerCase());
+     await reply(result==='done'?'ลืมข้อมูลนี้แล้ว ✅':result==='ambiguous'?'รหัสซ้ำ กรุณาลองใหม่':'ไม่พบความจำนี้');continue;
     }
     if(command==='เปิดแอป'){
      await reply(deps.appUrl?'เปิดแอป LINE LIFF: '+deps.appUrl:'ยังไม่ได้ตั้งค่าลิงก์ LIFF สำหรับผู้ช่วย');continue;
