@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {createGroupAssistantHandler,parseAssistantCommand,parseTaskText,verifyLineSignature} from '../supabase/functions/line-group-assistant/core.ts';
 
 const group='C'+'a'.repeat(32),owner='U'+'b'.repeat(32);
@@ -114,4 +115,24 @@ test('reject invalid and oversized bodies',async()=>{
  reset();const h=createGroupAssistantHandler(deps());
  assert.equal((await h(new Request('https://example.test/line-group-assistant',{method:'GET'}))).status,405);
  assert.equal((await h(new Request('https://example.test/line-group-assistant',{method:'POST',headers:{'content-length':'65537'},body:'x'}))).status,413);
+});
+
+// Deployment configuration is brand-bound: P.Somneuk cannot activate this OA handler.
+test('CHAYLUEKLAB LINE group requires its own channel, owner and scheduler credentials',()=>{
+ const source=readFileSync(new URL('../supabase/functions/line-group-assistant/index.ts',import.meta.url),'utf8');
+ for(const key of [
+  'CHAYLUEKLAB_GROUP_CHANNEL_SECRET',
+  'CHAYLUEKLAB_GROUP_CHANNEL_ACCESS_TOKEN',
+  'CHAYLUEKLAB_GROUP_OWNER_IDS',
+  'CHAYLUEKLAB_GROUP_CRON_SECRET',
+  'CHAYLUEKLAB_GROUP_LIFF_URL',
+  'CHAYLUEKLAB_GROUP_AI_API_KEY',
+ ])assert.ok(source.includes("Deno.env.get('"+key+"')"),'missing own configuration: '+key);
+ for(const shared of [
+  "Deno.env.get('LINE_GROUP_CHANNEL_SECRET')",
+  "Deno.env.get('LINE_OWNER_USER_ID')",
+  "Deno.env.get('NEWSROOM_OWNER_LINE_ID')",
+  "Deno.env.get('GROUP_ASSISTANT_CRON_SECRET')",
+  "db.from('app_owner')",
+ ])assert.ok(!source.includes(shared),'unsafe shared fallback: '+shared);
 });
