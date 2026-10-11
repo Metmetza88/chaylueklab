@@ -99,7 +99,7 @@ test('silent until owner activation, then logs conversation, answers only when a
  await send(h,'ขอให้ส่งงานก่อนวันศุกร์');assert.equal(data.writes,1);
  assert.equal(data.replies.length,1);
  await send(h,'ผู้ช่วย จด สรุปยอดขาย');assert.equal(data.writes,2);
- assert.match(data.replies[1],/จดบันทึก/);
+ assert.match(data.replies[1],/จำไว้แล้ว/);
  await send(h,'ผู้ช่วย โน้ต');assert.match(data.replies[2],/สรุปยอดขาย/);
 });
 test('task creation deduplicates redeliveries and marks done',async()=>{
