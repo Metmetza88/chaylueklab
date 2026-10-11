@@ -30,7 +30,7 @@ export async function verifyLineSignature(secret:string|undefined,raw:string,sig
  }catch{return false;}
 }
 export function parseAssistantCommand(text:string):string|null{
- const match=text.trim().match(/^(?:@?ผู้ช่วย|\\/(?:assistant|bot))(?:\\s+|$)([\\s\\S]*)/iu);
+ const match=text.trim().match(/^(?:@?ผู้ช่วย|\/(?:assistant|bot))(?:\s+|$)([\s\S]*)/iu);
  return match?match[1].trim():null;
 }
 function thaiDay(now:Date,addDays:number):{y:number;m:number;d:number}{
@@ -40,7 +40,7 @@ function thaiDay(now:Date,addDays:number):{y:number;m:number;d:number}{
  return {y:shifted.getUTCFullYear(),m:shifted.getUTCMonth()+1,d:shifted.getUTCDate()};
 }
 export function parseTaskText(raw:string,now:Date):{title:string;dueAt:string|null;error?:string}{
- const match=raw.trim().match(/^(.*?)\\s+กำหนด\\s+(วันนี้|พรุ่งนี้|\\d{4}-\\d{2}-\\d{2})\\s+(\\d{1,2}):(\\d{2})$/u);
+ const match=raw.trim().match(/^(.*?)\s+กำหนด\s+(วันนี้|พรุ่งนี้|\d{4}-\d{2}-\d{2})\s+(\d{1,2}):(\d{2})$/u);
  if(!match)return {title:raw.trim(),dueAt:null};
  const title=match[1].trim(), day=match[2],hh=Number(match[3]),mm=Number(match[4]);
  if(hh>23||mm>59)return {title,dueAt:null,error:'เวลาไม่ถูกต้อง'};
@@ -88,7 +88,7 @@ export function createGroupAssistantHandler(deps:GroupDeps){
      if(!await owner()){await reply('เฉพาะเจ้าของระบบที่เปิดผู้ช่วยในกลุ่มได้');continue;}
      if(state?.enabled){await reply('ผู้ช่วยเปิดอยู่แล้วครับ');continue;}
      await deps.setGroup(group,user!,true);
-     await reply('เปิดผู้ช่วยกลุ่มแล้ว ✅\\nระบบจะเก็บข้อความใหม่ในกลุ่มเพื่อช่วยสรุปและติดตามงาน เก็บประวัติสูงสุด 30 วัน สมาชิกใช้คำสั่ง “ผู้ช่วย ช่วย” ดูวิธีใช้ได้ เจ้าของสั่ง “ผู้ช่วย ปิด” ได้ทุกเมื่อ');
+     await reply('เปิดผู้ช่วยกลุ่มแล้ว ✅\nระบบจะเก็บข้อความใหม่ในกลุ่มเพื่อช่วยสรุปและติดตามงาน เก็บประวัติสูงสุด 30 วัน สมาชิกใช้คำสั่ง “ผู้ช่วย ช่วย” ดูวิธีใช้ได้ เจ้าของสั่ง “ผู้ช่วย ปิด” ได้ทุกเมื่อ');
      continue;
     }
     if(!state?.enabled)continue; // Never record or answer in unapproved groups.
@@ -100,26 +100,26 @@ export function createGroupAssistantHandler(deps:GroupDeps){
      if(!await owner()){await reply('เฉพาะเจ้าของระบบที่ล้างประวัติได้');continue;}
      await deps.clear(group);await reply('ลบประวัติข้อความของผู้ช่วยในกลุ่มนี้แล้ว (รายการงานยังอยู่)');continue;
     }
-    const isNote=command!==null&&/^จด\\s+.+/su.test(command);
+    const isNote=command!==null&&/^จด\s+.+/su.test(command);
     if(!await deps.record(group,msg,user,rawText,isNote))continue; // LINE redelivery is idempotent.
     if(command===null)continue; // Silent observer until addressed.
     if(command==='ช่วย'||command==='คำสั่ง'||command==='') {await reply(help);continue;}
     if(command==='งาน'||command==='ดูงาน'){
      const tasks=await deps.tasks(group);
-     await reply(tasks.length?'งานที่ยังไม่เสร็จ ('+tasks.length+'):\\n'+tasks.slice(0,20).map(formatTask).join('\\n'):'ไม่มีงานค้างครับ');
+     await reply(tasks.length?'งานที่ยังไม่เสร็จ ('+tasks.length+'):\n'+tasks.slice(0,20).map(formatTask).join('\n'):'ไม่มีงานค้างครับ');
      continue;
     }
-    if(/^เพิ่มงาน\\s+|^งานใหม่\\s+/u.test(command)){
-     const taskText=command.replace(/^(?:เพิ่มงาน|งานใหม่)\\s+/u,'');
+    if(/^เพิ่มงาน\s+|^งานใหม่\s+/u.test(command)){
+     const taskText=command.replace(/^(?:เพิ่มงาน|งานใหม่)\s+/u,'');
      const parsed=parseTaskText(taskText,deps.now());
      if(parsed.error){await reply(parsed.error+' ลองใช้ “กำหนด พรุ่งนี้ 09:00”');continue;}
      if(!parsed.title||parsed.title.length>300){await reply('ชื่อรายการต้องมี 1–300 ตัวอักษร');continue;}
      const task=await deps.addTask(group,user,msg,parsed.title,parsed.dueAt);
-     await reply('บันทึกงานแล้ว ✅\\n'+formatTask(task));
+     await reply('บันทึกงานแล้ว ✅\n'+formatTask(task));
      continue;
     }
-    if(/^เสร็จ\\s+/u.test(command)){
-     const id=command.replace(/^เสร็จ\\s+/u,'').trim();
+    if(/^เสร็จ\s+/u.test(command)){
+     const id=command.replace(/^เสร็จ\s+/u,'').trim();
      if(!/^[a-f0-9]{8}$/i.test(id)){await reply('ใส่รหัสงาน 8 ตัวจากคำสั่ง “ผู้ช่วย งาน”');continue;}
      const done=await deps.finish(group,id.toLowerCase());
      await reply(done==='done'?'ปิดงานเรียบร้อย ✅':done==='ambiguous'?'รหัสซ้ำ กรุณาลองใหม่':'ไม่พบงานค้างที่มีรหัสนี้');continue;
@@ -127,14 +127,14 @@ export function createGroupAssistantHandler(deps:GroupDeps){
     if(isNote){await reply('จดบันทึกไว้แล้ว 📝');continue;}
     if(command==='โน้ต'||command==='ดูโน้ต'){
      const notes=await deps.notes(group);
-     await reply(notes.length?'บันทึกล่าสุด:\\n'+notes.slice(0,10).map(n=>'• '+n.content.replace(/^ผู้ช่วย\\s+จด\\s+/u,'')).join('\\n'):'ยังไม่มีโน้ต');continue;
+     await reply(notes.length?'บันทึกล่าสุด:\n'+notes.slice(0,10).map(n=>'• '+n.content.replace(/^ผู้ช่วย\s+จด\s+/u,'')).join('\n'):'ยังไม่มีโน้ต');continue;
     }
     if(command==='เปิดแอป'){
      await reply(deps.appUrl?'เปิดแอป LINE LIFF: '+deps.appUrl:'ยังไม่ได้ตั้งค่าลิงก์ LIFF สำหรับผู้ช่วย');continue;
     }
-    if(command==='สรุป'||/^ถาม\\s+.+/su.test(command)){
+    if(command==='สรุป'||/^ถาม\s+.+/su.test(command)){
      const context=await deps.recent(group);
-     const result=await deps.answer(command==='สรุป'?'summary':'question',command.replace(/^ถาม\\s+/u,''),context);
+     const result=await deps.answer(command==='สรุป'?'summary':'question',command.replace(/^ถาม\s+/u,''),context);
      await reply(result||'ยังไม่ได้ตั้งค่า AI หรือ AI ไม่พร้อมทำงานตอนนี้ บันทึกงานและดูโน้ตยังใช้ได้ตามปกติ');continue;
     }
     await reply(help);
