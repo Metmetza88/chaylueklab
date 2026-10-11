@@ -5,8 +5,8 @@ import {createGroupAssistantHandler,parseAssistantCommand,parseTaskText,verifyLi
 
 const group='C'+'a'.repeat(32),owner='U'+'b'.repeat(32);
 const secret='unit-test-line-secret';
-const data={messages:[],tasks:[],enabled:false,replies:[],writes:0,pushed:0};
-function reset(){data.messages=[];data.tasks=[];data.enabled=false;data.replies=[];data.writes=0;data.pushed=0;}
+const data={messages:[],memories:[],tasks:[],enabled:false,replies:[],writes:0,pushed:0};
+function reset(){data.messages=[];data.memories=[];data.tasks=[];data.enabled=false;data.replies=[];data.writes=0;data.pushed=0;}
 function deps(){
  return {
   secret,now:()=>new Date('2026-10-12T01:00:00Z'),
@@ -24,6 +24,10 @@ function deps(){
   },
   tasks:async()=>data.tasks.filter(x=>x.status==='open'),
   notes:async()=>data.messages.filter(x=>x.is_note),
+  remember:async(g,u,id,content)=>{const m={id:'12345678-1111-1111-1111-111111111111',content,created_at:'2026-10-12T01:00:00Z'};data.memories.push(m);return m;},
+  memories:async()=>data.memories,
+  forget:async(g,prefix)=>{const m=data.memories.find(x=>x.id.startsWith(prefix));if(!m)return 'not_found';data.memories=data.memories.filter(x=>x!==m);return 'done';},
+  clearMemories:async()=>{data.memories=[];},
   recent:async()=>data.messages,
   finish:async(g,prefix)=>{
    const t=data.tasks.find(x=>x.id.startsWith(prefix)&&x.status==='open');
@@ -57,6 +61,9 @@ test('Thai commands and Bangkok due dates',()=>{
  assert.equal(parseAssistantCommand('ผู้ช่วย งาน'),'งาน');
  assert.equal(parseAssistantCommand('คุยเรื่องงาน'),null);
  assert.equal(parseAssistantCommand('/bot สรุป'),'สรุป');
+ assert.equal(parseAssistantCommand('เตือน ส่งของ พรุ่งนี้ 09:00'),'เตือน ส่งของ พรุ่งนี้ 09:00');
+ assert.equal(parseAssistantCommand('จำไว้ว่า ลูกค้ารับของวันศุกร์'),'จำไว้ว่า ลูกค้ารับของวันศุกร์');
+ assert.equal(parseAssistantCommand('จำอะไรไว้บ้าง'),'จำอะไรไว้บ้าง');
  assert.equal(parseTaskText('ส่งของ กำหนด พรุ่งนี้ 09:00',new Date('2026-10-12T01:00:00Z')).dueAt,'2026-10-13T02:00:00.000Z');
  assert.equal(parseTaskText('เช็คสต็อก กำหนด 2026-10-30 15:45',new Date('2026-10-12T01:00:00Z')).dueAt,'2026-10-30T08:45:00.000Z');
  assert.equal(parseTaskText('ผิด กำหนด 2026-02-30 11:00',new Date('2026-01-01T01:00:00Z')).error,'วันที่ไม่ถูกต้อง');
@@ -135,4 +142,30 @@ test('CHAYLUEKLAB LINE group requires its own channel, owner and scheduler crede
   "Deno.env.get('GROUP_ASSISTANT_CRON_SECRET')",
   "db.from('app_owner')",
  ])assert.ok(!source.includes(shared),'unsafe shared fallback: '+shared);
+});
+
+test('direct Thai reminder schedules automatically without the ผู้ช่วย prefix',async()=>{
+ reset();const h=createGroupAssistantHandler(deps());
+ await send(h,'เตือน ส่งของ พรุ่งนี้ 09:00');assert.equal(data.tasks.length,0);
+ await send(h,'ผู้ช่วย เปิด');
+ await send(h,'เตือน ส่งของ พรุ่งนี้ 09:00');
+ assert.equal(data.tasks.length,1);
+ assert.equal(data.tasks[0].due_at,'2026-10-13T02:00:00.000Z');
+ assert.match(data.replies.at(-1),/บันทึกงานแล้ว/);
+ await send(h,'เตือน ตรวจสินค้า');assert.equal(data.tasks.length,1);
+ assert.match(data.replies.at(-1),/ระบุวันเวลา/);
+});
+test('explicit memory survives deleting chat history and owner can forget',async()=>{
+ reset();const h=createGroupAssistantHandler(deps());await send(h,'ผู้ช่วย เปิด');
+ await send(h,'จำไว้ว่า สินค้าถึงวันศุกร์');
+ assert.equal(data.memories.length,1);
+ await send(h,'ผู้ช่วย ล้างประวัติ');
+ assert.equal(data.messages.length,0);
+ await send(h,'จำอะไรไว้บ้าง');
+ assert.match(data.replies.at(-1),/สินค้าถึงวันศุกร์/);
+ await send(h,'ผู้ช่วย ลืม 12345678');
+ assert.equal(data.memories.length,0);
+ await send(h,'จำไว้ว่า ข้อมูลสำหรับลบ');
+ await send(h,'ผู้ช่วย ลืมทั้งหมด');
+ assert.equal(data.memories.length,0);
 });
