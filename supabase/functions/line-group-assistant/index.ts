@@ -116,6 +116,29 @@ const deps:GroupDeps={
  notes:async group=>assertResult(await db.from('line_assistant_messages')
   .select('message_id,content,is_note,created_at').eq('group_id',group).eq('is_note',true)
   .order('created_at',{ascending:false}).limit(10)) as GroupMessage[],
+ remember:async(group,user,message,content)=>{
+  const record={group_id:group,
+   sender_id:/^U[0-9a-f]{32}$/i.test(user||'')?user:null,
+   source_message_id:message,content};
+  const r=await db.from('line_assistant_memories').insert(record)
+   .select('id,content,created_at').single();
+  return assertResult(r);
+ },
+ memories:async group=>assertResult(await db.from('line_assistant_memories')
+  .select('id,content,created_at').eq('group_id',group)
+  .order('created_at',{ascending:false}).limit(15)),
+ forget:async(group,prefix)=>{
+  const found=assertResult(await db.from('line_assistant_memories').select('id')
+   .eq('group_id',group).like('id',prefix+'%').limit(2));
+  if(!found?.length)return 'not_found';
+  if(found.length!==1)return 'ambiguous';
+  const r=await db.from('line_assistant_memories').delete()
+   .eq('group_id',group).eq('id',found[0].id).select('id').maybeSingle();
+  return assertResult(r)?'done':'not_found';
+ },
+ clearMemories:async group=>{
+  await assertResult(await db.from('line_assistant_memories').delete().eq('group_id',group));
+ },
  recent:async group=>assertResult(await db.from('line_assistant_messages')
   .select('message_id,content,is_note,created_at').eq('group_id',group)
   .gte('created_at',new Date(Date.now()-30*86400000).toISOString())
