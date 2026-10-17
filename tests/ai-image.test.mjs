@@ -21,7 +21,10 @@ test("image client accepts prompts but only submits after verified LINE login",(
  assert.match(page,/const inScope=location\.origin===endpoint\.origin/);
  assert.match(page,/if\(!inScope\)/);
  assert.match(page,/getIDToken\(\)/);
- assert.match(page,/data:image\/png;base64,/);
+ assert.match(page,/data\.imageUrl/);
+ assert.match(page,/chaylueklab-ai-images/);
+ assert.match(page,/URL\.createObjectURL\(file\)/);
+ assert.match(page,/file\.type!=="image\/png"/);
  assert.doesNotMatch(page,/\.innerHTML\s*=/);
 });
 test("image page module parses",()=>{
@@ -41,8 +44,17 @@ test("image endpoint enforces user identity, provider secret, daily budget and l
  assert.match(api,/gpt-image-1/);
  assert.match(api,/quality:"low"/);
  assert.match(api,/n:1/);
+ assert.match(api,/storage\.from\(BUCKET\)\.upload/);
+ assert.match(api,/createSignedUrl\(path,3600\)/);
+ assert.match(api,/CHAYLUEKLAB_AI_ENABLED/);
  assert.match(api,/MAX_BODY=8000/);
  assert.match(api,/setTimeout\(\(\)=>controller\.abort\(\),65000\)/);
+});
+test("generated images use a private PNG-only bucket",()=>{
+ const sql=read("supabase/migrations/20261017163500_private_ai_image_bucket.sql");
+ assert.match(sql,/values \('chaylueklab-ai-images', 'chaylueklab-ai-images', false/);
+ assert.match(sql,/array\['image\/png'\]/);
+ assert.match(api,/removeOlderImages/);
 });
 test("image quota is atomic and private",()=>{
  assert.match(migration,/enable row level security/);
