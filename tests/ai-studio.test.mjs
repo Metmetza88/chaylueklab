@@ -25,11 +25,14 @@ test('Prompt Builder includes all working form controls', () => {
   assert.match(page, /textContent=lines\.join/);
 });
 test('embedded prompt builder JavaScript parses and keeps provider credentials out of browser', () => {
-  const scripts = [...page.matchAll(/<script>([\s\S]*?)<\/script>/g)];
-  assert.equal(scripts.length, 1);
-  assert.doesNotThrow(() => new Script(scripts[0][1]));
-  assert.doesNotMatch(scripts[0][1], /(OPENAI_API_KEY|sk-proj-|AIzaSy)/);
-  assert.doesNotMatch(scripts[0][1], /\.innerHTML\s*=/);
+  const start = page.indexOf('<script>');
+  const end = page.indexOf('</script>', start);
+  assert.ok(start >= 0 && end > start, 'Expected one inline script');
+  assert.equal(page.indexOf('<script>', start + 1), -1, 'No additional inline scripts');
+  const script = page.slice(start + '<script>'.length, end);
+  assert.doesNotThrow(() => new Script(script));
+  assert.doesNotMatch(script, /(OPENAI_API_KEY|sk-proj-|AIzaSy)/);
+  assert.doesNotMatch(script, /\.innerHTML\s*=/);
 });
 test('website clearly labels service dependencies and avoids simulated AI results', () => {
   assert.match(page, /ไม่ได้เรียก AI API จริง/);
