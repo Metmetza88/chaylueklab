@@ -22,6 +22,8 @@ Deno.serve(async(req:Request)=>{
   try{userId=await lineIdentity(body);}
   catch{return error("line_verification_unavailable",503);}
   if(!userId)return error("line_login_required",401);
+  // Opt-in only: newly deployed endpoint cannot start spending provider credits by accident.
+  if (Deno.env.get("CHAYLUEKLAB_AI_ENABLED") !== "true") return error("feature_not_enabled",503);
   const key=Deno.env.get("OPENAI_API_KEY");
   if(!key)return error("provider_not_configured",503);
 
