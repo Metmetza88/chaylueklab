@@ -74,7 +74,7 @@ $("imageForm").addEventListener("submit",async e=>{
   const response=await fetch(api,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...auth,prompt,size:$("size").value}),signal:ctl.signal});
   const data=await response.json();
   if(!response.ok||!data.ok){
-   const labels={line_login_required:"LINE Login หมดอายุ",provider_not_configured:"ยังไม่ได้ตั้งค่า OPENAI_API_KEY ใน Supabase",daily_limit_reached:"ครบโควตาภาพวันนี้แล้ว",usage_limit_unavailable:"ฐานข้อมูลโควตา AI Image ยังไม่พร้อม",provider_unavailable:"AI Provider ยังไม่พร้อม",provider_busy:"AI Provider กำลังยุ่ง"};
+   const labels={feature_not_enabled:"ระบบสร้างภาพ AI ติดตั้งแล้ว แต่ยังไม่ได้เปิดใช้งานเพื่อป้องกันค่าใช้จ่าย",line_login_required:"LINE Login หมดอายุ",provider_not_configured:"ยังไม่ได้ตั้งค่า OPENAI_API_KEY ใน Supabase",daily_limit_reached:"ครบโควตาภาพวันนี้แล้ว",usage_limit_unavailable:"ฐานข้อมูลโควตา AI Image ยังไม่พร้อม",provider_unavailable:"AI Provider ยังไม่พร้อม",provider_busy:"AI Provider กำลังยุ่ง"};
    throw Error(labels[data.error]||"สร้างภาพไม่สำเร็จ ("+(data.error||response.status)+")");
   }
   if(typeof data.image!=="string"||!data.image.startsWith("data:image/png;base64,"))throw Error("ข้อมูลภาพไม่ถูกต้อง");
