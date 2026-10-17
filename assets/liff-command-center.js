@@ -20,7 +20,7 @@ export const COMMANDS = Object.freeze([
   {id:'business',label:'/ธุรกิจ',title:'ศูนย์บริการ CHAYLUEKLAB',aliases:['ธุรกิจ','บริการ','business'],action:'link',target:'./business.html'},
 ]);
 
-const normalized=text=>text.replace(/^\//,'').trim().replace(/\s+/g,' ').toLocaleLowerCase('th');
+const normalized=text=>text.trim().replace(/^\//,'').trim().replace(/\s+/g,' ').toLocaleLowerCase('th');
 
 export function resolveLiffCommand(input){
   if(typeof input!=='string'||input.length>160)return null;
