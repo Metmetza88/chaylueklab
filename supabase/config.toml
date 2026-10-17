@@ -24,3 +24,7 @@ verify_jwt = false
 # LINE Messaging webhook uses its own HMAC verification; scheduled dispatch uses a separate bearer secret.
 [functions.line-group-assistant]
 verify_jwt = false
+
+# AI Chat uses server-side LINE token verification and an atomic daily quota.
+[functions.ai-chat]
+verify_jwt = false
