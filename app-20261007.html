@@ -532,6 +532,8 @@ main{max-width:1280px;margin:auto}.desk-intro{margin:8px 0 22px}.desk-title{font
 
 <script>
 const LIFF_ID='2011681452-yexLrODy';
+const LIFF_ENDPOINT='https://metmetza88.github.io/chaylueklab/';
+function isLiffEndpoint(){const endpoint=new URL(LIFF_ENDPOINT);return location.origin===endpoint.origin && location.pathname.startsWith(endpoint.pathname)}
 const API='https://bxaplhrunxiadjsdobyl.supabase.co/functions/v1';
 const TASK_KEY='chaylueklab_cloud_tasks_v1';
 const MONEY_KEY='chaylueklab_finance_v1';
@@ -570,6 +572,15 @@ async function ensureLineSdk(){
 async function initLiff(){
   if(liffBusy)return;liffBusy=true;document.getElementById('connectLineBtn').disabled=true;document.getElementById('connectLineBtn').textContent='กำลังเชื่อมต่อ…';
   try{
+    if(!isLiffEndpoint()){
+      // LINE Login redirectUri must be under the registered LIFF endpoint.
+      // Never pass this foreign origin to liff.login(): LINE rejects it with HTTP 400.
+      const connect=document.getElementById('connectLineBtn');
+      connect.onclick=()=>location.assign('https://liff.line.me/'+LIFF_ID);
+      connectionNotice('เว็บนี้อยู่นอก LIFF Endpoint ที่ตั้งไว้ กรุณากด “เปิดผ่าน LINE” เพื่อเข้าสู่ระบบจากที่อยู่ที่ลงทะเบียน','เชื่อมต่อ LINE อย่างปลอดภัย');
+      document.getElementById('profileState').textContent='เปิดผ่าน LINE เพื่อเข้าสู่ระบบ';
+      return;
+    }
     if(authExpired){location.assign('https://liff.line.me/'+LIFF_ID);return}
     await ensureLineSdk();
     if(!liffReady){await waitForResult(liff.init({liffId:LIFF_ID}),20000,'เชื่อมต่อ LINE นานเกินไป กดลองอีกครั้งได้');liffReady=true}
@@ -612,7 +623,7 @@ async function initLiff(){
     document.getElementById('lineBadge').innerHTML='<span class="dot" style="background:#ef4444"></span><span>เชื่อมใหม่</span>';
     connectionNotice(/[ก-๙]/.test(e.message||'')?e.message:'เชื่อมต่อ LINE ไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วกดเชื่อมต่ออีกครั้ง หรือเปิดผ่าน LINE');
     deskError='กรุณาเชื่อมต่อ LINE เพื่อโหลดข้อมูลส่วนตัว';rulesError=deskError;renderLifeTools();
-  }finally{liffBusy=false;document.getElementById('connectLineBtn').disabled=false;document.getElementById('connectLineBtn').textContent='เชื่อมต่อ LINE อีกครั้ง'}
+  }finally{liffBusy=false;document.getElementById('connectLineBtn').disabled=false;document.getElementById('connectLineBtn').textContent=isLiffEndpoint()?'เชื่อมต่อ LINE อีกครั้ง':'เปิดผ่าน LINE'}
 }
 
 const apiErrors={consent_required:'กรุณายืนยันการต่ออายุอัตโนมัติก่อนสมัคร',already_subscribed:'มีรายการสมัครสมาชิกอยู่แล้ว กรุณาจัดการบัตรและการต่ออายุ',reminder_not_found:'ไม่พบการเตือนนี้ในบัญชีของคุณ',reminder_in_transit:'กำลังส่งแจ้งเตือน กรุณารอแล้วตรวจสอบอีกครั้ง',reminder_not_active:'การเตือนนี้ปิดหรือเลื่อนไปแล้ว กรุณาเปิดรายการใหม่',snoozed_reminder_removed:'รายการที่เลื่อนไปถูกลบแล้ว',request_id_conflict:'คำขอเดิมมีข้อมูลต่างกัน กรุณาเปิดรายการใหม่',invalid_snooze:'เลือกเวลาเลื่อนเตือนให้ถูกต้อง',invalid_snooze_time:'เลือกเวลาในอนาคตไม่เกิน 366 วัน',owner_only:'สำหรับบัญชีเจ้าของที่ยืนยันแล้วเท่านั้น',invalid_line_login:'การเข้าสู่ระบบ LINE หมดอายุ กรุณากดเชื่อมต่อ LINE อีกครั้ง',membership_required:'กรุณาตรวจสอบสิทธิ์ใช้งาน',account_suspended:'บัญชีถูกระงับสิทธิ์ กรุณาติดต่อผู้ดูแล',not_found_or_in_transit:'รายการไม่พบหรือกำลังส่งแจ้งเตือน กรุณาโหลดอีกครั้ง',billing_not_configured:'ยังไม่เชื่อมบัญชีรับชำระเงิน',admin_unavailable:'จัดการไม่สำเร็จ กรุณาลองใหม่',premium_required:'เครื่องมือนี้สำหรับ Plus หรือช่วงทดลองฟรี',recurring_limit_reached:'ตั้งเตือนประจำได้สูงสุด 10 รายการที่เปิดใช้งาน',debt_limit_reached:'ติดตามเงินค้างได้สูงสุด 100 รายการที่ยังไม่ปิดยอด',reminder_time_in_past:'เวลานี้ผ่านไปแล้ว กรุณาเลือกเวลาในอนาคต',request_payload_conflict:'ข้อมูลรายการเปลี่ยนไป กรุณาเพิ่มรายการใหม่',quota_exceeded:'โควตารอบเดือนนี้เต็มแล้ว ตรวจยอดได้ที่สิทธิ์ของฉัน',settlement_exceeds_balance:'ยอดชำระมากกว่ายอดคงเหลือ กรุณาโหลดรายการอีกครั้ง',debt_not_found:'ไม่พบเงินค้างนี้ กรุณาโหลดรายการอีกครั้ง',rule_not_found:'ไม่พบรายการประจำนี้ กรุณาโหลดอีกครั้ง',request_conflict:'ข้อมูลเปลี่ยนไป กรุณาเปิดรายการใหม่แล้วลองอีกครั้ง',invalid_debt:'ตรวจชื่อเรื่อง จำนวนเงิน และกำหนดชำระให้ถูกต้อง',invalid_settlement:'กรอกยอดชำระมากกว่า 0 และไม่เกินยอดคงเหลือ',invalid_schedule:'ตรวจเวลา วันในสัปดาห์ หรือวันที่ในเดือน',invalid_title:'กรอกชื่อเรื่องก่อนบันทึก',invalid_request:'ตรวจข้อมูลที่กรอกแล้วลองใหม่',invalid_finance:'ตรวจชื่อรายการ จำนวนเงิน และวันที่ให้ถูกต้อง',invalid_reminder:'ตรวจชื่อเรื่องและเลือกเวลาในอนาคต',not_found:'ไม่พบรายการนี้ กรุณาโหลดข้อมูลอีกครั้ง',server_error:'ระบบขัดข้องชั่วคราว กรุณาลองอีกครั้ง',checkout_in_progress:'กำลังเตรียมหน้าชำระเงิน รอสักครู่แล้วลองอีกครั้ง',billing_unavailable:'เปิดหน้าชำระเงินไม่สำเร็จ กรุณาลองใหม่',forbidden:'หน้านี้สำหรับผู้ดูแลระบบ',no_subscription:'ยังไม่พบรายการสมัครสมาชิก'};

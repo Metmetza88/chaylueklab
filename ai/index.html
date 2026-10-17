@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090b0e">
+<meta name="description" content="CHAYLUEKLAB AI Studio — คลัง Prompt, เครื่องมือเตรียมคำสั่ง และทางเข้า AI Video Studio สำหรับธุรกิจและครีเอเตอร์">
+<title>CHAYLUEKLAB AI Studio | ชายลึกลับ</title>
+<style>
+:root{color-scheme:dark;--bg:#090b0e;--panel:#12161b;--line:#30373b;--text:#f5f2e9;--muted:#a6afb0;--gold:#e4c68c;--mint:#95dec4;font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse 65% 35% at 90% 0%,#4e3e233a,transparent),var(--bg);color:var(--text);line-height:1.65}a{color:inherit}
+.container{width:min(1120px,calc(100% - 32px));margin:auto}
+header{position:sticky;top:0;z-index:10;border-bottom:1px solid #ffffff18;background:#090b0eea;backdrop-filter:blur(15px)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:72px}
+.wordmark{text-decoration:none;font-size:15px;font-weight:900;letter-spacing:.12em}.wordmark span{color:var(--gold)}
+.menu{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.menu a{font-size:13px;color:#c3cbca;text-decoration:none}
+.hero{padding:72px 0 42px}.eyebrow{font-size:11px;letter-spacing:.21em;font-weight:800;color:var(--gold)}
+h1{font-size:clamp(38px,7vw,76px);line-height:1.08;letter-spacing:-.05em;margin:14px 0 20px;max-width:760px}h1 em{font-style:normal;color:var(--gold)}.lead{max-width:650px;color:#b7bebe;font-size:17px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0}.btn,button{cursor:pointer;min-height:45px;padding:10px 17px;border:1px solid #5b5547;border-radius:12px;background:#1a1e22;color:var(--text);font:inherit;font-weight:700;text-decoration:none;display:inline-flex;justify-content:center;align-items:center;gap:8px}
+.btn.primary,button.primary{background:var(--gold);color:#151411;border-color:var(--gold)}button:disabled{opacity:.5;cursor:not-allowed}
+button:hover,.btn:hover{border-color:var(--gold)}a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
+.note{font-size:13px;color:var(--muted)}.status{font-size:12px;color:var(--mint);font-weight:700}
+section{padding:22px 0 40px}h2{font-size:clamp(25px,4vw,36px);letter-spacing:-.035em;margin:0 0 8px}h3{margin:5px 0 9px;font-size:19px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.panel{background:linear-gradient(150deg,#171c21,#101318);border:1px solid var(--line);border-radius:20px;padding:24px}
+.panel p{color:#b0b8b9}.tag{display:inline-flex;font-size:11px;color:var(--mint);border:1px solid #365349;border-radius:999px;padding:3px 9px;margin:0 0 10px}.tag.demo{color:#e2c38f;border-color:#645435}
+.link{color:var(--gold);text-decoration:none;font-weight:750;font-size:13px}
+.builder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+label{display:block;font-size:13px;font-weight:700;margin:12px 0 7px}
+input,textarea,select{font:inherit;color:var(--text);width:100%;background:#0b0f13;border:1px solid #4d565b;border-radius:10px;padding:12px}
+textarea{resize:vertical;min-height:98px}#output{min-height:310px;white-space:pre-wrap;overflow-wrap:anywhere;background:#090d11;border:1px solid #3a494b;padding:18px;border-radius:12px;font-size:13px;line-height:1.8}
+.templates{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}.template{min-height:36px;padding:6px 11px;font-size:12px;background:#202729}.template[aria-pressed=true]{border-color:var(--gold);color:var(--gold)}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:12px;padding:30px 0 60px}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.builder{grid-template-columns:1fr}.hero{padding-top:42px}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.menu{gap:9px}.menu a{font-size:11px}.panel{padding:17px}.hero{padding-top:35px}.actions .btn{flex:1}}
+</style>
+</head>
+<body>
+<header><div class="container bar"><a class="wordmark" href="../business.html">CHAYLUEKLAB <span>AI</span></a><nav class="menu" aria-label="เมนูหลัก"><a href="#tools">เครื่องมือ</a><a href="#builder">Prompt Builder</a><a href="../ai-gallery/">คลัง Prompt</a><a href="../business.html">เว็บแบรนด์ ↗</a></nav></div></header>
+<main class="container">
+<div class="hero"><div class="eyebrow">CREATIVE INTELLIGENCE · FIRST CHAPTER</div><h1>เปลี่ยนไอเดีย<br>ให้เป็น <em>คำสั่งที่พร้อมใช้</em></h1><p class="lead">ศูนย์รวมเครื่องมือ AI ของ CHAYLUEKLAB สำหรับร้านค้า ครีเอเตอร์ และงานแบรนด์ สร้าง Prompt ที่นำไปใช้ต่อได้จริง พร้อมเข้าถึงสตูดิโอและเครื่องมือที่มีอยู่ในเว็บเดิม</p><div class="actions"><a class="btn primary" href="#builder">เริ่มสร้าง Prompt →</a><a class="btn" href="../ai-gallery/">เปิด Prompt Gallery</a></div><div class="status">● Prompt Builder และคลัง Prompt ใช้ได้โดยไม่ต้องสมัครสมาชิก</div><p class="note">การสร้างภาพ/วิดีโอด้วย AI จริงขึ้นอยู่กับการเชื่อมต่อ API และสิทธิ์ของบัญชีผู้ใช้ ไม่ใช่ความสามารถของ Prompt Builder นี้</p></div>
+<section id="tools"><div class="eyebrow">OUR TOOLS</div><h2>เลือกเครื่องมือให้ตรงงาน</h2><div class="grid">
+<article class="panel"><span class="tag demo">LINE Login + AI API</span><h3>AI Chat</h3><p>แชต AI หลายโมเดล ฝั่งเซิร์ฟเวอร์ตรวจ LINE และจำกัดโควตารายวัน ยังต้องตั้งค่า Provider เพื่อใช้งานจริง</p><a class="link" href="../ai-chat/">เปิด AI Chat →</a></article>
+<article class="panel"><span class="tag demo">LINE Login + AI API</span><h3>AI Image Studio</h3><p>สร้างภาพจากข้อความด้วย AI Provider ฝั่งเซิร์ฟเวอร์ ต้องตั้งค่า OPENAI_API_KEY และโควตาก่อนใช้งานจริง</p><a class="link" href="../ai-image/">เปิด AI Image Studio →</a></article>
+<article class="panel"><span class="tag">พร้อมใช้งาน</span><h3>Prompt Gallery</h3><p>ค้นหา เลือกหมวด และคัดลอก Prompt สำหรับภาพ วิดีโอ สินค้า และแฟชั่น</p><a class="link" href="../ai-gallery/">เปิดคลัง Prompt →</a></article>
+<article class="panel"><span class="tag">พร้อมใช้งาน</span><h3>Prompt Builder</h3><p>เตรียมคำสั่งภาพและวิดีโอโดยระบุรายละเอียดสินค้าจริง อัตราส่วนภาพ สไตล์ และข้อห้าม</p><a class="link" href="#builder">สร้างคำสั่ง →</a></article>
+<article class="panel"><span class="tag demo">ต้องมี Backend ที่พร้อมใช้งาน</span><h3>AI Video Studio</h3><p>หน้าอัปโหลดรูป ใส่ Prompt ส่งงานวิดีโอ และติดตามสถานะผ่านระบบหลังบ้านเดิม</p><a class="link" href="../ai-video.html">เปิด Video Studio →</a></article>
+<article class="panel"><span class="tag demo">ตัวอย่างในเบราว์เซอร์</span><h3>AI Money Studio</h3><p>ชุดเครื่องมือช่วยเขียนและวางคอนเทนต์ขายสินค้า รุ่นทดลองยังไม่ได้เรียก AI API จริง</p><a class="link" href="../ai-money-studio/">เปิด Money Studio →</a></article>
+<article class="panel"><span class="tag demo">ต้องใช้ LINE Login</span><h3>Life OS / LIFF</h3><p>พื้นที่ส่วนตัวสำหรับงาน การเงิน และสมาชิก ระบบนี้แยกจากหน้าสตูดิโอสาธารณะ</p><a class="link" href="../app-20261007.html">เปิด Life OS →</a></article>
+<article class="panel"><span class="tag">บริการของแบรนด์</span><h3>AI Sales Boost</h3><p>บริการผลิตภาพโปรโมต แคปชั่น และสื่อขายสินค้าแบบมีผู้ดูแลงาน</p><a class="link" href="../ai-sales-boost/">ดูบริการ →</a></article>
+</div></section>
+<section id="builder"><div class="eyebrow">FREE TOOL · NO LOGIN REQUIRED</div><h2>Prompt Builder</h2><p class="note">กรอกข้อมูลแล้วกด “สร้าง Prompt” จะได้ข้อความที่คัดลอกไปใช้กับเครื่องมือ AI ที่คุณเลือก โดยไม่มีการส่งข้อมูลขึ้นเซิร์ฟเวอร์</p>
+<div class="builder">
+<div class="panel">
+<label for="subject">สินค้า / ตัวแบบ / เรื่องราว *</label><textarea id="subject" maxlength="900" placeholder="เช่น เสื้อ CHAYLUEKLAB สี Forest คอปกครีม ลายและโลโก้ตามภาพต้นฉบับ" required></textarea>
+<label for="goal">ประเภทงาน</label><select id="goal"><option value="product">ภาพสินค้า</option><option value="fashion">ภาพแฟชั่น</option><option value="poster">โปสเตอร์โฆษณา</option><option value="video">วิดีโอสินค้า</option><option value="sticker">สติกเกอร์ LINE</option></select>
+<label for="style">อารมณ์ภาพ / สไตล์</label><select id="style"><option value="studio">สตูดิโอมินิมอล</option><option value="cinema">ภาพยนตร์สมจริง</option><option value="retro">วินเทจยุค 90</option><option value="premium">พรีเมียม เรียบหรู</option></select>
+<label for="ratio">อัตราส่วน</label><select id="ratio"><option>4:5</option><option>3:4</option><option>1:1</option><option>9:16</option><option>16:9</option></select>
+<label for="lock">รายละเอียดที่ต้องรักษา / ข้อห้าม</label><textarea id="lock" maxlength="600" placeholder="เช่น ห้ามเปลี่ยนโลโก้ คอปก ลายเสื้อ หรือผสมสีของสินค้า"></textarea>
+<div class="templates" role="group" aria-label="ตัวอย่างงาน">
+<button type="button" class="template" data-example="shirt">เสื้อ FIRST CHAPTER</button><button type="button" class="template" data-example="parcel">ร้านรับส่งพัสดุ</button><button type="button" class="template" data-example="sticker">สติกเกอร์ร้าน</button>
+</div>
+<div class="actions"><button type="button" class="primary" id="generate">สร้าง Prompt</button><button type="button" id="reset">ล้างข้อมูล</button></div>
+</div>
+<div class="panel"><h3>Prompt ของคุณ</h3><p class="note">ข้อความที่สร้างจะปรากฏด้านล่าง ภาษาอังกฤษเหมาะกับเครื่องมือสร้างภาพและวิดีโอหลายระบบ</p><div id="output" role="status" aria-live="polite">กรอกคำอธิบาย แล้วกด “สร้าง Prompt”</div><div class="actions"><button type="button" class="primary" id="copy" disabled>คัดลอก Prompt</button><button type="button" id="download" disabled>บันทึก .txt</button></div><p id="feedback" class="note" aria-live="polite"></p><p class="note">แนะนำให้ตรวจรายละเอียดสินค้าอีกครั้งก่อนนำไปสร้างภาพหรือวิดีโอจริง ระบบไม่ได้ตรวจความถูกต้องของภาพอ้างอิงอัตโนมัติ</p></div>
+</div></section>
+</main><footer><div class="container">© CHAYLUEKLAB · FIRST CHAPTER <span style="float:right">CREATIVE · TECHNOLOGY · FASHION</span></div></footer>
+<script>
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const scenes = {
+product:"High-end commercial product photography, realistic proportions, accurate textures, clean composition, soft professional lighting.",
+fashion:"Editorial fashion photography, natural model pose, realistic garment drape, detailed fabric texture.",
+poster:"Premium commercial advertising poster, striking but legible composition, clear negative space reserved for headline.",
+video:"Cinematic product video with smooth realistic motion, coherent shots, no sudden morphing, professional commercial pacing.",
+sticker:"LINE sticker artwork with clear expression, crisp silhouette, transparent background, wide safe margins and readable Thai typography."
+};
+const styles = {studio:"minimal studio aesthetic",cinema:"cinematic photorealism",retro:"1990s analogue film aesthetic",premium:"refined premium minimalism"};
+const examples = {
+shirt:{subject:"CHAYLUEKLAB FIRST CHAPTER football-style polo jersey, Forest green body, cream collar and contrasting sleeve stripes; preserve original garment and emblem from supplied reference",goal:"fashion",style:"retro",ratio:"3:4",lock:"Do not change the original collar, embroidered emblem, lettering, shoulder stripes, textile pattern, fit or colorway. No mixed variants."},
+parcel:{subject:"Small independent Thai parcel pickup and online-services storefront in Satuek market; preserve the real room dimensions and entrance from reference photo",goal:"poster",style:"studio",ratio:"4:5",lock:"Respect original walls, pillars, doors and width. Do not expand the room or invent additional space."},
+sticker:{subject:"Friendly illustrated shop characters for ร้าน พ.สมนึก 2&3, expressing thanks and greetings",goal:"sticker",style:"premium",ratio:"1:1",lock:"Keep Thai text fully readable, true alpha background, clean edge, no cropped characters or words."}
+};
+function build(){
+const subject=$("subject").value.trim();
+if(!subject){$("feedback").textContent="กรุณาระบุสินค้า ตัวแบบ หรือเรื่องราวก่อน";$("subject").focus();return}
+const lock=$("lock").value.trim(); const goal=$("goal").value;const ratio=$("ratio").value;
+const lines=[scenes[goal],"Subject and specific details: "+subject,"Art direction: "+styles[$("style").value]+".","Output aspect ratio: "+ratio+".","Maintain realistic scale, consistent identity, and accurate visual details."];
+if(lock)lines.push("STRICT REFERENCE CONSTRAINTS: "+lock+".");
+lines.push("Do not invent labels, marks, measurements or claims not supplied. Deliver a clean production-ready composition.");
+$("output").textContent=lines.join("\n\n");$("copy").disabled=false;$("download").disabled=false;$("feedback").textContent="สร้าง Prompt แล้ว — คัดลอกหรือบันทึกไฟล์ได้";
+}
+$("generate").addEventListener("click",build);
+$("reset").addEventListener("click",()=>{["subject","lock"].forEach(id=>$(id).value="");$("goal").value="product";$("style").value="studio";$("ratio").value="4:5";$("output").textContent="กรอกคำอธิบาย แล้วกด “สร้าง Prompt”";$("copy").disabled=true;$("download").disabled=true;$("feedback").textContent=""});
+document.querySelectorAll("[data-example]").forEach(button=>button.addEventListener("click",()=>{
+const e=examples[button.dataset.example];Object.keys(e).forEach(k=>$(k).value=e[k]);build();
+}));
+$("copy").addEventListener("click",async()=>{try{await navigator.clipboard.writeText($("output").textContent);$("feedback").textContent="คัดลอก Prompt แล้ว"}catch(e){$("feedback").textContent="คัดลอกอัตโนมัติไม่สำเร็จ กรุณาเลือกข้อความเพื่อคัดลอกเอง"}});
+$("download").addEventListener("click",()=>{const blob=new Blob([$("output").textContent],{type:"text/plain;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="chaylueklab-prompt.txt";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+})();
+</script>
+</body></html>
