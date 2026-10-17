@@ -26,6 +26,53 @@ linear-gradient(135deg,#111214 0%,#0b0d0f 60%,#17130d 100%);padding:64px;display
 .mobileLife{display:none;margin-left:auto}
 @media(max-width:900px){.links{display:none}.nav .btn.gold{display:none}.mobileLife{display:inline-flex}.hero{padding-top:16px}.heroBox{min-height:480px;padding:32px 24px;border-radius:24px}.hero h1{font-size:48px}.trust{grid-template-columns:1fr 1fr}.collection{grid-template-columns:1fr}.services{grid-template-columns:1fr 1fr}.workgrid{grid-template-columns:1fr 1fr}.work.big{grid-column:1/-1}.cta{flex-direction:column;align-items:flex-start}}
 @media(max-width:560px){.wrap{width:min(100% - 22px,1180px)}.navin{height:62px}.brand{font-size:14px}.heroBox{min-height:420px;padding:26px 18px}.hero h1{font-size:39px}.lead{font-size:14px}.section{padding:44px 0}.head{flex-direction:column;align-items:flex-start}.shirts{gap:6px}.shirt{min-height:180px;padding:10px}.collectionMain{padding:18px}.services{grid-template-columns:1fr}.workgrid{grid-template-columns:1fr}.work.big{grid-column:auto}.cta{padding:25px 20px}}
+</style><style>
+/* FIRST CHAPTER editorial storefront */
+.shop-section{background:radial-gradient(ellipse 65% 45% at 90% 6%,rgba(184,144,79,.13),transparent),#0a0a0b;padding:66px 0 84px}
+.shop-kicker{font-size:11px;letter-spacing:.32em;font-weight:800;color:#d7b980}
+.shop-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin:10px 0 28px}
+.shop-heading h2{font:normal clamp(42px,6.8vw,90px)/.95 Georgia,'Times New Roman',serif;letter-spacing:-.07em;margin:0}
+.shop-heading h2 i{font-weight:400;color:#d7b980}
+.shop-heading p{max-width:330px;color:#b7b5af;line-height:1.8;font-size:14px;margin:0}
+.shop-banner{position:relative;isolation:isolate;min-height:430px;display:grid;grid-template-columns:.9fr 1.1fr;border:1px solid #564a37;border-radius:10px;overflow:hidden;background:#141514}
+.shop-banner-copy{padding:clamp(28px,4.5vw,65px);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:0;background:linear-gradient(125deg,#171916,#0e100e)}
+.shop-banner-copy:before{content:'CHAYLUEKLAB';font:normal 10px Georgia,serif;letter-spacing:.27em;color:#c4baaa}
+.shop-banner-copy h3{font:normal clamp(42px,6vw,80px)/.99 Georgia,serif;letter-spacing:-.055em;margin:28px 0}
+.shop-banner-copy h3 em{color:#d7b980;font-style:italic}
+.shop-banner-copy p{color:#bcbcb5;line-height:1.8;max-width:400px;font-size:14px;margin:0 0 23px}
+.shop-image{position:relative;min-height:400px;overflow:hidden;background:#152019}
+.shop-image img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;object-position:center}
+.shop-image:after{content:'FIRST CHAPTER  /  EST. 2026';position:absolute;right:18px;bottom:14px;color:#fff;font-size:10px;letter-spacing:.18em;text-shadow:0 1px 8px #000}
+.shop-buy{display:inline-flex;align-items:center;gap:16px;min-height:48px;background:#e5d4ab;color:#181815;border-radius:3px;padding:0 22px;font-weight:800;font-size:13px;text-decoration:none;transition:transform .2s,background .2s}
+.shop-buy:hover{background:#fff0c9;transform:translateY(-2px)}
+.shop-buy:focus-visible,.product-link:focus-visible{outline:3px solid #e5d4ab;outline-offset:4px}
+.shop-subheading{margin:54px 0 23px;display:flex;justify-content:space-between;gap:20px;align-items:end;border-bottom:1px solid #444038;padding-bottom:16px}
+.shop-subheading h3{font:normal clamp(30px,4vw,50px) Georgia,serif;margin:5px 0 0}
+.shop-subheading span{color:#999b95;font-size:12px;line-height:1.6}
+.product-grid-first{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.product-card-first{background:#111313;border:1px solid #353735;overflow:hidden;min-width:0;transition:border-color .25s,transform .25s}
+.product-card-first:hover{border-color:#a68c5a;transform:translateY(-4px)}
+.product-picture{position:relative;aspect-ratio:4/4.5;background:radial-gradient(ellipse at 45% 38%,#333a35 0%,#151819 55%,#0b0d0e 100%);display:grid;place-items:center;overflow:hidden}
+.product-card-first:nth-child(1) .product-picture{background:radial-gradient(ellipse at 50% 45%,#58554d 0%,#24221e 54%,#111212 100%)}
+.product-card-first:nth-child(3) .product-picture{background:radial-gradient(ellipse at 50% 43%,#204a3b 0%,#101a19 58%,#0b0d0c 100%)}
+.product-picture:before{content:'FIRST CHAPTER';position:absolute;top:18px;left:18px;font-size:9px;letter-spacing:.25em;color:#cfc8b8;z-index:1}
+.product-picture svg{width:87%;height:87%;filter:drop-shadow(0 24px 20px #0008);transition:transform .3s}
+.product-card-first:hover .product-picture svg{transform:scale(1.04)}
+.product-picture .ivory-j{--fabric:#eadfc9;--linewear:#c8bca8;--accent:#202322;--print:#202322;--collar:#202322}
+.product-picture .noir-j{--fabric:#151716;--linewear:#30312e;--accent:#e8e1d5;--print:#f1ece3;--collar:#eee7d9}
+.product-picture .forest-j{--fabric:#0a4837;--linewear:#1f604c;--accent:#efe6cf;--print:#f3e8d8;--collar:#f2ead9}
+.product-details{padding:22px 20px 24px}
+.product-number{font-size:10px;letter-spacing:.22em;color:#b9a078;font-weight:800}
+.product-details h4{font:normal 33px Georgia,serif;letter-spacing:.06em;margin:8px 0 4px}
+.product-details p{font-size:12px;color:#aaa9a3;margin:0 0 20px;min-height:38px;line-height:1.7}
+.product-link{display:flex;align-items:center;justify-content:space-between;text-decoration:none;border-top:1px solid #373936;padding-top:15px;color:#f0debb;font-size:12px;font-weight:800}
+.shop-note{margin:24px 0 0;display:flex;gap:8px;align-items:start;color:#96968d;font-size:12px;line-height:1.7}
+.shop-value{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:42px}
+.shop-value div{padding:18px 0;border-top:1px solid #776443}
+.shop-value b{display:block;font:normal 19px Georgia,serif;color:#e9d9b7;margin-bottom:7px}
+.shop-value span{font-size:12px;color:#979a95;line-height:1.7}
+@media(max-width:850px){.shop-heading{align-items:start;flex-direction:column}.shop-banner{grid-template-columns:1fr}.shop-image{min-height:390px}.shop-heading h2{font-size:clamp(42px,9vw,68px)}}
+@media(max-width:600px){.shop-section{padding:46px 0 56px}.shop-banner-copy{padding:34px 24px}.shop-banner-copy h3{font-size:52px;margin:22px 0}.shop-image{min-height:310px}.shop-subheading{margin-top:37px;align-items:start;flex-direction:column}.product-grid-first{gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}.product-card-first:last-child{grid-column:1/-1;max-width:360px;width:100%;margin:0 auto}.product-picture:before{top:10px;left:9px;font-size:8px}.product-details{padding:15px 12px 18px}.product-details h4{font-size:26px}.shop-value{grid-template-columns:1fr;gap:0}}
 </style>
 </head>
 <body>
@@ -48,15 +95,19 @@ linear-gradient(135deg,#111214 0%,#0b0d0f 60%,#17130d 100%);padding:64px;display
 </div>
 </div></div></section>
 
-<section id="products" class="section"><div class="wrap">
-<div class="head"><div><div class="eyebrow">PRODUCTS / FIRST CHAPTER</div><h2>สินค้าของเรา</h2></div><p>คุมภาพลักษณ์เรียบ ดำ ทอง และใช้งานได้จริง ตั้งแต่เสื้อไปจนถึงสินค้าดิจิทัล</p></div>
-<div class="collection">
-<article class="collectionMain"><div><div class="eyebrow">FIRST CHAPTER</div><h3 style="font-size:32px;margin:8px 0">FOOTBALL CULTURE FOR EVERYDAY</h3></div>
-<div class="shirts"><div class="shirt ivory"><b>01 IVORY</b><span>ครีม / ดำ / ทอง</span></div><div class="shirt noir"><b>02 NOIR</b><span>ดำ / ทองหม่น</span></div><div class="shirt forest"><b>03 FOREST</b><span>เขียวเข้ม / ครีม</span></div></div>
-</article>
-<div class="sideStack"><article class="sideCard"><div><div class="eyebrow">DIGITAL PRODUCT</div><h3>Chay.Luek.Lab</h3><p>E‑Book, Template และเครื่องมือสำหรับ AI, LINE และ Automation</p></div><a class="btn dark" href="#contact">ดูรายละเอียด</a></article>
-<article class="sideCard"><div><div class="eyebrow">AI LIFE OS</div><h3>งาน · เตือน · เงิน</h3><p>เปิดระบบส่วนตัวผ่าน LINE โดยแยกจากเว็บหลักชัดเจน</p></div><a class="btn gold" href="https://liff.line.me/2011681452-yexLrODy/app-20261007.html">เปิดระบบ</a></article></div>
-</div></div></section>
+<section id="products" class="section shop-section"><div class="wrap">
+<div class="shop-kicker">CHAYLUEKLAB / COLLECTION 001</div>
+<div class="shop-heading"><h2>FIRST <i>CHAPTER.</i></h2><p>เสื้อที่มีเรื่องราวของตัวเอง — ความเรียบ ความเท่ และกลิ่นอาย Retro Football ที่ใส่ได้จริงในทุกวัน</p></div>
+<div class="shop-banner"><div class="shop-banner-copy"><h3>MORE THAN<br><em>A BRAND.</em></h3><p>Football culture meets everyday style. คอลเลกชันแรกของ CHAYLUEKLAB ที่ออกแบบเพื่อให้คุณเป็นตัวเองในแบบที่ชอบ</p><a class="shop-buy" href="#first-colors">สำรวจทั้ง 3 สี <span aria-hidden="true">↗</span></a></div><div class="shop-image"><img src="./assets/cinematic-hero.webp" loading="lazy" decoding="async" alt="CHAYLUEKLAB ภาพแคมเปญคอลเลกชัน FIRST CHAPTER"></div></div>
+<div id="first-colors" class="shop-subheading"><div><div class="shop-kicker">THE ORIGINAL THREE</div><h3>Choose your identity.</h3></div><span>3 COLORWAYS · UNISEX STYLE<br>IVORY / NOIR / FOREST</span></div>
+<div class="product-grid-first">
+<article class="product-card-first"><div class="product-picture"><svg viewBox="0 0 280 310" aria-hidden="true" focusable="false" class="ivory-j"><defs><pattern id="weave" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M5 0v16M11 0v16" stroke="var(--linewear)" stroke-width="2" opacity=".45"/></pattern></defs><path d="M89 33L108 23H172L191 33L246 57L272 118L234 138L214 115L210 282H70L66 115L46 138L8 118L34 57Z" fill="var(--fabric)" stroke="#ffffff18" stroke-width="2"/><path d="M89 33L108 23H172L191 33L246 57L272 118L234 138L214 115L210 282H70L66 115L46 138L8 118L34 57Z" fill="url(#weave)"/><path d="M91 33l-48 26-24 55 27 13 20-38M189 33l48 26 24 55-27 13-20-38" fill="none" stroke="var(--accent)" stroke-width="7" opacity=".95"/><path d="M96 32l-51 28-20 51M184 32l51 28 20 51" fill="none" stroke="var(--fabric)" stroke-width="3" opacity=".9"/><path d="M107 23l33 32 33-32 18 10-51 57-51-57Z" fill="var(--collar)"/><path d="M118 23l22 28 22-28" fill="none" stroke="var(--fabric)" stroke-width="5"/><path d="M75 267h130" stroke="var(--linewear)" stroke-width="3"/><path d="M184 109l12-7 12 7-4 17h-16z" fill="var(--print)"/><path d="M192 105l4 6h-8z" fill="var(--fabric)"/><text x="140" y="170" fill="var(--print)" text-anchor="middle" font-family="Georgia,serif" font-weight="bold" font-size="22" textLength="158" lengthAdjust="spacingAndGlyphs">CHAYLUEKLAB</text><path d="M88 177q52 7 104 0" stroke="var(--print)" stroke-width="1" fill="none" opacity=".8"/></svg></div><div class="product-details"><span class="product-number">01 / ORIGINAL COLORWAY</span><h4>IVORY</h4><p>สีครีม / คอปกเข้ม · เรียบสะอาด แต่งตัวง่าย</p><a class="product-link" href="./contact-line.html#contact-brand" aria-label="สอบถามและสั่งซื้อสี IVORY">สอบถามไซซ์และสั่งซื้อ <span aria-hidden="true">↗</span></a></div></article>
+<article class="product-card-first"><div class="product-picture"><svg viewBox="0 0 280 310" aria-hidden="true" focusable="false" class="noir-j"><defs><pattern id="weave" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M5 0v16M11 0v16" stroke="var(--linewear)" stroke-width="2" opacity=".45"/></pattern></defs><path d="M89 33L108 23H172L191 33L246 57L272 118L234 138L214 115L210 282H70L66 115L46 138L8 118L34 57Z" fill="var(--fabric)" stroke="#ffffff18" stroke-width="2"/><path d="M89 33L108 23H172L191 33L246 57L272 118L234 138L214 115L210 282H70L66 115L46 138L8 118L34 57Z" fill="url(#weave)"/><path d="M91 33l-48 26-24 55 27 13 20-38M189 33l48 26 24 55-27 13-20-38" fill="none" stroke="var(--accent)" stroke-width="7" opacity=".95"/><path d="M96 32l-51 28-20 51M184 32l51 28 20 51" fill="none" stroke="var(--fabric)" stroke-width="3" opacity=".9"/><path d="M107 23l33 32 33-32 18 10-51 57-51-57Z" fill="var(--collar)"/><path d="M118 23l22 28 22-28" fill="none" stroke="var(--fabric)" stroke-width="5"/><path d="M75 267h130" stroke="var(--linewear)" stroke-width="3"/><path d="M184 109l12-7 12 7-4 17h-16z" fill="var(--print)"/><path d="M192 105l4 6h-8z" fill="var(--fabric)"/><text x="140" y="170" fill="var(--print)" text-anchor="middle" font-family="Georgia,serif" font-weight="bold" font-size="22" textLength="158" lengthAdjust="spacingAndGlyphs">CHAYLUEKLAB</text><path d="M88 177q52 7 104 0" stroke="var(--print)" stroke-width="1" fill="none" opacity=".8"/></svg></div><div class="product-details"><span class="product-number">02 / ORIGINAL COLORWAY</span><h4>NOIR</h4><p>สีดำ / คอปกสีอ่อน · เข้ม เท่ มินิมอล</p><a class="product-link" href="./contact-line.html#contact-brand" aria-label="สอบถามและสั่งซื้อสี NOIR">สอบถามไซซ์และสั่งซื้อ <span aria-hidden="true">↗</span></a></div></article>
+<article class="product-card-first"><div class="product-picture"><svg viewBox="0 0 280 310" aria-hidden="true" focusable="false" class="forest-j"><defs><pattern id="weave" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M5 0v16M11 0v16" stroke="var(--linewear)" stroke-width="2" opacity=".45"/></pattern></defs><path d="M89 33L108 23H172L191 33L246 57L272 118L234 138L214 115L210 282H70L66 115L46 138L8 118L34 57Z" fill="var(--fabric)" stroke="#ffffff18" stroke-width="2"/><path d="M89 33L108 23H172L191 33L246 57L272 118L234 138L214 115L210 282H70L66 115L46 138L8 118L34 57Z" fill="url(#weave)"/><path d="M91 33l-48 26-24 55 27 13 20-38M189 33l48 26 24 55-27 13-20-38" fill="none" stroke="var(--accent)" stroke-width="7" opacity=".95"/><path d="M96 32l-51 28-20 51M184 32l51 28 20 51" fill="none" stroke="var(--fabric)" stroke-width="3" opacity=".9"/><path d="M107 23l33 32 33-32 18 10-51 57-51-57Z" fill="var(--collar)"/><path d="M118 23l22 28 22-28" fill="none" stroke="var(--fabric)" stroke-width="5"/><path d="M75 267h130" stroke="var(--linewear)" stroke-width="3"/><path d="M184 109l12-7 12 7-4 17h-16z" fill="var(--print)"/><path d="M192 105l4 6h-8z" fill="var(--fabric)"/><text x="140" y="170" fill="var(--print)" text-anchor="middle" font-family="Georgia,serif" font-weight="bold" font-size="22" textLength="158" lengthAdjust="spacingAndGlyphs">CHAYLUEKLAB</text><path d="M88 177q52 7 104 0" stroke="var(--print)" stroke-width="1" fill="none" opacity=".8"/></svg></div><div class="product-details"><span class="product-number">03 / ORIGINAL COLORWAY</span><h4>FOREST</h4><p>สีเขียวเข้ม / คอปกสีอ่อน · โดดเด่นแต่คลาสสิก</p><a class="product-link" href="./contact-line.html#contact-brand" aria-label="สอบถามและสั่งซื้อสี FOREST">สอบถามไซซ์และสั่งซื้อ <span aria-hidden="true">↗</span></a></div></article>
+</div>
+<p class="shop-note">ⓘ ภาพเสื้อแบบกราฟิกใช้แสดงโทนสีและรูปแบบเบื้องต้น โปรดสอบถามภาพสินค้าจริง ไซซ์ ราคา และสต๊อกปัจจุบันก่อนสั่งซื้อ</p>
+<div class="shop-value"><div><b>01 · Retro Football</b><span>ดีไซน์สปอร์ตวินเทจสำหรับการแต่งตัวในชีวิตประจำวัน</span></div><div><b>02 · Three Originals</b><span>สามเฉดสีหลัก Ivory, Noir และ Forest ไม่ผสมสี</span></div><div><b>03 · Everyday Identity</b><span>More than a brand. It's a lifestyle.</span></div></div>
+</div></section>
 
 <section id="services" class="section"><div class="wrap">
 <div class="head"><div><div class="eyebrow">AI / WEB / BUSINESS SYSTEM</div><h2>งาน AI และเว็บไซต์</h2></div><p>เลือกเฉพาะสิ่งที่ต้องใช้ ไม่ยัดทุกอย่างไว้หน้าเดียว</p></div>
