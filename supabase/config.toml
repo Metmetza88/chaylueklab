@@ -28,3 +28,7 @@ verify_jwt = false
 # AI Chat uses server-side LINE token verification and an atomic daily quota.
 [functions.ai-chat]
 verify_jwt = false
+
+# AI image generation verifies LINE identity and uses its own daily quota.
+[functions.ai-image]
+verify_jwt = false
