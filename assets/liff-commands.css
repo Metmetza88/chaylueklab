@@ -1,0 +1,20 @@
+/* Small command palette for the existing CHAYLUEKLAB Life OS page, LINE mobile-first. */
+.liff-commands{padding:18px;border:1px solid rgba(232,210,163,.24);border-radius:19px;background:linear-gradient(145deg,#111b18,#0b1111);box-shadow:0 12px 28px #0003}
+.liff-command-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px}
+.liff-command-head h2{font-size:18px;line-height:1.4;font-weight:850;color:#f3e6ca;margin:0}
+.liff-command-head p{color:#a7bbb2;font-size:12px;line-height:1.6;margin:5px 0 0}
+.liff-command-form{display:flex;gap:8px;align-items:stretch}
+.liff-command-form input{width:100%;min-width:0;border:1px solid #566357;border-radius:12px;padding:12px;background:#07100d;color:#fff;font-size:16px}
+.liff-command-form input:focus-visible{outline:2px solid #e8d2a3;outline-offset:2px}
+.liff-command-form button{min-width:78px;padding:9px 14px;border:0;border-radius:12px;background:#e8d2a3;color:#0f1714;font-size:14px;font-weight:850}
+.liff-command-quick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:11px}
+.liff-command-quick button{min-height:48px;border-radius:12px;border:1px solid #374a40;background:#15251e;color:#e4f2e8;font-size:13px;font-weight:750;padding:8px 5px;cursor:pointer}
+.liff-command-quick button:focus-visible,.liff-command-quick button:hover{border-color:#e8d2a3;outline-offset:2px}
+.liff-command-status{min-height:24px;color:#d9d4b7;font-size:12px;line-height:1.5;margin:10px 0 0}
+.liff-command-help{border-top:1px solid #354139;margin-top:10px;padding-top:12px}
+.liff-command-help summary{cursor:pointer;color:#d6c59e;font-size:13px;font-weight:750;min-height:28px}
+.liff-command-help ul{list-style:none;padding:0;margin:9px 0;display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.liff-command-item{width:100%;text-align:left;padding:10px 9px;background:#13231b;color:#e2eee6;border:1px solid #33463b;border-radius:9px;font-size:12px;line-height:1.45;cursor:pointer}
+.liff-command-note{color:#99aba0;font-size:11px;line-height:1.7;margin:7px 0 0}
+@media(max-width:390px){.liff-command-quick{grid-template-columns:repeat(2,minmax(0,1fr))}.liff-command-help ul{grid-template-columns:1fr}}
+@media(min-width:900px){.liff-command-quick{grid-template-columns:repeat(4,minmax(0,1fr))}}
