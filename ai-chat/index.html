@@ -93,7 +93,7 @@ $("chatForm").addEventListener("submit",async event=>{
   const response=await fetch(apiUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...auth,model:$("model").value,messages:pending}),signal:controller.signal});
   const result=await response.json();
   if(!response.ok||!result.ok){
-   const messages={line_login_required:"LINE Login หมดอายุ โปรดเปิดผ่าน LINE อีกครั้ง",provider_not_configured:"ยังไม่ได้ใส่ OPENAI_API_KEY ใน Supabase",usage_limit_unavailable:"ฐานข้อมูลโควตา AI Chat ยังไม่พร้อม",daily_limit_reached:"ครบโควตา AI Chat วันนี้แล้ว",provider_busy:"AI Provider กำลังยุ่ง กรุณาลองอีกครั้ง",provider_unavailable:"AI Provider ไม่พร้อม กรุณาลองใหม่"};
+   const messages={feature_not_enabled:"ระบบ AI Chat ติดตั้งแล้ว แต่ยังไม่ได้เปิดใช้งานเพื่อป้องกันค่าใช้จ่าย",line_login_required:"LINE Login หมดอายุ โปรดเปิดผ่าน LINE อีกครั้ง",provider_not_configured:"ยังไม่ได้ใส่ OPENAI_API_KEY ใน Supabase",usage_limit_unavailable:"ฐานข้อมูลโควตา AI Chat ยังไม่พร้อม",daily_limit_reached:"ครบโควตา AI Chat วันนี้แล้ว",provider_busy:"AI Provider กำลังยุ่ง กรุณาลองอีกครั้ง",provider_unavailable:"AI Provider ไม่พร้อม กรุณาลองใหม่"};
    throw Error(messages[result.error]||"AI Chat ยังไม่พร้อม ("+(result.error||response.status)+")");
   }
   history=pending;append("user",question);append("assistant",String(result.reply||""));history.push({role:"assistant",content:String(result.reply||"").slice(0,2000)});history=history.slice(-12);
