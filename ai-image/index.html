@@ -1,0 +1,101 @@
+<!doctype html><html lang="th"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090c11">
+<meta name="description" content="CHAYLUEKLAB AI Image Studio สร้างภาพจากคำอธิบายผ่าน AI API ฝั่งเซิร์ฟเวอร์">
+<title>AI Image Studio | CHAYLUEKLAB</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js" defer></script>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif;--bg:#090b0f;--panel:#141a21;--gold:#e9ce98;--line:#39414a;--text:#f4f3ed;--muted:#b5bec5}
+*{box-sizing:border-box}body{margin:0;color:var(--text);background:radial-gradient(circle at 80% -5%,#5d4a2828,transparent 38%),var(--bg)}
+a{color:var(--gold)}header,main,footer{width:min(1050px,calc(100% - 32px));margin:auto}
+header{padding:24px 0;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+header strong{letter-spacing:.14em}nav{display:flex;gap:15px}nav a{font-size:13px;text-decoration:none}
+main{padding:30px 0 56px}h1{font-size:clamp(34px,6vw,58px);letter-spacing:-.04em;line-height:1.13;margin:12px 0}h2{font-size:21px}
+.eyebrow{font-weight:800;letter-spacing:.17em;color:var(--gold);font-size:11px}.muted{color:var(--muted);line-height:1.7;font-size:14px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:24px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}
+label{display:block;margin:15px 0 8px;font-weight:800;font-size:13px}textarea,select{font:inherit;width:100%;background:#0b0f14;border:1px solid #687079;color:var(--text);padding:13px;border-radius:10px}
+textarea{min-height:175px;resize:vertical}button,.button{font:inherit;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;padding:12px 18px;border:1px solid #8b7650;color:#1d1b17;background:var(--gold);font-weight:800;text-decoration:none;cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.48}button:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #9bdec6;outline-offset:2px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 10px}
+.status{border:1px solid #82704c;border-radius:10px;padding:12px;color:#f1d9a9;font-size:13px;margin-top:18px}
+.preview{min-height:340px;border-radius:12px;background:repeating-linear-gradient(45deg,#1b222a,#1b222a 16px,#151c23 16px,#151c23 32px);display:grid;place-items:center;overflow:hidden;text-align:center;padding:10px}
+.preview img{max-width:100%;max-height:580px;object-fit:contain;border-radius:9px}.preview p{color:var(--muted);padding:20px}
+footer{padding:20px 0 35px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+@media(max-width:740px){.grid{grid-template-columns:1fr}.panel{padding:16px}.preview{min-height:260px}}
+</style></head><body>
+<header><strong>CHAYLUEKLAB <span style="color:#e9ce98">AI IMAGE</span></strong><nav><a href="../ai/">AI Studio</a><a href="../ai-chat/">AI Chat</a><a href="../business.html">เว็บแบรนด์</a></nav></header>
+<main>
+<div class="eyebrow">CREATE · IMAGE · EXPERIMENT</div><h1>เปลี่ยนข้อความ<br>ให้เป็นภาพด้วย AI</h1>
+<p class="muted">สร้างภาพจาก Prompt ผ่าน AI Provider ที่ฝั่งเซิร์ฟเวอร์ โดยไม่เปิดเผย API Key และจำกัดจำนวนครั้งเพื่อควบคุมค่าใช้จ่าย</p>
+<div class="status" id="authStatus" role="status" aria-live="polite">กำลังตรวจสอบ LINE…</div>
+<div class="actions"><a id="loginLink" class="button" href="https://liff.line.me/2011681452-yexLrODy/ai-image/">เปิดผ่าน LINE</a></div>
+<div class="grid">
+<form id="imageForm" class="panel">
+<h2>สร้างภาพใหม่</h2>
+<label for="prompt">คำอธิบายภาพ *</label><textarea id="prompt" required minlength="8" maxlength="1200" placeholder="เช่น ภาพโฆษณาสตูดิโอพรีเมียมของเสื้อแฟชั่นทรงวินเทจ แสงนุ่มฉากเรียบ..."></textarea>
+<label for="size">อัตราส่วนภาพ</label>
+<select id="size"><option value="1024x1024">1:1 · สี่เหลี่ยมจัตุรัส</option><option value="1024x1536">2:3 · แนวตั้ง</option><option value="1536x1024">3:2 · แนวนอน</option></select>
+<div class="actions"><button type="submit" id="generate" disabled>สร้างภาพด้วย AI</button></div>
+<p class="muted" id="notice" role="status" aria-live="polite">ยังไม่ส่งคำขอใด ๆ ไปยัง AI Provider</p>
+<p class="muted">ระบบนี้รองรับข้อความเป็นภาพเท่านั้น ยังไม่รองรับการอัปโหลดภาพต้นฉบับหรือการรักษาดีไซน์สินค้าแบบเป๊ะ ๆ จึงควรตรวจผลงานก่อนนำไปขาย</p>
+</form>
+<div class="panel"><h2>ภาพที่สร้าง</h2><div class="preview" id="preview"><p id="placeholder">ภาพจาก AI จะแสดงตรงนี้เมื่อสร้างสำเร็จ</p><img id="resultImage" alt="ภาพที่สร้างโดย AI" hidden></div><div class="actions"><a class="button" id="download" download="chaylueklab-ai-image.png" hidden>บันทึกภาพ PNG</a></div><p class="muted">ภาพถูกเก็บในพื้นที่ส่วนตัวของ Supabase โดยลิงก์เปิดภาพหมดอายุใน 1 ชั่วโมง ระบบจะเก็บไม่เกิน 10 ภาพล่าสุดต่อบัญชีเมื่อมีการสร้างภาพครั้งใหม่ กรุณาบันทึกไฟล์ที่ต้องการ</p></div>
+</div></main>
+<footer>CHAYLUEKLAB · AI IMAGE STUDIO · ต้องตั้งค่า OPENAI_API_KEY และ Migration ของโควตาใน Supabase ก่อนใช้งานจริง</footer>
+<script type="module">
+import {newsroomConfig} from "../data/newsroom-config.js";
+const $=id=>document.getElementById(id);
+const api="https://"+newsroomConfig.projectRef+".supabase.co/functions/v1/ai-image";
+const endpoint=new URL(newsroomConfig.liffEndpointUrl);
+const inScope=location.origin===endpoint.origin&&location.pathname.startsWith(endpoint.pathname);
+$("loginLink").href="https://liff.line.me/"+encodeURIComponent(newsroomConfig.liffId)+"/ai-image/";
+let loggedIn=false,busy=false,generatedPreviewUrl=null;
+window.addEventListener("pagehide",()=>{if(generatedPreviewUrl)URL.revokeObjectURL(generatedPreviewUrl)});
+function info(text){$("authStatus").textContent=text}
+function notice(text){$("notice").textContent=text}
+async function prepareLogin(){
+ if(!inScope){info("หน้า Vercel นี้อยู่นอก LIFF Endpoint ที่ลงทะเบียน — เปิดผ่าน LINE เพื่อเข้าสู่ระบบโดยไม่เรียก OAuth ผิดโดเมน");return}
+ if(!window.liff){info("ยังโหลด LINE SDK ไม่สำเร็จ");return}
+ try{await liff.init({liffId:newsroomConfig.liffId});
+  loggedIn=!!liff.isLoggedIn();
+  $("generate").disabled=!loggedIn;
+  if(loggedIn){$("loginLink").hidden=true;info("เชื่อม LINE สำเร็จ — พร้อมสร้างภาพ")}
+  else {$("loginLink").textContent="เข้าสู่ระบบ LINE";info("กรุณาเข้าสู่ระบบ LINE ก่อนสร้างภาพ")}
+ }catch{info("LIFF Endpoint ไม่ตรงกับ LINE Developers โปรดตรวจการตั้งค่าก่อนใช้งาน")}
+}
+$("loginLink").addEventListener("click",e=>{if(!inScope||!window.liff||loggedIn)return;e.preventDefault();liff.login({redirectUri:location.href})});
+$("imageForm").addEventListener("submit",async e=>{
+ e.preventDefault();if(!loggedIn||busy)return;
+ const prompt=$("prompt").value.trim();if(prompt.length<8)return;
+ busy=true;$("generate").disabled=true;notice("กำลังสร้างภาพด้วย AI — อาจใช้เวลาประมาณหนึ่งนาที…");
+ const ctl=new AbortController();const timer=setTimeout(()=>ctl.abort(),75000);
+ try{
+  const auth={idToken:liff.getIDToken()||"",accessToken:liff.getAccessToken()||""};
+  if(!auth.idToken&&!auth.accessToken)throw Error("LINE token ไม่พร้อม กรุณาเข้าสู่ระบบใหม่");
+  const response=await fetch(api,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...auth,prompt,size:$("size").value}),signal:ctl.signal});
+  const data=await response.json();
+  if(!response.ok||!data.ok){
+   const labels={feature_not_enabled:"ระบบสร้างภาพ AI ติดตั้งแล้ว แต่ยังไม่ได้เปิดใช้งานเพื่อป้องกันค่าใช้จ่าย",line_login_required:"LINE Login หมดอายุ",provider_not_configured:"ยังไม่ได้ตั้งค่า OPENAI_API_KEY ใน Supabase",daily_limit_reached:"ครบโควตาภาพวันนี้แล้ว",usage_limit_unavailable:"ฐานข้อมูลโควตา AI Image ยังไม่พร้อม",provider_unavailable:"AI Provider ยังไม่พร้อม",provider_busy:"AI Provider กำลังยุ่ง"};
+   throw Error(labels[data.error]||"สร้างภาพไม่สำเร็จ ("+(data.error||response.status)+")");
+  }
+  if(typeof data.imageUrl!=="string")throw Error("ไม่พบลิงก์ภาพที่สร้าง");
+  const signed=new URL(data.imageUrl);
+  if(signed.protocol!=="https:"||signed.origin!==new URL(newsroomConfig.apiUrl).origin||!signed.pathname.includes("/storage/v1/object/sign/chaylueklab-ai-images/"))throw Error("ลิงก์ภาพไม่ถูกต้อง");
+  let localUrl=signed.href;
+  try{
+    const imageResponse=await fetch(signed.href,{cache:"no-store"});
+    if(!imageResponse.ok)throw Error("โหลดภาพไม่ได้");
+    const file=await imageResponse.blob();
+    if(file.type!=="image/png"||file.size===0||file.size>12582912)throw Error("ชนิดไฟล์ไม่ถูกต้อง");
+    if(generatedPreviewUrl)URL.revokeObjectURL(generatedPreviewUrl);
+    generatedPreviewUrl=URL.createObjectURL(file);
+    localUrl=generatedPreviewUrl;
+  }catch{notice("สร้างภาพสำเร็จ แต่ดาวน์โหลดตรงอาจไม่พร้อม ให้แตะค้างบนภาพเพื่อบันทึกภายใน 1 ชั่วโมง");}
+  $("resultImage").src=localUrl;$("resultImage").hidden=false;$("placeholder").hidden=true;
+  $("download").href=localUrl;$("download").hidden=false;
+  notice("สร้างภาพสำเร็จ · เหลือโควตา "+data.remainingToday+" ครั้งวันนี้ · ลิงก์ภาพหมดอายุภายใน 1 ชั่วโมง");
+ }catch(err){notice(err?.name==="AbortError"?"AI ใช้เวลานานเกินไป กรุณาลองใหม่":String(err?.message||"เกิดข้อผิดพลาด"))}
+ finally{clearTimeout(timer);busy=false;$("generate").disabled=!loggedIn}
+});
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",prepareLogin,{once:true});else prepareLogin();
+</script></body></html>
