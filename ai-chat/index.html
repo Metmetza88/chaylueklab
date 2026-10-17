@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="th"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090d12">
+<meta name="description" content="CHAYLUEKLAB AI Chat — ผู้ช่วยสร้างสรรค์สำหรับสินค้า งานแบรนด์ และธุรกิจ">
+<title>AI Chat | CHAYLUEKLAB</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js" defer></script>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif;--bg:#090c11;--panel:#131a21;--border:#313b43;--gold:#e8cc91;--muted:#a5b3bd;--fg:#f6f4ed}
+*{box-sizing:border-box}body{background:var(--bg);color:var(--fg);margin:0}a{color:var(--gold)}
+.shell{max-width:1080px;margin:auto;min-height:100dvh;display:flex;flex-direction:column}
+header{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-size:16px;font-weight:900;letter-spacing:.08em;text-decoration:none;color:var(--fg)}.brand span{color:var(--gold)}
+header nav{display:flex;gap:15px;font-size:13px}.workspace{width:100%;max-width:830px;margin:0 auto;flex:1;display:flex;flex-direction:column;min-height:0;padding:20px}
+h1{margin:0;font-size:clamp(30px,5vw,46px);line-height:1.1}p{line-height:1.6}.eyebrow{font-size:11px;letter-spacing:.2em;color:var(--gold)}
+.muted{color:var(--muted);font-size:13px}.status{border:1px solid #695939;background:#211e18;border-radius:10px;padding:11px 14px;color:#f3e0bc;font-size:13px;margin:12px 0}
+.banner{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.banner .status{flex:1}
+.btn,button{font:inherit;border-radius:12px;cursor:pointer;min-height:44px;padding:10px 15px;border:1px solid #686159;background:#202932;color:var(--fg);font-weight:700;text-decoration:none}
+.btn.primary,button.primary{background:var(--gold);color:#171815;border-color:var(--gold)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:hover,.btn:hover{border-color:var(--gold)}
+button:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #a4e0c3;outline-offset:3px}
+#messages{flex:1;min-height:310px;max-height:62dvh;overflow:auto;display:flex;flex-direction:column;gap:14px;border:1px solid var(--border);border-radius:20px;background:linear-gradient(170deg,#131a20,#0d1218);padding:18px;margin:15px 0}
+.message{max-width:88%;padding:13px 15px;border-radius:15px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;font-size:15px}
+.message.user{align-self:flex-end;background:#3a3526;border:1px solid #7c6841}.message.assistant{align-self:flex-start;background:#202b32;border:1px solid #43535c}
+.msg-role{font-size:11px;font-weight:900;color:var(--gold);letter-spacing:.08em;margin-bottom:5px}
+.examples{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.examples button{min-height:35px;padding:7px 11px;font-size:12px;background:#202831}
+.composer{display:flex;flex-direction:column;gap:10px;border:1px solid var(--border);background:var(--panel);padding:16px;border-radius:18px;margin:0 0 17px}
+textarea,select{width:100%;font:inherit;padding:12px;border:1px solid #56646a;background:#0c1218;color:var(--fg);border-radius:10px}
+textarea{min-height:98px;resize:vertical}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px}.controls select{max-width:200px;flex:1;min-width:140px}.controls button{flex:1}
+.footnote{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 22px}
+@media(max-width:500px){.workspace{padding:14px}header{padding:15px}.message{max-width:96%}#messages{padding:12px}.controls button{min-width:120px}}
+</style></head>
+<body><div class="shell">
+<header><a class="brand" href="../ai/">CHAYLUEKLAB <span>AI</span></a><nav><a href="../ai/">AI Studio</a><a href="../ai-gallery/">Prompt Gallery</a><a href="../business.html">แบรนด์</a></nav></header>
+<main class="workspace">
+<div class="eyebrow">CREATIVE ASSISTANT · SERVER-SECURED</div>
+<h1>AI Chat</h1>
+<p class="muted">ถามเรื่องคอนเทนต์ การขายสินค้า สร้าง Prompt และการวางแผนธุรกิจในภาษาไทย</p>
+<div class="banner"><div class="status" id="authStatus" role="status" aria-live="polite">กำลังตรวจสอบสถานะ LINE…</div><a class="btn" id="loginLink" href="https://liff.line.me/2011681452-yexLrODy/ai-chat/" target="_self">เปิดผ่าน LINE</a></div>
+<div id="messages" role="log" aria-label="ข้อความสนทนา" aria-live="polite"><div class="message assistant"><div class="msg-role">CHAYLUEKLAB AI</div>สวัสดีครับ ผมช่วยวางแผนคอนเทนต์ เขียน Prompt และสรุปแนวทางทำธุรกิจได้ เมื่อเชื่อม LINE และตั้งค่า AI Provider พร้อมแล้วจึงจะส่งคำขอไปยัง AI จริง</div></div>
+<div class="examples"><button type="button" data-prompt="ช่วยวางแผนโพสต์เปิดตัวเสื้อ CHAYLUEKLAB FIRST CHAPTER 3 สี โดยไม่แต่งข้อมูลสินค้า">วางแผนเปิดตัวเสื้อ</button><button type="button" data-prompt="ช่วยเขียน Prompt ทำโฆษณาร้านค้าไทยแนวเรียบหรู โดยคงขนาดพื้นที่จริงจากภาพต้นฉบับ">Prompt โฆษณาร้าน</button><button type="button" data-prompt="ช่วยเปรียบเทียบช่องทางหารายได้ออนไลน์ 3 แบบ โดยไม่สมมติตัวเลข">ไอเดียธุรกิจ</button></div>
+<form id="chatForm" class="composer">
+<label for="question">พิมพ์ข้อความถึง AI</label><textarea id="question" maxlength="2000" placeholder="เช่น ช่วยคิดแคปชั่นเปิดตัวเสื้อ 3 สี..." required></textarea>
+<div class="controls"><select id="model" aria-label="เลือกโมเดล AI"><option value="gpt-4.1-mini">GPT-4.1 mini</option><option value="gpt-4.1">GPT-4.1</option></select><button type="submit" class="primary" id="send" disabled>ส่งข้อความ</button><button type="button" id="clear">เริ่มแชตใหม่</button></div>
+<div id="notice" class="muted" role="status" aria-live="polite">จำกัดจำนวนคำขอเพื่อควบคุมต้นทุนและความปลอดภัย</div>
+</form>
+<p class="footnote">ระบบแชตต้องมีบัญชี LINE ที่ยืนยันแล้วและ OPENAI_API_KEY ฝั่ง Supabase ข้อความที่ส่งจะถูกประมวลผลโดยผู้ให้บริการ AI ไม่จัดเก็บบทสนทนาในเบราว์เซอร์หรือฐานข้อมูลโดยค่าเริ่มต้น กรุณาอย่าส่งข้อมูลลับ</p>
+</main></div>
+<script type="module">
+import {newsroomConfig} from "../data/newsroom-config.js";
+const $=id=>document.getElementById(id);
+const apiUrl="https://"+newsroomConfig.projectRef+".supabase.co/functions/v1/ai-chat";
+const liffLink="https://liff.line.me/"+encodeURIComponent(newsroomConfig.liffId)+"/ai-chat/";
+$("loginLink").href=liffLink;
+const endpoint=new URL(newsroomConfig.liffEndpointUrl);
+const inScope=location.origin===endpoint.origin && location.pathname.startsWith(endpoint.pathname);
+let ready=false,busy=false,history=[];
+function status(message){$("authStatus").textContent=message}
+function notify(message){$("notice").textContent=message}
+function append(role,content){
+ const card=document.createElement("div");card.className="message "+role;
+ const label=document.createElement("div");label.className="msg-role";label.textContent=role==="user"?"คุณ":"CHAYLUEKLAB AI";
+ card.append(label,document.createTextNode(content));$("messages").append(card);$("messages").scrollTop=$("messages").scrollHeight;
+}
+async function initAuth(){
+ if(!inScope){status("หน้าทดสอบนี้อยู่นอก LIFF Endpoint — เปิดผ่าน LINE เพื่อเข้าสู่ระบบ (ไม่เปิดหน้า Login อัตโนมัติ)");return}
+ if(!window.liff){status("โหลด LINE SDK ไม่สำเร็จ โปรดลองอีกครั้ง");return}
+ try{
+  await liff.init({liffId:newsroomConfig.liffId});
+  ready=!!liff.isLoggedIn();
+  status(ready?"เชื่อมต่อ LINE แล้ว — พร้อมส่งคำขอ AI":"ยังไม่ได้เข้าสู่ระบบ LINE กรุณากด ‘เข้าสู่ระบบ’");
+  if(ready)$("loginLink").hidden=true;
+  else {$("loginLink").textContent="เข้าสู่ระบบ LINE";$("loginLink").removeAttribute("target");}
+  $("send").disabled=!ready;
+ }catch{status("LIFF ตั้งค่าไม่ตรงกับ URL นี้ กรุณาตรวจ Endpoint ใน LINE Developers");}
+}
+$("loginLink").addEventListener("click",event=>{
+ if(!inScope||!window.liff||ready)return;
+ event.preventDefault();
+ liff.login({redirectUri:location.href});
+});
+$("chatForm").addEventListener("submit",async event=>{
+ event.preventDefault();if(busy||!ready)return;
+ const question=$("question").value.trim();if(!question)return;
+ const pending=[...history,{role:"user",content:question}].slice(-12);
+ busy=true;$("send").disabled=true;notify("กำลังส่งคำถาม…");
+ const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),35000);
+ try{
+  const auth={idToken:liff.getIDToken()||"",accessToken:liff.getAccessToken()||""};
+  if(!auth.idToken&&!auth.accessToken){ready=false;throw Error("LINE token ไม่พร้อม กรุณาเข้าสู่ระบบใหม่")}
+  const response=await fetch(apiUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...auth,model:$("model").value,messages:pending}),signal:controller.signal});
+  const result=await response.json();
+  if(!response.ok||!result.ok){
+   const messages={line_login_required:"LINE Login หมดอายุ โปรดเปิดผ่าน LINE อีกครั้ง",provider_not_configured:"ยังไม่ได้ใส่ OPENAI_API_KEY ใน Supabase",usage_limit_unavailable:"ฐานข้อมูลโควตา AI Chat ยังไม่พร้อม",daily_limit_reached:"ครบโควตา AI Chat วันนี้แล้ว",provider_busy:"AI Provider กำลังยุ่ง กรุณาลองอีกครั้ง",provider_unavailable:"AI Provider ไม่พร้อม กรุณาลองใหม่"};
+   throw Error(messages[result.error]||"AI Chat ยังไม่พร้อม ("+(result.error||response.status)+")");
+  }
+  history=pending;append("user",question);append("assistant",String(result.reply||""));history.push({role:"assistant",content:String(result.reply||"").slice(0,2000)});history=history.slice(-12);
+  $("question").value="";notify("สำเร็จ · ใช้แล้ว "+(12-Number(result.remainingToday||0))+"/12 ครั้งวันนี้");
+ }catch(err){notify(err?.name==="AbortError"?"หมดเวลารอ AI โปรดลองอีกครั้ง":String(err?.message||"เชื่อมต่อ AI ไม่สำเร็จ"))}
+ finally{clearTimeout(timeout);busy=false;$("send").disabled=!ready;}
+});
+$("clear").addEventListener("click",()=>{history=[];$("messages").replaceChildren();append("assistant","เริ่มบทสนทนาใหม่แล้ว กรุณาพิมพ์คำถาม");notify("ล้างบทสนทนาในหน้านี้แล้ว")});
+document.querySelectorAll("[data-prompt]").forEach(el=>el.addEventListener("click",()=>{$("question").value=el.dataset.prompt;$("question").focus()}));
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initAuth,{once:true});else initAuth();
+</script>
+</body></html>
