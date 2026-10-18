@@ -5,14 +5,14 @@ export default async function handler(req,res){
   if(req.method!=='POST'){res.setHeader('Allow','POST');return res.status(405).json({error:'METHOD_NOT_ALLOWED'});}
   const key=process.env.GEMINI_API_KEY;
   const owners=(process.env.MET_VORX_LINE_USER_IDS||'').split(',').map(x=>x.trim()).filter(Boolean);
-  if(!key||owners.length===0)return res.status(503).json({error:'NOT_CONFIGURED',message:'ยังไม่ได้ตั้งค่าการเชื่อมต่อ AI และสิทธิ์เจ้าของ'});
+  if(!key||!process.env.MET_VORX_LINE_CHANNEL_ID||owners.length===0)return res.status(503).json({error:'NOT_CONFIGURED',message:'ยังไม่ได้ตั้งค่าการเชื่อมต่อ AI และสิทธิ์เจ้าของ'});
   const token=req.headers.authorization?.match(/^Bearer ([A-Za-z0-9._-]+)$/)?.[1];
   if(!token||token.length>3000)return res.status(401).json({error:'LOGIN_REQUIRED'});
   try{
     const verify=await fetch('https://api.line.me/oauth2/v2.1/verify',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({access_token:token})});
     if(!verify.ok)return res.status(401).json({error:'INVALID_LINE_TOKEN'});
     const claims=await verify.json();
-    if(String(claims.client_id)!=='2011681452'||Number(claims.expires_in)<=0)return res.status(403).json({error:'WRONG_LINE_CHANNEL'});
+    if(String(claims.client_id)!==String(process.env.MET_VORX_LINE_CHANNEL_ID||'')||Number(claims.expires_in)<=0)return res.status(403).json({error:'WRONG_LINE_CHANNEL'});
     const profileResponse=await fetch('https://api.line.me/v2/profile',{headers:{Authorization:'Bearer '+token}});
     if(!profileResponse.ok)return res.status(401).json({error:'PROFILE_UNAVAILABLE'});
     const profile=await profileResponse.json();
