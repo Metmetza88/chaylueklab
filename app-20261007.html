@@ -236,7 +236,7 @@ main{max-width:1280px;margin:auto}.desk-intro{margin:8px 0 22px}.desk-title{font
     <aside id="connectionNotice" class="desk-panel hidden" role="status" aria-live="polite">
       <p id="connectionTitle" class="panel-title">เชื่อมต่อบัญชี LINE</p>
       <p id="connectionMessage" class="desk-caption mt-2"></p>
-      <div class="row-actions mt-3"><button id="connectLineBtn" type="button" class="btn btn-gold" onclick="initLiff()">เชื่อมต่อ LINE อีกครั้ง</button><a class="btn btn-ghost" href="https://liff.line.me/2011681452-yexLrODy">เปิดผ่าน LINE</a></div>
+      <div class="row-actions mt-3"><button id="connectLineBtn" type="button" class="btn btn-gold" onclick="initLiff()">เชื่อมต่อ LINE อีกครั้ง</button><a class="btn btn-ghost" href="https://liff.line.me/2011681452-yexLrODy/app-20261007.html">เปิดผ่าน LINE</a></div>
     </aside>
     <section id="homePage" class="page active" aria-labelledby="dashboardHeading" tabindex="-1">
       <div class="cinematic-hero">
@@ -595,7 +595,7 @@ async function ensureLineSdk(){
 async function initLiff(){
   if(liffBusy)return;liffBusy=true;document.getElementById('connectLineBtn').disabled=true;document.getElementById('connectLineBtn').textContent='กำลังเชื่อมต่อ…';
   try{
-    if(authExpired){location.assign('https://liff.line.me/'+LIFF_ID);return}
+    if(authExpired){location.assign('https://liff.line.me/'+LIFF_ID+'/app-20261007.html');return}
     await ensureLineSdk();
     if(!liffReady){await waitForResult(liff.init({liffId:LIFF_ID}),20000,'เชื่อมต่อ LINE นานเกินไป กดลองอีกครั้งได้');liffReady=true}
     // Keep the requested back-office view through LINE Login, then route only after LIFF is authenticated.

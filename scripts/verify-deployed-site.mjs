@@ -12,7 +12,7 @@ for (let attempt = 0; attempt < 5; attempt++) {
     assert.equal(manifestResponse.status, 200);
     const manifest = await manifestResponse.json();
     assert.equal(manifest.commit, expected, 'Published commit must match the checked commit');
-    const paths = ['index.html', 'app-20261007.html', 'control.html', 'stock.html', 'notes.html', 'ai-video.html', 'newsroom.html', 'news/index.html', 'affiliate/index.html', 'ai-gallery/index.html', 'ai-money-studio/index.html', 'ai-money-studio/app.js', 'ai-sales-boost/index.html', 'review-chaylueklab-starter-drop/index.html'];
+    const paths = ['met-vorx.html', 'assets/liff-entry-router.js', 'index.html', 'app-20261007.html', 'control.html', 'stock.html', 'notes.html', 'ai-video.html', 'newsroom.html', 'news/index.html', 'affiliate/index.html', 'ai-gallery/index.html', 'ai-money-studio/index.html', 'ai-money-studio/app.js', 'ai-sales-boost/index.html', 'review-chaylueklab-starter-drop/index.html'];
     await Promise.all(paths.map(async path => {
       const response = await fetch(new URL(`${path}?release=${expected}`, base), { signal: AbortSignal.timeout(10000), redirect: 'error' });
       assert.equal(response.status, 200, path);
