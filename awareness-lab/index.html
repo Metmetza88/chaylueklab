@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; form-action 'none'; connect-src 'none'; frame-ancestors 'none'; base-uri 'none'">
+<title>CHAYLUEKLAB Workspace — Security Exercise</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif}*{box-sizing:border-box}
+body{margin:0;min-height:100dvh;background:radial-gradient(circle at 10% -10%,#233d4b 0,transparent 42%),radial-gradient(circle at 100% 120%,#282044,transparent 40%),#090d14;color:#f3f5f7}
+.wrap{width:min(460px,calc(100% - 36px));margin:0 auto;padding:42px 0 24px}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:35px;font-size:15px;letter-spacing:1.7px;font-weight:800}.symbol{display:grid;place-items:center;width:43px;height:43px;border:1px solid #4a6881;border-radius:14px;background:#132633;font-size:20px}
+.panel{padding:clamp(22px,6vw,34px);border:1px solid #2b3c4c;border-radius:23px;background:linear-gradient(150deg,#18222fcf,#101721ee);box-shadow:0 25px 65px #0006}
+.overline{font-size:12px;font-weight:700;letter-spacing:2px;color:#85cbec;text-transform:uppercase}.title{font-size:29px;letter-spacing:-.7px;line-height:1.3;margin:13px 0 10px}.desc{color:#b9c3cd;line-height:1.65;font-size:14px}
+label{display:block;font-size:13px;margin:23px 0 8px;color:#d9e5ee;font-weight:650}
+input{background:#0c141e;border:1px solid #526071;color:#fff;width:100%;padding:15px 14px;border-radius:12px;font:inherit;font-size:16px;outline-offset:3px}
+input:focus{outline:2px solid #8bc8fc;border-color:transparent}
+.notice{font-size:12px;line-height:1.7;color:#bed2dd;background:#122736;border:1px solid #30546b;border-radius:12px;padding:11px 12px;margin:17px 0}
+button{border:0;border-radius:12px;background:#d5efff;color:#101b26;width:100%;padding:15px;font:inherit;font-size:15px;font-weight:800;cursor:pointer;margin-top:12px}button:hover{background:#fff}button:focus-visible{outline:3px solid #6bb8ff;outline-offset:2px}
+.info{font-size:12px;color:#a3b0bd;text-align:center;margin:26px 0 0;line-height:1.65}a{color:#96d6fa}
+#reveal{display:none}#reveal h2{font-size:25px;margin:16px 0 8px}.check{width:60px;height:60px;display:grid;place-items:center;font-size:28px;background:#183d39;border-radius:18px;color:#92e7ba}
+ul{padding-left:20px;line-height:1.85;color:#d2dce5}li{margin-bottom:6px}kbd{font:inherit;color:#fff;font-weight:700}
+</style>
+</head>
+<body>
+<main class="wrap">
+<div class="logo"><div class="symbol" aria-hidden="true">◇</div><span>CHAYLUEKLAB <span style="color:#7ca8c9;font-weight:450">/ WORKSPACE</span></span></div>
+<section id="login" class="panel" aria-labelledby="heading">
+<div class="overline">Employee Access · Training Environment</div>
+<h1 id="heading" class="title">ยืนยันตัวตนเพื่อเข้าถึงพื้นที่ทำงาน</h1>
+<p class="desc">หน้าทดลองกระบวนการเข้าสู่ระบบและการตรวจสอบอีเมล สำหรับโครงการ Security Awareness ของ CHAYLUEKLAB</p>
+<label for="staff">รหัสพนักงานจำลอง</label>
+<input id="staff" placeholder="เช่น DEMO-001" maxlength="32" spellcheck="false" autocomplete="off">
+<label for="pin">รหัสผ่านทดลอง</label>
+<input id="pin" type="password" placeholder="ใช้รหัสทดลอง 123456 เท่านั้น" maxlength="12" autocomplete="new-password">
+<div class="notice">⚠️ แล็บฝึกอบรม: ใช้ข้อมูลจำลองเท่านั้น ห้ามกรอกรหัสผ่านจริง, OTP หรือข้อมูลส่วนบุคคล ระบบนี้ไม่อ่าน ไม่ส่ง และไม่เก็บค่าที่พิมพ์ในช่องเหล่านี้</div>
+<button id="submit" type="button">ดำเนินการต่อ →</button>
+</section>
+<section id="reveal" class="panel" aria-live="polite">
+<div class="check" aria-hidden="true">✓</div>
+<div class="overline" style="margin-top:22px">Security Awareness · Completed</div>
+<h2>นี่คือการทดสอบฟิชชิ่ง</h2>
+<p class="desc">คุณเพิ่งพบหน้าเข้าสู่ระบบที่มีหน้าตาคล้ายระบบองค์กรจริง ผู้โจมตีอาจใช้หน้าแบบนี้หลอกให้กรอกรหัสผ่านหรือ OTP ได้</p>
+<ul>
+<li>ตรวจสอบโดเมน URL ก่อนกรอกข้อมูลทุกครั้ง</li>
+<li>อย่าเข้าสู่ระบบผ่านลิงก์ที่ไม่คุ้นเคยในอีเมล</li>
+<li>ใช้ Passkey หรือ FIDO2 Security Key เมื่อรองรับ</li>
+<li>รายงานข้อความสงสัยให้ผู้ดูแลระบบ</li>
+</ul>
+<p class="notice">หน้านี้ไม่เคยเก็บหรือส่งข้อมูลที่คุณพิมพ์ และไม่มีการเข้าสู่ระบบจริง</p>
+<button id="again" type="button">ทดลองอีกครั้ง</button>
+</section>
+<p class="info">© CHAYLUEKLAB · Internal Security Awareness Pilot 02<br>ระบบฝึกอบรมเท่านั้น ไม่ใช่หน้าเข้าสู่ระบบบัญชีจริง</p>
+</main>
+<script>
+(function(){
+"use strict";
+const login=document.getElementById('login'),reveal=document.getElementById('reveal');
+document.getElementById('submit').addEventListener('click',()=>{
+ // Never inspect or serialize field values; never transmit credentials.
+ document.getElementById('staff').value='';
+ document.getElementById('pin').value='';
+ login.style.display='none';reveal.style.display='block';
+ window.scrollTo({top:0,behavior:'smooth'});
+});
+document.getElementById('again').addEventListener('click',()=>{reveal.style.display='none';login.style.display='block';window.scrollTo({top:0,behavior:'smooth'});});
+})();
+</script>
+</body></html>
