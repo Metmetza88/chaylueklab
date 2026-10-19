@@ -1,4 +1,4 @@
-import {openCreativeCommand} from './creative-command.js';
+import {openCreativeCommand} from './creative-command.js?v=20261019-media-v2';
 // CHAYLUEKLAB Life OS: commands inside the existing LINE LIFF web app.
 // Commands here navigate existing pages or open existing forms; they never write data on their own.
 // Replying to messages typed in an OA chat requires a separately configured Messaging API webhook.
