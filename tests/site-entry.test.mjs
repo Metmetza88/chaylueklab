@@ -23,7 +23,7 @@ test('business shortcuts stay in a labeled group separate from personal actions'
 });
 test('business page has no automatic app redirect',async()=>{const html=await readFile(new URL('../business.html',import.meta.url),'utf8');assert.ok(!html.includes('assets/site-entry.js'));assert.ok(html.includes('./control.html'))});
 
-test('main domain homepage features brand and shop without forced redirect',async()=>{const html=await readFile(new URL('../index.html',import.meta.url),'utf8');assert.ok(html.includes('FIRST CHAPTER'));assert.ok(html.includes('href="./business.html#products"'));assert.ok(html.includes('href="./app-20261007.html"'));assert.ok(!html.includes('src="./assets/site-entry.js"'));});
+test('main entry opens Life OS directly without the removed storefront',async()=>{const html=await readFile(new URL('../index.html',import.meta.url),'utf8');assert.ok(html.includes('src="./assets/site-entry.js"'));assert.ok(html.includes('href="./app-20261007.html"'));assert.ok(!html.includes('FIRST CHAPTER'));});
 
 import {lifeOsEntry} from '../assets/liff-entry-router.js';
 test('Pages root opens Life OS while custom domain keeps storefront',()=>{
