@@ -1,4 +1,15 @@
 /* CHAYLUEKLAB — Obsidian / Champagne / Ice. Shared by the existing workspaces. */
+.creative-panel{position:relative;overflow:hidden;padding:24px;margin:18px 0;border:1px solid #65748466;border-radius:24px;background:linear-gradient(135deg,#172131,#0b1019 65%);box-shadow:0 20px 70px #0005}
+.creative-panel h2{font-size:clamp(22px,5vw,30px);font-weight:750;margin:12px 0 20px;letter-spacing:-.04em;color:#f5f2eb}
+.creative-eyebrow{color:#e9d5ad;font-size:10px;letter-spacing:.18em;font-weight:700}
+.creative-panel label{display:block;font-size:12px;color:#a2aebb;margin:12px 0 7px}
+.creative-panel textarea,.creative-panel select{display:block;width:100%;font:inherit;color:#f5f2eb;background:#070a10;border:1px solid #46556a;border-radius:12px;padding:12px;font-size:16px}
+.creative-panel button{padding:14px 20px;border-radius:12px;background:#e9d5ad;color:#10151e;font-weight:750;min-height:48px}
+.creative-panel button:disabled{opacity:.45;cursor:not-allowed}.creative-status{min-height:44px;color:#9bdddf;font-size:13px;line-height:1.7;margin:14px 0}
+.creative-result canvas{display:block;max-width:100%;height:auto;border-radius:14px;margin-top:18px}.creative-result a{display:inline-block;margin-top:14px;color:#e9d5ad;text-decoration:underline}
+@keyframes lifeos-enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes lifeos-scan{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+@media(prefers-reduced-motion:no-preference){.page.active,.creative-panel{animation:lifeos-enter .38s ease-out both}.creative-panel.is-generating:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent,#9bdddf15,transparent);animation:lifeos-scan 2.4s linear infinite}.btn,.creative-panel button,.dashboard-card{transition:transform .2s ease,box-shadow .2s ease}.btn:active,.creative-panel button:active{transform:scale(.98)}}
 :root{--bg:#070a10;--panel:#10151e;--panel2:#151d29;--panel3:#1a2634;--gold:#e9d5ad;--soft:#9bdddf;--muted:#a2aebb;--line:#2c3746;--green:#277a62;--red:#ffadb4;color-scheme:dark}
 html,body{background:#070a10;color:#f5f2eb}
 body{background:radial-gradient(ellipse at 92% 0%,#15304366,transparent 40%),radial-gradient(ellipse at 0% 40%,#57402b22,transparent 45%),#070a10;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",sans-serif}

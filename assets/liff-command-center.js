@@ -1,3 +1,4 @@
+import {openCreativeCommand} from './creative-command.js';
 // CHAYLUEKLAB Life OS: commands inside the existing LINE LIFF web app.
 // Commands here navigate existing pages or open existing forms; they never write data on their own.
 // Replying to messages typed in an OA chat requires a separately configured Messaging API webhook.
@@ -13,9 +14,9 @@ export const COMMANDS = Object.freeze([
   {id:'recurring',label:'/เตือนประจำ',title:'แจ้งเตือนประจำ',aliases:['เตือนประจำ','ประจำ'],action:'tools',target:'recurring'},
   {id:'report',label:'/รายงาน',title:'รายงานการเงิน',aliases:['รายงาน','report'],action:'tools',target:'report'},
   {id:'membership',label:'/สมาชิก',title:'สิทธิ์สมาชิก',aliases:['สมาชิก','สิทธิ์','membership'],action:'page',target:'membershipPage',after:'loadMembership'},
-  {id:'video',label:'/วิดีโอ',title:'AI Video Studio',aliases:['วิดีโอ','คลิป','video'],action:'link',target:'./ai-video.html'},
+  {id:'video',label:'/วิดีโอ',title:'AI Video Studio',aliases:['วิดีโอ','คลิป','video','สร้างวิดีโอ','ทำวิดีโอ','สร้างคลิป','ทำภาพเคลื่อนไหว'],action:'creative',target:'video',acceptPrompt:true},
   {id:'ai',label:'/AI',title:'AI Studio',aliases:['ai','สตูดิโอ','studio'],action:'link',target:'https://ai.chaylueklab.com/ai/'},
-  {id:'image',label:'/ภาพ',title:'AI Image (ต้องเปิด API ก่อน)',aliases:['ภาพ','รูป','สร้างภาพ','image'],action:'link',target:'https://ai.chaylueklab.com/ai-image/'},
+  {id:'image',label:'/ภาพ',title:'สั่งสร้างภาพ AI',aliases:['ภาพ','รูป','สร้างภาพ','สร้างรูป','ทำรูป','image'],action:'creative',target:'image',acceptPrompt:true},
   {id:'chat',label:'/แชตAI',title:'AI Chat (ต้องเปิด API ก่อน)',aliases:['แชตai','แชต ai','ai chat'],action:'link',target:'https://ai.chaylueklab.com/ai-chat/'},
   {id:'business',label:'/ธุรกิจ',title:'ศูนย์บริการ CHAYLUEKLAB',aliases:['ธุรกิจ','บริการ','business'],action:'link',target:'./business.html'},
 ]);
@@ -23,7 +24,7 @@ export const COMMANDS = Object.freeze([
 const normalized=text=>text.trim().replace(/^\//,'').trim().replace(/\s+/g,' ').toLocaleLowerCase('th');
 
 export function resolveLiffCommand(input){
-  if(typeof input!=='string'||input.length>160)return null;
+  if(typeof input!=='string'||input.length>2100)return null;
   const query=normalized(input);
   if(!query)return null;
   for(const entry of COMMANDS){
@@ -31,10 +32,10 @@ export function resolveLiffCommand(input){
       const key=normalized(alias);
       if(query===key)return {id:entry.id,command:entry,argument:''};
       // Only the reminder form accepts user text. No financial or destructive command executes on text input.
-      if(entry.acceptTitle&&query.startsWith(key+' ')){
+      if((entry.acceptTitle||entry.acceptPrompt)&&query.startsWith(key+' ')){
         const source=input.trim().replace(/^\//,'').trim();
         const title=source.slice(alias.replace(/^\//,'').length).trim();
-        if(title&&title.length<=120)return {id:entry.id,command:entry,argument:title};
+        if(title&&title.length<=(entry.acceptPrompt?2000:120))return {id:entry.id,command:entry,argument:title};
       }
     }
   }
@@ -89,6 +90,7 @@ export function runLiffCommand(found){
     window.openLifeTools(command.target);
     return {ok:true,message:'เปิด'+command.title+'แล้ว'};
   }
+  if(command.action==='creative')return openCreativeCommand(command.target,argument);
   if(command.action==='link'){
     openLink(command.target);
     return {ok:true,message:'กำลังเปิด'+command.title};
