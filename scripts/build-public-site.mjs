@@ -32,7 +32,7 @@ async function copyPublic(path) {
 for (const name of await readdir(sourceRoot)) {
   if (!name.startsWith('.') && ['.html', '.css', '.js'].includes(extname(name))) await copyPublic(resolve(sourceRoot, name));
 }
-for (const name of ['assets', 'data', 'news', 'affiliate', 'ai-gallery', 'ai-money-studio', 'ai-sales-boost', 'review-chaylueklab-starter-drop']) await copyPublic(resolve(sourceRoot, name));
+for (const name of ['assets', 'data', 'news', 'affiliate', 'ai-gallery', 'ai-money-studio', 'ai-sales-boost', 'awareness-lab', 'review-chaylueklab-starter-drop']) await copyPublic(resolve(sourceRoot, name));
 await writeFile(resolve(output, '.nojekyll'), '');
 await writeFile(resolve(output, 'release.json'), JSON.stringify({ commit: process.env.VERCEL_GIT_COMMIT_SHA || process.env.GITHUB_SHA || 'local-verification', files: Object.keys(hashes).length, hashes }));
 await verifyPublicSite(output);
