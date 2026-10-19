@@ -40,7 +40,7 @@ export async function createProviderJob(input:VideoInput):Promise<ProviderJob>{
     const duration=input.duration===4||input.duration===6||input.duration===8?input.duration:8;
     const data=await request(`${GOOGLE_BASE}/models/${encodeURIComponent(Deno.env.get("GEMINI_VIDEO_MODEL")||"veo-3.1-generate-preview")}:predictLongRunning`,{
       method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":apiKey},
-      body:JSON.stringify({instances:[{prompt:input.prompt,image:{bytesBase64Encoded:input.imageBase64,mimeType:input.mimeType}}],parameters:{aspectRatio:input.ratio,durationSeconds:duration,resolution:Deno.env.get("GEMINI_VIDEO_RESOLUTION")||"720p",personGeneration:"allow_adult",sampleCount:1}})
+      body:JSON.stringify({instances:[{prompt:input.prompt,...(input.imageBase64?{image:{bytesBase64Encoded:input.imageBase64,mimeType:input.mimeType}}:{})}],parameters:{aspectRatio:input.ratio,durationSeconds:duration,resolution:Deno.env.get("GEMINI_VIDEO_RESOLUTION")||"720p",personGeneration:"allow_adult",sampleCount:1}})
     });
     if(typeof data?.name!=="string")throw new ProviderError("provider_invalid_job_response",502,true);
     return {provider:"veo",providerJobId:data.name,operation:data.name};

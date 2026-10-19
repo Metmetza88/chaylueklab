@@ -29,14 +29,14 @@ Deno.serve(async(req)=>{
   let body:any;try{body=await req.json();}catch{return errorResponse("invalid_json",400);}
   let db:any;let jobId:string|undefined;let providerAccepted=false;
   try{const user=await lineIdentity(body);if(!user)return errorResponse("invalid_line_login",401);
-    db=adminDb();const m=await membership(db,user);if(m.status==="blocked")return errorResponse("account_suspended",403);
-    const model=body.model||"veo";const ratio=body.ratio;const duration=Number(body.duration);const prompt=typeof body.prompt==="string"?body.prompt.trim():"";
+    db=adminDb();const m=await membership(db,user);if(m.status==="blocked")return errorResponse("account_suspended",403);if(!m.owner)return errorResponse("owner_only",403);
+    const model=body.model||"veo";if(body.action==="status")return json({ok:true,configured:model==="veo"?!!Deno.env.get("GEMINI_API_KEY"):!!Deno.env.get("RUNWAYML_API_SECRET")});const ratio=body.ratio;const duration=Number(body.duration);const prompt=typeof body.prompt==="string"?body.prompt.trim():"";
     if(!["veo","runway"].includes(model))return errorResponse("unsupported_video_model",400);
     if(!["9:16","16:9"].includes(ratio))return errorResponse("invalid_aspect_ratio",400);
     if(![4,6,8,10].includes(duration)||(model==="veo"&&![4,6,8].includes(duration)))return errorResponse("invalid_duration",400);
     if(prompt.length<8||prompt.length>12000)return errorResponse("invalid_prompt",400);
     if(model==="runway"&&prompt.length>1000)return errorResponse("runway_prompt_too_long",400);
-    const image=parseImage(body.imageData);
+    const image=model==="veo"&&!body.imageData?{imageBase64:"",mimeType:""}:parseImage(body.imageData);
     const requestId=typeof body.requestId==="string"&&body.requestId.length>=8?body.requestId:crypto.randomUUID();
     const created=await db.rpc("video_create_job",{p_user:user,p_request_id:requestId,p_model:model,p_ratio:ratio,p_duration:duration,p_prompt:prompt});
     if(created.error){

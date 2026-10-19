@@ -1,12 +1,13 @@
+import {videoOutputUrl} from './video-media.js';
 const API='https://bxaplhrunxiadjsdobyl.supabase.co/functions/v1';
 const messages={invalid_line_login:'กรุณาเข้าสู่ระบบ LINE ใหม่',owner_only:'การสร้างภาพ AI เปิดให้เจ้าของบัญชีเท่านั้น',image_provider_not_configured:'บริการสร้างภาพยังไม่เปิดใช้งาน เจ้าของต้องตั้งค่า Gemini ใน backend ก่อน',provider_quota:'โควตาบริการ AI เต็ม กรุณาตรวจเครดิต',provider_timeout:'บริการใช้เวลานานเกินไป กรุณาลองใหม่',no_image_returned:'บริการไม่ส่งภาพกลับมา ลองปรับคำสั่งใหม่'};
 let currentUrl=null;
 function node(tag,text,cls){const el=document.createElement(tag);if(text)el.textContent=text;if(cls)el.className=cls;return el}
-async function imageApi(body){
+async function mediaApi(kind,body){
   if(!window.liff?.isLoggedIn?.())throw Error('กรุณาเปิดผ่าน LINE และเข้าสู่ระบบก่อน');
-  const res=await fetch(API+'/image-create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,accessToken:window.liff.getAccessToken()||'',idToken:window.liff.getIDToken()||''}),signal:AbortSignal.timeout(100000)});
+  const res=await fetch(API+(kind==='video'?'/video-create':'/image-create'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,accessToken:window.liff.getAccessToken()||'',idToken:window.liff.getIDToken()||''}),signal:AbortSignal.timeout(100000)});
   const data=await res.json().catch(()=>({}));
-  if(!res.ok||!data.ok)throw Error(messages[data.error]||'เชื่อมต่อบริการสร้างภาพไม่สำเร็จ');return data;
+  if(data.error==='provider_acceptance_pending'&&data.job?.id)return {...data,ok:true};if(!res.ok||!data.ok)throw Error(messages[data.error]||(data.error==='video_provider_not_configured'?'บริการสร้างวิดีโอยังไม่เปิดใช้งาน':null)||'เชื่อมต่อบริการ AI ไม่สำเร็จ');return data;
 }
 export function openCreativeCommand(kind,prompt=''){
   window.switchPage?.('homePage');
@@ -18,16 +19,30 @@ export function openCreativeCommand(kind,prompt=''){
   const ratioLabel=node('label','สัดส่วน');const ratio=node('select');ratio.id='creativeRatio';ratioLabel.htmlFor=ratio.id;
   for(const value of kind==='video'?['9:16','16:9']:['1:1','4:5','3:4','9:16','16:9']){const option=node('option',value);option.value=value;ratio.append(option)}
   if(prompt.includes('9:16'))ratio.value='9:16';else if(prompt.includes('16:9'))ratio.value='16:9';panel.append(ratioLabel,ratio);
-  const status=node('p',kind==='video'?'ส่งคำสั่งไป Video Studio เดิม แล้วเลือกภาพต้นฉบับก่อนสร้างวิดีโอ':'กำลังตรวจการเชื่อมต่อบริการ…','creative-status');status.setAttribute('role','status');
-  const button=node('button',kind==='video'?'เปิด Video Studio พร้อมคำสั่ง':'สร้างรูปภาพ');button.type='button';button.disabled=kind!=='video';
+  const status=node('p','กำลังตรวจการเชื่อมต่อบริการ…','creative-status');status.setAttribute('role','status');
+  const button=node('button',kind==='video'?'สร้างวิดีโอ 8 วินาที':'สร้างรูปภาพ');button.type='button';button.disabled=true;
   const result=node('div',null,'creative-result');panel.append(status,button,result);
-  let busy=false;
+  let busy=false;const requestId=crypto.randomUUID();
+  if(kind==='video'){const studio=node('button','แนบภาพใน Video Studio');studio.type='button';studio.style.marginLeft='8px';studio.addEventListener('click',()=>{sessionStorage.setItem('chaylueklab.creative.video',JSON.stringify({prompt:input.value.trim(),ratio:ratio.value}));location.assign(new URL('./ai-video.html',location.href).href)});panel.insertBefore(studio,result)}
   button.addEventListener('click',async()=>{
     if(busy)return;if(input.value.trim().length<3){status.textContent='พิมพ์รายละเอียดอย่างน้อย 3 ตัวอักษร';return}
-    if(kind==='video'){sessionStorage.setItem('chaylueklab.creative.video',JSON.stringify({prompt:input.value.trim(),ratio:ratio.value}));location.assign(new URL('./ai-video.html',location.href).href);return}
-    busy=true;button.disabled=true;panel.classList.add('is-generating');status.textContent='กำลังสร้างภาพจริง กรุณารอสักครู่…';result.replaceChildren();
+    busy=true;button.disabled=true;panel.classList.add('is-generating');status.textContent=kind==='video'?'กำลังส่งงานวิดีโอไปยัง backend…':'กำลังสร้างภาพจริง กรุณารอสักครู่…';result.replaceChildren();
     try{
-      const data=await imageApi({prompt:input.value.trim(),ratio:ratio.value});const image=data.image;
+      if(kind==='video'){
+        const created=await mediaApi('video',{requestId,model:'veo',duration:8,prompt:input.value.trim(),ratio:ratio.value});
+        const start=Date.now();let job=created.job;
+        while(job&&['queued','generating'].includes(job.status)){
+          if(Date.now()-start>960000)throw Error('งานใช้เวลานาน กรุณาตรวจสถานะใน Video Studio');
+          status.textContent=job.status==='queued'?'รับงานแล้ว กำลังยืนยันกับผู้ให้บริการ':'กำลังสร้างวิดีโอ'+(job.progress>0?' · '+Math.round(job.progress*100)+'%':'…');
+          await new Promise(resolve=>setTimeout(resolve,4000));
+          const res=await fetch(API+'/video-status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jobId:job.id,accessToken:window.liff.getAccessToken()||'',idToken:window.liff.getIDToken()||''}),signal:AbortSignal.timeout(100000)});
+          const polled=await res.json();if(!res.ok||!polled.ok)throw Error('ตรวจสถานะวิดีโอไม่สำเร็จ');job=polled.job;
+        }
+        if(job?.status!=='completed'||!job.videoUrl)throw Error('สร้างวิดีโอไม่สำเร็จ กรุณาตรวจโควตาและคำสั่ง');
+        const url=videoOutputUrl(job.videoUrl,API);const video=node('video');video.controls=true;video.playsInline=true;video.src=url;video.style.maxWidth='100%';
+        const download=node('a','ดาวน์โหลดวิดีโอ MP4');download.href=url;download.download='chaylueklab-video.mp4';download.target='_blank';download.rel='noopener';result.append(video,download);status.textContent='สร้างวิดีโอสำเร็จ พร้อมเล่นและดาวน์โหลด';return;
+      }
+      const data=await mediaApi('image',{prompt:input.value.trim(),ratio:ratio.value});const image=data.image;
       if(!['image/png','image/jpeg','image/webp'].includes(image?.mimeType)||typeof image.data!=='string'||image.data.length>12000000||!/^[A-Za-z0-9+/]+={0,2}$/.test(image.data))throw Error('รูปแบบภาพจากบริการไม่ถูกต้อง');
       const bytes=Uint8Array.from(atob(image.data),c=>c.charCodeAt(0));const bitmap=await createImageBitmap(new Blob([bytes],{type:image.mimeType}));
       if(bitmap.width*bitmap.height>40000000){bitmap.close();throw Error('ภาพมีขนาดใหญ่เกินไป')}
@@ -37,7 +52,7 @@ export function openCreativeCommand(kind,prompt=''){
     }catch(e){status.textContent=e.name==='TimeoutError'?'บริการใช้เวลานานเกินไป กรุณาลองใหม่':e.message}
     finally{busy=false;button.disabled=false;panel.classList.remove('is-generating')}
   });
-  if(kind!=='video')imageApi({action:'status'}).then(data=>{status.textContent=data.configured?'บริการพร้อม รับคำสั่งได้เลย':'บริการสร้างภาพยังไม่เปิดใช้งาน รอเจ้าของตั้งค่า Gemini ใน backend';button.disabled=!data.configured}).catch(e=>{status.textContent=e.message});
+  mediaApi(kind,{action:'status',model:'veo'}).then(data=>{status.textContent=data.configured?'บริการพร้อม รับคำสั่งได้เลย':'บริการ AI ยังไม่เปิดใช้งาน รอเจ้าของตั้งค่า Gemini ใน backend';button.disabled=!data.configured}).catch(e=>{status.textContent=e.message});
   panel.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});input.focus({preventScroll:true});
   return {ok:true,message:kind==='video'?'เตรียมคำสั่งวิดีโอแล้ว':'เปิดพื้นที่สั่งสร้างภาพแล้ว'};
 }

@@ -42,7 +42,7 @@ test('video submission requires a persisted job identifier before contacting a p
     const { json, requirePost, CORS } = shared();
     vm.runInNewContext(stripTypeScriptTypes(source), { Request, Response, Set, Error, json, requirePost, CORS,
       Deno: { serve: fn => { handle = fn; } }, lineIdentity: async () => 'verified-fixture-only',
-      adminDb: () => ({ rpc: async () => ({ data: result }) }), membership: async () => ({ status: 'none' }),
+      adminDb: () => ({ rpc: async () => ({ data: result }) }), membership: async () => ({ status: 'none', owner:true }),
       ProviderError: class extends Error {}, console: { error() {} },
       createProviderJob: async () => { providerCalls++; throw new Error('Provider must not be reached'); } });
     const response = await handle(new Request('https://test.invalid', { method: 'POST', body: JSON.stringify({
