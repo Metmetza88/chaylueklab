@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="th">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src https://yobymeygbfiwlngmwjcn.supabase.co; form-action 'none'; frame-ancestors 'none'; base-uri 'none'">
+<title>CHAYLUEKLAB — Security Awareness</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100dvh;padding:25px;background:radial-gradient(circle at 20% 0,#23415c,transparent 48%),#090f19;color:#f2f7fc;font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif;display:grid;place-items:center}
+main{width:min(470px,100%)}header{display:flex;align-items:center;gap:12px;margin-bottom:25px;font-size:15px;font-weight:800;letter-spacing:1.5px}.mark{display:grid;place-items:center;width:45px;height:45px;border:1px solid #59748a;border-radius:14px;background:#15283b;font-size:23px}
+section{padding:clamp(23px,6vw,36px);border-radius:24px;background:#141f2d;border:1px solid #34475b;box-shadow:0 30px 70px #0008}
+.kicker{font-size:12px;letter-spacing:2px;color:#8dc7ed;font-weight:800}h1{font-size:28px;line-height:1.25;margin:14px 0}p{font-size:14px;line-height:1.75;color:#c4d2df}.preview{background:#0a1320;border:1px solid #3d566b;border-radius:14px;padding:17px;margin:20px 0}
+.preview strong{display:block;font-size:14px}.preview .field{border:1px solid #4a6072;border-radius:9px;padding:12px;color:#8497a9;margin-top:12px;font-size:13px}
+button{display:block;width:100%;border:0;border-radius:12px;padding:15px 12px;margin-top:12px;font-size:15px;font-weight:800;cursor:pointer;background:#c9e9ff;color:#0e1925}button.secondary{background:#273c4f;color:#e6f5ff}
+.notice{border:1px solid #37576c;border-radius:12px;padding:12px;background:#142c3c;font-size:12px;color:#c0ddec;line-height:1.65}
+#result{display:none}ul{padding-left:21px;color:#d1e0eb;line-height:1.9;font-size:14px}footer{text-align:center;font-size:12px;line-height:1.6;color:#9daebc;margin-top:20px}.state{font-size:12px;color:#a9b9c6;text-align:center;margin-top:12px}
+</style></head>
+<body><main><header><span class="mark">◇</span>CHAYLUEKLAB / WORKSPACE</header>
+<section id="exercise">
+<div class="kicker">SECURITY AWARENESS · PILOT 02</div>
+<h1>คุณจะทำอย่างไรเมื่อเจอลิงก์ยืนยันบัญชี?</h1>
+<p>สมมติว่าคุณได้รับอีเมลแจ้งให้ยืนยันบัญชีองค์กร แล้วพบหน้าเว็บที่มีหน้าตาเหมือนระบบเข้าสู่ระบบ</p>
+<div class="preview"><strong>ตัวอย่างหน้าเข้าสู่ระบบที่น่าสงสัย</strong><div class="field">บัญชีผู้ใช้: ••••••••</div><div class="field">รหัสผ่าน: ••••••••</div></div>
+<p><strong>คุณจะเลือกทำอะไร?</strong></p>
+<button id="continue" type="button">ฉันจะดำเนินการต่อ</button>
+<button class="secondary" id="report" type="button">ฉันจะตรวจสอบและรายงานลิงก์นี้</button>
+<div class="notice" style="margin-top:20px">นี่คือระบบฝึกอบรมที่ได้รับอนุญาต ไม่มีการกรอกหรือเก็บรหัสผ่านจริง และไม่มีการเข้าสู่ระบบบัญชีจริง</div>
+</section>
+<section id="result" aria-live="polite">
+<div class="kicker">EXERCISE RESULT</div><h1 id="result-title">ผลการทดสอบ</h1>
+<p id="result-desc"></p>
+<ul><li>ตรวจสอบโดเมนเว็บไซต์ก่อนเปิดหรือกรอกข้อมูล</li><li>ไม่กรอกรหัสผ่านหรือ OTP ผ่านลิงก์ในอีเมลที่ไม่คุ้นเคย</li><li>เข้าระบบผ่านแอปหรือเว็บไซต์ที่บันทึกไว้เอง</li><li>แจ้งผู้ดูแลเมื่อพบอีเมลน่าสงสัย</li></ul>
+<div class="notice">บันทึกเฉพาะประเภทการกดปุ่มและรหัสทดสอบ ไม่บันทึกรหัสผ่าน ข้อมูลส่วนตัว หรือ OTP</div>
+<div class="state" id="record-state">กำลังบันทึกผล...</div>
+<button class="secondary" id="again" type="button">กลับไปดูตัวอย่าง</button>
+</section>
+<footer>© CHAYLUEKLAB · Security Awareness Training<br>ไม่ใช่หน้าเข้าสู่ระบบบัญชีจริง</footer>
+</main>
+<script>
+(function(){
+'use strict';
+const api='https://yobymeygbfiwlngmwjcn.supabase.co/functions/v1/chaylueklab-awareness-events';
+const token=new URL(location.href).searchParams.get('t');
+const valid=typeof token==='string'&&/^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(token);
+async function record(event){
+ if(!valid)return false;
+ try{
+ const r=await fetch(api,{method:'POST',mode:'cors',credentials:'omit',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify({token,event})});
+ return r.ok;
+ }catch{return false;}
+}
+if(valid)record('landing_view');
+async function complete(event){
+ document.getElementById('exercise').style.display='none';
+ document.getElementById('result').style.display='block';
+ document.getElementById('result-title').textContent=event==='reported'?'คุณเลือกตรวจสอบอย่างปลอดภัย':'นี่คือสถานการณ์ฟิชชิ่งจำลอง';
+ document.getElementById('result-desc').textContent=event==='reported'?'การตรวจสอบที่มาของลิงก์และแจ้งผู้ดูแลเป็นวิธีที่เหมาะสม':'หากเป็นลิงก์จริงจากผู้ไม่หวังดี การดำเนินการต่ออาจนำไปสู่การเปิดเผยข้อมูลบัญชี';
+ document.getElementById('record-state').textContent=await record(event)?'บันทึกผลการฝึกอบรมแล้ว':'ยังยืนยันการบันทึกไม่ได้ แต่คุณสามารถอ่านคำแนะนำได้';
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('continue').addEventListener('click',()=>complete('demo_continue'));
+document.getElementById('report').addEventListener('click',()=>complete('reported'));
+document.getElementById('again').addEventListener('click',()=>{document.getElementById('result').style.display='none';document.getElementById('exercise').style.display='block';});
+})();
+</script></body></html>
