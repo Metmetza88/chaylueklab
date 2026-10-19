@@ -595,7 +595,7 @@ async function ensureLineSdk(){
 async function initLiff(){
   if(liffBusy)return;liffBusy=true;document.getElementById('connectLineBtn').disabled=true;document.getElementById('connectLineBtn').textContent='กำลังเชื่อมต่อ…';
   try{
-    if(authExpired){location.assign('https://liff.line.me/'+LIFF_ID+'/app-20261007.html');return}
+    if(authExpired){location.assign('https://liff.line.me/'+LIFF_ID);return}
     await ensureLineSdk();
     if(!liffReady){await waitForResult(liff.init({liffId:LIFF_ID}),20000,'เชื่อมต่อ LINE นานเกินไป กดลองอีกครั้งได้');liffReady=true}
     // Keep the requested back-office view through LINE Login, then route only after LIFF is authenticated.
