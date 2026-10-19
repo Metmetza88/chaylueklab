@@ -214,7 +214,7 @@ main{max-width:1280px;margin:auto}.desk-intro{margin:8px 0 22px}.desk-title{font
 <link rel="stylesheet" href="./assets/workspace-cinematic.css?v=20261008-daily">
 <link rel="stylesheet" href="./assets/liff-commands.css?v=1">
 <link rel="preload" as="image" href="./assets/cinematic-hero.webp">
-<link rel="stylesheet" href="./assets/lifeos-luxe.css?v=20261019"></head>
+<link rel="stylesheet" href="./assets/lifeos-luxe.css?v=20261019-creative"></head>
 <body class="cinematic-workspace">
 <a class="skip-link" href="#homePage">ข้ามไปพื้นที่ทำงาน</a>
 <div class="shell">
@@ -253,12 +253,12 @@ main{max-width:1280px;margin:auto}.desk-intro{margin:8px 0 22px}.desk-title{font
           <section id="liffCommandPanel" class="liff-commands" aria-labelledby="liffCommandHeading">
             <div class="liff-command-head">
               <div><h2 id="liffCommandHeading">คำสั่งด่วนใน LINE</h2>
-              <p>พิมพ์คำสั่งหรือแตะปุ่ม เพื่อเปิดฟังก์ชันที่มีอยู่ในหน้านี้</p></div>
+              <p>พิมพ์สั่งงาน สร้างรูป หรือเตรียมวิดีโอจากไอเดียของคุณ</p></div>
               <span class="pill">LIFF</span>
             </div>
             <form id="liffCommandForm" class="liff-command-form" autocomplete="off">
               <label for="liffCommandInput" class="sr-only">พิมพ์คำสั่ง</label>
-              <input id="liffCommandInput" type="text" maxlength="2100" spellcheck="false" placeholder="/งาน หรือ /เตือน รับพัสดุ" aria-describedby="liffCommandStatus">
+              <input id="liffCommandInput" type="text" maxlength="2100" spellcheck="false" placeholder="สร้างรูป เสื้อสีดำ หรือ สร้างวิดีโอ 9:16" aria-describedby="liffCommandStatus">
               <button type="submit">ทำคำสั่ง</button>
             </form>
             <div class="liff-command-quick" aria-label="คำสั่งยอดนิยม">
@@ -268,6 +268,7 @@ main{max-width:1280px;margin:auto}.desk-intro{margin:8px 0 22px}.desk-title{font
               <button type="button" data-liff-command="/ไฟล์">▤ ไฟล์</button>
               <button type="button" data-liff-command="/รายงาน">▥ รายงาน</button>
               <button type="button" data-liff-command="/AI">✧ AI Studio</button>
+              <button type="button" data-liff-command="/ภาพ">✧ สร้างรูป</button>
               <button type="button" data-liff-command="/วิดีโอ">▷ สร้างวิดีโอ</button>
               <button type="button" data-liff-command="/เมนู">☰ ดูทั้งหมด</button>
             </div>
@@ -1115,6 +1116,6 @@ document.addEventListener('DOMContentLoaded',async()=>{
 });
 </script>
 <dialog id="snoozeDialog" aria-labelledby="snoozeHeading"><button class="snooze-close" aria-label="ปิดหน้าต่าง" onclick="closeSnooze()">×</button><div class="snooze-clock" aria-hidden="true">◷</div><p class="snooze-note">CHAYLUEKLAB · SMART SNOOZE</p><h2 id="snoozeHeading" style="font-size:26px;font-weight:800">เลื่อนเตือนอย่างมีสไตล์</h2><div id="snoozeBody" aria-live="polite"></div></dialog>
-<script type="module" src="./assets/liff-command-center.js?v=1"></script>
+<script type="module" src="./assets/liff-command-center.js?v=20261019-creative"></script>
 </body>
 </html>
