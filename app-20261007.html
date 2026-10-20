@@ -483,6 +483,7 @@ main{max-width:1280px;margin:auto}.desk-intro{margin:8px 0 22px}.desk-title{font
           <div class="p-3 rounded-2xl bg-white/[.03]"><div class="text-[10px] muted">Backend</div><div class="font-black text-xs mt-1 soft">Supabase</div></div>
         </div>
         <button class="btn btn-green w-full mt-4" onclick="testCloudLine()">ทดสอบ Cloud + LINE</button>
+        <button id="richMenuAdminButton" class="btn w-full mt-4 hidden" onclick="openRichMenuAdmin()">สำรองและเตรียม Rich Menu · เจ้าของ</button>
       </div>
 
       <div class="glass card p-4">
@@ -991,6 +992,7 @@ function renderDeskMembership(){
   const m=memberInfo?.membership;if(!m)return;
   document.getElementById('deskPlan').textContent=m.owner?'OWNER':m.status==='blocked'?'ระงับสิทธิ์':m.status==='trialing'?'ทดลอง Plus':m.active?'PLUS':'FREE';
   document.getElementById('ownerDeskLink').classList.toggle('hidden',!m.owner);
+  document.getElementById('richMenuAdminButton').classList.toggle('hidden',!m.owner);
   document.getElementById('upgradeDeskLink').classList.toggle('hidden',!!m.owner);
 }
 function premiumPrompt(){return '<div class="premium-state"><strong>เครื่องมือสำหรับ Plus</strong><p class="mt-1">ใช้ได้ระหว่างทดลองฟรี 7 วัน หรือสมัคร Plus 59 บาท/เดือน</p><button class="text-action mt-1" onclick="switchPage(\'membershipPage\');loadMembership()">ดูสิทธิ์ของฉัน <svg class="inline-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div>'}
@@ -1117,5 +1119,6 @@ document.addEventListener('DOMContentLoaded',async()=>{
 </script>
 <dialog id="snoozeDialog" aria-labelledby="snoozeHeading"><button class="snooze-close" aria-label="ปิดหน้าต่าง" onclick="closeSnooze()">×</button><div class="snooze-clock" aria-hidden="true">◷</div><p class="snooze-note">CHAYLUEKLAB · SMART SNOOZE</p><h2 id="snoozeHeading" style="font-size:26px;font-weight:800">เลื่อนเตือนอย่างมีสไตล์</h2><div id="snoozeBody" aria-live="polite"></div></dialog>
 <script type="module" src="./assets/liff-command-center.js?v=20261019-media-v2"></script>
+<script type="module" src="./assets/rich-menu-admin.js?v=20261020"></script>
 </body>
 </html>
