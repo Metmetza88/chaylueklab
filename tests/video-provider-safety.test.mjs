@@ -9,7 +9,7 @@ const body = { model: 'veo', ratio: '16:9', duration: 4, prompt: 'Explicit provi
 class FixtureProviderError extends Error {
   constructor(message, status, retryable) { super(message); this.status = status; this.retryable = retryable; }
 }
-function createHandler({ reservation = { job_id: jobId, status: 'queued', replayed: false }, providerError, persistError = false, identityError = false } = {}) {
+function createHandler({ reservation = { job_id: jobId, status: 'queued', replayed: false }, providerError, persistError = false, identityError = false, owner = true } = {}) {
   let handle, providerCalls = 0;
   const calls = [];
   const db = {
@@ -22,7 +22,7 @@ function createHandler({ reservation = { job_id: jobId, status: 'queued', replay
     Deno: { serve: fn => { handle = fn; } }, json,
     requirePost: req => req.method === 'POST' ? null : json({}, 405),
     lineIdentity: async () => { if (identityError) throw new Error('fixture LINE timeout'); return 'verified-fixture-only'; },
-    adminDb: () => db, membership: async () => ({ status: 'trialing' }), ProviderError: FixtureProviderError,
+    adminDb: () => db, membership: async () => ({ status: 'trialing', owner }), ProviderError: FixtureProviderError,
     createProviderJob: async () => { providerCalls++; if (providerError) throw providerError; return { provider: 'veo', providerJobId: 'fixture-provider-job' }; }
   });
   return { send: value => handle(new Request('https://test.invalid', { method: 'POST', body: JSON.stringify(value || body) })), calls, count: () => providerCalls };
@@ -83,3 +83,6 @@ test('the provider adapter never retries a billable POST after an unknown respon
   await assert.rejects(provider.createProviderJob({ model: 'veo', prompt: 'Fixture provider call', imageBase64: 'YQ==', mimeType: 'image/jpeg', ratio: '16:9', duration: 4 }), error => error.message === 'provider_network_error');
   assert.equal(calls, 1);
 });
+
+test('video creation is owner-only before reserving credits or calling a paid provider',async()=>{const h=createHandler({owner:false});assert.equal((await h.send()).status,403);assert.equal(h.count(),0);assert.equal(h.calls.length,0)});
+test('Veo accepts a text-only command without inventing a reference image',async()=>{const h=createHandler({reservation:{job_id:jobId,status:'queued',replayed:true}});assert.equal((await h.send({...body,imageData:undefined})).status,200);assert.equal(h.count(),0)});

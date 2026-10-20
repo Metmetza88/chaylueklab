@@ -47,7 +47,7 @@ test('unrecognized, long and potentially unsafe text cannot become an action',()
 test('only whitelisted navigation/forms; no background writes, bot replies or group actions',()=>{
   const names=new Set(COMMANDS.map(c=>c.id));
   assert.equal(names.size,COMMANDS.length);
-  const allowed=new Set(['help','page','form','tools','link']);
+  const allowed=new Set(['help','page','form','tools','link','creative','met']);
   for(const c of COMMANDS)assert.ok(allowed.has(c.action),c.id);
   assert.doesNotMatch(client,/liff\.sendMessages|source\.type\s*===?\s*['"]group['"]|\/v2\/bot\/message|\bfetch\s*\(/);
   assert.match(client,/never perform a write from a URL query parameter/);

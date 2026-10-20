@@ -1,3 +1,5 @@
+import {openMetVorx} from './met-vorx-panel.js?v=20261020';
+import {openCreativeCommand} from './creative-command.js?v=20261019-media-v2';
 // CHAYLUEKLAB Life OS: commands inside the existing LINE LIFF web app.
 // Commands here navigate existing pages or open existing forms; they never write data on their own.
 // Replying to messages typed in an OA chat requires a separately configured Messaging API webhook.
@@ -13,10 +15,10 @@ export const COMMANDS = Object.freeze([
   {id:'recurring',label:'/เตือนประจำ',title:'แจ้งเตือนประจำ',aliases:['เตือนประจำ','ประจำ'],action:'tools',target:'recurring'},
   {id:'report',label:'/รายงาน',title:'รายงานการเงิน',aliases:['รายงาน','report'],action:'tools',target:'report'},
   {id:'membership',label:'/สมาชิก',title:'สิทธิ์สมาชิก',aliases:['สมาชิก','สิทธิ์','membership'],action:'page',target:'membershipPage',after:'loadMembership'},
-  {id:'video',label:'/วิดีโอ',title:'AI Video Studio',aliases:['วิดีโอ','คลิป','video'],action:'link',target:'./ai-video.html'},
-  {id:'met',label:'/เมท',title:'MET VORX — ผู้ช่วยส่วนตัว',aliases:['เมท','met','vorx','met vorx'],action:'link',target:'./met-vorx.html'},
+  {id:'video',label:'/วิดีโอ',title:'AI Video Studio',aliases:['วิดีโอ','คลิป','video','สร้างวิดีโอ','ทำวิดีโอ','สร้างคลิป','ทำภาพเคลื่อนไหว'],action:'creative',target:'video',acceptPrompt:true},
+  {id:'met',label:'/เมท',title:'MET VORX — เมท',aliases:['เมท','met','vorx'],action:'met'},
   {id:'ai',label:'/AI',title:'AI Studio',aliases:['ai','สตูดิโอ','studio'],action:'link',target:'https://ai.chaylueklab.com/ai/'},
-  {id:'image',label:'/ภาพ',title:'AI Image (ต้องเปิด API ก่อน)',aliases:['ภาพ','รูป','สร้างภาพ','image'],action:'link',target:'https://ai.chaylueklab.com/ai-image/'},
+  {id:'image',label:'/ภาพ',title:'สั่งสร้างภาพ AI',aliases:['ภาพ','รูป','สร้างภาพ','สร้างรูป','ทำรูป','image'],action:'creative',target:'image',acceptPrompt:true},
   {id:'chat',label:'/แชตAI',title:'AI Chat (ต้องเปิด API ก่อน)',aliases:['แชตai','แชต ai','ai chat'],action:'link',target:'https://ai.chaylueklab.com/ai-chat/'},
   {id:'business',label:'/ธุรกิจ',title:'ศูนย์บริการ CHAYLUEKLAB',aliases:['ธุรกิจ','บริการ','business'],action:'link',target:'./business.html'},
 ]);
@@ -24,7 +26,7 @@ export const COMMANDS = Object.freeze([
 const normalized=text=>text.trim().replace(/^\//,'').trim().replace(/\s+/g,' ').toLocaleLowerCase('th');
 
 export function resolveLiffCommand(input){
-  if(typeof input!=='string'||input.length>160)return null;
+  if(typeof input!=='string'||input.length>2100)return null;
   const query=normalized(input);
   if(!query)return null;
   for(const entry of COMMANDS){
@@ -32,10 +34,10 @@ export function resolveLiffCommand(input){
       const key=normalized(alias);
       if(query===key)return {id:entry.id,command:entry,argument:''};
       // Only the reminder form accepts user text. No financial or destructive command executes on text input.
-      if(entry.acceptTitle&&query.startsWith(key+' ')){
+      if((entry.acceptTitle||entry.acceptPrompt)&&query.startsWith(key+' ')){
         const source=input.trim().replace(/^\//,'').trim();
         const title=source.slice(alias.replace(/^\//,'').length).trim();
-        if(title&&title.length<=120)return {id:entry.id,command:entry,argument:title};
+        if(title&&title.length<=(entry.acceptPrompt?2000:120))return {id:entry.id,command:entry,argument:title};
       }
     }
   }
@@ -90,6 +92,8 @@ export function runLiffCommand(found){
     window.openLifeTools(command.target);
     return {ok:true,message:'เปิด'+command.title+'แล้ว'};
   }
+  if(command.action==='met'){openMetVorx();return {ok:true,message:'เปิดเมทใน LIFE OS แล้ว'}}
+  if(command.action==='creative')return openCreativeCommand(command.target,argument);
   if(command.action==='link'){
     openLink(command.target);
     return {ok:true,message:'กำลังเปิด'+command.title};
@@ -97,17 +101,7 @@ export function runLiffCommand(found){
   return {ok:false,message:'ไม่รองรับคำสั่งนี้'};
 }
 
-function addMetVorxEntry(){
-  const panel=document.getElementById('liffCommandPanel');
-  if(!panel||document.getElementById('metVorxEntry'))return;
-  const entry=document.createElement('a');
-  entry.id='metVorxEntry';entry.href='./met-vorx.html';
-  entry.textContent='✦ MET VORX — พูดคุยกับเมท • กล้องหน้า • วิเคราะห์ภาพ (ทดลอง) ↗';
-  entry.style.cssText='display:block;margin:14px 0;padding:17px 19px;border-radius:14px;border:1px solid #3a806c;background:linear-gradient(120deg,#082d2b,#102434);color:#c8f7e4;font-weight:700;text-decoration:none;line-height:1.65';
-  panel.parentNode.insertBefore(entry,panel);
-}
 function initCommandCenter(){
-  addMetVorxEntry();
   const form=document.getElementById('liffCommandForm');
   const input=document.getElementById('liffCommandInput');
   if(!form||!input)return;
