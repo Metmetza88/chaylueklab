@@ -1,5 +1,5 @@
 import {openMetVorx} from './met-vorx-panel.js?v=20261020';
-import {openCreativeCommand} from './creative-command.js?v=20261019-media-v2';
+import {openCreativeCommand,openCreativeStudio} from './creative-command.js?v=20261020-richmenu';
 // CHAYLUEKLAB Life OS: commands inside the existing LINE LIFF web app.
 // Commands here navigate existing pages or open existing forms; they never write data on their own.
 // Replying to messages typed in an OA chat requires a separately configured Messaging API webhook.
@@ -17,7 +17,7 @@ export const COMMANDS = Object.freeze([
   {id:'membership',label:'/สมาชิก',title:'สิทธิ์สมาชิก',aliases:['สมาชิก','สิทธิ์','membership'],action:'page',target:'membershipPage',after:'loadMembership'},
   {id:'video',label:'/วิดีโอ',title:'AI Video Studio',aliases:['วิดีโอ','คลิป','video','สร้างวิดีโอ','ทำวิดีโอ','สร้างคลิป','ทำภาพเคลื่อนไหว'],action:'creative',target:'video',acceptPrompt:true},
   {id:'met',label:'/เมท',title:'MET VORX — เมท',aliases:['เมท','met','vorx'],action:'met'},
-  {id:'ai',label:'/AI',title:'AI Studio',aliases:['ai','สตูดิโอ','studio'],action:'link',target:'https://ai.chaylueklab.com/ai/'},
+  {id:'ai',label:'/AI',title:'AI Studio',aliases:['ai','สตูดิโอ','studio'],action:'studio'},
   {id:'image',label:'/ภาพ',title:'สั่งสร้างภาพ AI',aliases:['ภาพ','รูป','สร้างภาพ','สร้างรูป','ทำรูป','image'],action:'creative',target:'image',acceptPrompt:true},
   {id:'chat',label:'/แชตAI',title:'AI Chat (ต้องเปิด API ก่อน)',aliases:['แชตai','แชต ai','ai chat'],action:'link',target:'https://ai.chaylueklab.com/ai-chat/'},
   {id:'business',label:'/ธุรกิจ',title:'ศูนย์บริการ CHAYLUEKLAB',aliases:['ธุรกิจ','บริการ','business'],action:'link',target:'./business.html'},
@@ -93,6 +93,7 @@ export function runLiffCommand(found){
     return {ok:true,message:'เปิด'+command.title+'แล้ว'};
   }
   if(command.action==='met'){openMetVorx();return {ok:true,message:'เปิดเมทใน LIFE OS แล้ว'}}
+  if(command.action==='studio')return openCreativeStudio();
   if(command.action==='creative')return openCreativeCommand(command.target,argument);
   if(command.action==='link'){
     openLink(command.target);
@@ -124,7 +125,10 @@ function initCommandCenter(){
     item.append(button);list.append(item);
   }
   // Deep link to the command panel; never perform a write from a URL query parameter.
-  if(new URLSearchParams(location.search).get('view')==='commands'){
+  const view=new URLSearchParams(location.search).get('view');
+  if(view==='met')openMetVorx();
+  if(view==='studio')openCreativeStudio();
+  if(view==='commands'){
     jumpToPage('homePage');
     requestAnimationFrame(()=>document.getElementById('liffCommandPanel')?.scrollIntoView({block:'start'}));
   }
