@@ -1,5 +1,5 @@
 import {openMetVorx} from './met-vorx-panel.js?v=20261020';
-import {openCreativeCommand,openCreativeStudio} from './creative-command.js?v=20261020-richmenu';
+import {openCreativeCommand,openCreativeStudio} from './creative-command.js?v=20261021-validation';
 // CHAYLUEKLAB Life OS: commands inside the existing LINE LIFF web app.
 // Commands here navigate existing pages or open existing forms; they never write data on their own.
 // Replying to messages typed in an OA chat requires a separately configured Messaging API webhook.

@@ -45,3 +45,6 @@ body.met-vorx main{max-width:880px;padding:34px 20px calc(70px + env(safe-area-i
 @media(min-width:900px){.desk-grid{gap:22px}.desk-panel{padding:28px}.desk-title{max-width:16ch}main{padding-inline:32px!important}.desk-metrics{margin-top:24px}.utility-link{min-height:102px}.bottom>div{max-width:760px;margin:auto}}
 @media(max-width:440px){.masthead{padding-block:14px!important}.brand-name{letter-spacing:.08em}.brand-sub{letter-spacing:.14em}.desk-panel{padding:19px}.desk-title{font-size:36px}.metric-value{font-size:29px}.utility-link{padding:14px 10px}.navbtn{min-height:52px}.command-action{min-height:90px}body.met-vorx main{padding:24px 14px 60px}body.met-vorx section{padding:18px}body.met-vorx header{gap:12px;align-items:flex-start}body.met-vorx header .link{font-size:12px;padding:10px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Keep creation controls clear of the sticky header on small screens. */
+.creative-panel{scroll-margin-top:140px}.creative-panel>button{display:block;width:100%;margin-top:12px}
