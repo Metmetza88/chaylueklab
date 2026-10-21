@@ -1,6 +1,6 @@
 import {videoOutputUrl} from './video-media.js';
 const API='https://bxaplhrunxiadjsdobyl.supabase.co/functions/v1';
-const messages={invalid_line_login:'กรุณาเข้าสู่ระบบ LINE ใหม่',owner_only:'การสร้างภาพ AI เปิดให้เจ้าของบัญชีเท่านั้น',image_provider_not_configured:'บริการสร้างภาพยังไม่เปิดใช้งาน เจ้าของต้องตั้งค่า Gemini ใน backend ก่อน',provider_quota:'โควตาบริการ AI เต็ม กรุณาตรวจเครดิต',provider_timeout:'บริการใช้เวลานานเกินไป กรุณาลองใหม่',no_image_returned:'บริการไม่ส่งภาพกลับมา ลองปรับคำสั่งใหม่'};
+const messages={invalid_line_login:'กรุณาเข้าสู่ระบบ LINE ใหม่',owner_only:'การสร้างสื่อ AI เปิดให้เจ้าของบัญชีเท่านั้น',invalid_prompt:'คำสั่งวิดีโอต้องมีรายละเอียดอย่างน้อย 8 ตัวอักษร เช่น โลโก้สีทองหมุนช้าๆ',account_suspended:'บัญชีนี้ถูกระงับสิทธิ์ กรุณาติดต่อแอดมิน',video_quota_exceeded:'เครดิตสร้างวิดีโอไม่เพียงพอ กรุณาตรวจสิทธิ์ใน Video Studio',video_create_failed:'เริ่มสร้างวิดีโอไม่สำเร็จ กรุณาตรวจสิทธิ์โมเดลและโควตาใน Google AI Studio',invalid_aspect_ratio:'กรุณาเลือกสัดส่วน 9:16 หรือ 16:9',image_provider_not_configured:'บริการสร้างภาพยังไม่เปิดใช้งาน เจ้าของต้องตั้งค่า Gemini ใน backend ก่อน',provider_quota:'โควตาบริการ AI เต็ม กรุณาตรวจเครดิต',provider_timeout:'บริการใช้เวลานานเกินไป กรุณาลองใหม่',no_image_returned:'บริการไม่ส่งภาพกลับมา ลองปรับคำสั่งใหม่'};
 let currentUrl=null;
 function node(tag,text,cls){const el=document.createElement(tag);if(text)el.textContent=text;if(cls)el.className=cls;return el}
 async function mediaApi(kind,body){
@@ -15,7 +15,7 @@ export function openCreativeCommand(kind,prompt=''){
   if(!panel){panel=node('section',null,'creative-panel');panel.id='creativeCommandPanel';document.getElementById('liffCommandPanel')?.after(panel)}
   panel.replaceChildren();panel.setAttribute('aria-label',kind==='video'?'สั่งสร้างวิดีโอ':'สั่งสร้างภาพ');
   panel.append(node('div','CHAYLUEKLAB / CREATIVE ENGINE','creative-eyebrow'),node('h2',kind==='video'?'เปลี่ยนคำสั่งเป็นวิดีโอ':'เปลี่ยนไอเดียเป็นภาพ'));
-  const label=node('label','คำสั่งของคุณ');const input=node('textarea');input.maxLength=2000;input.rows=3;input.value=prompt;input.id='creativePrompt';label.htmlFor=input.id;panel.append(label,input);
+  const label=node('label','คำสั่งของคุณ');const input=node('textarea');input.maxLength=2000;input.minLength=kind==='video'?8:3;input.placeholder=kind==='video'?'เช่น โลโก้สีทองหมุนช้าๆ บนฉากดำ แสงไซเบอร์':'เช่น โปสเตอร์ CHAYLUEKLAB โทนดำทอง';input.rows=3;input.value=prompt;input.id='creativePrompt';label.htmlFor=input.id;panel.append(label,input);
   const ratioLabel=node('label','สัดส่วน');const ratio=node('select');ratio.id='creativeRatio';ratioLabel.htmlFor=ratio.id;
   for(const value of kind==='video'?['9:16','16:9']:['1:1','4:5','3:4','9:16','16:9']){const option=node('option',value);option.value=value;ratio.append(option)}
   if(prompt.includes('9:16'))ratio.value='9:16';else if(prompt.includes('16:9'))ratio.value='16:9';panel.append(ratioLabel,ratio);
@@ -23,9 +23,9 @@ export function openCreativeCommand(kind,prompt=''){
   const button=node('button',kind==='video'?'สร้างวิดีโอ 8 วินาที':'สร้างรูปภาพ');button.type='button';button.disabled=true;
   const result=node('div',null,'creative-result');panel.append(status,button,result);
   let busy=false;const requestId=crypto.randomUUID();
-  if(kind==='video'){const studio=node('button','แนบภาพใน Video Studio');studio.type='button';studio.style.marginLeft='8px';studio.addEventListener('click',()=>{sessionStorage.setItem('chaylueklab.creative.video',JSON.stringify({prompt:input.value.trim(),ratio:ratio.value}));location.assign(new URL('./ai-video.html',location.href).href)});panel.insertBefore(studio,result)}
+  if(kind==='video'){const studio=node('button','แนบภาพใน Video Studio');studio.type='button';studio.addEventListener('click',()=>{sessionStorage.setItem('chaylueklab.creative.video',JSON.stringify({prompt:input.value.trim(),ratio:ratio.value}));location.assign(new URL('./ai-video.html',location.href).href)});panel.insertBefore(studio,result)}
   button.addEventListener('click',async()=>{
-    if(busy)return;if(input.value.trim().length<3){status.textContent='พิมพ์รายละเอียดอย่างน้อย 3 ตัวอักษร';return}
+    if(busy)return;const minLength=kind==='video'?8:3;if(input.value.trim().length<minLength){status.textContent=kind==='video'?messages.invalid_prompt:'พิมพ์รายละเอียดภาพอย่างน้อย 3 ตัวอักษร';input.focus({preventScroll:true});return}
     busy=true;button.disabled=true;panel.classList.add('is-generating');status.textContent=kind==='video'?'กำลังส่งงานวิดีโอไปยัง backend…':'กำลังสร้างภาพจริง กรุณารอสักครู่…';result.replaceChildren();
     try{
       if(kind==='video'){
@@ -53,6 +53,6 @@ export function openCreativeCommand(kind,prompt=''){
     finally{busy=false;button.disabled=false;panel.classList.remove('is-generating')}
   });
   mediaApi(kind,{action:'status',model:'veo'}).then(data=>{status.textContent=data.configured?'บริการพร้อม รับคำสั่งได้เลย':'บริการ AI ยังไม่เปิดใช้งาน รอเจ้าของตั้งค่า Gemini ใน backend';button.disabled=!data.configured}).catch(e=>{status.textContent=e.message});
-  panel.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});input.focus({preventScroll:true});
+  panel.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});input.focus({preventScroll:true});
   return {ok:true,message:kind==='video'?'เตรียมคำสั่งวิดีโอแล้ว':'เปิดพื้นที่สั่งสร้างภาพแล้ว'};
 }
