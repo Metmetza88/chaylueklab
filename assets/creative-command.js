@@ -56,3 +56,14 @@ export function openCreativeCommand(kind,prompt=''){
   panel.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});input.focus({preventScroll:true});
   return {ok:true,message:kind==='video'?'เตรียมคำสั่งวิดีโอแล้ว':'เปิดพื้นที่สั่งสร้างภาพแล้ว'};
 }
+
+export function openCreativeStudio(){
+  window.switchPage?.('homePage');
+  let panel=document.getElementById('creativeCommandPanel');
+  if(!panel){panel=node('section',null,'creative-panel');panel.id='creativeCommandPanel';document.getElementById('liffCommandPanel')?.after(panel)}
+  panel.replaceChildren();panel.setAttribute('aria-label','AI Studio');
+  panel.append(node('div','CHAYLUEKLAB / AI STUDIO','creative-eyebrow'),node('h2','สร้างสรรค์จากคำสั่งของคุณ'),node('p','เลือกสร้างภาพหรือวิดีโอ ระบบจะตรวจสิทธิ์และการเชื่อมต่อก่อนรับคำสั่งจริง','creative-status'));
+  for(const [kind,label] of [['image','สร้างรูปภาพ'],['video','สร้างวิดีโอ']]){const button=node('button',label);button.type='button';button.addEventListener('click',()=>openCreativeCommand(kind));panel.append(button)}
+  panel.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  return {ok:true,message:'เปิด AI Studio ใน LIFE OS แล้ว'};
+}

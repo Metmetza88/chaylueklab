@@ -214,7 +214,13 @@ main{max-width:1280px;margin:auto}.desk-intro{margin:8px 0 22px}.desk-title{font
 <link rel="stylesheet" href="./assets/workspace-cinematic.css?v=20261008-daily">
 <link rel="stylesheet" href="./assets/liff-commands.css?v=1">
 <link rel="preload" as="image" href="./assets/cinematic-hero.webp">
-<link rel="stylesheet" href="./assets/lifeos-luxe.css?v=20261021-validation"></head>
+<link rel="stylesheet" href="./assets/lifeos-luxe.css?v=20261021-validation"><style id="vorx-dashboard-theme">
+.vorx-home{background:radial-gradient(circle at 85% 0,#12453a 0,transparent 42%),#06120f;border:1px solid #238c73;border-radius:19px;padding:18px;color:#f4e4c3;box-shadow:0 0 25px #00efaa1c;overflow:hidden}
+.vorx-owner{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 3px 17px;border-bottom:1px solid #236c5a}.vorx-owner strong{display:block;font-size:clamp(20px,5vw,31px);letter-spacing:.08em;color:#e8c68c}.vorx-owner strong span{color:#37e7bb}.vorx-owner small{display:block;letter-spacing:.2em;color:#7fcbb8;font-size:10px}.vorx-badge{border:1px solid #b38c4b;border-radius:8px;padding:6px 9px;color:#ebca8d;font-size:11px}
+.vorx-feature{margin:16px 0;padding:21px 16px;border:1px solid #29d5aa;border-radius:15px;background:linear-gradient(110deg,#08251f,#071512);display:flex;align-items:center;justify-content:space-between;gap:10px}.vorx-feature small{color:#5ff0c6}.vorx-feature h2{font-size:clamp(24px,6vw,34px);color:#e9c78e;font-weight:800;margin:2px 0}.vorx-feature p{font-size:12px;color:#b4d8cc;margin:0}.vorx-cta{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;white-space:nowrap;color:#031d17;background:#35e5b5;border-radius:40px;padding:13px 16px;font-weight:800;box-shadow:0 0 22px #1ff0ae6b}
+.vorx-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.vorx-cards button,.vorx-cards a{display:flex;flex-direction:column;align-items:flex-start;text-align:left;min-width:0;gap:7px;min-height:112px;padding:15px;background:linear-gradient(145deg,#0b2923,#091511);border:1px solid #317b66;border-radius:13px;color:#f4dfb7;text-decoration:none;font:inherit;cursor:pointer}.vorx-cards span{color:#51e6b9;font-size:12px}.vorx-cards b{font-size:17px}.vorx-cards small{color:#a9c6b8;font-size:12px}.vorx-cards a{border-color:#31e3b2}.vorx-disclaimer{font-size:11px;color:#9bb9a9;margin:14px 0 0}@media(max-width:390px){.vorx-feature{flex-direction:column;align-items:stretch}.vorx-cta{width:100%}.vorx-cards b{font-size:15px}}
+</style>
+</head>
 <body class="cinematic-workspace">
 <a class="skip-link" href="#homePage">ข้ามไปพื้นที่ทำงาน</a>
 <div class="shell">
@@ -244,6 +250,19 @@ main{max-width:1280px;margin:auto}.desk-intro{margin:8px 0 22px}.desk-title{font
         <button id="dashboardRefresh" class="iconbtn" onclick="refreshDesk()" aria-label="โหลดข้อมูลแดชบอร์ดอีกครั้ง"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L3 9M3 4v5h5M4 13a8 8 0 0 0 14 5l3-3M21 20v-5h-5"/></svg></button>
         <p class="cinematic-greeting"><span id="dashboardDate"></span><span>สวัสดี <strong id="helloName">ผู้ใช้ LINE</strong></span></p>
       </div>
+      <section class="vorx-home" aria-label="CHAYLUEKLAB LIFE OS แผงควบคุม">
+        <div class="vorx-owner"><div><strong>CHAYLUEKLAB <span>LIFE OS</span></strong><small>WORK · AI · EVERYWHERE</small></div><span class="vorx-badge">PRIVATE</span></div>
+        <div class="vorx-feature"><div><small>ผู้ช่วยส่วนตัว</small><h2>MET VORX</h2><p>คุยงาน · วิเคราะห์ภาพ · ค้นข้อมูล</p></div><a href="./met-vorx.html" class="vorx-cta" aria-label="เปิดเมท">🎙 คุยกับเมท →</a></div>
+        <div class="vorx-cards">
+          <button type="button" onclick="switchPage('tasksPage')"><span>01</span><b>งาน / เตือน</b><small>งานและเวลานัดหมาย</small></button>
+          <button type="button" onclick="switchPage('financePage')"><span>02</span><b>การเงิน</b><small>รายรับ · รายจ่าย</small></button>
+          <button type="button" onclick="switchPage('vaultPage');loadVault()"><span>03</span><b>ไฟล์ / โน้ต</b><small>รูป · เอกสาร · บันทึก</small></button>
+          <a href="./met-vorx.html"><span>04</span><b>MET VORX</b><small>AI ผู้ช่วยส่วนตัว</small></a>
+          <button type="button" onclick="openLifeTools('')"><span>05</span><b>เครื่องมือ</b><small>จัดการชีวิตและงาน</small></button>
+          <button type="button" onclick="switchPage('settingsPage')"><span>06</span><b>ตั้งค่า</b><small>บัญชีและการเชื่อมต่อ</small></button>
+        </div>
+        <p class="vorx-disclaimer">แสดงเฉพาะเครื่องมือ LIFE OS ส่วนตัว · ร้านเสื้อและร้านค้าแยกจากหน้านี้</p>
+      </section>
       <div class="desk-grid">
         <div class="desk-main">
           <section class="desk-panel command-panel" aria-labelledby="commandHeading"><div class="command-top"><div><div class="statusline"><span class="dot" aria-hidden="true"></span><span id="systemText">กำลังเชื่อมต่อ LINE</span></div><h2 id="commandHeading" class="command-heading"><svg class="cinematic-personal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>พื้นที่ส่วนตัว</h2><p class="desk-caption mt-1">งานและเงินที่ต้องจัดการวันนี้</p></div><button id="deskPlan" class="plan-chip" onclick="switchPage('membershipPage');loadMembership()">ตรวจสิทธิ์</button></div>
@@ -267,6 +286,7 @@ main{max-width:1280px;margin:auto}.desk-intro{margin:8px 0 22px}.desk-title{font
               <button type="button" data-liff-command="/การเงิน">฿ การเงิน</button>
               <button type="button" data-liff-command="/ไฟล์">▤ ไฟล์</button>
               <button type="button" data-liff-command="/รายงาน">▥ รายงาน</button>
+              <button type="button" data-liff-command="/เมท">✦ เมท</button>
               <button type="button" data-liff-command="/AI">✧ AI Studio</button>
               <button type="button" data-liff-command="/ภาพ">✧ สร้างรูป</button>
               <button type="button" data-liff-command="/วิดีโอ">▷ สร้างวิดีโอ</button>
