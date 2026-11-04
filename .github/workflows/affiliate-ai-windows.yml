@@ -1,0 +1,41 @@
+name: Build Shopee Affiliate Windows EXE
+on:
+  push:
+    branches:
+      - feature/local-shopee-ai-studio
+    paths:
+      - 'tools/shopee-affiliate-studio/**'
+      - '.github/workflows/affiliate-ai-windows.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r tools/shopee-affiliate-studio/requirements-video.txt pyinstaller
+      - name: Run unit tests
+        shell: pwsh
+        run: |
+          cd tools/shopee-affiliate-studio
+          python -m unittest discover -s tests -v
+      - name: Build standalone EXE
+        shell: pwsh
+        run: |
+          python -m PyInstaller --noconfirm --clean --onefile --name CHAYLUEKLAB_Affiliate_AI_Studio --paths tools/shopee-affiliate-studio --add-data "tools/shopee-affiliate-studio/web;web" --collect-all imageio_ffmpeg tools/shopee-affiliate-studio/app.py
+      - name: Upload Windows executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: CHAYLUEKLAB_Affiliate_AI_Studio_Windows
+          path: dist/CHAYLUEKLAB_Affiliate_AI_Studio.exe
+          retention-days: 30
