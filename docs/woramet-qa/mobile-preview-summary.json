@@ -1,0 +1,66 @@
+{
+  "url": "https://rawcdn.githack.com/Metmetza88/chaylueklab/8e7ca1c40d2196c748c0320abff640a0affa9bc7/ai-money-studio/business-insights.html",
+  "sourceCommit": "8e7ca1c40d2196c748c0320abff640a0affa9bc7",
+  "engine": "Chromium 151.0.7922.173",
+  "platform": "Linux",
+  "results": [
+    {
+      "width": 375,
+      "height": 812,
+      "passed": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "passed": true
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "passed": true
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "passed": true
+    }
+  ],
+  "assets": [
+    {
+      "path": "ai-money-studio/business-insights.html",
+      "bytes": 13217,
+      "sha256": "a2e95509864db8cc0c02a1435cf93ff5724014013579f7138f4a90f415a44b82"
+    },
+    {
+      "path": "ai-money-studio/business-insights.css",
+      "bytes": 17112,
+      "sha256": "de5c1354d206dd71c99fca5d2896a967c6d700d05fb276952cb7b64c0b2da5bd"
+    },
+    {
+      "path": "ai-money-studio/business-insights-core.js",
+      "bytes": 16486,
+      "sha256": "989af60ace6af664c947b65a3d473c39a47a38082e820018712b131a6b1c6904"
+    },
+    {
+      "path": "ai-money-studio/business-insights.js",
+      "bytes": 8543,
+      "sha256": "de959f043cdeb2020200df0896cf2ef3240c0949af4481a8249f8a5fbbe4c43f"
+    },
+    {
+      "path": "ai-money-studio/woramet-mark.svg",
+      "bytes": 536,
+      "sha256": "cc7946bd06becdfe9d91503bbcf14c94a7d9028e851782c184ea046d3a0fb990"
+    },
+    {
+      "path": "assets/fonts/control-thai.woff2",
+      "bytes": 26924,
+      "sha256": "1f5a173641bbcb3ca4fb0a986858b6b07f8cd5dd2ed61236b40548c7a3c7292f"
+    }
+  ],
+  "realIPhoneSafariTested": false,
+  "nativeWindowsTested": false,
+  "hosting": "Free third-party static preview of immutable public GitHub commit; no hosting project created",
+  "firstVisit": "Provider displays External Content Notice; user clicks Open the page to continue",
+  "postRequestsDuringAppFlow": 0,
+  "providerConsentNote": "First-visit provider notice is acknowledged before app-flow request accounting."
+}

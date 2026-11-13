@@ -4,7 +4,7 @@ Repository: `Metmetza88/chaylueklab`
 สาขาทดลอง: `feature/woramet-dojo-mvp-20261113`
 แอป: `ai-money-studio/business-insights.html`
 
-เอกสารนี้เป็นร่างเตรียมแข่งขัน ยังไม่ได้ส่งประกวดหรือเผยแพร่ Marketplace ไม่มีการ Deploy, Merge หรือแก้ main
+เอกสารนี้เป็นร่างเตรียมแข่งขัน ยังไม่ได้ส่งประกวดหรือเผยแพร่ Marketplace ไม่มีการ Merge หรือแก้ main เจ้าของอนุมัติลิงก์ทดลองสำหรับมือถือแล้วเมื่อ 13 พ.ย. 2026
 
 ## ข้อมูลที่ตรวจซ้ำวันที่ 13 พฤศจิกายน 2026
 
@@ -57,7 +57,7 @@ WORAMET AI LAB — Business Insights helps small stores turn Thai or English sal
 | คำอธิบาย Problem / Solution / Track | ร่างไทยและอังกฤษด้านบน; ยืนยันชื่อ Track ทางการ |
 | Source code และ Commit | ใช้เฉพาะสาขาทดลอง; แนบลิงก์ Commit ที่เจ้าของตรวจแล้ว |
 | วิธีรัน / ข้อจำกัด / สถานะ AI | README สองภาษาและเอกสาร server |
-| Working demo URL | ยังไม่มีที่เผยแพร่ ต้องอนุมัติพื้นที่ทดลองแยกก่อน |
+| Working demo URL | [ลิงก์ทดลองโค้ดรุ่น 8e7ca1c](https://rawcdn.githack.com/Metmetza88/chaylueklab/8e7ca1c40d2196c748c0320abff640a0affa9bc7/ai-money-studio/business-insights.html) ผ่าน githack; ครั้งแรกกด Open the page; ยังต้องตรวจว่าผู้จัดยอมรับลิงก์บุคคลที่สามและการเผยแพร่ถาวร |
 | วิดีโอ 60–90 วินาที | มีสคริปต์ ยังไม่บันทึกหรืออัปโหลด |
 | ภาพประกอบหน้าจอ | มีหลักฐาน Chromium ข้อมูลสมมติใน `docs/woramet-qa/`; เจ้าของเลือกภาพส่ง |
 | ผลทดสอบและชุดข้อมูล | AUDIT-QA.md, tests และ fixtures สมมติ |
@@ -72,7 +72,8 @@ WORAMET AI LAB — Business Insights helps small stores turn Thai or English sal
 - [ ] สิทธิ์โค้ดเดิม/ภาพแบรนด์/ฟอนต์ และเงื่อนไข Marketplace; ตัวฟอนต์ใน Repository มีไฟล์ OFL เดิม
 - [ ] ทดสอบ Safari บน iPhone และ Chrome/Edge บน Windows จริง รวม file picker, clipboard, ดาวน์โหลดและ VoiceOver/keyboard
 - [ ] หากเพิ่ม AI จริง: เจ้าของอนุมัติผู้ให้บริการ งบ/โควตา ข้อมูลที่ส่ง การเก็บ Key ฝั่งเซิร์ฟเวอร์ และทดสอบด้วยข้อมูลสมมติก่อนกล่าวอ้าง
-- [ ] เจ้าของอนุมัติ Deploy แยกจาก chaylueklab.com และตรวจ working URL
+- [x] เจ้าของอนุมัติลิงก์ทดลองแยกจาก chaylueklab.com; ตรวจ remote Chromium และ assets ตรงกับ Commit เดิมแล้ว
+- [ ] ทดสอบ Safari จริง และอนุมัติการโฮสต์ถาวร/ลิงก์ส่งประกวดที่ผู้จัดยอมรับ
 - [ ] เจ้าของตรวจวิดีโอ Commit เอกสาร และอนุมัติส่งประกวด/เผยแพร่ครั้งสุดท้าย
 
 เตรียมของที่ตรวจได้ให้ครบก่อนขออนุมัติ ไม่จำเป็นต้อง Merge เข้า main เพื่อส่งงานทดลอง ห้ามเปิด billing ส่งข้อมูลจริง หรือส่งประกวดจาก checklist นี้โดยอัตโนมัติ

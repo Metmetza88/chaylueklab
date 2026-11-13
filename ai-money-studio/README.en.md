@@ -26,6 +26,12 @@ Fictional fixtures:
 
 The preview binds only to `127.0.0.1`, serves an explicit static allowlist and does not expose repository/server files. PowerShell users can set `$env:WORAMET_PORT="4174"` if the default port is busy.
 
+## Phone preview (owner approved, 13 November 2026)
+
+[Open the tested mobile preview](https://rawcdn.githack.com/Metmetza88/chaylueklab/8e7ca1c40d2196c748c0320abff640a0affa9bc7/ai-money-studio/business-insights.html). On the provider's first-visit **External Content Notice**, click **Open the page**, then choose the fictional-data quick demo (THB 7,200).
+
+This free third-party static preview serves the immutable public GitHub commit `8e7ca1c` from the existing experimental branch. No new repository or hosting project was created; no billing, main-branch changes or production-domain changes were made. There is no uptime guarantee, and later branch changes do not update this pinned URL. CSV stays in the app's browser memory; AI remains disabled. External Chromium QA passed 375, 390, 430 and 1440-pixel viewports, including Thai CSV import and TXT/JSON downloads. Actual iPhone Safari remains untested.
+
 ## Supported data and calculation rules
 
 Required headers: `product` / `สินค้า` / `ชื่อสินค้า`, `quantity` / `qty` / `จำนวน`, `unit_price` / `price` / `ราคาต่อหน่วย` / `ราคา`. English headers are case insensitive; columns can be reordered. Comma, semicolon and tab separators, escaped quotes, Thai digits and correctly grouped thousands are supported.
@@ -54,7 +60,7 @@ node scripts/verify-public-site.mjs
 
 For optional browser QA, install Playwright 1.64.1 in a temporary/local tools directory and its Chromium browser. Set `PLAYWRIGHT_MODULE` to that package directory, then run `node ai-money-studio/tests/business-insights.browser.cjs`. `CHROMIUM_PATH` optionally selects an existing Chromium executable; `WORAMET_QA_DIR` selects evidence output (default: OS temporary directory).
 
-Chromium on Linux passed 320, 375, 390, 430 and 1440-pixel viewports. **Real iPhone Safari and native Windows have not been tested.** WebKit launch was blocked by missing system libraries. Cloud Chromium blocks `file://`; direct-file operation remains unverified. Use the tested local HTTP preview on Windows. iPhone access needs an owner-approved separate HTTPS preview; the computer's loopback URL is not reachable from a phone. No preview was deployed.
+Chromium on Linux passed 320, 375, 390, 430 and 1440-pixel viewports. **Real iPhone Safari and native Windows have not been tested.** WebKit launch was blocked by missing system libraries. Cloud Chromium blocks `file://`; direct-file operation remains unverified. Use the tested local HTTP preview on Windows. Use the owner-approved HTTPS preview above for iPhone access; the computer's loopback URL is not reachable from a phone. No production-domain deployment was made.
 
 ## Competition preparation
 

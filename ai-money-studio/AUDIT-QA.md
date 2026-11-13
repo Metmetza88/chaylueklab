@@ -98,3 +98,17 @@ PLAYWRIGHT_MODULE=/workspace/setup-tools/node_modules/playwright CHROMIUM_PATH=/
 ภาพที่เจ้าของส่งใช้เป็นแนวทางสีและวัสดุใน CSS สัญลักษร W/SVG เป็นเวกเตอร์เรียบง่ายของหน้านี้ ยังไม่ได้ฝังไฟล์ภาพโลโก้ต้นฉบับ เพราะไม่มีไฟล์แนบดังกล่าวที่อ่านได้ใน workspace ครั้งนี้
 
 ก่อนส่ง Dojo ต้องยืนยันกติกาโค้ดก่อนแข่ง ชื่อ Track และ Marketplace กับผู้จัด รวมถึงอนุมัติ Deploy/AI/งบประมาณ/การเผยแพร่จากเจ้าของ ดู [DOJO-READINESS.md](DOJO-READINESS.md)
+
+## อัปเดตลิงก์ทดลองสำหรับมือถือหลังเจ้าของอนุมัติ
+
+วันที่ 13 พฤศจิกายน 2026 เจ้าของตอบรับให้เปิดลิงก์ทดลองแยก โดยไม่เสียเงิน ไม่เปลี่ยน main และไม่กระทบเว็บไซต์จริง:
+
+https://rawcdn.githack.com/Metmetza88/chaylueklab/8e7ca1c40d2196c748c0320abff640a0affa9bc7/ai-money-studio/business-insights.html
+
+ใช้ githack ซึ่งให้บริการ static files ของ Repository สาธารณะฟรี ลิงก์ตรึง Commit `8e7ca1c` เดิม จึงไม่มีการสร้าง Repository/โปรเจกต์โฮสต์ใหม่หรือเปลี่ยน DNS/โฮสต์เดิม ครั้งแรก provider แสดง External Content Notice ต้องกด Open the page ก่อนเข้าแอป ไม่มี uptime guarantee ไม่ใช่การโฮสต์ถาวรที่รับรองสำหรับการแข่งขัน
+
+ตรวจเนื้อหา HTML, CSS, controller, core, icon และฟอนต์ที่ส่งจากลิงก์จริงแล้ว: bytes และ SHA-256 ตรงกับไฟล์ Commit เดิมทุกไฟล์ Browser flow ผ่าน Chromium/Linux ที่ขนาด 375×812, 390×844, 430×932 และ 1440×900 รวม quick demo 7,200 บาท, ล้างผลเก่าหลังแก้ข้อมูล, import CSV ไทย 14 วัน, ยอด 2,100 บาท, trend 100%, ดาวน์โหลด TXT/JSON และ clear ไม่พบ JavaScript errors หรือคำขอ POST ระหว่างการใช้แอป (ไม่นับการกดรับทราบหน้า provider ก่อนเข้าแอป)
+
+[หลักฐาน remote preview JSON](../docs/woramet-qa/mobile-preview-summary.json) · [ภาพ mobile preview จากลิงก์จริง](../docs/woramet-qa/mobile-preview-390.png)
+
+**ยังไม่ทดสอบ Safari บน iPhone จริงหรือ Windows จริง** ไม่มีการเรียก paid AI หรือส่งประกวด วิธี Cloudflare Quick Tunnel ที่ลองก่อนหน้านี้เชื่อมต่อจากเครื่อง Cloud ไม่ได้ จึงไม่ได้ใช้ และปิด local preview process ที่ไม่จำเป็นแล้ว การตรวจนี้ไม่ได้ยืนยันว่าผู้จัด Dojo ยอมรับ hosting provider ดังกล่าว
