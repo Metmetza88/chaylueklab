@@ -89,3 +89,23 @@ test("clear resets the form and result panels", () => {
 test("data is displayed using text, not HTML injection", () => {
   assert.doesNotMatch(scripts[0][1], /\.innerHTML\s*=/);
 });
+
+test("editing CSV invalidates previously shown report", () => {
+  const $ = app();
+  $("sample").click();
+  $("analyze").click();
+  assert.equal($("results").hidden, false);
+  $("csv").value = "product,quantity,unit_price\nChanged,1,99";
+  $("csv").handlers.input();
+  assert.equal($("results").hidden, true);
+  assert.equal($("marketing").hidden, true);
+  assert.match($("status").textContent, /ข้อมูลเปลี่ยนแล้ว/);
+});
+test("loading a new sample invalidates prior analyzed results", () => {
+  const $ = app();
+  $("sample").click();
+  $("analyze").click();
+  assert.equal($("results").hidden, false);
+  $("sample").click();
+  assert.equal($("results").hidden, true);
+});
