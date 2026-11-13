@@ -152,10 +152,18 @@ lastReport=["WORAMET AI LAB | Business Insights","รายงานวิเค
 $("results").hidden=false;$("marketing").hidden=false;$("status").className="success";$("status").textContent="วิเคราะห์สำเร็จ ข้อมูลอยู่ในเบราว์เซอร์ของคุณ";
 }catch(e){$("results").hidden=true;$("marketing").hidden=true;$("status").className="error";$("status").textContent=e.message||"ไม่สามารถอ่านข้อมูลได้"}
 }
-$("sample").addEventListener("click",()=>{$("csv").value=sample;$("status").className="muted";$("status").textContent="โหลดข้อมูลสมมติแล้ว กดวิเคราะห์ยอดขายได้เลย"});
-$("file").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;if(file.size>2*1024*1024){$("status").textContent="ไฟล์ใหญ่เกิน 2 MB";return}try{$("csv").value=await file.text();$("status").textContent="อ่านไฟล์ในเครื่องแล้ว กดวิเคราะห์ยอดขาย"}catch{$("status").textContent="ไม่สามารถอ่านไฟล์ได้"}});
+function invalidateReport(){
+$("results").hidden=true;$("marketing").hidden=true;lastReport="";lastPost="";
+}
+$("csv").addEventListener("input",()=>{
+invalidateReport();
+$("status").className="muted";
+$("status").textContent="ข้อมูลเปลี่ยนแล้ว กดวิเคราะห์ยอดขายอีกครั้ง";
+});
+$("sample").addEventListener("click",()=>{invalidateReport();$("csv").value=sample;$("status").className="muted";$("status").textContent="โหลดข้อมูลสมมติแล้ว กดวิเคราะห์ยอดขายได้เลย"});
+$("file").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;invalidateReport();if(file.size>2*1024*1024){$("status").textContent="ไฟล์ใหญ่เกิน 2 MB";return}try{$("csv").value=await file.text();$("status").textContent="อ่านไฟล์ในเครื่องแล้ว กดวิเคราะห์ยอดขาย"}catch{$("status").textContent="ไม่สามารถอ่านไฟล์ได้"}});
 $("analyze").addEventListener("click",render);
-$("clear").addEventListener("click",()=>{$("csv").value="";$("file").value="";$("results").hidden=true;$("marketing").hidden=true;lastReport="";lastPost="";$("status").className="muted";$("status").textContent="ล้างข้อมูลในหน้าจอแล้ว"});
+$("clear").addEventListener("click",()=>{$("csv").value="";$("file").value="";invalidateReport();$("status").className="muted";$("status").textContent="ล้างข้อมูลในหน้าจอแล้ว"});
 $("export").addEventListener("click",()=>{if(!lastReport)return;const url=URL.createObjectURL(new Blob([lastReport],{type:"text/plain;charset=utf-8"}));const a=document.createElement("a");a.href=url;a.download="woramet-business-report.txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
 $("copy").addEventListener("click",async()=>{if(!lastPost)return;try{await navigator.clipboard.writeText(lastPost);$("status").textContent="คัดลอกข้อความโปรโมตแล้ว"}catch{$("status").textContent="คัดลอกอัตโนมัติไม่ได้ กรุณาเลือกข้อความแล้วคัดลอก"}});
 })();
