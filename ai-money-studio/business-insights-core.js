@@ -14,9 +14,9 @@
   const digits = value => String(value).replace(/[๐-๙]/g, c => String(c.charCodeAt(0) - 3664));
   const aliases = {
     product: ['product', 'product_name', 'item', 'สินค้า', 'ชื่อสินค้า', 'รายการสินค้า'],
-    quantity: ['quantity', 'qty', 'จำนวน', 'จำนวนสินค้า'],
-    price: ['unit_price', 'unit price', 'price', 'ราคาต่อหน่วย', 'ราคาขายต่อหน่วย', 'ราคา'],
-    date: ['date', 'sale_date', 'sales_date', 'วันที่', 'วันที่ขาย']
+    quantity: ['quantity', 'qty', 'quantity_sold', 'จำนวน', 'จำนวนสินค้า', 'จำนวนที่ขาย', 'จำนวนขาย'],
+    price: ['unit_price', 'unit price', 'price_per_unit', 'price', 'ราคาต่อหน่วย', 'ราคาต่อชิ้น', 'ราคาขายต่อหน่วย', 'ราคาขาย', 'ราคา'],
+    date: ['date', 'sale_date', 'sales_date', 'order_date', 'วันที่', 'วันที่ขาย']
   };
   const fail = message => { throw Error(message); };
   function sizeCheck(input) {
@@ -100,7 +100,7 @@
   }
   function numeric(raw, money = false) {
     let value = digits(raw).trim();
-    if (money) value = value.replace(/^(?:฿\s*|THB\s+)/i, '').replace(/\s*(?:฿|\sTHB)$/i, '');
+    if (money) value = value.replace(/^(?:฿|THB|บาท)\s*/i, '').replace(/\s*(?:฿|THB|บาท)$/i, '');
     // Commas are thousands separators only; never guess decimal-comma formats.
     if (!/^(?:\d+|[1-9]\d{0,2}(?:,\d{3})+)(?:\.\d+)?$/.test(value)) return NaN;
     value = value.replace(/,/g, '');
@@ -111,11 +111,24 @@
     }
     return Number(value);
   }
+  const monthNames = {
+    'ม.ค.': 1, 'มกราคม': 1, 'jan': 1, 'january': 1, 'ก.พ.': 2, 'กุมภาพันธ์': 2, 'feb': 2, 'february': 2,
+    'มี.ค.': 3, 'มีนาคม': 3, 'mar': 3, 'march': 3, 'เม.ย.': 4, 'เมษายน': 4, 'apr': 4, 'april': 4,
+    'พ.ค.': 5, 'พฤษภาคม': 5, 'may': 5, 'มิ.ย.': 6, 'มิถุนายน': 6, 'jun': 6, 'june': 6,
+    'ก.ค.': 7, 'กรกฎาคม': 7, 'jul': 7, 'july': 7, 'ส.ค.': 8, 'สิงหาคม': 8, 'aug': 8, 'august': 8,
+    'ก.ย.': 9, 'กันยายน': 9, 'sep': 9, 'sept': 9, 'september': 9, 'ต.ค.': 10, 'ตุลาคม': 10, 'oct': 10, 'october': 10,
+    'พ.ย.': 11, 'พฤศจิกายน': 11, 'nov': 11, 'november': 11, 'ธ.ค.': 12, 'ธันวาคม': 12, 'dec': 12, 'december': 12
+  };
   function parseDate(raw) {
-    const value = digits(raw).trim();
+    // Only unambiguous layouts. Day-first for numeric day/month/year (as in Thai
+    // spreadsheets); year-first is always Y-M-D. A trailing local time written
+    // without a timezone is ignored; "T"/offset/Z forms stay rejected because
+    // converting zones could silently move a sale to another day.
+    const value = digits(raw).normalize('NFC').trim().replace(/^(\d{4}-\d{2}-\d{2}) \d{1,2}:\d{2}(?::\d{2})?$/, '$1');
     let year, month, day, match;
-    if ((match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value))) [, year, month, day] = match;
-    else if ((match = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(value))) [, day, month, year] = match;
+    if ((match = /^(\d{4})([-/.])(\d{1,2})\2(\d{1,2})$/.exec(value)) && (match[2] !== '-' || (match[3].length === 2 && match[4].length === 2))) [, year, , month, day] = match;
+    else if ((match = /^(\d{1,2})([/.-])(\d{1,2})\2(\d{4})$/.exec(value))) [, day, , month, year] = match;
+    else if ((match = /^(\d{1,2})\s+(\S+?)\s+(\d{4})$/.exec(value)) && monthNames[match[2].toLowerCase()]) { day = match[1]; month = monthNames[match[2].toLowerCase()]; year = match[3]; }
     else return null;
     year = Number(year); month = Number(month); day = Number(day);
     if (year >= 2400) year -= 543;
@@ -146,7 +159,7 @@
       const revenueCents = quantity * priceCents;
       if (!Number.isSafeInteger(revenueCents)) fail('ยอดขายเกินขอบเขตที่คำนวณแม่นยำที่แถวที่ ' + line);
       const date = indexes.date < 0 ? null : parseDate(cells[indexes.date]);
-      if (indexes.date >= 0 && !date) fail('วันที่ไม่ถูกต้องที่แถวที่ ' + line + ' ใช้ YYYY-MM-DD หรือ DD/MM/YYYY');
+      if (indexes.date >= 0 && !date) fail('วันที่ไม่ถูกต้องที่แถวที่ ' + line + ' ใช้ YYYY-MM-DD, DD/MM/YYYY หรือ 1 พ.ย. 2569 (ปีค.ศ./พ.ศ.)');
       return { product, quantity, priceCents, revenueCents, date };
     });
     return { sales, delimiter, ignoredColumns: headers.filter((_, i) => !Object.values(indexes).includes(i)).length };

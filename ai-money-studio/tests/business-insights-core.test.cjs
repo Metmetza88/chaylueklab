@@ -70,6 +70,20 @@ test('date validation checks leap years and always interprets slash dates as day
   assert.equal(core.parseDate('29/02/2567'), '2024-02-29'); assert.equal(core.parseDate('01/02/2026'), '2026-02-01');
   for (const value of ['2026-02-29', '31/04/2026', '2026-13-01', '2026-00-01', '1/2/26', '11/13/2026', '2026-11-01T00:00:00Z', '', '2026-11-00', '1899-01-01']) assert.equal(core.parseDate(value), null, value);
 });
+test('extra unambiguous date layouts, Thai month names and local times are accepted', () => {
+  const ok = { '01-11-2026': '2026-11-01', '01.11.2026': '2026-11-01', '2026/11/01': '2026-11-01', '2026.11.1': '2026-11-01', '2026-11-01 10:30': '2026-11-01', '2026-11-01 10:30:59': '2026-11-01', '1 พ.ย. 2569': '2026-11-01', '1 พฤศจิกายน 2569': '2026-11-01', '15 Nov 2026': '2026-11-15', '๑ พ.ย. ๒๕๖๙': '2026-11-01', '29 ก.พ. 2567': '2024-02-29' };
+  for (const [raw, iso] of Object.entries(ok)) assert.equal(core.parseDate(raw), iso, raw);
+  for (const raw of ['2026-11-01 10:30 +07', '2026-1-1', '31 พ.ย. 2569', '29 ก.พ. 2569', '1 xyz 2569', '11/13/2026']) assert.equal(core.parseDate(raw), null, raw);
+});
+test('baht word prices and extra Thai header names are read exactly; ambiguous headers stay rejected', () => {
+  assert.equal(core.analyze('สินค้า,จำนวน,ราคา\nสมุด,2,60 บาท').revenueCents, 12000);
+  assert.equal(core.analyze('สินค้า,จำนวน,ราคา\nสมุด,2,"1,200 บาท"').revenueCents, 240000);
+  assert.equal(core.analyze('สินค้า,จำนวน,ราคา\nสมุด,2,THB600').revenueCents, 120000);
+  assert.equal(core.analyze('สินค้า,จำนวนที่ขาย,ราคาต่อชิ้น\nสมุด,2,60').revenueCents, 12000);
+  assert.throws(() => core.analyze('สินค้า,จำนวน,จำนวนที่ขาย,ราคา\nสมุด,2,2,60'), /ซ้ำ/);
+  assert.throws(() => core.analyze('สินค้า,จำนวน,ราคา\nสมุด,2,"1,20 บาท"'));
+  assert.throws(() => core.analyze('สินค้า,จำนวน,ราคา\nสมุด,2,บาท'));
+});
 const invalidCases = [
   ['blank quantity', 'A,,10'], ['negative quantity', 'A,-1,10'], ['zero quantity', 'A,0,10'],
   ['fractional units', 'A,1.5,10'], ['blank price', 'A,1,'], ['negative price', 'A,1,-10'],
