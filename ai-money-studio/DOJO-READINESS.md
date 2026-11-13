@@ -1,58 +1,78 @@
-# WORAMET AI LAB — Dojo preparation (NOT SUBMITTED)
+# WORAMET AI LAB — เตรียม Dojo / NOT SUBMITTED
 
-Repository: Metmetza88/chaylueklab  
-Prototype branch: feature/woramet-dojo-mvp-20261113  
-App: ai-money-studio/business-insights.html
+Repository: `Metmetza88/chaylueklab`
+สาขาทดลอง: `feature/woramet-dojo-mvp-20261113`
+แอป: `ai-money-studio/business-insights.html`
 
-## Confirmed facts (13 November 2026)
-- Dojo AI Hackathon: registration confirmed via Dojo connection; team "WORAMET AI LAB" previously displayed.
-- Competition runs 20 Nov 2026 at 22:00 through 23 Nov 2026 at 12:59 (Thailand time).
-- Dojo currently describes 2 tracks and USD 1,000 total prizes, and 85% creator share of Marketplace sales; this is NOT guaranteed income.
-- The Dojo summary does NOT confirm whether using pre-built code, a pre-event prototype, or an existing project is eligible. **Get written organizer approval before reusing the prototype as a competition submission.**
+เอกสารนี้เป็นร่างเตรียมแข่งขัน ยังไม่ได้ส่งประกวดหรือเผยแพร่ Marketplace ไม่มีการ Deploy, Merge หรือแก้ main
 
-## Product and limitations
-Working title: WORAMET AI LAB — Business Insights for Small Stores.
+## ข้อมูลที่ตรวจซ้ำวันที่ 13 พฤศจิกายน 2026
 
-Current prototype:
-- Upload or paste a CSV file to analyze sales locally in the user's browser.
-- Display totals, units, number of rows, and top selling products.
-- Produce simple rule-based observations, draft marketing copy, and export a TXT report.
-- Accept Thai or English CSV headers as described on the page.
-- No API fees. No store login, payments, or real transactions.
+แหล่งข้อมูล: Dojo connector `search_hackathons` และ `get_hackathon`
+ลิงก์ทางการ: <https://www.trydojo.io/hackathons/dojo-ai-hack>
 
-IMPORTANT: the tool currently uses deterministic JavaScript calculations and templates, **not a generative AI model**. Do not describe it as having AI-powered analysis until an actual model is connected and tested.
+- ชื่องาน: Dojo AI Hackathon; connector แสดงสถานะบัญชี **registered** การอ่านสถานะครั้งนี้ไม่ได้สมัครหรือแก้การลงทะเบียน
+- เริ่ม 20 พ.ย. 2026 15:00 UTC = 22:00 เวลาไทย
+- จบ 23 พ.ย. 2026 05:59 UTC = 12:59 เวลาไทย
+- กำหนดลงทะเบียน 21 พ.ย. 2026 05:59:59 UTC = 12:59:59 เวลาไทย ทีม 1–4 คน รูปแบบ hybrid
+- ข้อมูลรางวัลแสดง 2 Track รางวัลรวม USD 1,000 ไม่ใช่รายได้ที่รับประกัน
+- คำอธิบายงานระบุว่างานที่ส่งจะเผยแพร่ใน Dojo Marketplace และผู้สร้างได้ 85% ของยอดขาย ต้องตรวจเงื่อนไขสิทธิ์ การขาย และการเผยแพร่ฉบับเต็มก่อนส่ง
+- เครื่องมือที่อ่านยัง **ไม่ยืนยันชื่อ Track “Build for Business”** หรือกติกาการใช้โค้ดก่อนวันแข่งขัน ชื่อนี้เป็นเป้าหมายตามคำขอเจ้าของ ไม่ใช่คำยืนยันจากผู้จัด
+- เอกสารเดิมระบุชื่อทีม WORAMET AI LAB แต่ผลเครื่องมือรอบนี้ยืนยันได้เฉพาะสถานะลงทะเบียน ต้องให้เจ้าของตรวจชื่อทีมในหน้า Dojo อีกครั้ง
 
-## Demo data (fictional)
-Click "ใส่ข้อมูลตัวอย่าง", then "วิเคราะห์ยอดขาย".
-Expected result: THB 7,200 total, 12 units, 7 rows, 3 products. All prices in the mock dataset are THB 600 per unit. No personal customer information is needed.
+## คำอธิบายโครงการ — Track Build for Business (ร่าง)
 
-## Run tests (Windows, no extra package)
-From the repository root:
-node --test ai-money-studio/tests/business-insights.test.cjs
+**ภาษาไทย**
 
-These automated checks cover sample totals, blank prices, invalid quantities, quoted commas, invalid CSV recovery, and clear behavior. Passing these checks does NOT equal a real iPhone/Safari browser test.
+WORAMET AI LAB — Business Insights ช่วยร้านค้าขนาดเล็กเปลี่ยนไฟล์ยอดขาย CSV ภาษาไทยหรืออังกฤษเป็นยอดรวม อันดับสินค้า และการเปรียบเทียบช่วงเวลาที่มีข้อมูลเพียงพอ เจ้าของร้านดาวน์โหลดรายงานและเริ่มร่างโพสต์จากชื่อสินค้าขายดีได้ โดยไม่ต้องอัปโหลดไฟล์หรือสมัครสมาชิก รุ่น MVP คำนวณยอดเงินแบบตรวจสอบได้และใช้เทมเพลตสำหรับข้อความ ยังไม่เชื่อม Generative AI โครงสร้างฝั่งเซิร์ฟเวอร์เตรียมไว้และปิดใช้งาน รออนุมัติผู้ให้บริการ งบประมาณ และการจัดการข้อมูลก่อนเชื่อมและทดสอบจริง
 
-## Prepare before event
-- [x] Team registered (verified with Dojo connector).
-- [x] Prototype isolated from production main branch.
-- [x] Prototype sales report and marketing copy reviewed from source.
-- [x] Blank price parsing fixed and calculation test cases passed in isolated test harness.
-- [ ] Confirm pre-existing-code rules with organizer.
-- [ ] Confirm judging rubric, submission fields and Marketplace terms with organizer.
-- [ ] Add genuinely useful AI capability securely if permitted: no API keys in browser source.
-- [ ] Serve a live preview from a non-production environment; test in Safari on iPhone.
-- [ ] Perform accessibility and real-device testing; correct any issues.
-- [ ] Record 60-90 second demo video; gather screenshots and working link.
-- [ ] Submit from the Dojo project page only after owner review.
+**English**
 
-## Suggested 75-second demo narrative
-0–10s: Introduce the problem: small stores struggle to analyze sales spreadsheets.
-10–25s: Click to load fictional sales data.
-25–45s: Show THB 7,200 sales, 12 units, top product rankings, and rule-based observations.
-45–60s: Show the draft promotion and exported TXT report.
-60–75s: Explain value, privacy trade-offs and future secure AI connection (do not claim already implemented).
+WORAMET AI LAB — Business Insights helps small stores turn Thai or English sales CSV into verifiable revenue totals, product rankings and period comparisons when the data supports them. Owners can download a report and prepare a template-based promotional draft without uploading files or signing up. The MVP uses deterministic money calculations and rules. Generative AI is not connected; a disabled server-side integration boundary is prepared for an owner-approved provider, privacy policy and budget. Its business value is making daily sales review and content preparation accessible from a compact web interface, without claiming profit or sales uplift.
 
-## Safety
-- Do not merge to main, deploy to chaylueklab.com, expose customer data, or connect payment gateways without separate review.
-- Use fictional data. No paid API plans required for this prototype.
-- This document is a preparation checklist, NOT proof of eligibility or submission.
+**ผู้ใช้ / Problem / Value**
+
+- ผู้ใช้: เจ้าของร้านที่มี CSV และต้องการสรุปเอง ไม่จำเป็นต้องเขียนสูตรตาราง
+- ปัญหา: ตารางหลายแถวอ่านยาก ตัวเลขอาจผิดจาก CSV หรือทศนิยม และโพสต์สินค้าเริ่มเขียนลำบาก
+- สิ่งที่สาธิตได้จริง: ไฟล์ → ตรวจข้อผิดพลาด → รวมยอดและจัดอันดับ → เปรียบเทียบช่วงที่ครบ → รายงานดาวน์โหลดและร่างโพสต์
+- หลักฐานที่มี: Automated Tests และ Chromium 5 ขนาดหน้าจอ ไม่มีผลทดลองกับร้านค้าจริง ไม่มีตัวเลขเพิ่มรายได้หรือประหยัดเวลาที่วัดแล้ว
+- AI disclosure: ใช้ AI ช่วยพัฒนาโค้ด แต่ฟังก์ชันที่ผู้ใช้กดใน MVP ยังไม่ใช่ Generative AI ต้องให้ผู้จัดยืนยันว่าขอบเขตนี้เหมาะกับ Track หรือจำเป็นต้องเพิ่ม model feature
+
+## รายการที่เตรียมแล้ว
+
+- [x] โค้ดอยู่ใน Repository และสาขาทดลองเดิม
+- [x] README ไทยและอังกฤษ พร้อมวิธีรันและข้อจำกัด
+- [x] CSV สมมติสองชุด ไม่มีข้อมูลร้าน/ลูกค้าจริง
+- [x] คำนวณสตางค์ ตรวจ encoding/ข้อมูลผิดรูปแบบ และยกเลิกรายงานเก่า
+- [x] รายงาน TXT/JSON และร่างโพสต์จากเทมเพลต
+- [x] โครงสร้าง server AI ปิดไว้ พร้อมทดสอบ mock โดยไม่ใช้ API เสียเงิน
+- [x] Automated Tests และผลตรวจ [AUDIT-QA.md](AUDIT-QA.md)
+- [x] สคริปต์วิดีโอ 60–90 วินาที [DEMO-SCRIPT.md](DEMO-SCRIPT.md)
+
+## รายการสิ่งที่ต้องส่งกรรมการ — รอแบบฟอร์มจริงยืนยัน
+
+| รายการ | สิ่งที่มี / สิ่งที่ต้องทำ |
+| --- | --- |
+| ชื่อโครงการและชื่อทีม | WORAMET AI LAB — Business Insights; เจ้าของตรวจข้อมูลทีมใน Dojo |
+| คำอธิบาย Problem / Solution / Track | ร่างไทยและอังกฤษด้านบน; ยืนยันชื่อ Track ทางการ |
+| Source code และ Commit | ใช้เฉพาะสาขาทดลอง; แนบลิงก์ Commit ที่เจ้าของตรวจแล้ว |
+| วิธีรัน / ข้อจำกัด / สถานะ AI | README สองภาษาและเอกสาร server |
+| Working demo URL | ยังไม่มีที่เผยแพร่ ต้องอนุมัติพื้นที่ทดลองแยกก่อน |
+| วิดีโอ 60–90 วินาที | มีสคริปต์ ยังไม่บันทึกหรืออัปโหลด |
+| ภาพประกอบหน้าจอ | มีหลักฐาน Chromium ข้อมูลสมมติใน `docs/woramet-qa/`; เจ้าของเลือกภาพส่ง |
+| ผลทดสอบและชุดข้อมูล | AUDIT-QA.md, tests และ fixtures สมมติ |
+| License / dependency / third-party rights | ต้องยืนยันสิทธิ์เผยแพร่โค้ดเดิมและภาพแบรนด์; ไม่กำหนด license ให้เจ้าของเอง |
+| การใช้โค้ดก่อนแข่งขัน | ต้องรับคำยืนยันจากผู้จัดเป็นลายลักษณ์อักษร |
+| การเปิด Marketplace | ต้องให้เจ้าของยอมรับเงื่อนไขเผยแพร่/ขายก่อนส่ง เพราะคำอธิบายงานระบุว่าเผยแพร่โดยอัตโนมัติ |
+
+## สิ่งที่ต้องยืนยันก่อนส่ง (ยังไม่ทำแทนเจ้าของ)
+
+- [ ] ผู้จัดอนุญาตใช้โปรเจกต์/โค้ด/ต้นแบบที่ทำก่อน 20 พ.ย. และกำหนดให้แยกส่วนที่ทำระหว่างแข่งอย่างไร
+- [ ] เกณฑ์ตัดสิน ชื่อ Track ข้อกำหนดว่าต้องมี Generative AI จริงหรือไม่ รูปแบบและช่องส่งงาน
+- [ ] สิทธิ์โค้ดเดิม/ภาพแบรนด์/ฟอนต์ และเงื่อนไข Marketplace; ตัวฟอนต์ใน Repository มีไฟล์ OFL เดิม
+- [ ] ทดสอบ Safari บน iPhone และ Chrome/Edge บน Windows จริง รวม file picker, clipboard, ดาวน์โหลดและ VoiceOver/keyboard
+- [ ] หากเพิ่ม AI จริง: เจ้าของอนุมัติผู้ให้บริการ งบ/โควตา ข้อมูลที่ส่ง การเก็บ Key ฝั่งเซิร์ฟเวอร์ และทดสอบด้วยข้อมูลสมมติก่อนกล่าวอ้าง
+- [ ] เจ้าของอนุมัติ Deploy แยกจาก chaylueklab.com และตรวจ working URL
+- [ ] เจ้าของตรวจวิดีโอ Commit เอกสาร และอนุมัติส่งประกวด/เผยแพร่ครั้งสุดท้าย
+
+เตรียมของที่ตรวจได้ให้ครบก่อนขออนุมัติ ไม่จำเป็นต้อง Merge เข้า main เพื่อส่งงานทดลอง ห้ามเปิด billing ส่งข้อมูลจริง หรือส่งประกวดจาก checklist นี้โดยอัตโนมัติ

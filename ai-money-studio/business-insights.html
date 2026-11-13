@@ -1,172 +1,88 @@
 <!doctype html>
 <html lang="th">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0a1020">
-<title>WORAMET AI LAB | Business Insights Demo</title>
-<style>
-:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#eaf2ff;background:#080e1b}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0%,#25366c 0%,transparent 34%),#080e1b}
-main,header,footer{max-width:1040px;margin:auto;padding:18px}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #263551}
-a{color:#a8c9ff}a:hover{text-decoration:none}.brand{font-weight:850;letter-spacing:.05em}.brand b{color:#7dcaff}
-.pill{font-size:12px;color:#b5e9d3;background:#14382e;border:1px solid #2c7762;border-radius:99px;padding:6px 10px}
-h1{font-size:clamp(29px,6vw,50px);line-height:1.12;margin:18px 0}h1 span{color:#8ecaff}
-h2{margin:0 0 14px;font-size:20px}p{line-height:1.65}.muted,small{color:#afbdd5}
-.panel{background:#121f34;border:1px solid #2e4263;border-radius:18px;padding:20px;margin:17px 0}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.metric{background:#0d192b;border:1px solid #2b405e;border-radius:14px;padding:14px;min-width:0}
-.metric strong{display:block;font-size:clamp(20px,4vw,29px);margin:8px 0;overflow-wrap:anywhere}
-label{display:block;font-weight:650;margin:12px 0 6px}
-textarea,input[type=file]{display:block;width:100%;color:#eaf2ff;background:#091626;border:1px solid #536d93;border-radius:12px;padding:13px}
-textarea{min-height:155px;font:13px/1.5 ui-monospace,SFMono-Regular,monospace;resize:vertical}
-button{border:1px solid #58719b;border-radius:12px;padding:12px 15px;background:#263958;color:#f4f7ff;font-weight:750;cursor:pointer}
-button.primary{background:linear-gradient(115deg,#3584f5,#7856d9);border-color:#7695ff}
-button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid #89e7ff;outline-offset:2px}
-.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
-.row{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:10px 0 5px}
-.bar{height:10px;background:#23334b;border-radius:99px;overflow:hidden}
-.bar span{display:block;height:100%;background:linear-gradient(90deg,#39b5e8,#8973ff)}
-.item{padding:11px 0;border-bottom:1px solid #2a3c55}.item:last-child{border:0}
-pre{white-space:pre-wrap;overflow-wrap:anywhere;font-family:inherit;line-height:1.65;background:#0c1728;padding:14px;border-radius:12px}
-.note{border-left:3px solid #56bfe8;padding:8px 12px;background:#0b2035}
-.error{color:#ffb7b7}.success{color:#9be9cb}
-[hidden]{display:none!important}
-@media(max-width:620px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{padding:15px}.brand{font-size:13px}header a{font-size:12px}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080b12">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>WORAMET AI LAB | Business Insights</title>
+  <link rel="icon" href="./woramet-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./business-insights.css">
+  <script src="./business-insights-core.js" defer></script>
+  <script src="./business-insights.js" defer></script>
 </head>
 <body>
-<header><div class="brand">W<span style="color:#83d4ff">.</span> WORAMET AI LAB</div><a href="./index.html">AI Money Studio</a></header>
-<main>
-<div class="pill" style="display:inline-block;margin-top:14px">HACKATHON MVP · LOCAL DEMO</div>
-<h1>Business <span>Insights</span></h1>
-<p class="muted">นำเข้ารายการขาย CSV เพื่อดูยอดรวม สินค้าขายดี และข้อสังเกตสำหรับเจ้าของร้าน พร้อมร่างข้อความโปรโมตสินค้า ทำงานในเบราว์เซอร์โดยไม่ส่งไฟล์ขึ้นเซิร์ฟเวอร์</p>
-<p class="note"><strong>ข้อเท็จจริง:</strong> รุ่นนี้วิเคราะห์ด้วยสูตรและกฎที่ตรวจสอบได้ ยังไม่ได้เชื่อมโมเดล AI หรือระบบขายจริง ข้อมูลตัวอย่างไม่ใช่ยอดขายจริง</p>
-<section class="panel">
-<h2>1. นำเข้าข้อมูล</h2>
-<p class="muted">รองรับ CSV ที่มีคอลัมน์ <code>date,product,quantity,unit_price</code> หรือ <code>วันที่,สินค้า,จำนวน,ราคาต่อหน่วย</code> โดยราคาต่อหน่วยเป็นเงินบาท</p>
-<label for="file">เลือกไฟล์ CSV จากเครื่อง (ไม่อัปโหลด)</label>
-<input id="file" type="file" accept=".csv,text/csv">
-<label for="csv">หรือวางข้อมูล CSV</label>
-<textarea id="csv" spellcheck="false" placeholder="date,product,quantity,unit_price&#10;2026-11-01,สินค้าตัวอย่าง,2,600"></textarea>
-<div class="actions">
-<button id="sample" type="button">ใส่ข้อมูลตัวอย่าง</button>
-<button id="analyze" class="primary" type="button">วิเคราะห์ยอดขาย</button>
-<button id="clear" type="button">ล้างข้อมูล</button>
-</div>
-<p id="status" role="status" aria-live="polite" class="muted">เริ่มจากกด “ใส่ข้อมูลตัวอย่าง” แล้วกด “วิเคราะห์ยอดขาย”</p>
-</section>
-<section class="panel" id="results" hidden>
-<h2>2. ผลวิเคราะห์</h2>
-<div class="grid">
-<div class="metric"><small>ยอดขายรวม</small><strong id="revenue">—</strong></div>
-<div class="metric"><small>จำนวนสินค้าที่ขาย</small><strong id="units">—</strong></div>
-<div class="metric"><small>รายการข้อมูล</small><strong id="rows">—</strong></div>
-<div class="metric"><small>สินค้าที่แตกต่าง</small><strong id="products">—</strong></div>
-</div>
-<h2 style="margin-top:25px">อันดับสินค้าตามยอดขาย</h2>
-<div id="ranking"></div>
-<h2 style="margin-top:25px">ข้อสังเกตจากข้อมูล</h2>
-<div id="insights"></div>
-<div class="actions"><button id="export" type="button">บันทึกรายงาน .txt</button></div>
-</section>
-<section class="panel" id="marketing" hidden>
-<h2>3. ร่างข้อความโปรโมต</h2>
-<p class="muted">ร่างจากชื่อสินค้าที่มียอดขายสูงสุดเท่านั้น ไม่กล่าวอ้างสรรพคุณ รีวิว หรือส่วนลดที่ไม่ได้ยืนยัน</p>
-<pre id="post"></pre>
-<div class="actions"><button id="copy" type="button">คัดลอกข้อความ</button></div>
-</section>
-<section class="panel"><h2>แนวทางพัฒนาต่อ</h2><p>เชื่อม AI API ผ่านเซิร์ฟเวอร์อย่างปลอดภัยเมื่อพร้อม ตรวจสิทธิ์ผู้ใช้ แยกข้อมูลแต่ละร้าน และเพิ่มการทดสอบก่อนเปิดใช้งานจริง โดยไม่เผยแพร่ข้อมูลลูกค้า</p></section>
+<a class="skip" href="#workspace">ข้ามไปยังเครื่องมือ</a>
+<header class="topbar wrap">
+  <a class="brand" href="./business-insights.html" aria-label="WORAMET AI LAB หน้าเครื่องมือ"><span class="brand-mark" aria-hidden="true">W<span>·</span></span><span>WORAMET <b>AI LAB</b><small>TOOLS FOR SMALL BUSINESS</small></span></a>
+  <a class="studio-link" href="./index.html">AI Money Studio <span aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></span></a>
+</header>
+<main class="wrap">
+  <section class="hero" aria-labelledby="title">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="signal" aria-hidden="true"></span> BUSINESS TOOLKIT / MVP 01</p>
+      <h1 id="title">มองยอดขายให้ชัด<br><span>วางแผนร้านให้ง่าย</span></h1>
+      <p class="intro">เปลี่ยนไฟล์ขายของที่อ่านยาก เป็นภาพรวมที่เข้าใจได้<br class="desktop-break"> ดูสินค้าขายดี แล้วเตรียมข้อความโปรโมตในที่เดียว</p>
+      <div class="hero-tags"><span>ประมวลผลในเครื่อง</span><span>ไม่ต้องสมัครสมาชิก</span><span>ไม่มีค่า API</span></div>
+      <button id="sample-quick" class="quick-demo" type="button">ดูผลด้วยข้อมูลสมมติ <span aria-hidden="true">→</span></button>
+    </div>
+    <aside class="hero-card" aria-label="ขั้นตอนการใช้งาน">
+      <span class="micro">YOUR DATA → YOUR NEXT MOVE</span>
+      <div class="flow-step"><span>01</span><div><b>นำเข้ายอดขาย</b><small>CSV ภาษาไทย / English</small></div><span aria-hidden="true">↓</span></div>
+      <div class="flow-step"><span>02</span><div><b>เห็นสิ่งที่ข้อมูลบอก</b><small>ยอดรวม · สินค้า · แนวโน้ม</small></div><span aria-hidden="true">↓</span></div>
+      <div class="flow-step"><span>03</span><div><b>พร้อมวางแผนต่อ</b><small>ดาวน์โหลดรายงาน + ร่างโพสต์</small></div><span aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></span></div>
+      <div class="local-badge"><span aria-hidden="true">◈</span> ไฟล์ของคุณไม่ถูกส่งขึ้นเซิร์ฟเวอร์</div>
+    </aside>
+  </section>
+  <div class="engine-note"><span class="badge">สูตร + เทมเพลต</span><p>รุ่นนี้ใช้การคำนวณและกฎที่ตรวจสอบได้ <strong>ยังไม่ใช้ Generative AI</strong> ทางเชื่อม AI ฝั่งเซิร์ฟเวอร์เตรียมไว้และปิดใช้งาน</p></div>
+  <section class="panel input-panel" id="workspace" aria-labelledby="input-title">
+    <div class="section-heading"><div><p class="eyebrow">01 / DATA WORKSPACE</p><h2 id="input-title">เริ่มจากข้อมูลร้านของคุณ</h2></div><span class="micro">CSV · สูงสุด 2 MB / 10,000 รายการ</span></div>
+    <p class="muted">ทดลองด้วยข้อมูลสมมติก่อนได้ หลีกเลี่ยงข้อมูลลูกค้า เบอร์โทร และข้อมูลส่วนตัวในไฟล์</p>
+    <div class="input-grid">
+      <div class="import-box">
+        <span class="upload-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m-5 5 5-5 5 5M5 15v5h14v-5"/></svg></span>
+        <label for="file">เลือกไฟล์ยอดขาย CSV</label>
+        <p class="muted">เลือกจาก Files บน iPhone<br> หรือจากโฟลเดอร์บน Windows</p>
+        <input id="file" type="file" accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values,text/plain" aria-describedby="encoding-help">
+        <label for="encoding">รูปแบบตัวอักษรในไฟล์</label>
+        <select id="encoding" aria-describedby="encoding-help"><option value="auto">อัตโนมัติ (UTF-8 / UTF-16 BOM)</option><option value="utf-8">UTF-8</option><option value="windows-874">Windows-874 / ภาษาไทยรุ่นเก่า</option></select>
+        <small id="encoding-help">ถ้าภาษาไทยอ่านไม่ได้ ลอง Windows-874 หรือบันทึกไฟล์ใหม่เป็น CSV UTF-8</small>
+      </div>
+      <div class="paste-box">
+        <label for="csv">หรือวางข้อมูลจากตาราง</label>
+        <textarea id="csv" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="csv-help" placeholder="date,product,quantity,unit_price&#10;2026-11-01,สมุดตัวอย่าง,2,35.50"></textarea>
+        <small id="csv-help">คั่นด้วย comma, semicolon หรือ tab · ราคาเป็นบาท · รองรับเลขไทย</small>
+        <div class="actions"><button id="analyze" class="primary" type="button">วิเคราะห์ยอดขาย <span aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></span></button><button id="sample" type="button">ใส่ข้อมูลตัวอย่าง</button><button id="clear" class="quiet" type="button">ล้างข้อมูล</button></div>
+      </div>
+    </div>
+    <details class="format-help"><summary>ดูรูปแบบ CSV ที่รองรับ</summary><p>คอลัมน์จำเป็น: <code>product,quantity,unit_price</code> หรือ <code>สินค้า,จำนวน,ราคาต่อหน่วย</code> ถ้ามี comma ในชื่อหรือราคา ให้ใส่อัญประกาศคู่ เช่น <code>"1,200.50"</code></p><p>คอลัมน์วันที่ไม่บังคับ: <code>date</code> หรือ <code>วันที่</code> ใช้ <code>YYYY-MM-DD</code> หรือ <code>DD/MM/YYYY</code> (วัน/เดือน/ปีเสมอ) รองรับ พ.ศ. และ ค.ศ. หากใส่วันที่ ต้องถูกต้องทุกแถว</p><p>จำนวนต้องเป็นจำนวนเต็มบวก ราคา 0 ขึ้นไปและไม่เกิน 2 ทศนิยม ไม่รองรับเลขทศนิยมแบบ comma ยอดรวมต้องอยู่ในขอบเขตที่คำนวณได้แม่นยำ หากมีแถวผิดจะให้แก้ก่อนวิเคราะห์ ไม่ข้ามรายการเงียบ ๆ</p><p>รายการซ้ำยังนับตามจริง คอลัมน์อื่นจะถูกละเว้น วันที่ที่ไม่มีข้อมูลจะไม่ถูกนับเป็นยอดศูนย์</p></details>
+    <p id="status" role="status" aria-live="polite" aria-atomic="true" class="status muted">เริ่มจาก “ใส่ข้อมูลตัวอย่าง” แล้วกด “วิเคราะห์ยอดขาย”</p>
+  </section>
+  <section class="panel results-panel" id="results" hidden aria-labelledby="results-title">
+    <div class="section-heading"><div><p class="eyebrow">02 / BUSINESS SNAPSHOT</p><h2 id="results-title">ภาพรวมที่ข้อมูลบอกคุณ</h2></div><span id="source-label" class="badge">ข้อมูลนำเข้า</span></div>
+    <p id="period" class="muted"></p>
+    <div class="metrics">
+      <div class="metric featured"><small>ยอดขายรวม · THB</small><strong id="revenue">—</strong><span>ก่อนหักต้นทุนและค่าใช้จ่าย</span></div>
+      <div class="metric"><small>จำนวนสินค้าที่ขาย</small><strong id="units">—</strong><span>ชิ้น</span></div>
+      <div class="metric"><small>รายการข้อมูล</small><strong id="rows">—</strong><span>แถวสินค้า ไม่ใช่จำนวนบิล</span></div>
+      <div class="metric"><small>สินค้าที่แตกต่าง</small><strong id="products">—</strong><span>แยกตามชื่อสินค้า</span></div>
+    </div>
+    <div class="analysis-grid">
+      <div><h3>สินค้าขายดีตามยอดขาย</h3><p class="muted compact">แสดงสูงสุด 10 อันดับ · ดาวน์โหลดเพื่อดูทั้งหมด</p><div id="ranking"></div></div>
+      <div class="trend-box"><h3>ยอดขายตามวันที่มีข้อมูล</h3><p id="trend-summary" class="muted"></p><div id="daily" aria-label="ยอดขายรายวัน"></div><p class="micro">แสดง 14 วันที่มีข้อมูลล่าสุด · ไม่พยากรณ์ยอดขาย</p></div>
+    </div>
+    <div class="observations"><h3>ข้อสังเกตสำหรับวางแผน</h3><div id="insights"></div></div>
+    <div class="export-strip"><div><b>นำรายงานไปวางแผนต่อ</b><small>TXT สำหรับอ่าน · JSON สำหรับนำไปประมวลผล</small></div><div class="actions"><button id="export" type="button" disabled>ดาวน์โหลด .txt <span aria-hidden="true">↓</span></button><button id="export-json" type="button" disabled>ดาวน์โหลด .json</button></div></div>
+  </section>
+  <section class="panel marketing-panel" id="marketing" hidden aria-labelledby="marketing-title">
+    <div class="section-heading"><div><p class="eyebrow">03 / CONTENT STARTER</p><h2 id="marketing-title">จากสินค้าขายดี สู่โพสต์ถัดไป</h2></div><span class="badge">ร่างจากเทมเพลต</span></div>
+    <p class="muted">ใช้ชื่อสินค้ายอดขายสูงสุดในชุดนี้ ไม่สร้างรีวิว สรรพคุณ หรือส่วนลด ตรวจข้อมูลและสต็อกก่อนโพสต์จริง</p>
+    <pre id="post" tabindex="0" aria-label="ร่างข้อความโปรโมตที่เลือกคัดลอกได้"></pre>
+    <div class="actions"><button id="copy" type="button" disabled>คัดลอกข้อความ</button><button id="download-post" class="quiet" type="button" disabled>บันทึกร่าง .txt</button></div>
+    <p id="copy-status" role="status" aria-live="polite" class="muted"></p>
+  </section>
+  <section class="privacy-note"><span aria-hidden="true">◈</span><div><h2>คุณควบคุมข้อมูลของคุณ</h2><p>ไม่มีบัญชี ไม่มีการบันทึกลงฐานข้อมูล และไม่มีการส่งไฟล์ไป AI ข้อมูลอยู่ในหน้านี้จนกว่าจะล้างหรือปิดหน้า รายงานที่คุณดาวน์โหลดอาจมีชื่อสินค้าและยอดขาย ควรเก็บไว้เป็นส่วนตัว</p></div></section>
 </main>
-<footer><small>© CHAYLUEKLAB · WORAMET AI LAB · รุ่นสาธิตบนสาขาแยก · ไม่รับประกันยอดขายหรือรายได้</small></footer>
-<script>
-(function(){
-"use strict";
-const $=id=>document.getElementById(id);
-const fmt=n=>new Intl.NumberFormat("th-TH",{maximumFractionDigits:2}).format(n);
-const sample=[
-"date,product,quantity,unit_price",
-"2026-11-01,FIRST CHAPTER Ivory,2,600",
-"2026-11-02,FIRST CHAPTER Noir,3,600",
-"2026-11-03,FIRST CHAPTER Forest,1,600",
-"2026-11-04,FIRST CHAPTER Ivory,2,600",
-"2026-11-05,FIRST CHAPTER Noir,1,600",
-"2026-11-06,FIRST CHAPTER Forest,2,600",
-"2026-11-07,FIRST CHAPTER Ivory,1,600"
-].join("\n");
-let lastReport="",lastPost="";
-function parseCSV(input){
-const rows=[],line=[];let field="",quoted=false;
-for(let i=0;i<input.length;i++){
-const c=input[i];
-if(c==='"'){if(quoted&&input[i+1]==='"'){field+='"';i++}else if(field===""||quoted){quoted=!quoted}else{field+=c}}
-else if(c===","&&!quoted){line.push(field.trim());field=""}
-else if((c==="\n"||c==="\r")&&!quoted){if(c==="\r"&&input[i+1]==="\n")i++;line.push(field.trim());field="";if(line.some(x=>x!==""))rows.push(line.splice(0))}
-else field+=c
-}
-if(quoted)throw Error("เครื่องหมายอัญประกาศใน CSV ไม่ครบ");
-line.push(field.trim());if(line.some(x=>x!==""))rows.push(line);
-return rows;
-}
-function cleanNumber(v){const raw=String(v??"").trim();if(!raw)return NaN;const normalized=raw.replace(/,/g,"");if(!/^(?:\d+|\d*\.\d+)$/.test(normalized))return NaN;return Number(normalized)}
-function parseSales(input){
-const rows=parseCSV(input.replace(/^\uFEFF/,""));if(rows.length<2)throw Error("ต้องมีหัวตารางและข้อมูลอย่างน้อย 1 รายการ");
-const aliases={product:["product","สินค้า","ชื่อสินค้า"],quantity:["quantity","จำนวน","qty"],price:["unit_price","ราคาต่อหน่วย","price","ราคา"]};
-const headers=rows[0].map(v=>v.toLowerCase().trim());const indexes={};
-for(const key of Object.keys(aliases)){indexes[key]=headers.findIndex(h=>aliases[key].includes(h));if(indexes[key]<0)throw Error("ไม่พบคอลัมน์ "+aliases[key][0])}
-if(rows.length>10001)throw Error("รองรับไม่เกิน 10,000 รายการต่อครั้ง");
-return rows.slice(1).map((r,i)=>{
-const product=(r[indexes.product]||"").trim(),quantity=cleanNumber(r[indexes.quantity]||""),price=cleanNumber(r[indexes.price]||"");
-if(!product||!Number.isFinite(quantity)||!Number.isFinite(price)||quantity<=0||price<0)throw Error("ข้อมูลแถวที่ "+(i+2)+" ไม่ถูกต้อง");
-if(!Number.isSafeInteger(quantity))throw Error("จำนวนสินค้าต้องเป็นจำนวนเต็มที่แถว "+(i+2));
-if(quantity>10000000||price>100000000)throw Error("จำนวนหรือราคาเกินขอบเขตที่รองรับในแถว "+(i+2));
-return {product,quantity,price,revenue:quantity*price};
-});
-}
-function render(){
-try{
-const sales=parseSales($("csv").value),map=new Map();let revenue=0,units=0;
-sales.forEach(r=>{revenue+=r.revenue;units+=r.quantity;const old=map.get(r.product)||{product:r.product,units:0,revenue:0};old.units+=r.quantity;old.revenue+=r.revenue;map.set(r.product,old)});
-if(!Number.isFinite(revenue)||!Number.isFinite(units))throw Error("ข้อมูลรวมมีขนาดใหญ่เกินไป");
-const rank=Array.from(map.values()).sort((a,b)=>b.revenue-a.revenue||a.product.localeCompare(b.product,"th"));
-const top=rank[0],share=revenue>0?top.revenue/revenue:0;
-$("revenue").textContent="฿"+fmt(revenue);$("units").textContent=fmt(units);$("rows").textContent=fmt(sales.length);$("products").textContent=fmt(rank.length);
-const ranking=$("ranking");ranking.replaceChildren();
-rank.slice(0,10).forEach((r,i)=>{
-const item=document.createElement("div");item.className="item";
-const row=document.createElement("div");row.className="row";
-const name=document.createElement("strong");name.textContent=(i+1)+". "+r.product;
-const total=document.createElement("span");total.textContent="฿"+fmt(r.revenue)+" · "+fmt(r.units)+" ชิ้น";
-row.append(name,total);const bar=document.createElement("div");bar.className="bar";const fill=document.createElement("span");fill.style.width=(revenue?100*r.revenue/revenue:0)+"%";bar.append(fill);item.append(row,bar);ranking.append(item);
-});
-const tips=[
-"สินค้าที่มียอดขายสูงสุดในชุดข้อมูลนี้คือ "+top.product+" (฿"+fmt(top.revenue)+")",
-"ยอดขายรวม "+fmt(revenue)+" บาท จาก "+fmt(units)+" ชิ้น และ "+fmt(sales.length)+" แถวข้อมูล",
-share>=0.6?"ยอดขายกระจุกตัวที่สินค้าหนึ่งรายการ "+fmt(share*100)+"% ควรติดตามความเสี่ยงด้านสต็อก":"สินค้าขายดีอันดับหนึ่งคิดเป็น "+fmt(share*100)+"% ของยอดขายรวม",
-"ข้อมูลนี้ยังไม่รวมต้นทุน ค่าธรรมเนียม และการคืนสินค้า จึงไม่ใช่กำไรสุทธิ"
-];
-$("insights").replaceChildren(...tips.map(t=>{const p=document.createElement("p");p.textContent="• "+t;return p}));
-lastPost="แนะนำ "+top.product+" ✨\nสนใจสินค้าและรายละเอียดเพิ่มเติม? ทักแชตเพื่อสอบถามราคา สี ขนาด และการจัดส่งได้เลย\n#CHAYLUEKLAB";
-$("post").textContent=lastPost;
-lastReport=["WORAMET AI LAB | Business Insights","รายงานวิเคราะห์จากข้อมูลที่นำเข้า (ไม่ใช่กำไรสุทธิ)","ยอดขายรวม: ฿"+fmt(revenue),"จำนวนชิ้น: "+fmt(units),"จำนวนแถว: "+sales.length,"จำนวนสินค้า: "+rank.length,"","อันดับสินค้า",...rank.map((r,i)=>(i+1)+". "+r.product+" | ฿"+fmt(r.revenue)+" | "+fmt(r.units)+" ชิ้น"),"","ข้อสังเกต",...tips].join("\n");
-$("results").hidden=false;$("marketing").hidden=false;$("status").className="success";$("status").textContent="วิเคราะห์สำเร็จ ข้อมูลอยู่ในเบราว์เซอร์ของคุณ";
-}catch(e){$("results").hidden=true;$("marketing").hidden=true;$("status").className="error";$("status").textContent=e.message||"ไม่สามารถอ่านข้อมูลได้"}
-}
-function invalidateReport(){
-$("results").hidden=true;$("marketing").hidden=true;lastReport="";lastPost="";
-}
-$("csv").addEventListener("input",()=>{
-invalidateReport();
-$("status").className="muted";
-$("status").textContent="ข้อมูลเปลี่ยนแล้ว กดวิเคราะห์ยอดขายอีกครั้ง";
-});
-$("sample").addEventListener("click",()=>{invalidateReport();$("csv").value=sample;$("status").className="muted";$("status").textContent="โหลดข้อมูลสมมติแล้ว กดวิเคราะห์ยอดขายได้เลย"});
-$("file").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;invalidateReport();if(file.size>2*1024*1024){$("status").textContent="ไฟล์ใหญ่เกิน 2 MB";return}try{$("csv").value=await file.text();$("status").textContent="อ่านไฟล์ในเครื่องแล้ว กดวิเคราะห์ยอดขาย"}catch{$("status").textContent="ไม่สามารถอ่านไฟล์ได้"}});
-$("analyze").addEventListener("click",render);
-$("clear").addEventListener("click",()=>{$("csv").value="";$("file").value="";invalidateReport();$("status").className="muted";$("status").textContent="ล้างข้อมูลในหน้าจอแล้ว"});
-$("export").addEventListener("click",()=>{if(!lastReport)return;const url=URL.createObjectURL(new Blob([lastReport],{type:"text/plain;charset=utf-8"}));const a=document.createElement("a");a.href=url;a.download="woramet-business-report.txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
-$("copy").addEventListener("click",async()=>{if(!lastPost)return;try{await navigator.clipboard.writeText(lastPost);$("status").textContent="คัดลอกข้อความโปรโมตแล้ว"}catch{$("status").textContent="คัดลอกอัตโนมัติไม่ได้ กรุณาเลือกข้อความแล้วคัดลอก"}});
-})();
-</script>
+<footer class="wrap"><span>WORAMET AI LAB <span aria-hidden="true">/</span> BUSINESS INSIGHTS</span><small>สาขาทดลอง · เตรียม Dojo 2026 · ไม่รับประกันรายได้</small></footer>
 </body>
 </html>
