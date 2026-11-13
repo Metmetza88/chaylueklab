@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a1020">
+<title>WORAMET AI LAB | Business Insights Demo</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#eaf2ff;background:#080e1b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0%,#25366c 0%,transparent 34%),#080e1b}
+main,header,footer{max-width:1040px;margin:auto;padding:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #263551}
+a{color:#a8c9ff}a:hover{text-decoration:none}.brand{font-weight:850;letter-spacing:.05em}.brand b{color:#7dcaff}
+.pill{font-size:12px;color:#b5e9d3;background:#14382e;border:1px solid #2c7762;border-radius:99px;padding:6px 10px}
+h1{font-size:clamp(29px,6vw,50px);line-height:1.12;margin:18px 0}h1 span{color:#8ecaff}
+h2{margin:0 0 14px;font-size:20px}p{line-height:1.65}.muted,small{color:#afbdd5}
+.panel{background:#121f34;border:1px solid #2e4263;border-radius:18px;padding:20px;margin:17px 0}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.metric{background:#0d192b;border:1px solid #2b405e;border-radius:14px;padding:14px;min-width:0}
+.metric strong{display:block;font-size:clamp(20px,4vw,29px);margin:8px 0;overflow-wrap:anywhere}
+label{display:block;font-weight:650;margin:12px 0 6px}
+textarea,input[type=file]{display:block;width:100%;color:#eaf2ff;background:#091626;border:1px solid #536d93;border-radius:12px;padding:13px}
+textarea{min-height:155px;font:13px/1.5 ui-monospace,SFMono-Regular,monospace;resize:vertical}
+button{border:1px solid #58719b;border-radius:12px;padding:12px 15px;background:#263958;color:#f4f7ff;font-weight:750;cursor:pointer}
+button.primary{background:linear-gradient(115deg,#3584f5,#7856d9);border-color:#7695ff}
+button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid #89e7ff;outline-offset:2px}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:10px 0 5px}
+.bar{height:10px;background:#23334b;border-radius:99px;overflow:hidden}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,#39b5e8,#8973ff)}
+.item{padding:11px 0;border-bottom:1px solid #2a3c55}.item:last-child{border:0}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;font-family:inherit;line-height:1.65;background:#0c1728;padding:14px;border-radius:12px}
+.note{border-left:3px solid #56bfe8;padding:8px 12px;background:#0b2035}
+.error{color:#ffb7b7}.success{color:#9be9cb}
+[hidden]{display:none!important}
+@media(max-width:620px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{padding:15px}.brand{font-size:13px}header a{font-size:12px}}
+</style>
+</head>
+<body>
+<header><div class="brand">W<span style="color:#83d4ff">.</span> WORAMET AI LAB</div><a href="./index.html">AI Money Studio</a></header>
+<main>
+<div class="pill" style="display:inline-block;margin-top:14px">HACKATHON MVP · LOCAL DEMO</div>
+<h1>Business <span>Insights</span></h1>
+<p class="muted">นำเข้ารายการขาย CSV เพื่อดูยอดรวม สินค้าขายดี และข้อสังเกตสำหรับเจ้าของร้าน พร้อมร่างข้อความโปรโมตสินค้า ทำงานในเบราว์เซอร์โดยไม่ส่งไฟล์ขึ้นเซิร์ฟเวอร์</p>
+<p class="note"><strong>ข้อเท็จจริง:</strong> รุ่นนี้วิเคราะห์ด้วยสูตรและกฎที่ตรวจสอบได้ ยังไม่ได้เชื่อมโมเดล AI หรือระบบขายจริง ข้อมูลตัวอย่างไม่ใช่ยอดขายจริง</p>
+<section class="panel">
+<h2>1. นำเข้าข้อมูล</h2>
+<p class="muted">รองรับ CSV ที่มีคอลัมน์ <code>date,product,quantity,unit_price</code> หรือ <code>วันที่,สินค้า,จำนวน,ราคาต่อหน่วย</code> โดยราคาต่อหน่วยเป็นเงินบาท</p>
+<label for="file">เลือกไฟล์ CSV จากเครื่อง (ไม่อัปโหลด)</label>
+<input id="file" type="file" accept=".csv,text/csv">
+<label for="csv">หรือวางข้อมูล CSV</label>
+<textarea id="csv" spellcheck="false" placeholder="date,product,quantity,unit_price&#10;2026-11-01,สินค้าตัวอย่าง,2,600"></textarea>
+<div class="actions">
+<button id="sample" type="button">ใส่ข้อมูลตัวอย่าง</button>
+<button id="analyze" class="primary" type="button">วิเคราะห์ยอดขาย</button>
+<button id="clear" type="button">ล้างข้อมูล</button>
+</div>
+<p id="status" role="status" aria-live="polite" class="muted">เริ่มจากกด “ใส่ข้อมูลตัวอย่าง” แล้วกด “วิเคราะห์ยอดขาย”</p>
+</section>
+<section class="panel" id="results" hidden>
+<h2>2. ผลวิเคราะห์</h2>
+<div class="grid">
+<div class="metric"><small>ยอดขายรวม</small><strong id="revenue">—</strong></div>
+<div class="metric"><small>จำนวนสินค้าที่ขาย</small><strong id="units">—</strong></div>
+<div class="metric"><small>รายการข้อมูล</small><strong id="rows">—</strong></div>
+<div class="metric"><small>สินค้าที่แตกต่าง</small><strong id="products">—</strong></div>
+</div>
+<h2 style="margin-top:25px">อันดับสินค้าตามยอดขาย</h2>
+<div id="ranking"></div>
+<h2 style="margin-top:25px">ข้อสังเกตจากข้อมูล</h2>
+<div id="insights"></div>
+<div class="actions"><button id="export" type="button">บันทึกรายงาน .txt</button></div>
+</section>
+<section class="panel" id="marketing" hidden>
+<h2>3. ร่างข้อความโปรโมต</h2>
+<p class="muted">ร่างจากชื่อสินค้าที่มียอดขายสูงสุดเท่านั้น ไม่กล่าวอ้างสรรพคุณ รีวิว หรือส่วนลดที่ไม่ได้ยืนยัน</p>
+<pre id="post"></pre>
+<div class="actions"><button id="copy" type="button">คัดลอกข้อความ</button></div>
+</section>
+<section class="panel"><h2>แนวทางพัฒนาต่อ</h2><p>เชื่อม AI API ผ่านเซิร์ฟเวอร์อย่างปลอดภัยเมื่อพร้อม ตรวจสิทธิ์ผู้ใช้ แยกข้อมูลแต่ละร้าน และเพิ่มการทดสอบก่อนเปิดใช้งานจริง โดยไม่เผยแพร่ข้อมูลลูกค้า</p></section>
+</main>
+<footer><small>© CHAYLUEKLAB · WORAMET AI LAB · รุ่นสาธิตบนสาขาแยก · ไม่รับประกันยอดขายหรือรายได้</small></footer>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const fmt=n=>new Intl.NumberFormat("th-TH",{maximumFractionDigits:2}).format(n);
+const sample=[
+"date,product,quantity,unit_price",
+"2026-11-01,FIRST CHAPTER Ivory,2,600",
+"2026-11-02,FIRST CHAPTER Noir,3,600",
+"2026-11-03,FIRST CHAPTER Forest,1,600",
+"2026-11-04,FIRST CHAPTER Ivory,2,600",
+"2026-11-05,FIRST CHAPTER Noir,1,600",
+"2026-11-06,FIRST CHAPTER Forest,2,600",
+"2026-11-07,FIRST CHAPTER Ivory,1,600"
+].join("\n");
+let lastReport="",lastPost="";
+function parseCSV(input){
+const rows=[],line=[];let field="",quoted=false;
+for(let i=0;i<input.length;i++){
+const c=input[i];
+if(c==='"'){if(quoted&&input[i+1]==='"'){field+='"';i++}else if(field===""||quoted){quoted=!quoted}else{field+=c}}
+else if(c===","&&!quoted){line.push(field.trim());field=""}
+else if((c==="\n"||c==="\r")&&!quoted){if(c==="\r"&&input[i+1]==="\n")i++;line.push(field.trim());field="";if(line.some(x=>x!==""))rows.push(line.splice(0))}
+else field+=c
+}
+if(quoted)throw Error("เครื่องหมายอัญประกาศใน CSV ไม่ครบ");
+line.push(field.trim());if(line.some(x=>x!==""))rows.push(line);
+return rows;
+}
+function cleanNumber(v){return Number(String(v).replace(/,/g,"").trim())}
+function parseSales(input){
+const rows=parseCSV(input.replace(/^\uFEFF/,""));if(rows.length<2)throw Error("ต้องมีหัวตารางและข้อมูลอย่างน้อย 1 รายการ");
+const aliases={product:["product","สินค้า","ชื่อสินค้า"],quantity:["quantity","จำนวน","qty"],price:["unit_price","ราคาต่อหน่วย","price","ราคา"]};
+const headers=rows[0].map(v=>v.toLowerCase().trim());const indexes={};
+for(const key of Object.keys(aliases)){indexes[key]=headers.findIndex(h=>aliases[key].includes(h));if(indexes[key]<0)throw Error("ไม่พบคอลัมน์ "+aliases[key][0])}
+if(rows.length>10001)throw Error("รองรับไม่เกิน 10,000 รายการต่อครั้ง");
+return rows.slice(1).map((r,i)=>{
+const product=(r[indexes.product]||"").trim(),quantity=cleanNumber(r[indexes.quantity]||""),price=cleanNumber(r[indexes.price]||"");
+if(!product||!Number.isFinite(quantity)||!Number.isFinite(price)||quantity<=0||price<0)throw Error("ข้อมูลแถวที่ "+(i+2)+" ไม่ถูกต้อง");
+if(!Number.isSafeInteger(quantity))throw Error("จำนวนสินค้าต้องเป็นจำนวนเต็มที่แถว "+(i+2));
+if(quantity>10000000||price>100000000)throw Error("จำนวนหรือราคาเกินขอบเขตที่รองรับในแถว "+(i+2));
+return {product,quantity,price,revenue:quantity*price};
+});
+}
+function render(){
+try{
+const sales=parseSales($("csv").value),map=new Map();let revenue=0,units=0;
+sales.forEach(r=>{revenue+=r.revenue;units+=r.quantity;const old=map.get(r.product)||{product:r.product,units:0,revenue:0};old.units+=r.quantity;old.revenue+=r.revenue;map.set(r.product,old)});
+if(!Number.isFinite(revenue)||!Number.isFinite(units))throw Error("ข้อมูลรวมมีขนาดใหญ่เกินไป");
+const rank=Array.from(map.values()).sort((a,b)=>b.revenue-a.revenue||a.product.localeCompare(b.product,"th"));
+const top=rank[0],share=revenue>0?top.revenue/revenue:0;
+$("revenue").textContent="฿"+fmt(revenue);$("units").textContent=fmt(units);$("rows").textContent=fmt(sales.length);$("products").textContent=fmt(rank.length);
+const ranking=$("ranking");ranking.replaceChildren();
+rank.slice(0,10).forEach((r,i)=>{
+const item=document.createElement("div");item.className="item";
+const row=document.createElement("div");row.className="row";
+const name=document.createElement("strong");name.textContent=(i+1)+". "+r.product;
+const total=document.createElement("span");total.textContent="฿"+fmt(r.revenue)+" · "+fmt(r.units)+" ชิ้น";
+row.append(name,total);const bar=document.createElement("div");bar.className="bar";const fill=document.createElement("span");fill.style.width=(revenue?100*r.revenue/revenue:0)+"%";bar.append(fill);item.append(row,bar);ranking.append(item);
+});
+const tips=[
+"สินค้าที่มียอดขายสูงสุดในชุดข้อมูลนี้คือ "+top.product+" (฿"+fmt(top.revenue)+")",
+"ยอดขายรวม "+fmt(revenue)+" บาท จาก "+fmt(units)+" ชิ้น และ "+fmt(sales.length)+" แถวข้อมูล",
+share>=0.6?"ยอดขายกระจุกตัวที่สินค้าหนึ่งรายการ "+fmt(share*100)+"% ควรติดตามความเสี่ยงด้านสต็อก":"สินค้าขายดีอันดับหนึ่งคิดเป็น "+fmt(share*100)+"% ของยอดขายรวม",
+"ข้อมูลนี้ยังไม่รวมต้นทุน ค่าธรรมเนียม และการคืนสินค้า จึงไม่ใช่กำไรสุทธิ"
+];
+$("insights").replaceChildren(...tips.map(t=>{const p=document.createElement("p");p.textContent="• "+t;return p}));
+lastPost="แนะนำ "+top.product+" ✨\nสนใจสินค้าและรายละเอียดเพิ่มเติม? ทักแชตเพื่อสอบถามราคา สี ขนาด และการจัดส่งได้เลย\n#CHAYLUEKLAB";
+$("post").textContent=lastPost;
+lastReport=["WORAMET AI LAB | Business Insights","รายงานวิเคราะห์จากข้อมูลที่นำเข้า (ไม่ใช่กำไรสุทธิ)","ยอดขายรวม: ฿"+fmt(revenue),"จำนวนชิ้น: "+fmt(units),"จำนวนแถว: "+sales.length,"จำนวนสินค้า: "+rank.length,"","อันดับสินค้า",...rank.map((r,i)=>(i+1)+". "+r.product+" | ฿"+fmt(r.revenue)+" | "+fmt(r.units)+" ชิ้น"),"","ข้อสังเกต",...tips].join("\n");
+$("results").hidden=false;$("marketing").hidden=false;$("status").className="success";$("status").textContent="วิเคราะห์สำเร็จ ข้อมูลอยู่ในเบราว์เซอร์ของคุณ";
+}catch(e){$("results").hidden=true;$("marketing").hidden=true;$("status").className="error";$("status").textContent=e.message||"ไม่สามารถอ่านข้อมูลได้"}
+}
+$("sample").addEventListener("click",()=>{$("csv").value=sample;$("status").className="muted";$("status").textContent="โหลดข้อมูลสมมติแล้ว กดวิเคราะห์ยอดขายได้เลย"});
+$("file").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;if(file.size>2*1024*1024){$("status").textContent="ไฟล์ใหญ่เกิน 2 MB";return}try{$("csv").value=await file.text();$("status").textContent="อ่านไฟล์ในเครื่องแล้ว กดวิเคราะห์ยอดขาย"}catch{$("status").textContent="ไม่สามารถอ่านไฟล์ได้"}});
+$("analyze").addEventListener("click",render);
+$("clear").addEventListener("click",()=>{$("csv").value="";$("file").value="";$("results").hidden=true;$("marketing").hidden=true;lastReport="";lastPost="";$("status").className="muted";$("status").textContent="ล้างข้อมูลในหน้าจอแล้ว"});
+$("export").addEventListener("click",()=>{if(!lastReport)return;const url=URL.createObjectURL(new Blob([lastReport],{type:"text/plain;charset=utf-8"}));const a=document.createElement("a");a.href=url;a.download="woramet-business-report.txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+$("copy").addEventListener("click",async()=>{if(!lastPost)return;try{await navigator.clipboard.writeText(lastPost);$("status").textContent="คัดลอกข้อความโปรโมตแล้ว"}catch{$("status").textContent="คัดลอกอัตโนมัติไม่ได้ กรุณาเลือกข้อความแล้วคัดลอก"}});
+})();
+</script>
+</body>
+</html>
