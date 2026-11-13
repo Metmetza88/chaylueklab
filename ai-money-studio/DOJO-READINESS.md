@@ -44,6 +44,7 @@ WORAMET AI LAB — Business Insights helps small stores turn Thai or English sal
 - [x] README ไทยและอังกฤษ พร้อมวิธีรันและข้อจำกัด
 - [x] CSV สมมติสองชุด ไม่มีข้อมูลร้าน/ลูกค้าจริง
 - [x] คำนวณสตางค์ ตรวจ encoding/ข้อมูลผิดรูปแบบ และยกเลิกรายงานเก่า
+- [x] อ่านวันที่หลายรูปแบบ (รวมชื่อเดือนไทย/พ.ศ.) และราคา ฿/THB/บาท โดยปฏิเสธรูปแบบกำกวม (commit 6ef8ecf)
 - [x] รายงาน TXT/JSON และร่างโพสต์จากเทมเพลต
 - [x] โครงสร้าง server AI ปิดไว้ พร้อมทดสอบ mock โดยไม่ใช้ API เสียเงิน
 - [x] Automated Tests และผลตรวจ [AUDIT-QA.md](AUDIT-QA.md)
@@ -57,7 +58,7 @@ WORAMET AI LAB — Business Insights helps small stores turn Thai or English sal
 | คำอธิบาย Problem / Solution / Track | ร่างไทยและอังกฤษด้านบน; ยืนยันชื่อ Track ทางการ |
 | Source code และ Commit | ใช้เฉพาะสาขาทดลอง; แนบลิงก์ Commit ที่เจ้าของตรวจแล้ว |
 | วิธีรัน / ข้อจำกัด / สถานะ AI | README สองภาษาและเอกสาร server |
-| Working demo URL | [ลิงก์ทดลองโค้ดรุ่น 8e7ca1c](https://rawcdn.githack.com/Metmetza88/chaylueklab/8e7ca1c40d2196c748c0320abff640a0affa9bc7/ai-money-studio/business-insights.html) ผ่าน githack; ครั้งแรกกด Open the page; ยังต้องตรวจว่าผู้จัดยอมรับลิงก์บุคคลที่สามและการเผยแพร่ถาวร |
+| Working demo URL | [ลิงก์ทดลองโค้ดรุ่น 8e7ca1c](https://rawcdn.githack.com/Metmetza88/chaylueklab/8e7ca1c40d2196c748c0320abff640a0affa9bc7/ai-money-studio/business-insights.html) ผ่าน githack **ลิงก์นี้ยังเป็นโค้ดเก่าก่อน commit 6ef8ecf (รูปแบบวันที่/บาทใหม่ยังไม่อยู่ในลิงก์) ต้องสร้างลิงก์ใหม่จาก commit ล่าสุดและให้เจ้าของอนุมัติก่อนส่ง**; ครั้งแรกกด Open the page; ยังต้องตรวจว่าผู้จัดยอมรับลิงก์บุคคลที่สามและการเผยแพร่ถาวร |
 | วิดีโอ 60–90 วินาที | มีสคริปต์ ยังไม่บันทึกหรืออัปโหลด |
 | ภาพประกอบหน้าจอ | มีหลักฐาน Chromium ข้อมูลสมมติใน `docs/woramet-qa/`; เจ้าของเลือกภาพส่ง |
 | ผลทดสอบและชุดข้อมูล | AUDIT-QA.md, tests และ fixtures สมมติ |
