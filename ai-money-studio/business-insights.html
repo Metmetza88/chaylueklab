@@ -108,7 +108,7 @@ if(quoted)throw Error("เครื่องหมายอัญประกา
 line.push(field.trim());if(line.some(x=>x!==""))rows.push(line);
 return rows;
 }
-function cleanNumber(v){return Number(String(v).replace(/,/g,"").trim())}
+function cleanNumber(v){const raw=String(v??"").trim();if(!raw)return NaN;const normalized=raw.replace(/,/g,"");if(!/^(?:\d+|\d*\.\d+)$/.test(normalized))return NaN;return Number(normalized)}
 function parseSales(input){
 const rows=parseCSV(input.replace(/^\uFEFF/,""));if(rows.length<2)throw Error("ต้องมีหัวตารางและข้อมูลอย่างน้อย 1 รายการ");
 const aliases={product:["product","สินค้า","ชื่อสินค้า"],quantity:["quantity","จำนวน","qty"],price:["unit_price","ราคาต่อหน่วย","price","ราคา"]};
