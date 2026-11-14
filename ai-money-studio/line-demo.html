@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; form-action 'none'; object-src 'none'; base-uri 'none'">
+  <meta name="theme-color" content="#080e1c">
+  <title>WORAMET AI LAB | LINE Concept Demo</title>
+  <link rel="stylesheet" href="./line-demo.css">
+  <script src="./business-insights-core.js" defer></script>
+  <script src="./line-demo.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./business-insights.html"><span class="mark">W<span>·</span></span><span>WORAMET <b>AI LAB</b><small>LINE INTEGRATION CONCEPT</small></span></a>
+    <span class="state">OFFLINE DEMO</span>
+  </header>
+  <main class="page">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">DEMO / NO REAL LINE CONNECTION</p>
+      <h1 id="page-title">ลองคุยกับผู้ช่วยร้านค้า<br><em>ก่อนเชื่อม LINE OA จริง</em></h1>
+      <p>จำลองการสั่งงานผ่านแชตด้วยข้อมูลสมมติ ไม่ส่งข้อความหรือไฟล์ออกจากเครื่อง ไม่มี AI API และไม่ใช้ข้อมูลร้านจริง</p>
+    </section>
+    <section class="layout">
+      <div class="chat-window" aria-label="หน้าต่างแชตจำลอง">
+        <div class="chat-head"><span class="avatar">W</span><span><b>WORAMET Shop Assistant</b><small>ตัวอย่างหน้าตา ไม่ใช่ LINE จริง</small></span><span class="online" aria-hidden="true"></span></div>
+        <div id="messages" class="messages" role="log" aria-live="polite" aria-relevant="additions text">
+          <div class="message bot">สวัสดีครับ 👋 นี่คือห้องแชตทดลอง WORAMET AI LAB<br>ลองกดคำสั่งด้านล่างได้เลย</div>
+        </div>
+        <div class="quick" aria-label="คำสั่งทดลอง">
+          <button type="button" data-command="เมนู">เมนู</button>
+          <button type="button" data-command="สรุปยอดขายตัวอย่าง">📊 ยอดขายตัวอย่าง</button>
+          <button type="button" data-command="ใบเสนอราคา">📄 ใบเสนอราคา</button>
+          <button type="button" data-command="ส่งเอกสาร">📎 ส่งเอกสาร</button>
+          <button type="button" data-command="สร้างรูป">🎨 สร้างรูป</button>
+        </div>
+        <form id="chat-form" class="composer"><label class="sr-only" for="message">พิมพ์คำสั่ง</label><input id="message" maxlength="160" autocomplete="off" placeholder="พิมพ์ เมนู หรือ ทดลอง..."><button type="submit">ส่ง</button></form>
+      </div>
+      <aside class="side">
+        <div class="info-card"><p class="eyebrow">WHAT WORKS TODAY</p><h2>ทดสอบได้จริง</h2><p>เมนูและสรุปยอดขายสมมติใช้เครื่องคำนวณเดียวกับ Business Insights</p><div class="line"></div><h2>ยังไม่เปิดใช้</h2><p>อ่านข้อความจาก LINE จริง, อ่านไฟล์ PDF, AI สนทนา, สร้างรูป และส่งเอกสารกลับ LINE</p></div>
+        <div id="quotation" class="quote" hidden aria-labelledby="quote-title"><div class="quote-top"><div><p class="eyebrow">SAMPLE / NOT A REAL ORDER</p><h2 id="quote-title">ใบเสนอราคาตัวอย่าง</h2></div><button type="button" id="print-quote">พิมพ์ / บันทึก PDF</button></div><p>WORAMET AI LAB — ตัวอย่างสำหรับทดสอบระบบ</p><p>ผู้รับ: ร้านค้าตัวอย่าง · เลขที่: DEMO-001</p><table><thead><tr><th>รายการ</th><th>จำนวน</th><th>ราคา</th><th>รวม</th></tr></thead><tbody><tr><td>สมุด A4</td><td>10</td><td>35.00</td><td>350.00</td></tr><tr><td>ปากกา</td><td>20</td><td>10.00</td><td>200.00</td></tr></tbody><tfoot><tr><th colspan="3">ยอดรวม (บาท)</th><th>550.00</th></tr></tfoot></table><p class="fine">ข้อมูลสมมติ · ยังไม่รวมภาษี · ไม่ใช่ใบเสนอราคาที่ออกให้ลูกค้าจริง</p></div>
+      </aside>
+    </section>
+    <p class="disclaimer">ตัวอย่างนี้เป็นเว็บไซต์จำลองการสนทนา ไม่ใช่ LINE Official Account และไม่เรียก Generative AI</p>
+  </main>
+</body>
+</html>
