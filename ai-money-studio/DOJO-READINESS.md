@@ -38,6 +38,13 @@ WORAMET AI LAB — Business Insights helps small stores turn Thai or English sal
 - หลักฐานที่มี: Automated Tests และ Chromium 5 ขนาดหน้าจอ ไม่มีผลทดลองกับร้านค้าจริง ไม่มีตัวเลขเพิ่มรายได้หรือประหยัดเวลาที่วัดแล้ว
 - AI disclosure: ใช้ AI ช่วยพัฒนาโค้ด แต่ฟังก์ชันที่ผู้ใช้กดใน MVP ยังไม่ใช่ Generative AI ต้องให้ผู้จัดยืนยันว่าขอบเขตนี้เหมาะกับ Track หรือจำเป็นต้องเพิ่ม model feature
 
+## LINE OA แยก — โค้ดทดลอง ไม่ได้เชื่อมจริง
+
+- เพิ่ม `server/woramet/line-webhook.mjs` สำหรับรับ LINE webhook แบบตรวจลายเซ็น และ `line-preview.mjs` สำหรับทดสอบเฉพาะเครื่อง พร้อม `tests/line-webhook.test.mjs` และ [คู่มือ](../server/woramet/LINE-SETUP.md)
+- รับเฉพาะแชตส่วนตัว คำสั่ง `เมนู` และ `สรุปยอดขายตัวอย่าง` ใช้ข้อมูลสมมติ/สูตรคำนวณ ไม่ใช่ AI ที่เรียก API
+- **ยังไม่มี LINE OA ใหม่ที่เชื่อมจริง, ไม่มี URL webhook สาธารณะ, ไม่ได้ส่งข้อความจริง, ไม่มีระบบอ่าน PDF หรือสร้างภาพ**; ต้องรอเจ้าของสร้างบัญชีและอนุมัติการเชื่อมต่อแยก
+- ห้ามนำ Channel Secret หรือ Access Token ไป Commit หรือส่งในแชต และห้ามเชื่อมกับ OA ร้าน พ.สมนึก โดยไม่อนุมัติ
+
 ## รายการที่เตรียมแล้ว
 
 - [x] โค้ดอยู่ใน Repository และสาขาทดลองเดิม
