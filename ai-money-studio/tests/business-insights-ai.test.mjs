@@ -98,6 +98,7 @@ test('local preview serves only approved static paths and an inactive AI endpoin
   const base = 'http://127.0.0.1:' + server.address().port;
   try {
     assert.equal((await fetch(base + '/ai-money-studio/business-insights.html')).status, 200);
+    for (const path of ['/ai-money-studio/line-demo.html', '/ai-money-studio/line-demo.css', '/ai-money-studio/line-demo.js']) assert.equal((await fetch(base + path)).status, 200);
     assert.equal((await fetch(base + '/assets/fonts/control-thai.woff2')).status, 200);
     for (const path of ['/.env', '/.git/config', '/server/woramet/ai-boundary.mjs', '/supabase/config.toml', '/ai-money-studio/tests/business-insights.test.cjs']) assert.equal((await fetch(base + path)).status, 404);
     const hostStatus = await new Promise((resolve, reject) => {
