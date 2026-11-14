@@ -4,7 +4,7 @@
 
 **สถานะจริง:** ใช้สูตรและกฎพร้อมเทมเพลต ยังไม่ได้เชื่อมและทดสอบ Generative AI ทางเชื่อมฝั่งเซิร์ฟเวอร์ปิดไว้ ไม่ใช่ระบบบัญชีหรือระบบขายหน้าร้าน
 
-[English README](README.en.md) · [ผลตรวจและทดสอบ](AUDIT-QA.md) · [เตรียม Dojo](DOJO-READINESS.md) · [สคริปต์วิดีโอ](DEMO-SCRIPT.md) · [โครงสร้าง AI](../server/woramet/README.md) · [เตรียม LINE OA แยก](../server/woramet/LINE-SETUP.md)
+[English README](README.en.md) · [ผลตรวจและทดสอบ](AUDIT-QA.md) · [เตรียม Dojo](DOJO-READINESS.md) · [สคริปต์วิดีโอ](DEMO-SCRIPT.md) · [โครงสร้าง AI](../server/woramet/README.md) · [เตรียม LINE OA แยก](../server/woramet/LINE-SETUP.md) · [หน้าแชตจำลอง (ไม่เชื่อม LINE)](line-demo.html)
 
 ## เริ่มทดลองบน Windows
 
