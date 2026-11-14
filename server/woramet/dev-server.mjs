@@ -8,6 +8,9 @@ const root = fileURLToPath(new URL('../../', import.meta.url));
 const staticFiles = new Map([
   ['/woramet-mark.svg', ['ai-money-studio/woramet-mark.svg', 'image/svg+xml']],
   ['/business-insights.html', ['ai-money-studio/business-insights.html', 'text/html;charset=utf-8']],
+  ['/line-demo.html', ['ai-money-studio/line-demo.html', 'text/html;charset=utf-8']],
+  ['/line-demo.css', ['ai-money-studio/line-demo.css', 'text/css;charset=utf-8']],
+  ['/line-demo.js', ['ai-money-studio/line-demo.js', 'text/javascript;charset=utf-8']],
   ['/business-insights.css', ['ai-money-studio/business-insights.css', 'text/css;charset=utf-8']],
   ['/business-insights-core.js', ['ai-money-studio/business-insights-core.js', 'text/javascript;charset=utf-8']],
   ['/business-insights.js', ['ai-money-studio/business-insights.js', 'text/javascript;charset=utf-8']],
