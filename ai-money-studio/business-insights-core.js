@@ -124,7 +124,13 @@
     // spreadsheets); year-first is always Y-M-D. A trailing local time written
     // without a timezone is ignored; "T"/offset/Z forms stay rejected because
     // converting zones could silently move a sale to another day.
-    const value = digits(raw).normalize('NFC').trim().replace(/^(\d{4}-\d{2}-\d{2}) \d{1,2}:\d{2}(?::\d{2})?$/, '$1');
+    let value = digits(raw).normalize('NFC').trim();
+    const timed = /^(\\d{4}-\\d{2}-\\d{2}) (\\d{1,2}):(\\d{2})(?::(\\d{2}))?$/.exec(value);
+    if (timed) {
+      const hour = Number(timed[2]), minute = Number(timed[3]), second = Number(timed[4] ?? '0');
+      if (hour > 23 || minute > 59 || second > 59) return null;
+      value = timed[1];
+    }
     let year, month, day, match;
     if ((match = /^(\d{4})([-/.])(\d{1,2})\2(\d{1,2})$/.exec(value)) && (match[2] !== '-' || (match[3].length === 2 && match[4].length === 2))) [, year, , month, day] = match;
     else if ((match = /^(\d{1,2})([/.-])(\d{1,2})\2(\d{4})$/.exec(value))) [, day, , month, year] = match;
