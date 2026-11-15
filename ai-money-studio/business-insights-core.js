@@ -125,7 +125,7 @@
     // without a timezone is ignored; "T"/offset/Z forms stay rejected because
     // converting zones could silently move a sale to another day.
     let value = digits(raw).normalize('NFC').trim();
-    const timed = /^(\\d{4}-\\d{2}-\\d{2}) (\\d{1,2}):(\\d{2})(?::(\\d{2}))?$/.exec(value);
+    const timed = /^(\d{4}-\d{2}-\d{2}) (\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(value);
     if (timed) {
       const hour = Number(timed[2]), minute = Number(timed[3]), second = Number(timed[4] ?? '0');
       if (hour > 23 || minute > 59 || second > 59) return null;
