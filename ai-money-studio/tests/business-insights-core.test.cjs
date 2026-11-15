@@ -135,3 +135,14 @@ test('satang stays exact in display at the maximum safe integer total', () => {
   assert.equal(core.money(r.revenueCents), '90,071,992,547,409.91');
   assert.match(core.reportText(r), /90,071,992,547,409\.91/);
 });
+
+test('local timestamps reject impossible hours, minutes and seconds', () => {
+  for (const value of ['2026-11-01 24:00', '2026-11-01 99:99', '2026-11-01 12:60',
+    '2026-11-01 23:59:60', '2026-11-01 00:00:99']) {
+    assert.equal(core.parseDate(value), null, value);
+    assert.throws(() => core.analyze('date,product,qty,price\n' + value + ',Pen,1,10'), /วันที่/);
+  }
+  for (const value of ['2026-11-01 00:00', '2026-11-01 9:05', '2026-11-01 23:59:59']) {
+    assert.equal(core.parseDate(value), '2026-11-01', value);
+  }
+});
