@@ -1,0 +1,28 @@
+name: WORAMET Spectral iOS Build
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/woramet-spectral-ios-v2
+    paths:
+      - 'ios/WORAMET-Spectral-Scanner/**'
+      - '.github/workflows/woramet-spectral-ios.yml'
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate Xcode project
+        working-directory: ios/WORAMET-Spectral-Scanner
+        run: xcodegen generate
+      - name: Compile for iOS Simulator (unsigned)
+        working-directory: ios/WORAMET-Spectral-Scanner
+        run: |
+          xcodebuild -project WorametSpectralScanner.xcodeproj \
+            -scheme WorametSpectralScanner \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            build
