@@ -1,0 +1,24 @@
+name: WorametSpectralScanner
+options:
+  bundleIdPrefix: com.worametlab
+settings:
+  base:
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+targets:
+  WorametSpectralScanner:
+    type: application
+    platform: iOS
+    sources:
+      - path: .
+        excludes:
+          - project.yml
+          - README.md
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.worametlab.spectralscanner
+        SWIFT_VERSION: "5.0"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "ใช้พิกัดเพื่อคำนวณตำแหน่งท้องฟ้า"
+        INFOPLIST_KEY_NSCameraUsageDescription: "ใช้กล้องแสดงภาพวัตถุ"
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: "ใช้ไมโครโฟนวัดระดับสัญญาณเสียง"
+        TARGETED_DEVICE_FAMILY: "1"
