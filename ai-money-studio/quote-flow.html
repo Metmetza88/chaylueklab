@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080b12">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>QuoteFlow MVP | WORAMET AI LAB</title>
+  <link rel="stylesheet" href="./quote-flow.css">
+  <script src="./quote-flow-core.js" defer></script>
+  <script src="./quote-flow.js" defer></script>
+</head>
+<body>
+<header class="topbar wrap">
+  <a class="brand" href="./index.html">WORAMET <strong>AI LAB</strong></a>
+  <nav aria-label="เมนู"><a href="./smartguard.html">SmartGuard Suite</a> <a href="./business-insights.html">Business Insights</a></nav>
+</header>
+<main class="wrap">
+  <section class="hero">
+    <p class="eyebrow">SMARTGUARD SUITE · MODULE 01 / QUOTEFLOW</p>
+    <h1>ทำใบเสนอราคา <span>จากรายการสินค้า</span></h1>
+    <p>วางข้อมูล CSV/TSV หรือนำเข้าจาก Files → ตรวจรายการทุกแถว → แก้ไข → สั่งพิมพ์หรือบันทึกเป็น PDF</p>
+    <p class="notice"><strong>สถานะ MVP:</strong> เครื่องคำนวณแบบกฎที่ตรวจสอบได้ ทำงานในเบราว์เซอร์ ไม่มี AI OCR และยังอ่าน PDF/ภาพอัตโนมัติไม่ได้ ข้อมูลไม่ถูกส่งไปยังเซิร์ฟเวอร์</p>
+  </section>
+  <section class="panel" aria-labelledby="import-title">
+    <h2 id="import-title">1. นำเข้ารายการ</h2>
+    <p class="muted">หัวคอลัมน์: <code>สินค้า,จำนวน,ราคาต่อหน่วย</code> · รองรับ CSV, TSV และข้อมูลคัดลอกจากตาราง · จำกัด 500 รายการ / 512 KB</p>
+    <label for="file">เลือกไฟล์จาก iPhone (CSV / TSV / TXT)</label>
+    <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain">
+    <label for="source">หรือวางรายการจากตาราง</label>
+    <textarea id="source" rows="6" spellcheck="false" placeholder="สินค้า,จำนวน,ราคาต่อหน่วย&#10;สมุดตัวอย่าง,2,12.50&#10;ปากกาตัวอย่าง,3,8.00"></textarea>
+    <div class="actions">
+      <button id="import" type="button" class="primary">ตรวจและนำเข้ารายการ</button>
+      <button id="sample" type="button" class="secondary">ทดลอง 30 รายการสมมติ</button>
+    </div>
+    <p id="import-status" class="status" role="status" aria-live="polite">ยังไม่ได้นำเข้าข้อมูล</p>
+  </section>
+  <section class="panel" aria-labelledby="review-title">
+    <h2 id="review-title">2. ตรวจและแก้รายการ</h2>
+    <p class="muted">ทุกแถวต้องมีชื่อสินค้า จำนวนเต็มบวก และราคาต่อหน่วยเป็นบาท (ทศนิยมไม่เกิน 2 ตำแหน่ง)</p>
+    <div class="scroll"><table aria-label="รายการในใบเสนอราคา">
+      <thead><tr><th>รายการสินค้า</th><th>จำนวน</th><th>ราคา/หน่วย ฿</th><th>ลบ</th></tr></thead>
+      <tbody id="items"></tbody>
+    </table></div>
+    <button type="button" id="add" class="secondary">+ เพิ่มรายการเอง</button>
+    <p id="review-status" class="status" role="status" aria-live="polite">ยังไม่มีรายการ</p>
+    <p class="total" id="total">รวม 0 รายการ · ฿0.00</p>
+  </section>
+  <section class="panel" aria-labelledby="quote-title">
+    <h2 id="quote-title">3. ข้อมูลใบเสนอราคา</h2>
+    <div class="fields">
+      <label>ผู้เสนอราคา / ร้านค้า <input id="seller" maxlength="140" placeholder="ระบุชื่อร้าน" autocomplete="organization"></label>
+      <label>ลูกค้า / หน่วยงาน <input id="customer" maxlength="140" placeholder="ระบุชื่อผู้รับใบเสนอราคา"></label>
+      <label>เลขที่ใบเสนอราคา <input id="quote-number" maxlength="60" value="Q-0001"></label>
+      <label>วันที่ <input id="quote-date" type="date"></label>
+    </div>
+    <div class="actions"><button type="button" id="print" class="primary" disabled>พิมพ์ / บันทึก PDF</button></div>
+    <p class="muted">บน iPhone ใช้เมนูพิมพ์ของ Safari เพื่อสร้าง PDF ใน Files เอกสารนี้คือใบเสนอราคา ไม่ใช่ใบกำกับภาษี</p>
+  </section>
+  <section id="paper" class="paper" aria-label="ตัวอย่างใบเสนอราคา">
+    <div class="paper-head"><div><p>WORAMET AI LAB · QUOTEFLOW</p><h2>ใบเสนอราคา</h2></div><div class="paper-meta"><div>เลขที่: <span id="paper-number">–</span></div><div>วันที่: <span id="paper-date">–</span></div></div></div>
+    <div class="parties"><p><strong>จาก:</strong> <span id="paper-seller">–</span></p><p><strong>เรียน:</strong> <span id="paper-customer">–</span></p></div>
+    <table class="document-table"><thead><tr><th>#</th><th>รายการสินค้า</th><th>จำนวน</th><th>ราคา/หน่วย (฿)</th><th>รวม (฿)</th></tr></thead><tbody id="paper-items"></tbody></table>
+    <p class="paper-total">ยอดรวมทั้งสิ้น <span id="paper-total">฿0.00</span></p>
+    <p class="paper-foot">เอกสารใบเสนอราคาเพื่อการตรวจสอบก่อนใช้งาน · ยังไม่รวมข้อตกลงอื่น/ภาษี (ถ้ามี) · ตรวจรายละเอียดกับผู้เสนอราคาก่อนยืนยัน</p>
+  </section>
+</main>
+<footer class="wrap">WORAMET AI LAB · พัฒนาเพื่อทดสอบบน Branch เดิม · ยังไม่ Deploy หรือส่ง Dojo</footer>
+</body>
+</html>
