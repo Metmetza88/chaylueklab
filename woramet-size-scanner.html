@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071019"><title>WORAMET 3D SIZE SCANNER</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#133342,#071019 60%);color:#eef7f8;min-height:100dvh}.wrap{max-width:700px;margin:auto;padding:18px 15px 50px}.brand{font-size:12px;letter-spacing:3px;color:#74efdb}.muted{color:#a4bac1;font-size:13px;line-height:1.6}h1{font-size:26px;margin:7px 0}.tag{display:inline-block;border:1px solid #267c7d;border-radius:30px;color:#8ff2dc;padding:5px 12px;font-size:12px}.panel{background:#0d1d28;border:1px solid #24414a;border-radius:18px;padding:15px;margin-top:16px}button,.filebtn{border:1px solid #3b676a;background:#142b35;color:#f5ffff;padding:12px 15px;border-radius:12px;font:inherit;cursor:pointer;display:inline-block;margin:4px 3px 4px 0}button.primary{background:#00cba8;border-color:#00cba8;color:#04221f;font-weight:750}button:disabled{opacity:.4;cursor:not-allowed}input[type=file]{display:none}.stage{width:100%;position:relative;background:#040b11;border-radius:12px;overflow:hidden;touch-action:manipulation;margin-top:12px;min-height:180px}#video{width:100%;display:none}#photo{display:none;width:100%;height:auto;touch-action:manipulation}#marker{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}#three{width:100%;height:260px;display:block;background:radial-gradient(circle,#184050,#071019)}.step{font-size:14px;padding:9px 0;color:#d9f7f2}.result{font-size:30px;color:#6af0d3;font-weight:800}strong{color:#fff}.warning{background:#332714;color:#ffe3a4;border-radius:11px;padding:12px;font-size:13px;line-height:1.6}.hidden{display:none}ol{padding-left:24px;line-height:1.8}.footer{font-size:12px;color:#91abb1;margin-top:25px}
+</style></head>
+<body><main class="wrap">
+<div class="brand">WORAMET AI LAB</div><h1>3D SIZE SCANNER</h1><span class="tag">FOOT MEASURE • CAMERA + A4</span>
+<p class="muted">ทดลองวัดความยาวเท้าจากภาพถ่ายโดยใช้กระดาษ A4 เป็นมาตราส่วน ตัวเลขเป็นค่าประมาณ ไม่ใช่ LiDAR หรือการสแกน 3D จริง</p>
+<section class="panel">
+<strong>1. เตรียมภาพ</strong>
+<ol><li>วางกระดาษ A4 บนพื้นราบ (ด้านยาว 29.7 ซม.)</li><li>วางเท้าบนกระดาษ ให้เห็นปลายเท้า ส้นเท้า และแนวขอบด้านยาวของ A4</li><li>ถือ iPhone ให้กล้องขนานกับกระดาษและถ่ายตรงจากด้านบน</li></ol>
+<button class="primary" id="start">เปิดกล้องหลัง</button><button id="snap" disabled>ถ่ายภาพ</button>
+<label class="filebtn" for="upload">เลือกรูป / ถ่ายด้วย iPhone</label><input id="upload" type="file" accept="image/*" capture="environment">
+<div class="stage"><video id="video" autoplay playsinline muted></video><canvas id="photo"></canvas><canvas id="marker"></canvas></div>
+<p id="message" class="muted" role="status" aria-live="polite">กรุณาเปิดกล้องหรือเลือกรูปเพื่อเริ่มต้น</p>
+</section>
+<section class="panel">
+<strong>2. แตะจุดอ้างอิงบนภาพตามลำดับ</strong>
+<p id="instruction" class="step">เริ่มจากเลือกภาพก่อน</p>
+<button id="undo" disabled>ย้อนจุดล่าสุด</button><button id="reset" disabled>เริ่มแตะใหม่</button>
+<p class="muted">แตะ 1–2: ปลายทั้งสองด้านของขอบ A4 ด้านยาว 29.7 ซม. แล้วแตะ 3–4: จุดส้นเท้าและปลายนิ้วเท้าที่ยาวที่สุด โดยพยายามให้เส้น A4 และแนวเท้าอยู่ระนาบเดียวกัน</p>
+<div id="measure" class="hidden"><div class="result" id="cm">—</div><p id="size" class="step"></p><p class="warning">นี่คือการวัดจากภาพแบบอัตราส่วน ไม่ชดเชยความเอียงของภาพหรือความสูงของเท้าเหนือกระดาษ ควรตรวจด้วยไม้บรรทัดจริง และใช้ตารางไซซ์ของแต่ละแบรนด์ก่อนซื้อ</p></div>
+</section>
+<section class="panel">
+<strong>3. ภาพประกอบ 3D หมุนได้</strong><canvas id="three" aria-label="ภาพตัวอย่างโมเดลเท้าแบบ 3 มิติ"></canvas>
+<p class="muted">ลากนิ้วซ้าย–ขวาบนภาพเพื่อหมุน โมเดลนี้สร้างจากรูปทรงตัวอย่าง ไม่ใช่ mesh ที่สแกนจากเท้าจริง</p>
+</section>
+<div class="footer">Privacy: ภาพประมวลผลในเบราว์เซอร์ ไม่มีการอัปโหลดภาพไปยังเซิร์ฟเวอร์โดยโค้ดหน้านี้ • Free Web Prototype</div>
+</main>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const video=$('video'),photo=$('photo'),mark=$('marker'),ctx=photo.getContext('2d'),mctx=mark.getContext('2d'),pts=[];
+let stream=null,hasPhoto=false,rotation=.45;
+const names=['แตะจุดเริ่มต้นขอบ A4 ด้านยาว','แตะจุดสิ้นสุดขอบ A4 ด้านยาว (29.7 ซม.)','แตะตำแหน่งส้นเท้า','แตะปลายนิ้วเท้าที่ยาวที่สุด'];
+function status(t){$('message').textContent=t}
+function stop(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}video.srcObject=null}
+function update(){mark.width=photo.width;mark.height=photo.height;mctx.lineWidth=Math.max(3,photo.width/180);mctx.font=Math.max(20,photo.width/30)+'px system-ui';pts.forEach((p,i)=>{mctx.fillStyle=i<2?'#45eec9':'#ffcd7d';mctx.beginPath();mctx.arc(p.x,p.y,Math.max(7,photo.width/100),0,Math.PI*2);mctx.fill();mctx.fillText(String(i+1),p.x+12,p.y-12)});[[0,1],[2,3]].forEach(pair=>{if(pts[pair[1]]){mctx.strokeStyle=pair[0]===0?'#45eec9':'#ffcd7d';mctx.beginPath();mctx.moveTo(pts[pair[0]].x,pts[pair[0]].y);mctx.lineTo(pts[pair[1]].x,pts[pair[1]].y);mctx.stroke()}});$('instruction').textContent=pts.length<4?('จุด '+(pts.length+1)+'/4: '+names[pts.length]):'วัดเสร็จแล้ว — แตะเริ่มใหม่หากต้องการแก้';$('undo').disabled=pts.length===0;$('reset').disabled=pts.length===0;$('measure').classList.toggle('hidden',pts.length!==4);
+if(pts.length===4){const d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),ref=d(pts[0],pts[1]),foot=d(pts[2],pts[3]);if(ref<10||foot<10){$('cm').textContent='ระยะจุดไม่ถูกต้อง';$('size').textContent='กรุณาแตะใหม่';return}const cm=29.7*foot/ref; if(cm<10||cm>40){$('cm').textContent='ตรวจจุดอีกครั้ง';$('size').textContent='ผลอยู่นอกช่วงปกติของตัวอย่างนี้';return}$('cm').textContent=cm.toFixed(1)+' ซม.';$('size').textContent='ความยาวเท้าประมาณ '+(cm*10).toFixed(0)+' มม. • เพิ่มระยะเผื่อปลายรองเท้าตามประเภทและตารางไซซ์แบรนด์';}}
+function drawImage(img){const max=1400,scale=Math.min(1,max/Math.max(img.width,img.height));photo.width=Math.round(img.width*scale);photo.height=Math.round(img.height*scale);ctx.drawImage(img,0,0,photo.width,photo.height);photo.style.display='block';video.style.display='none';hasPhoto=true;pts.length=0;update();status('ภาพพร้อมแล้ว แตะ 4 จุดบนภาพเพื่อวัด')}
+$('start').onclick=async()=>{stop();if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){status('เปิดกล้องไม่ได้: กรุณาเข้าเว็บด้วย HTTPS หรือใช้ปุ่มเลือกรูป');return}try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});video.srcObject=stream;video.style.display='block';photo.style.display='none';hasPhoto=false;$('snap').disabled=false;status('กล้องเปิดแล้ว จัดองค์ประกอบและกดถ่ายภาพ')}catch(e){status('เปิดกล้องไม่สำเร็จ ('+e.name+') ลองอนุญาตกล้องใน Safari หรือเลือกภาพแทน')}};
+$('snap').onclick=()=>{if(!video.videoWidth)return;drawImage(video);stop();$('snap').disabled=true};
+$('upload').onchange=e=>{const f=e.target.files?.[0];if(!f)return;const url=URL.createObjectURL(f),img=new Image();img.onload=()=>{drawImage(img);stop();$('snap').disabled=true;URL.revokeObjectURL(url)};img.onerror=()=>{status('ไม่สามารถอ่านรูปนี้ได้');URL.revokeObjectURL(url)};img.src=url};
+photo.addEventListener('click',e=>{if(!hasPhoto||pts.length>=4)return;const r=photo.getBoundingClientRect();pts.push({x:(e.clientX-r.left)*photo.width/r.width,y:(e.clientY-r.top)*photo.height/r.height});update()});
+$('undo').onclick=()=>{pts.pop();update()};$('reset').onclick=()=>{pts.length=0;update()};
+window.addEventListener('pagehide',stop);
+const c=$('three'),cx=c.getContext('2d');let down=false,last=0;
+function render(){const w=c.clientWidth,h=c.clientHeight,dpr=Math.min(devicePixelRatio||1,2);c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,w,h);const points=[];for(let j=0;j<=48;j++){const a=j/48*Math.PI*2;const y=Math.cos(a)*92;const width=y<0?32:42+(y/92)*9;points.push([Math.sin(a)*width,y])}
+function project(p,z){const x=p[0]*Math.cos(rotation)+p[1]*Math.sin(rotation),depth=-p[0]*Math.sin(rotation)+p[1]*Math.cos(rotation);return [w/2+x*1.42,h/2+depth*.48-z*1.55]}
+function path(z){cx.beginPath();points.forEach((p,i)=>{const q=project(p,z);if(!i)cx.moveTo(...q);else cx.lineTo(...q)});cx.closePath()}
+for(let j=13;j>=0;j--){path(j);cx.fillStyle=j%2?'#0b6c75':'#157d86';cx.fill();cx.strokeStyle='#235c65';cx.stroke()}
+path(14);cx.fillStyle='#36d9c1';cx.fill();cx.strokeStyle='#b2ffeb';cx.lineWidth=2;cx.stroke();const heel=project([0,-72],15),toe=project([0,75],15);cx.beginPath();cx.moveTo(...heel);cx.lineTo(...toe);cx.strokeStyle='#e7ffac';cx.setLineDash([5,5]);cx.stroke();cx.setLineDash([]);cx.fillStyle='#d5f7f2';cx.font='12px system-ui';cx.fillText('ILLUSTRATIVE 3D MODEL',12,22)}
+c.addEventListener('pointerdown',e=>{down=true;last=e.clientX;c.setPointerCapture(e.pointerId)});c.addEventListener('pointermove',e=>{if(down){rotation+=(e.clientX-last)*.012;last=e.clientX;render()}});c.addEventListener('pointerup',()=>down=false);window.addEventListener('resize',render);render();
+})();
+</script></body></html>
