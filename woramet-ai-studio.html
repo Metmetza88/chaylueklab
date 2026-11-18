@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WORAMET AI STUDIO — Prototype</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 75% 0%,#342041,#0b0d16 48%);color:#f8f8fd;min-height:100dvh}
+main{max-width:760px;margin:auto;padding:22px 16px 70px}.head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:30px}.brand{font-size:13px;letter-spacing:.21em;color:#c79ffa}.tag{border:1px solid #75568b;border-radius:50px;padding:7px 12px;color:#ddc5f7;font-size:12px}
+h1{font-size:clamp(29px,6vw,43px);margin:0 0 7px}p{color:#b6b3c8;line-height:1.6}.panel{background:#171722;border:1px solid #343143;border-radius:20px;padding:20px;margin:18px 0;box-shadow:0 15px 40px #0002}label{display:block;font-weight:650;margin:15px 0 8px}.muted{font-size:13px;color:#aba8bc}select,textarea,input[type=file]{width:100%;padding:14px;background:#10111b;color:#fff;border:1px solid #4a415c;border-radius:13px;font:inherit}textarea{min-height:105px;resize:vertical}.presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.preset{border:1px solid #494059;background:#252132;color:#fff;border-radius:13px;text-align:left;padding:16px 12px;cursor:pointer;min-height:80px}.preset[aria-pressed=true]{outline:2px solid #cc8dfb;background:#3c254c}.preview{border:1px dashed #655776;border-radius:14px;min-height:160px;display:grid;place-items:center;overflow:hidden;color:#9f97b3;background:#101019}.preview img{display:block;max-height:280px;max-width:100%;object-fit:contain}.check{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.5}.check input{margin-top:4px;accent-color:#aa6ce6}button.primary{width:100%;border:0;background:linear-gradient(95deg,#c96cec,#844dfa);color:#fff;font-size:16px;font-weight:750;border-radius:14px;padding:16px;cursor:pointer}button.primary:disabled{background:#51485c;color:#aaa;cursor:not-allowed}.status{border-radius:12px;padding:14px;background:#272334;color:#e4caff;margin-top:15px;line-height:1.5}.foot{font-size:12px;text-align:center;color:#9891a8;margin-top:20px}a{color:#d8aeff}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}@media(min-width:620px){.presets{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style></head><body><main>
+<div class="head"><strong class="brand">WORAMET AI LAB</strong><span class="tag">STUDIO · PROTOTYPE</span></div>
+<h1>AI CREATIVE STUDIO</h1><p>ต้นแบบสำหรับสร้างภาพและวิดีโอจากเนื้อหาที่คุณมีสิทธิ์ใช้งาน — ออกแบบให้ทดลองบน iPhone ได้</p>
+<section class="panel"><div class="row"><strong>1 · รูปแบบสร้างสรรค์</strong><span class="muted">รองรับเดโมในเครื่อง</span></div><label for="engine">โมเดลเป้าหมาย</label>
+<select id="engine"><option value="wan">Wan (ยังไม่เชื่อม API)</option><option value="vidu">Vidu (ยังไม่เชื่อม API)</option></select>
+<label>เทมเพลต</label><div class="presets" id="presets">
+<button type="button" class="preset" data-preset="motion" aria-pressed="true">🎞️<br>Photo Motion</button>
+<button type="button" class="preset" data-preset="fashion" aria-pressed="false">👗<br>Fashion Change</button>
+<button type="button" class="preset" data-preset="cinema" aria-pressed="false">🎬<br>Cinematic</button>
+<button type="button" class="preset" data-preset="portrait" aria-pressed="false">✨<br>Portrait</button>
+</div></section>
+<section class="panel"><strong>2 · อัปโหลดและบรรยาย</strong><label for="photo">ภาพอ้างอิง (ถ้ามี)</label>
+<input id="photo" type="file" accept="image/png,image/jpeg,image/webp"><p class="muted">รูปอยู่บนอุปกรณ์ของคุณในต้นแบบนี้ ไม่มีการอัปโหลดขึ้นเซิร์ฟเวอร์</p><div class="preview" id="preview">ยังไม่มีรูปภาพ</div>
+<label for="prompt">คำอธิบายฉาก</label><textarea id="prompt" maxlength="1200" placeholder="เช่น คนในภาพเดินอยู่ในเมืองยามค่ำคืน แสงภาพยนตร์ กล้องเคลื่อนช้าๆ"></textarea>
+<p class="muted"><span id="count">0</span>/1200 ตัวอักษร</p></section>
+<section class="panel"><strong>3 · ข้อกำหนดการใช้งาน</strong>
+<label class="check"><input id="adult" type="checkbox"><span>ฉันเป็นผู้มีอายุ 18 ปีขึ้นไป</span></label>
+<label class="check"><input id="consent" type="checkbox"><span>ฉันมีสิทธิ์ใช้ภาพนี้และได้รับความยินยอมจากบุคคลที่อยู่ในภาพ (ถ้ามี)</span></label>
+<p class="muted">ห้ามใช้สร้างภาพเปลือยหรือภาพทางเพศของบุคคลจริงโดยไม่ได้รับความยินยอม ห้ามเนื้อหาทางเพศโจ่งแจ้ง และห้ามเนื้อหาที่เกี่ยวข้องกับผู้เยาว์</p>
+<button id="generate" class="primary" disabled>ตรวจสอบคำสั่ง (โหมดตัวอย่าง)</button><div id="status" role="status" aria-live="polite" class="status" hidden></div></section>
+<p class="foot">Prototype only · No generation · No payment · No server upload<br>ยังไม่เชื่อมโมเดล AI, ระบบเครดิต หรือฐานข้อมูล</p>
+</main>
+<script>
+(()=>{'use strict';
+const byId=id=>document.getElementById(id),photo=byId('photo'),preview=byId('preview'),prompt=byId('prompt'),status=byId('status'),button=byId('generate');
+let preset='motion',objectURL=null;
+function update(){button.disabled=!(byId('adult').checked&&byId('consent').checked&&prompt.value.trim().length>=3);byId('count').textContent=prompt.value.length}
+document.querySelectorAll('[data-preset]').forEach(el=>el.addEventListener('click',()=>{preset=el.dataset.preset;document.querySelectorAll('[data-preset]').forEach(b=>b.setAttribute('aria-pressed',String(b===el)));status.hidden=true}));
+photo.addEventListener('change',()=>{if(objectURL){URL.revokeObjectURL(objectURL);objectURL=null}preview.replaceChildren();const f=photo.files&&photo.files[0];if(!f){preview.textContent='ยังไม่มีรูปภาพ';return}if(!['image/png','image/jpeg','image/webp'].includes(f.type)||f.size>10*1024*1024){photo.value='';preview.textContent='รองรับ JPG, PNG, WEBP ไม่เกิน 10 MB';return}objectURL=URL.createObjectURL(f);const img=document.createElement('img');img.src=objectURL;img.alt='ภาพตัวอย่างที่เลือก';preview.append(img);status.hidden=true});
+[prompt,byId('adult'),byId('consent')].forEach(el=>el.addEventListener('input',update));
+button.addEventListener('click',()=>{if(button.disabled)return;status.hidden=false;status.textContent='พร้อมสำหรับการพัฒนา API: '+byId('engine').selectedOptions[0].textContent+' · เทมเพลต '+preset+' · คำสั่ง '+prompt.value.trim().length+' ตัวอักษร ระบบนี้ยังไม่สร้างภาพ/วิดีโอจริงหรือหักเครดิต';});
+update();
+})();
+</script></body></html>
