@@ -1,70 +1,20 @@
 <!doctype html>
-<html lang="th">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#080b12">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>QuoteFlow MVP | WORAMET AI LAB</title>
-  <link rel="stylesheet" href="./quote-flow.css">
-  <script src="./quote-flow-core.js" defer></script>
-  <script src="./quote-flow.js" defer></script>
-</head>
-<body>
-<header class="topbar wrap">
-  <a class="brand" href="./index.html">WORAMET <strong>AI LAB</strong></a>
-  <nav aria-label="เมนู"><a href="./smartguard.html">SmartGuard Suite</a> <a href="./business-insights.html">Business Insights</a></nav>
-</header>
-<main class="wrap">
-  <section class="hero">
-    <p class="eyebrow">SMARTGUARD SUITE · MODULE 01 / QUOTEFLOW</p>
-    <h1>ทำใบเสนอราคา <span>จากรายการสินค้า</span></h1>
-    <p>วางข้อมูล CSV/TSV หรือนำเข้าจาก Files → ตรวจรายการทุกแถว → แก้ไข → สั่งพิมพ์หรือบันทึกเป็น PDF</p>
-    <p class="notice"><strong>สถานะ MVP:</strong> เครื่องคำนวณแบบกฎที่ตรวจสอบได้ ทำงานในเบราว์เซอร์ ไม่มี AI OCR และยังอ่าน PDF/ภาพอัตโนมัติไม่ได้ ข้อมูลไม่ถูกส่งไปยังเซิร์ฟเวอร์</p>
-  </section>
-  <section class="panel" aria-labelledby="import-title">
-    <h2 id="import-title">1. นำเข้ารายการ</h2>
-    <p class="muted">หัวคอลัมน์: <code>สินค้า,จำนวน,ราคาต่อหน่วย</code> · รองรับ CSV, TSV และข้อมูลคัดลอกจากตาราง · จำกัด 500 รายการ / 512 KB</p>
-    <label for="file">เลือกไฟล์จาก iPhone (CSV / TSV / TXT)</label>
-    <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain">
-    <label for="source">หรือวางรายการจากตาราง</label>
-    <textarea id="source" rows="6" spellcheck="false" placeholder="สินค้า,จำนวน,ราคาต่อหน่วย&#10;สมุดตัวอย่าง,2,12.50&#10;ปากกาตัวอย่าง,3,8.00"></textarea>
-    <div class="actions">
-      <button id="import" type="button" class="primary">ตรวจและนำเข้ารายการ</button>
-      <button id="sample" type="button" class="secondary">ทดลอง 30 รายการสมมติ</button>
-    </div>
-    <p id="import-status" class="status" role="status" aria-live="polite">ยังไม่ได้นำเข้าข้อมูล</p>
-  </section>
-  <section class="panel" aria-labelledby="review-title">
-    <h2 id="review-title">2. ตรวจและแก้รายการ</h2>
-    <p class="muted">ทุกแถวต้องมีชื่อสินค้า จำนวนเต็มบวก และราคาต่อหน่วยเป็นบาท (ทศนิยมไม่เกิน 2 ตำแหน่ง)</p>
-    <div class="scroll"><table aria-label="รายการในใบเสนอราคา">
-      <thead><tr><th>รายการสินค้า</th><th>จำนวน</th><th>ราคา/หน่วย ฿</th><th>ลบ</th></tr></thead>
-      <tbody id="items"></tbody>
-    </table></div>
-    <button type="button" id="add" class="secondary">+ เพิ่มรายการเอง</button>
-    <p id="review-status" class="status" role="status" aria-live="polite">ยังไม่มีรายการ</p>
-    <p class="total" id="total">รวม 0 รายการ · ฿0.00</p>
-  </section>
-  <section class="panel" aria-labelledby="quote-title">
-    <h2 id="quote-title">3. ข้อมูลใบเสนอราคา</h2>
-    <div class="fields">
-      <label>ผู้เสนอราคา / ร้านค้า <input id="seller" maxlength="140" placeholder="ระบุชื่อร้าน" autocomplete="organization"></label>
-      <label>ลูกค้า / หน่วยงาน <input id="customer" maxlength="140" placeholder="ระบุชื่อผู้รับใบเสนอราคา"></label>
-      <label>เลขที่ใบเสนอราคา <input id="quote-number" maxlength="60" value="Q-0001"></label>
-      <label>วันที่ <input id="quote-date" type="date"></label>
-    </div>
-    <div class="actions"><button type="button" id="print" class="primary" disabled>พิมพ์ / บันทึก PDF</button></div>
-    <p class="muted">บน iPhone ใช้เมนูพิมพ์ของ Safari เพื่อสร้าง PDF ใน Files เอกสารนี้คือใบเสนอราคา ไม่ใช่ใบกำกับภาษี</p>
-  </section>
-  <section id="paper" class="paper" aria-label="ตัวอย่างใบเสนอราคา">
-    <div class="paper-head"><div><p>WORAMET AI LAB · QUOTEFLOW</p><h2>ใบเสนอราคา</h2></div><div class="paper-meta"><div>เลขที่: <span id="paper-number">–</span></div><div>วันที่: <span id="paper-date">–</span></div></div></div>
-    <div class="parties"><p><strong>จาก:</strong> <span id="paper-seller">–</span></p><p><strong>เรียน:</strong> <span id="paper-customer">–</span></p></div>
-    <table class="document-table"><thead><tr><th>#</th><th>รายการสินค้า</th><th>จำนวน</th><th>ราคา/หน่วย (฿)</th><th>รวม (฿)</th></tr></thead><tbody id="paper-items"></tbody></table>
-    <p class="paper-total">ยอดรวมทั้งสิ้น <span id="paper-total">฿0.00</span></p>
-    <p class="paper-foot">เอกสารใบเสนอราคาเพื่อการตรวจสอบก่อนใช้งาน · ยังไม่รวมข้อตกลงอื่น/ภาษี (ถ้ามี) · ตรวจรายละเอียดกับผู้เสนอราคาก่อนยืนยัน</p>
-  </section>
-</main>
-<footer class="wrap">WORAMET AI LAB · พัฒนาเพื่อทดสอบบน Branch เดิม · ยังไม่ Deploy หรือส่ง Dojo</footer>
-</body>
-</html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#112b29"><meta name="description" content="ตรวจรายการจาก PDF Excel Word CSV เทียบจำนวนกับต้นฉบับก่อนออกใบเสนอราคา ประมวลผลในเบราว์เซอร์"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; worker-src 'self' blob:; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"><link rel="icon" href="data:,"><title>QuoteFlow — ตรวจครบก่อนเสนอราคา | WORAMET</title><link rel="stylesheet" href="./quote-flow.css"><script src="./quote-flow-core.js" defer></script><script src="./vendor/quoteflow/jszip.min.js" defer></script><script src="./quote-flow.js" type="module"></script></head><body>
+<a class="skip" href="#main">ข้ามไปเนื้อหา</a>
+<aside class="sidebar no-print"><a class="brand" href="./quote-flow.html"><span class="brand-mark">Q</span><span>QuoteFlow<small>BY WORAMET AI LAB</small></span></a><p class="side-caption">พื้นที่ทำงานของคุณ</p><div class="side-active">ใบเสนอราคา <span>01</span></div><p class="side-note">ครบทุกบรรทัด<br>ก่อนส่งราคา</p><div class="side-bottom"><span class="privacy-dot"></span> ประมวลผลบนเครื่องคุณ<small>ไม่มีบัญชี ไม่มีการอัปโหลดเอกสาร</small><a href="#help">ดูวิธีใช้และขอบเขตการอ่านไฟล์</a></div></aside>
+<div class="workspace"><header class="topbar no-print"><span>ร้านค้า / ใบเสนอราคาใหม่</span><span class="edition">LOCAL EDITION · v1.0</span></header><main id="main">
+<div class="heading no-print"><div><p class="eyebrow">QUOTATION WORKSPACE</p><h1>ตรวจครบ ก่อนเสนอราคา</h1><p class="intro">นำเข้าเอกสาร ตรวจทุกรายการ แล้วส่งราคาที่คุณมั่นใจ</p></div><button type="button" id="save-draft" class="quiet" disabled>บันทึกฉบับร่าง</button></div>
+<nav class="steps no-print" aria-label="ขั้นตอนทำใบเสนอราคา"><button type="button" data-step="1" aria-current="step"><span>1</span>นำเข้ารายการ</button><button type="button" data-step="2"><span>2</span>ตรวจรายการ</button><button type="button" data-step="3"><span>3</span>ใบเสนอราคา</button></nav>
+<p id="global-status" role="status" aria-live="polite" class="global-status no-print"></p>
+<section id="step-1" class="step-content no-print" aria-labelledby="import-title"><div class="import-layout"><div class="panel import-panel"><div class="section-heading"><span class="section-index">01</span><div><h2 id="import-title">เริ่มจากรายการที่ลูกค้าส่งมา</h2><p class="muted">เลือกไฟล์ หรือวางตารางที่คัดลอกมา</p></div></div>
+<label for="file" id="dropzone" class="dropzone"><span class="file-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m-5 5 5-5 5 5M5 15v5h14v-5"/></svg></span><strong>แตะเพื่อเลือกไฟล์</strong><span>หรือลากไฟล์มาวางที่นี่</span><small>PDF ที่มีข้อความ · XLSX · DOCX · CSV<br>สูงสุด 10 MB / 500 รายการ</small><input type="file" id="file" accept=".csv,.tsv,.txt,.pdf,.xlsx,.docx,.json"></label>
+<p class="input-hint">PDF ต้องมีหัวตารางและเลือกข้อความได้ ส่วนรูปถ่ายและ PDF สแกนยังไม่รองรับ</p>
+<details id="paste-details"><summary>วางตารางจาก Excel หรือข้อความ</summary><label for="source">หัวตาราง: สินค้า,จำนวน,ราคาต่อหน่วย</label><textarea id="source" rows="5" spellcheck="false" placeholder="สินค้า,จำนวน,ราคาต่อหน่วย&#10;สมุด,10,12.50&#10;ปากกา,20,8.00"></textarea><button id="import" type="button" class="secondary">อ่านตารางที่วาง</button></details>
+<div class="sample-box"><div><strong>ยังไม่มีไฟล์? ลองข้อมูลตัวอย่าง</strong><p>30 รายการสมมติ สำหรับฝึกตรวจเอกสาร</p></div><button id="sample" type="button" class="secondary">ลอง 30 รายการ</button></div><div class="sample-downloads"><a href="./fixtures/quote-30-items.pdf" download>PDF 2 หน้า</a><a href="./fixtures/quote-30-items.xlsx" download>Excel</a><a href="./fixtures/quote-30-items.docx" download>Word</a><a href="./fixtures/quote-30-items.csv" download>CSV</a></div></div>
+<aside class="guide"><p class="eyebrow">ตรวจเทียบกับต้นฉบับ</p><h2>ลูกค้าส่ง 30 รายการ<br>ก็ต้องครบ 30 รายการ</h2><div class="count-illustration"><span class="source-count">ต้นฉบับ<strong>30</strong>รายการ</span><span class="count-line" aria-hidden="true"></span><span class="read-count">ตรวจแล้ว<strong>30</strong>รายการ</span></div><p>กำหนดจำนวนจากเอกสารจริง ระบบจะหยุดการออกใบเสนอราคาเมื่อจำนวนไม่ตรง หรือยังมีข้อมูลที่ต้องแก้</p><div class="guide-foot">ตรวจจำนวนช่วยจับรายการตกหล่น<br>ชื่อและราคายังต้องตรวจเทียบทุกแถว</div></aside></div></section>
+<section id="step-2" class="step-content no-print" hidden aria-labelledby="review-title"><div class="review-top"><div><h2 id="review-title">ตรวจให้ครบทุกบรรทัด</h2><p class="muted" id="source-name">ยังไม่มีรายการ</p></div><label class="expected-label" for="expected">ต้นฉบับมีกี่รายการ?<input id="expected" type="text" inputmode="numeric" maxlength="3" placeholder="เช่น 30"><span>นับเฉพาะรายการสินค้า</span></label></div>
+<div class="metrics"><div>อ่านได้<strong id="row-count">0 <small>รายการ</small></strong></div><div>ตรวจแล้ว<strong id="reviewed-count">0 <small>/ 0</small></strong></div><div>ต้องแก้<strong id="error-count">0 <small>รายการ</small></strong></div><div>ยอดรวมรายการ<strong id="total">฿0.00</strong></div></div><div id="count-status" class="notice" role="status"></div><div id="pages" class="pages"></div><div id="duplicates" class="notice warning" hidden><p id="duplicate-text"></p><label><input id="duplicate-confirm" type="checkbox">ตรวจแล้วว่าแต่ละแถวเป็นรายการที่ต้องการ ระบบจะเก็บทุกแถว</label></div>
+<div class="list-toolbar"><p><strong>รายการทั้งหมด</strong><span id="list-count">0</span></p><button id="review-all" type="button" class="quiet" disabled>ยืนยันว่าตรวจครบทุกแถว</button></div><div class="row-header" aria-hidden="true"><span>ตรวจ</span><span>รายการ / ที่มา</span><span>จำนวน</span><span>หน่วย</span><span>ราคา/หน่วย ฿</span><span>รวม ฿</span><span></span></div><div id="items" class="item-list"></div><button id="add" type="button" class="quiet add-row">+ เพิ่มรายการ</button><div class="step-actions"><button type="button" data-step="1" class="quiet">กลับไปนำเข้า</button><button type="button" data-step="3" class="primary">ต่อไป: ใบเสนอราคา →</button></div></section>
+<section id="step-3" class="step-content" hidden aria-labelledby="document-title"><div class="document-layout"><div class="panel metadata no-print"><h2 id="document-title">ข้อมูลใบเสนอราคา</h2><p class="muted">กรอกข้อมูลให้ครบก่อนพิมพ์</p><label for="seller">ผู้เสนอราคา / ร้านค้า</label><input id="seller" type="text" maxlength="160" autocomplete="organization" placeholder="ชื่อร้านของคุณ"><label for="customer">เรียน / ลูกค้า</label><input id="customer" type="text" maxlength="160" placeholder="ชื่อลูกค้าหรือโรงเรียน"><label for="quote-number">เลขที่ใบเสนอราคา</label><input id="quote-number" type="text" maxlength="80" placeholder="เช่น QT-2026-001"><label for="quote-date">วันที่เสนอราคา</label><input id="quote-date" type="date"><label for="note">หมายเหตุ / เงื่อนไข</label><textarea id="note" rows="3" maxlength="1000" placeholder="เช่น กำหนดส่งสินค้า หรืออายุใบเสนอราคา"></textarea><p id="review-status" class="notice" role="status"></p><button id="print" type="button" class="primary full" disabled>พิมพ์ / บันทึก PDF</button><button id="export-csv" type="button" class="secondary full" disabled>ดาวน์โหลดรายการ CSV</button><p class="input-hint">iPhone: ในหน้าพิมพ์ ขยายตัวอย่างเอกสาร แล้วกดแชร์เพื่อบันทึก PDF</p><button type="button" data-step="2" class="quiet full">กลับไปตรวจรายการ</button></div>
+<article id="paper" class="paper" aria-label="ตัวอย่างใบเสนอราคา"><header class="paper-head"><div><p class="paper-eyebrow">QUOTATION</p><h2>ใบเสนอราคา</h2></div><dl><dt>เลขที่</dt><dd id="paper-number">–</dd><dt>วันที่</dt><dd id="paper-date">–</dd></dl></header><div class="parties"><p><small>ผู้เสนอราคา</small><strong id="paper-seller">–</strong></p><p><small>เรียน</small><strong id="paper-customer">–</strong></p></div><p id="paper-watermark">ฉบับร่าง • ยังตรวจไม่ครบ</p><table class="document-table"><thead><tr><th>ลำดับ</th><th>รายการสินค้า</th><th>จำนวน</th><th>หน่วย</th><th>ราคา/หน่วย</th><th>จำนวนเงิน</th></tr></thead><tbody id="paper-items"></tbody></table><div class="paper-total">ยอดรวมทั้งสิ้น <strong id="paper-total">฿0.00</strong></div><p id="paper-note" class="paper-note"></p><footer class="paper-foot"><span id="paper-count">0 รายการ</span> · สกุลเงินบาท · ใบเสนอราคานี้ไม่ใช่ใบกำกับภาษี<br>ราคาตามรายการ ยังไม่คำนวณภาษีหรือส่วนลดแยกต่างหาก</footer></article></div></section>
+<details id="help" class="help no-print"><summary>วิธีใช้ ความเป็นส่วนตัว และไฟล์ที่รองรับ</summary><div class="help-body"><h2>ใช้งาน 3 ขั้นตอน</h2><p>1. นำเข้าไฟล์ 2. นับจำนวนจากต้นฉบับ กรอกจำนวน ตรวจชื่อ จำนวนและราคาทุกแถว 3. กรอกข้อมูลใบเสนอราคาแล้วพิมพ์หรือดาวน์โหลด</p><p><strong>PDF:</strong> อ่านเฉพาะข้อความในตารางที่มีหัว สินค้า / จำนวน / ราคาต่อหน่วย หรือ Item / Quantity / Unit price ทุกหน้าต้องมีหัวตาราง ไม่รองรับสแกน ภาพถ่าย ตารางหมุน และข้อความที่ขึ้นบรรทัดใหม่ในรายการเดียว ต้องตรวจเทียบกับต้นฉบับเสมอ</p><p><strong>Excel:</strong> XLSX หนึ่งชีต ไม่มีสูตรและช่องผสาน <strong>Word:</strong> DOCX ที่มีตารางพร้อมหัวคอลัมน์ ไม่รองรับ DOC/XLS รุ่นเก่า</p><p>ประมวลผลไฟล์ในเบราว์เซอร์ ไม่มีการส่งเอกสารไป API ไม่มีบัญชีหรือการบันทึกอัตโนมัติ เมื่อปิดหรือรีโหลดหน้างานจะหาย ให้กดบันทึกฉบับร่าง JSON ก่อนออก และเก็บไฟล์นั้นให้ปลอดภัย</p><p>ระบบตรวจด้วยกฎและคำนวณเป็นสตางค์ ใช้ AI ช่วยพัฒนาโค้ด ฟังก์ชันอ่านเอกสารใช้ PDF.js และ JSZip ไม่มีโมเดล AI หรือ OCR ทำงานอยู่ การนับตรงกันไม่ได้ยืนยันความถูกต้องของเนื้อหา</p><p>การพิมพ์ผ่านเมนูเบราว์เซอร์โดยตรงจะได้ฉบับร่างเมื่อยังตรวจไม่ครบ รุ่นนี้ยังไม่มีคลังสินค้า บัญชีผู้ใช้ การรับเงิน หรือส่ง LINE</p></div></details><footer class="app-footer no-print"><span>WORAMET AI LAB</span><span>เอกสารอยู่บนเครื่องคุณ คุณเป็นผู้ตรวจและยืนยัน</span></footer></main></div></body></html>

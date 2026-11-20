@@ -1,0 +1,30 @@
+{
+  "engine": "156.0.8078.79",
+  "device": "Chromium viewport emulation; not physical iPhone Safari or Windows",
+  "checks": [
+    "csv: 30 rows / every field matches / 750.00 / review gate",
+    "xlsx: 30 rows / every field matches / 750.00 / review gate",
+    "docx: 30 rows / every field matches / 750.00 / review gate",
+    "pdf: 30 rows / every field matches / 750.00 / review gate",
+    "editing resets only that row review; totals exact",
+    "invalid money blocks output and clears displayed sum",
+    "JSON and CSV downloads; draft restores data with reviews reset",
+    "known 30 vs 22 is blocked",
+    "unreadable PDF page blocks partial-result finalization",
+    "XLSX formulas rejected",
+    "scan-only PDF rejected explicitly",
+    "duplicates retained; explicit duplicate review required",
+    "HTML input rendered as text",
+    "unimported pasted changes invalidate stale quotation",
+    "no horizontal overflow at 360px on all three steps",
+    "no horizontal overflow at 390px on all three steps",
+    "no horizontal overflow at 430px on all three steps",
+    "no horizontal overflow at 768px on all three steps",
+    "no horizontal overflow at 1024px on all three steps",
+    "no horizontal overflow at 1440px on all three steps",
+    "no external document requests, no POST, no browser console errors"
+  ],
+  "requests": 22,
+  "errors": [],
+  "passed": true
+}

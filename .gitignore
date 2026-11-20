@@ -6,3 +6,4 @@ node_modules/
 _site/
 _site-*/
 codeql-results/
+docs/quoteflow-2026/local-qa/
