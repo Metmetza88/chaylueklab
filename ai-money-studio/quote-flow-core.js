@@ -124,5 +124,5 @@
     }
   }
   const sample = ['สินค้า,จำนวน,ราคาต่อหน่วย', ...Array.from({ length: 30 }, (_, i) => 'สมุดตัวอย่าง ' + String(i + 1).padStart(2, '0') + ',2,12.50')].join('\n');
-  return { MAX_ITEMS, MAX_BYTES, parseTable, calculate, parsePrice, parseQuantity, formatCents, sample };
+  return { MAX_ITEMS, MAX_BYTES, parseTable, calculate, parsePrice, parseQuantity, formatCents, sample, parseSeparated, delimiterFor, aliases, headerKey };
 });
