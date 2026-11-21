@@ -21,7 +21,7 @@
 | ข้อมูลเสีย/พื้นที่เต็ม/XSS จากข้อความ | ผ่าน |
 | ทางลัด 8 หมวดและ Back ใน browser | ผ่าน |
 | ราคาแพ็กเกจครบ/ไม่มีรับเงิน/LIFF ยังไม่กำหนด ID | ผ่าน |
-| Playwright รวม | **30 กลุ่มผ่าน** ดู `browser-results.json` |
+| Playwright รวม | **32 กลุ่มผ่าน** ดู `browser-results.json` |
 | Unit/security/artifact tests ของ Repository | **125 ผ่าน / 0 ไม่ผ่าน** ดู `unit-results.txt` |
 | Build static artifact | ผ่าน 64 ไฟล์ SQL, tests, docs ไม่ถูกเผยแพร่ |
 | เว็บไซต์เดิม | เปรียบเทียบ hash แล้ว 50 ไฟล์เดิมไม่เปลี่ยน ไม่แตะ Production |
@@ -50,4 +50,12 @@ SQL ทดสอบสิทธิ์อ่านข้อมูลส่วน�
 
 คู่มือใช้งานบน iPhone ขั้นตอนพัฒนา และแผนเปิดรับร้านค้า/รายได้ 30 วันอยู่ใน [README.md](README.md)
 
-รายละเอียด GitHub และ Preview หลัง push จะบันทึกเพิ่มเติมท้ายไฟล์นี้ตามหลักฐานจริง
+## GitHub และสถานะ Preview
+
+- Branch: https://github.com/Metmetza88/chaylueklab/tree/feature/satuek-connect
+- Pull Request: https://github.com/Metmetza88/chaylueklab/pull/53
+- Commit แรก: `903330b313cb53b71f28612caa011a8dba33f09c` ตามด้วย commit แก้ตัวเลือกหน้าจอและความเข้ากันได้กับเบราว์เซอร์
+- Source/unit checks และ Control Center CI ของ commit แรกผ่าน
+- CodeQL รอบแรกพบ `js/unvalidated-dynamic-method-call` ในการเลือกหน้าจอจาก URL แก้เป็น switch ที่เรียกฟังก์ชันที่ระบุไว้โดยตรง พร้อมทดสอบ URL ที่ไม่รู้จัก รอผล CodeQL บน commit แก้ไขก่อนพิจารณา merge
+- Vercel: ไม่พบ deployment ของ branch นี้ใน GitHub และ connection ปัจจุบัน list projects ว่าง / อ่านโปรเจกต์เดิมได้ 404 ยังไม่มี HTTPS Preview ของงานนี้ที่ยืนยันได้
+- ไม่ merge PR ไม่ deploy Production ไม่สร้างโปรเจกต์ใหม่ ต้องให้เจ้าของเชื่อมต่อสิทธิ์โปรเจกต์เดิม หรืออนุมัติโปรเจกต์ Vercel ใหม่แยกก่อนดำเนินการต่อ

@@ -172,6 +172,22 @@ for (const config of [
     await context.close();
 
     if(config.name==='iphone-390'){
+      await check('ลิงก์หน้าที่ไม่รู้จักไม่เรียกเมธอดจากชื่อใน URL และกลับหน้าหลัก',async()=>{
+        const context=await browser.newContext(config.options);const page=await context.newPage();const errors=[];
+        page.on('pageerror',e=>errors.push(e.message));
+        for(const hash of ['constructor','__proto__','toString','%3Cscript%3E']){
+          await page.goto(base+'#'+hash);await page.getByRole('heading',{name:/ทุกเรื่องของคนสตึก/}).waitFor();
+        }
+        assert.deepEqual(errors,[]);await context.close();
+      });
+      await check('เปิดเดโมได้แม้เบราว์เซอร์ไม่มี crypto.randomUUID',async()=>{
+        const context=await browser.newContext(config.options);const page=await context.newPage();
+        await page.addInitScript(()=>Object.defineProperty(crypto,'randomUUID',{value:undefined}));
+        await page.goto(base);await page.getByRole('heading',{name:/ทุกเรื่องของคนสตึก/}).waitFor();
+        const owner=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).owner,KEY);
+        assert.match(owner,/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/);
+        await context.close();
+      });
       await check('ทางลัดครบ 8 หมวด และย้อนกลับในเบราว์เซอร์ได้',async()=>{
         const context=await browser.newContext(config.options);const page=await context.newPage();
         const targets={food:'market',vegetables:'market',rice:'market',secondhand:'market',services:'services',transport:'services',help:'help'};

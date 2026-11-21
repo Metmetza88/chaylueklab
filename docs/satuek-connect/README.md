@@ -80,6 +80,20 @@ npm test
 
 ทดสอบ DDL และ RLS บน PostgreSQL 17 ใน Docker แยกด้วย `tests/satuek-connect/database.sql` ใช้ Auth helper จำลองและ rollback ข้อมูลทดสอบ ผลนี้ยังไม่ยืนยันว่า Auth/REST/Storage ใช้ได้บน Supabase Production
 
+ทำซ้ำเฉพาะฐานข้อมูลทดสอบว่างที่แยกจากระบบจริงได้ดังนี้ ไม่มีการเปิด port ออกนอกคอนเทนเนอร์:
+
+```sh
+docker run -d --name satuek-rls-local -e POSTGRES_HOST_AUTH_METHOD=trust postgres:17-alpine
+docker exec satuek-rls-local pg_isready -U postgres
+# รอให้ pg_isready แสดง accepting connections ก่อนรันขั้นถัดไป
+docker exec -i satuek-rls-local psql -U postgres -v ON_ERROR_STOP=1 < tests/satuek-connect/auth-stub.sql
+docker exec -i satuek-rls-local psql -U postgres -v ON_ERROR_STOP=1 < docs/satuek-connect/schema.sql
+docker exec -i satuek-rls-local psql -U postgres -v ON_ERROR_STOP=1 < tests/satuek-connect/database.sql
+docker rm -f satuek-rls-local
+```
+
+ห้ามใช้ Auth stub กับฐานข้อมูลจริง การตั้ง `trust` ในตัวอย่างจำกัดไว้ใน Docker ทดสอบที่ไม่ publish port เท่านั้น
+
 ก่อนเชื่อมข้อมูลจริงต้องเลือกวิธี Supabase Auth หรือ LINE ที่ตรวจ token ฝั่งเซิร์ฟเวอร์, กำหนดเจ้าของ/ผู้ตรวจสอบ, สร้าง migration ผ่าน Supabase CLI ตามขั้นตอน, ทดสอบ staging, expose เฉพาะ schema ที่จำเป็น และเชื่อม frontend กับข้อมูลจริง ห้ามใช้รหัส LINE user ID ที่ client ส่งมาเพื่อมอบสิทธิ์ ห้ามใช้ user_metadata เพื่อให้สิทธิ์ผู้ดูแล
 
 สิทธิ์ตรวจสอบอาศัย `app_metadata.satuek_role` ที่ server ออกเท่านั้น JWT ต้อง refresh หลังเปลี่ยนบทบาท การยืนยันตัวตน/ติดต่อ/รีวิว/การชำระเงินต้องมี endpoint ฝั่งเซิร์ฟเวอร์ที่ตรวจผู้ดูแลและบันทึกหลักฐาน audit ก่อนใช้ service role; endpoint เหล่านี้ยังไม่ติดตั้ง ไม่ใส่ service role หรือ Channel Secret ใน frontend
