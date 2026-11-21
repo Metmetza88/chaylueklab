@@ -1,0 +1,14 @@
+{
+  "name": "satuek-connect-checks",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node browser.mjs",
+    "css": "tailwindcss -i tailwind-input.css -o ../../satuek-connect/assets/tailwind.css --content ../../satuek-connect/index.html --minify"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1",
+    "tailwindcss": "3.4.17"
+  }
+}
