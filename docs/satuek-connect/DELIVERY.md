@@ -54,8 +54,9 @@ SQL ทดสอบสิทธิ์อ่านข้อมูลส่วน�
 
 - Branch: https://github.com/Metmetza88/chaylueklab/tree/feature/satuek-connect
 - Pull Request: https://github.com/Metmetza88/chaylueklab/pull/53
-- Commit แรก: `903330b313cb53b71f28612caa011a8dba33f09c` ตามด้วย commit แก้ตัวเลือกหน้าจอและความเข้ากันได้กับเบราว์เซอร์
+- Commit ตัวแอปล่าสุดที่ผ่าน Playwright 32 กลุ่ม/Unit 125 รายการ: `280bc66` (แก้การเลือกหน้าจอและความเข้ากันได้กับเบราว์เซอร์)
+- Commit แรก: `903330b313cb53b71f28612caa011a8dba33f09c`
 - Source/unit checks และ Control Center CI ของ commit แรกผ่าน
-- CodeQL รอบแรกพบ `js/unvalidated-dynamic-method-call` ในการเลือกหน้าจอจาก URL แก้เป็น switch ที่เรียกฟังก์ชันที่ระบุไว้โดยตรง พร้อมทดสอบ URL ที่ไม่รู้จัก รอผล CodeQL บน commit แก้ไขก่อนพิจารณา merge
+- CodeQL รอบแรกพบ `js/unvalidated-dynamic-method-call` ในการเลือกหน้าจอจาก URL แก้เป็น switch ที่เรียกฟังก์ชันที่ระบุไว้โดยตรง พร้อมทดสอบ URL ที่ไม่รู้จัก ผล CodeQL ของ commit ล่าสุดให้ดูที่แท็บ Checks ของ PR ก่อนพิจารณา merge
 - Vercel: ไม่พบ deployment ของ branch นี้ใน GitHub และ connection ปัจจุบัน list projects ว่าง / อ่านโปรเจกต์เดิมได้ 404 ยังไม่มี HTTPS Preview ของงานนี้ที่ยืนยันได้
 - ไม่ merge PR ไม่ deploy Production ไม่สร้างโปรเจกต์ใหม่ ต้องให้เจ้าของเชื่อมต่อสิทธิ์โปรเจกต์เดิม หรืออนุมัติโปรเจกต์ Vercel ใหม่แยกก่อนดำเนินการต่อ
