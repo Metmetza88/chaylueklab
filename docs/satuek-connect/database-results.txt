@@ -1,0 +1,59 @@
+BEGIN
+INSERT 0 2
+INSERT 0 2
+INSERT 0 1
+INSERT 0 2
+INSERT 0 2
+SET
+DO
+RESET
+NOTICE:  PASS anon: public-only reads, private users protected, anonymous writes rejected
+                                       set_config
+----------------------------------------------------------------------------------------
+ {"sub":"00000000-0000-4000-8000-000000000001","user_metadata":{"satuek_role":"admin"}}
+(1 row)
+
+SET
+NOTICE:  PASS ownership: read own private profile, read own drafts, no cross-owner update/delete/reassignment, no self-verification/publication, no spoofed owner/shop
+DO
+INSERT 0 1
+DO
+INSERT 0 1
+NOTICE:  PASS reviews and validation: no self review, no self customer verification, invalid area rejected
+NOTICE:  PASS server rate limit: rapid duplicate posts rejected
+DO
+UPDATE 1
+DO
+RESET
+ set_config
+------------
+ {}
+(1 row)
+
+SET
+DO
+NOTICE:  PASS moderation: unverified reviews and pending help hidden
+RESET
+UPDATE 1
+                   set_config
+------------------------------------------------
+ {"sub":"00000000-0000-4000-8000-000000000001"}
+(1 row)
+
+SET
+UPDATE 1
+DO
+NOTICE:  PASS edit sends published listing back to review
+RESET
+                                        set_config
+-------------------------------------------------------------------------------------------
+ {"sub":"00000000-0000-4000-8000-000000000001","app_metadata":{"satuek_role":"moderator"}}
+(1 row)
+
+SET
+DO
+RESET
+NOTICE:  PASS trusted moderator role
+NOTICE:  PASS RLS enabled on all seven tables
+DO
+ROLLBACK
