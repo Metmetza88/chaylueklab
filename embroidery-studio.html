@@ -2,19 +2,35 @@
 <html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WORAMET AI EMBROIDERY STUDIO — Prototype</title>
 <style>body{margin:0;background:#0b1220;color:#eef4ff;font:16px system-ui}main{max-width:1050px;margin:auto;padding:24px}h1{font-size:clamp(24px,5vw,38px)}section{background:#172238;padding:20px;border-radius:16px;margin:16px 0}label{display:block;margin:14px 0}input,select,button{font:inherit;padding:10px;border-radius:8px;max-width:100%}button{background:#65d8d0;color:#092027;border:0;cursor:pointer}canvas{background:white;max-width:100%;height:auto;border-radius:8px}small{color:#b8c8dd}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}.warning{border-left:4px solid #ffbd67;padding-left:14px}</style></head>
 <body><main><h1>WORAMET AI EMBROIDERY STUDIO</h1><p>ต้นแบบเตรียมภาพลายปัก • โหมดเจ้าของร้าน / ลูกค้า</p>
-<section class="warning"><strong>สถานะ: Prototype เท่านั้น</strong><p>ระบบนี้ยังไม่สร้างฝีเข็มจริง และยังไม่ส่งออก DST หรือ EMB ห้ามนำ SVG ที่ได้ไปเปลี่ยนนามสกุลเป็น DST เพื่อใช้กับเครื่องปัก</p></section>
+<section class="warning"><strong>สถานะ: Prototype เท่านั้น</strong><p>เพิ่มปุ่มสร้าง DST รุ่นทดลองแล้ว แต่ต้องเปิดผ่านเว็บที่มี API ทำงานอยู่ และยังไม่ผ่านการทดสอบปักจริง ห้ามใช้ผลิตงานลูกค้าก่อนตรวจสอบด้วยโปรแกรมจำลองฝีเข็มและทดสอบบนผ้า</p></section>
 <div class="grid"><section><h2>ตั้งค่างาน</h2><label>โหมด <select id="mode"><option>เจ้าของร้าน</option><option>ลูกค้า</option></select></label>
 <label>อัปโหลด PNG/JPG <input id="upload" type="file" accept="image/png,image/jpeg"></label>
 <label>ความกว้าง (มม.) <input id="width" type="number" min="10" max="300" value="50"></label>
 <label>จำนวนสี <select id="colors"><option>2</option><option>4</option><option selected>6</option><option>8</option><option>12</option></select></label>
 <label>ผ้า <select id="fabric"><option>เสื้อนักเรียน / ผ้าทอ</option><option>ผ้ายืด</option><option>หมวก</option></select></label>
 <button id="process">ประมวลผลตัวอย่างสี</button></section>
-<section><h2>ตัวอย่างภาพ</h2><canvas id="preview" width="400" height="400"></canvas><p id="status">กรุณาอัปโหลดภาพ</p><button id="save" disabled>ดาวน์โหลดภาพตัวอย่าง PNG</button></section></div>
+<section><h2>ตัวอย่างภาพ</h2><canvas id="preview" width="400" height="400"></canvas><p id="status">กรุณาอัปโหลดภาพ</p><button id="save" disabled>ดาวน์โหลดภาพตัวอย่าง PNG</button> <button id="dst" disabled>สร้างไฟล์ DST ทดลอง</button><p id="result" role="status"></p></section></div>
 <section><h2>งานที่ต้องพัฒนาเพิ่มก่อนใช้งานจริง</h2><p>แปลงภาพเป็นเวกเตอร์ • กำหนด Satin/Fill/Running Stitch • Underlay • ความหนาแน่นฝีเข็ม • ลำดับสี • จุดเริ่ม/จบ • ตรวจข้อจำกัดเครื่อง Tajima • สร้าง DST จริง • ทดสอบปักบนผ้า</p><small>ไฟล์ EMB เป็นรูปแบบเฉพาะของ Wilcom ไม่รองรับการส่งออกในต้นแบบนี้</small></section></main>
 <script>
 const file=document.querySelector('#upload'),canvas=document.querySelector('#preview'),ctx=canvas.getContext('2d'),status=document.querySelector('#status'),save=document.querySelector('#save');let img=null;
 file.addEventListener('change',()=>{const f=file.files[0];if(!f)return;if(!['image/png','image/jpeg'].includes(f.type)){status.textContent='รองรับเฉพาะ PNG/JPG';return}if(f.size>10*1024*1024){status.textContent='ภาพต้องไม่เกิน 10 MB';return}const url=URL.createObjectURL(f);const i=new Image();i.onload=()=>{img=i;URL.revokeObjectURL(url);draw(false)};i.onerror=()=>{URL.revokeObjectURL(url);status.textContent='อ่านภาพไม่ได้'};i.src=url});
-function draw(reduce){if(!img)return;const w=400,h=400;ctx.clearRect(0,0,w,h);ctx.fillStyle='white';ctx.fillRect(0,0,w,h);const scale=Math.min(w/img.width,h/img.height),iw=img.width*scale,ih=img.height*scale;ctx.drawImage(img,(w-iw)/2,(h-ih)/2,iw,ih);if(reduce){const data=ctx.getImageData(0,0,w,h),d=data.data,levels=Math.max(2,Math.ceil(Math.cbrt(Number(document.querySelector('#colors').value))));for(let j=0;j<d.length;j+=4){for(let k=0;k<3;k++)d[j+k]=Math.round(Math.round(d[j+k]/255*(levels-1))*255/(levels-1))}ctx.putImageData(data,0,0)}status.textContent='ขนาดเป้าหมาย '+document.querySelector('#width').value+' มม. • ภาพตัวอย่างเท่านั้น ไม่ใช่ลายฝีเข็ม';save.disabled=false}
+function draw(reduce){if(!img)return;const w=400,h=400;ctx.clearRect(0,0,w,h);ctx.fillStyle='white';ctx.fillRect(0,0,w,h);const scale=Math.min(w/img.width,h/img.height),iw=img.width*scale,ih=img.height*scale;ctx.drawImage(img,(w-iw)/2,(h-ih)/2,iw,ih);if(reduce){const data=ctx.getImageData(0,0,w,h),d=data.data,levels=Math.max(2,Math.ceil(Math.cbrt(Number(document.querySelector('#colors').value))));for(let j=0;j<d.length;j+=4){for(let k=0;k<3;k++)d[j+k]=Math.round(Math.round(d[j+k]/255*(levels-1))*255/(levels-1))}ctx.putImageData(data,0,0)}status.textContent='ขนาดเป้าหมาย '+document.querySelector('#width').value+' มม. • ภาพตัวอย่างเท่านั้น ไม่ใช่ลายฝีเข็ม';save.disabled=false;document.querySelector('#dst').disabled=false}
 document.querySelector('#process').onclick=()=>draw(true);
 save.onclick=()=>{const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download='embroidery-preview.png';a.click()};
+
+document.querySelector('#dst').onclick=async()=>{
+ const out=document.querySelector('#result'),button=document.querySelector('#dst'),f=file.files[0];
+ if(!f||!img){out.textContent='กรุณาเลือกรูปก่อน';return}
+ const width=Number(document.querySelector('#width').value),colors=Number(document.querySelector('#colors').value);
+ if(!Number.isFinite(width)||width<10||width>120||colors>8){out.textContent='DST รุ่นทดลองรองรับขนาด 10–120 มม. และไม่เกิน 8 สี';return}
+ button.disabled=true;out.textContent='กำลังส่งภาพประมวลผล...';
+ try{
+  const base64=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=reject;reader.readAsDataURL(f)});
+  const response=await fetch('/api/embroidery',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image_base64:base64,width_mm:width,colors})});
+  if(!response.ok){const error=await response.json().catch(()=>({error:'API ยังไม่พร้อม'}));throw new Error(error.error||'API error '+response.status)}
+  const data=await response.json();const bytes=Uint8Array.from(atob(data.dst_base64),c=>c.charCodeAt(0));const blob=new Blob([bytes],{type:'application/octet-stream'});const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='woramet-test-'+width+'mm.dst';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);
+  out.textContent='สร้างไฟล์ DST รุ่นทดลองแล้ว ('+data.segments+' ช่วงเส้น) สีตามลำดับ: '+data.thread_colors.join(', ')+' — ต้องจำลองฝีเข็มและทดลองปักก่อนใช้จริง';
+ }catch(e){out.textContent='ยังสร้าง DST ไม่ได้: '+e.message+' (ตรวจว่า API เปิดใช้งานบนเซิร์ฟเวอร์แล้ว)'}finally{button.disabled=false}
+};
 </script></body></html>
