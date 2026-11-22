@@ -39,7 +39,7 @@ SQL ทดสอบสิทธิ์อ่านข้อมูลส่วน�
 
 ## สิ่งที่เจ้าของต้องเชื่อมต่อ/ยืนยันก่อนเปิดจริง
 
-1. สิทธิ์ Vercel ของโปรเจกต์เดิม หรือการอนุมัติแยกโปรเจกต์หากจำเป็น ไม่แก้/ทับ Production เดิม
+1. สิทธิ์ Vercel สำหรับโปรเจกต์แยก: การลองสร้าง `satuek-connect` วันที่ 22 พฤศจิกายน 2569 ถูกปฏิเสธ 403 ต้องให้เจ้าของทีมแก้สิทธิ์ หรือสร้างโปรเจกต์แล้วให้การเชื่อมต่อเข้าถึงเฉพาะโปรเจกต์นี้ ไม่แก้/ทับ Production เดิม
 2. เลือกและตั้ง Supabase Auth/LINE token verification ฝั่งเซิร์ฟเวอร์, deploy schema แยกใน staging, เชื่อม frontend, ตรวจ storage policies และสำรองข้อมูล
 3. แต่งตั้งผู้ดูแล สร้างกระบวนการยืนยันผู้ขาย/ช่าง/ช่องทางติดต่อ/รีวิวจริง พร้อม audit log และจัดการรายงานจริง
 4. LIFF ID/HTTPS Endpoint สำหรับ Satuek Connect ไม่ส่ง Channel Secret ผ่านหน้าเว็บหรือแชต
@@ -58,5 +58,8 @@ SQL ทดสอบสิทธิ์อ่านข้อมูลส่วน�
 - Commit แรก: `903330b313cb53b71f28612caa011a8dba33f09c`
 - Source/unit checks และ Control Center CI ของ commit แรกผ่าน
 - CodeQL รอบแรกพบ `js/unvalidated-dynamic-method-call` ในการเลือกหน้าจอจาก URL แก้เป็น switch ที่เรียกฟังก์ชันที่ระบุไว้โดยตรง พร้อมทดสอบ URL ที่ไม่รู้จัก ผล CodeQL ของ commit ล่าสุดให้ดูที่แท็บ Checks ของ PR ก่อนพิจารณา merge
-- Vercel: ไม่พบ deployment ของ branch นี้ใน GitHub และ connection ปัจจุบัน list projects ว่าง / อ่านโปรเจกต์เดิมได้ 404 ยังไม่มี HTTPS Preview ของงานนี้ที่ยืนยันได้
-- ไม่ merge PR ไม่ deploy Production ไม่สร้างโปรเจกต์ใหม่ ต้องให้เจ้าของเชื่อมต่อสิทธิ์โปรเจกต์เดิม หรืออนุมัติโปรเจกต์ Vercel ใหม่แยกก่อนดำเนินการต่อ
+- Vercel: ตรวจซ้ำวันที่ 22 พฤศจิกายน 2569 แล้ว list projects ยังว่างทั้ง personal และทีมเดิม การเรียกสร้างโปรเจกต์แยก `satuek-connect` ถูกปฏิเสธ **403 forbidden: You don't have permission to create the project.** ยังไม่มีโปรเจกต์หรือ HTTPS Preview ใหม่ที่สร้างสำเร็จ
+- คำขอที่ถูกปฏิเสธระบุทีม `waramatw2546-4532`, Repository เดิม `Metmetza88/chaylueklab`, Root Directory `satuek-connect` และ static HTML ไม่ส่งคำขอสร้างเดิมซ้ำ
+- ไม่มี Vercel CLI ที่ลงชื่อเข้าใช้หรือ credentials สำหรับ CLI และไม่มีเครื่องมือควบคุม browser session ที่ลงชื่อเข้าใช้พร้อมให้เรียกในรอบนี้ จึงไม่มีช่องทางสำรองที่ใช้งานได้
+- GitHub CI ของ commit `ee4f4e9` ผ่านครบ รวม CodeQL, source/unit และ Control Center ไม่ merge PR และไม่ deploy ทับ Production เดิม
+- ขั้นต่อไปคือแก้สิทธิ์ Vercel หรือให้เจ้าของสร้างโปรเจกต์แยกแล้วแชร์สิทธิ์เฉพาะโปรเจกต์ ดูรายละเอียดใน [VERCEL-ACCESS.md](VERCEL-ACCESS.md) ไม่ต้องส่ง Token หรือ Secret ในแชต
