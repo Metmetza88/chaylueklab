@@ -1,81 +1,53 @@
 #!/usr/bin/env python3
-"""Experimental raster-to-DST generator for simple flat-color logos.
-NOT production-ready digitizing; test on scrap fabric before using a Tajima.
-"""
+"""Local CLI using the same engine and validation as /api/embroidery."""
 import argparse
+import base64
+import json
 from pathlib import Path
-from PIL import Image, ImageOps
-from pyembroidery import EmbPattern, write_dst
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from embroidery.engine import handle_payload, MAX_IMAGE_BYTES
+
 
 def main():
-    p = argparse.ArgumentParser()
+    p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("image", type=Path)
     p.add_argument("--output", type=Path, default=Path("sample.dst"))
     p.add_argument("--width-mm", type=float, default=50)
     p.add_argument("--colors", type=int, default=4)
-    p.add_argument("--row-mm", type=float, default=0.45)
+    p.add_argument("--row-mm", type=float, default=.45)
+    p.add_argument("--stitch-length", type=float, default=2.8)
+    p.add_argument("--angle", type=float, default=30)
+    p.add_argument("--type", choices=["running", "tatami"], default="tatami")
+    p.add_argument("--no-underlay", action="store_true")
+    p.add_argument("--keep-white", action="store_true")
+    p.add_argument("--pull", type=float, default=.15)
+    p.add_argument("--fabric", choices=["woven", "knit", "cap"], default="woven")
     args = p.parse_args()
-    if not 10 <= args.width_mm <= 150 or not 1 <= args.colors <= 8:
-        p.error("width-mm must be 10..150 and colors 1..8")
-    if not 0.3 <= args.row_mm <= 1:
-        p.error("row-mm must be 0.3..1")
-    im = Image.open(args.image).convert("RGBA")
-    bg = Image.new("RGBA", im.size, "white")
-    bg.alpha_composite(im)
-    im = bg.convert("RGB")
-    # Use 2 pixels per mm; avoid tiny pixel islands.
-    width = round(args.width_mm * 2)
-    height = max(1, round(width * im.height / im.width))
-    if height > 300:
-        p.error("image too tall; reduce aspect ratio or width")
-    im = ImageOps.contain(im, (width, height)).quantize(colors=args.colors, method=Image.Quantize.MEDIANCUT)
-    pixels = im.load()
-    palette = im.getpalette()
-    counts = im.getcolors() or []
-    ordered = [idx for _, idx in sorted(counts, reverse=True)]
-    pattern = EmbPattern()
-    # DST uses 0.1 mm machine units; raster scale = 0.5 mm/pixel.
-    step = args.width_mm * 10 / width
-    row_step = max(1, round(args.row_mm * 10 / step))
-    segments = 0
-    for idx in ordered:
-        rgb = tuple(palette[idx*3:idx*3+3])
-        # Skip near-white background, but retain light colors if required manually.
-        if min(rgb) > 245:
-            continue
-        pattern.add_thread({"color": "#%02x%02x%02x" % rgb})
-        had_color = False
-        for y in range(0, im.height, row_step):
-            runs = []
-            x = 0
-            while x < im.width:
-                if pixels[x, y] != idx:
-                    x += 1
-                    continue
-                start = x
-                while x < im.width and pixels[x, y] == idx:
-                    x += 1
-                if x-start >= 3:
-                    runs.append((start, x-1))
-            if (y // row_step) % 2:
-                runs.reverse()
-            for left, right in runs:
-                if segments >= 12000:
-                    raise RuntimeError("Too many segments: simplify logo or reduce colors")
-                x1, x2 = (left, right) if (y // row_step) % 2 == 0 else (right, left)
-                yy = round((y - im.height / 2) * step)
-                pattern.add_stitch_absolute(1, round((x1-im.width/2)*step), yy) # JUMP
-                pattern.add_stitch_absolute(0, round((x2-im.width/2)*step), yy) # STITCH
-                segments += 1
-                had_color = True
-        if had_color:
-            pattern.add_stitch_absolute(5, 0, 0)  # COLOR_CHANGE
-    if not segments:
-        raise RuntimeError("No colored regions found")
-    pattern.end()
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    write_dst(pattern, str(args.output))
-    print(f"Experimental DST: {args.output}; {segments} line segments; verify stitch simulation.")
+    if args.output.suffix.lower() not in (".dst", ".pes", ".jef"):
+        p.error("รองรับ .dst / .pes / .jef จริงเท่านั้น; EMB Not Available")
+    try:
+        if args.image.stat().st_size > MAX_IMAGE_BYTES:
+            raise ValueError("ภาพต้องไม่เกิน 2.5 MB")
+        result = handle_payload({"image_base64": base64.b64encode(args.image.read_bytes()).decode(),
+                                 "width_mm": args.width_mm, "colors": args.colors, "density": args.row_mm,
+                                 "stitch_length": args.stitch_length, "angle": args.angle, "stitch_type": args.type,
+                                 "underlay": not args.no_underlay, "remove_white": not args.keep_white,
+                                 "pull_compensation": args.pull, "fabric": args.fabric})
+        design = result["design"]
+        if args.output.suffix.lower() != ".dst":
+            result = handle_payload({"action": "export", "design": design, "format": args.output.suffix[1:].lower()})
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_bytes(base64.b64decode(result["file_base64"]))
+        args.output.with_suffix(".threads.json").write_text(json.dumps(result["thread_sequence"], indent=2), encoding="utf-8")
+        args.output.with_suffix(".woramet.json").write_text(json.dumps({"design": design}, ensure_ascii=False), encoding="utf-8")
+        args.output.with_suffix(".report.json").write_text(json.dumps({"metrics": result["metrics"], "warnings": design["warnings"] + result["warnings"]}, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"Experimental {args.output}: {result['metrics']['stitch_count']} stitches. SOFTWARE ONLY; no machine test.")
+    except (ValueError, OSError) as exc:
+        p.error(str(exc))
+
 
 if __name__ == "__main__":
     main()

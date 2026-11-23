@@ -1,2 +1,5 @@
-Pillow>=10,<13
-pyembroidery>=1.5,<2
+# Isolated embroidery API dependencies (see embroidery/LICENSES.md).
+Pillow==12.0.0
+numpy==2.2.6
+opencv-python-headless==4.12.0.88
+pyembroidery==1.5.1

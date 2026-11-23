@@ -1,0 +1,99 @@
+{
+  "date": "2026-11-23T08:06:59.025Z",
+  "environment": "Linux; emulated iPhone; no physical Windows/iPhone/Tajima test",
+  "results": [
+    {
+      "browser": "chromium-desktop",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "checks": [
+        "no horizontal overflow",
+        "sample",
+        "IndexedDB save/reopen",
+        "color/offset/order",
+        "undo/redo",
+        "running",
+        "satin",
+        "tatami",
+        "reshape",
+        "drag",
+        "simulation",
+        "binary DST download",
+        "PES/JEF/SVG/PNG download",
+        "mouse point entry",
+        "upload/auto digitize",
+        "customer local draft",
+        "owner local status",
+        "JSON import",
+        "new design without image",
+        "offline sample with explicit unavailable API and no fake export"
+      ],
+      "javascript_errors": []
+    },
+    {
+      "browser": "chromium-iphone",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "checks": [
+        "no horizontal overflow",
+        "sample",
+        "IndexedDB save/reopen",
+        "color/offset/order",
+        "undo/redo",
+        "running",
+        "satin",
+        "tatami",
+        "reshape",
+        "drag",
+        "simulation",
+        "binary DST download",
+        "PES/JEF/SVG/PNG download",
+        "emulated touch points on iPhone",
+        "upload/auto digitize",
+        "customer local draft",
+        "owner local status",
+        "JSON import",
+        "new design without image",
+        "offline sample with explicit unavailable API and no fake export"
+      ],
+      "javascript_errors": []
+    },
+    {
+      "browser": "webkit-iphone",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "checks": [
+        "no horizontal overflow",
+        "sample",
+        "IndexedDB save/reopen",
+        "color/offset/order",
+        "undo/redo",
+        "running",
+        "satin",
+        "tatami",
+        "reshape",
+        "drag",
+        "simulation",
+        "binary DST download",
+        "PES/JEF/SVG/PNG download",
+        "emulated touch points on iPhone",
+        "upload/auto digitize",
+        "customer local draft",
+        "owner local status",
+        "JSON import",
+        "new design without image",
+        "offline sample with explicit unavailable API and no fake export"
+      ],
+      "javascript_errors": []
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "fixture": "original synthetic crest; NOT Ban Rahan school logo",
+  "machine_tested": false,
+  "metrics": {
+    "stitch_count": 2433,
+    "color_stops": 3,
+    "color_changes": 2,
+    "thread_colors": 3,
+    "jump_count": 872,
+    "trim_count": null,
+    "explicit_trim_count": 0,
+    "inferred_trim_count": 126,
+    "min_stitch_mm": 0.0,
+    "max_stitch_mm": 2.807,
+    "short_stitches": 121,
+    "anchor_stitches": 557,
+    "width_mm": 42.9,
+    "height_mm": 42.8,
+    "estimated_minutes": 21.9,
+    "estimate_spm": 600,
+    "bounds": [
+      -21.4,
+      -21.3,
+      21.5,
+      21.5
+    ]
+  },
+  "warnings": [
+    "Experimental — ยังไม่ผ่านการปักจริง",
+    "Trim control: Not Available — ไม่สั่ง TRIM โดยตรง แต่ Jump ต่อเนื่องอาจถูกตีความว่าตัดด้าย (pyembroidery ค่าเริ่มต้นอนุมาน 126 ครั้ง); ต้องตรวจการตั้งค่าเครื่อง",
+    "มีฝีเข็มสั้นกว่า 0.4 มม. 121 ฝีเข็ม, จุดลงเข็มเริ่มเส้น 557 จุด และ Jump 872 ครั้ง โปรดตรวจและปรับก่อนปัก",
+    "ยังไม่มี Tie-in/Tie-off อัตโนมัติ และไม่มีการปรับความตึงด้าย ต้องตรวจการยึดต้น/ปลายด้าย",
+    "Experimental — ยังไม่ทดสอบกับเครื่อง Tajima จริง",
+    "ตัวหนังสือไทยขนาดเล็กและขอบละเอียดต้องตรวจด้วยคน ไม่มี OCR หรือการสร้างตัวอักษรทดแทน",
+    "DST ไม่เก็บสีด้ายจริง ให้ใช้ไฟล์ thread-sequence.json คู่กัน",
+    "Tatami เป็น fill แบบ staggered พร้อม clipping แต่ยังไม่มีการปรับคุณภาพระดับงานผลิตอัตโนมัติ",
+    "ผ้า: ผ้าทอ / เสื้อนักเรียน — เป็นข้อมูลประกอบ ต้องเลือกเข็ม/รองปัก/ความตึงด้วยผู้เชี่ยวชาญ"
+  ]
+}
