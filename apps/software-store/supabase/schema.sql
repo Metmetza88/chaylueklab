@@ -1,0 +1,2 @@
+-- Fresh installation: run migrations/20261124023043_isolated_store_school_platform.sql then catalog-drafts.sql.
+-- Never run the original generic profiles/products/orders schema on the shared production project.

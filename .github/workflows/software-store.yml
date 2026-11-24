@@ -1,0 +1,43 @@
+name: Software store checks
+on:
+  pull_request:
+    paths: ['apps/software-store/**', '.github/workflows/software-store.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: apps/software-store
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: apps/software-store/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm audit --audit-level=moderate
+      - run: npm run build
+      - name: Start disposable integration services
+        run: |
+          node tests/local/start.mjs
+          node tests/local/gateway.mjs > /tmp/store-test-gateway.log 2>&1 &
+      - run: npm run test:integration
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests against production build
+        run: |
+          node --env-file=.env.test node_modules/next/dist/bin/next start --hostname 0.0.0.0 > /tmp/store-test-next.log 2>&1 &
+          node --env-file=.env.test --input-type=module -e 'for(let i=0;i<40;i++){try{if((await fetch("http://127.0.0.1:3000/api/health")).ok)process.exit(0)}catch{}await new Promise(r=>setTimeout(r,500))}process.exit(1)'
+          PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="$(node --input-type=module -e 'import {chromium} from "@playwright/test";process.stdout.write(chromium.executablePath())')" node --env-file=.env.test node_modules/@playwright/test/cli.js test

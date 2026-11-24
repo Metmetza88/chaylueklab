@@ -1,0 +1,259 @@
+[
+  {
+    "id": "11111111-1111-4111-8111-000000000001",
+    "slug": "met-school-pro",
+    "name": "MET School Pro",
+    "tagline": "เว็บไซต์โรงเรียน",
+    "category": "เว็บไซต์และประชาสัมพันธ์",
+    "price_cents": 290000,
+    "features": [
+      "ข่าวสารและประกาศ",
+      "จัดการเนื้อหาผ่านมือถือ",
+      "ตั้งค่าชื่อ โลโก้ และสีโรงเรียน"
+    ],
+    "description": "MET School Pro — เว็บไซต์โรงเรียน โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000002",
+    "slug": "met-admission",
+    "name": "MET Admission",
+    "tagline": "รับสมัครนักเรียนออนไลน์",
+    "category": "รับสมัครและทะเบียน",
+    "price_cents": 350000,
+    "features": [
+      "สมัครเรียนและอัปโหลดเอกสาร",
+      "ตรวจสอบสถานะและพิมพ์ใบสมัคร PDF",
+      "เจ้าหน้าที่ตรวจเอกสารและส่งออก CSV"
+    ],
+    "description": "MET Admission — รับสมัครนักเรียนออนไลน์ โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000003",
+    "slug": "met-student",
+    "name": "MET Student",
+    "tagline": "ทะเบียนนักเรียน",
+    "category": "รับสมัครและทะเบียน",
+    "price_cents": 99000,
+    "features": [
+      "ทะเบียนนักเรียน",
+      "ประวัติและชั้นเรียน"
+    ],
+    "description": "MET Student — ทะเบียนนักเรียน โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000004",
+    "slug": "met-attendance",
+    "name": "MET Attendance",
+    "tagline": "เช็กชื่อและการลา",
+    "category": "วิชาการ",
+    "price_cents": 79000,
+    "features": [
+      "เช็กชื่อรายวัน",
+      "รายงานการมาเรียน"
+    ],
+    "description": "MET Attendance — เช็กชื่อและการลา โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000005",
+    "slug": "met-schedule",
+    "name": "MET Schedule",
+    "tagline": "ตารางเรียนและตารางสอน",
+    "category": "วิชาการ",
+    "price_cents": 99000,
+    "features": [
+      "จัดตารางเรียน",
+      "ตรวจคาบสอน"
+    ],
+    "description": "MET Schedule — ตารางเรียนและตารางสอน โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000006",
+    "slug": "met-grades",
+    "name": "MET Grades",
+    "tagline": "คะแนนและผลการเรียน",
+    "category": "วิชาการ",
+    "price_cents": 99000,
+    "features": [
+      "บันทึกคะแนน",
+      "ผลการเรียน"
+    ],
+    "description": "MET Grades — คะแนนและผลการเรียน โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000007",
+    "slug": "met-assignment",
+    "name": "MET Assignment",
+    "tagline": "ส่งการบ้านออนไลน์",
+    "category": "วิชาการ",
+    "price_cents": 59000,
+    "features": [
+      "มอบหมายงาน",
+      "ติดตามส่งการบ้าน"
+    ],
+    "description": "MET Assignment — ส่งการบ้านออนไลน์ โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000008",
+    "slug": "met-certificate",
+    "name": "MET Certificate",
+    "tagline": "สร้างเกียรติบัตร",
+    "category": "กิจกรรมและบริการ",
+    "price_cents": 49000,
+    "features": [
+      "ออกเกียรติบัตร",
+      "แม่แบบภาษาไทย"
+    ],
+    "description": "MET Certificate — สร้างเกียรติบัตร โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000009",
+    "slug": "met-sport",
+    "name": "MET Sport",
+    "tagline": "จัดการแข่งขันกีฬาสี",
+    "category": "กิจกรรมและบริการ",
+    "price_cents": 99000,
+    "features": [
+      "จัดทีมสี",
+      "บันทึกผลแข่งขัน"
+    ],
+    "description": "MET Sport — จัดการแข่งขันกีฬาสี โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000010",
+    "slug": "met-inventory",
+    "name": "MET Inventory",
+    "tagline": "พัสดุและครุภัณฑ์",
+    "category": "บริหารและธุรการ",
+    "price_cents": 149000,
+    "features": [
+      "ทะเบียนครุภัณฑ์",
+      "เบิกจ่ายพัสดุ"
+    ],
+    "description": "MET Inventory — พัสดุและครุภัณฑ์ โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000011",
+    "slug": "met-e-office",
+    "name": "MET E-Office",
+    "tagline": "งานสารบรรณ",
+    "category": "บริหารและธุรการ",
+    "price_cents": 199000,
+    "features": [
+      "รับส่งหนังสือ",
+      "ติดตามงาน"
+    ],
+    "description": "MET E-Office — งานสารบรรณ โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000012",
+    "slug": "met-library",
+    "name": "MET Library",
+    "tagline": "ห้องสมุด",
+    "category": "กิจกรรมและบริการ",
+    "price_cents": 99000,
+    "features": [
+      "ทะเบียนหนังสือ",
+      "ยืมและคืน"
+    ],
+    "description": "MET Library — ห้องสมุด โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000013",
+    "slug": "met-parent",
+    "name": "MET Parent",
+    "tagline": "ระบบผู้ปกครอง",
+    "category": "กิจกรรมและบริการ",
+    "price_cents": 99000,
+    "features": [
+      "ข่าวสารผู้ปกครอง",
+      "ติดตามนักเรียน"
+    ],
+    "description": "MET Parent — ระบบผู้ปกครอง โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000014",
+    "slug": "met-school-shop",
+    "name": "MET School Shop",
+    "tagline": "สั่งซื้อชุดนักเรียน",
+    "category": "กิจกรรมและบริการ",
+    "price_cents": 99000,
+    "features": [
+      "เลือกไซซ์และชุด",
+      "ติดตามคำสั่งซื้อ"
+    ],
+    "description": "MET School Shop — สั่งซื้อชุดนักเรียน โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  },
+  {
+    "id": "11111111-1111-4111-8111-000000000015",
+    "slug": "met-exam-ai",
+    "name": "MET Exam AI",
+    "tagline": "ระบบช่วยสร้างข้อสอบ",
+    "category": "วิชาการ",
+    "price_cents": 79000,
+    "features": [
+      "ร่างข้อสอบ",
+      "ครูตรวจทานก่อนใช้"
+    ],
+    "description": "MET Exam AI — ระบบช่วยสร้างข้อสอบ โดย WORAMET AI LAB",
+    "status": "coming_soon",
+    "vip_free": false,
+    "kind": "software",
+    "latest_release_id": null
+  }
+]
