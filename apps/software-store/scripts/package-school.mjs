@@ -73,7 +73,32 @@ for (const slug of ["met-school-pro", "met-admission"]) {
     ["docs/SCHOOL-USER-GUIDE-TH.md", "USER-GUIDE-TH.md"],
     ["docs/SECURITY.md", "SECURITY.md"],
   ])
-    archive.file(source, { name: `${base}/${dest}` });
+    if (dest === "README.md")
+      archive.append(
+        readFileSync(source, "utf8").replace(
+          "../../PROJECT-STATUS.md",
+          "PROJECT-STATUS.md",
+        ),
+        { name: `${base}/${dest}` },
+      );
+    else archive.file(source, { name: `${base}/${dest}` });
+  for (const f of [
+    "docs/SCHOOL-USER-GUIDE-TH.md",
+    "docs/IPHONE-ADMIN-TH.md",
+    "docs/SECURITY.md",
+    "docs/MONTHLY-COSTS.md",
+    "docs/TEST-REPORT.md",
+    "docs/INTEGRATIONS.md",
+    "docs/OWNER-ACTIONS.md",
+    "docs/E2E-RESULTS.json",
+    "docs/INTEGRATION-RESULTS.json",
+    "docs/DEPENDENCY-AUDIT.json",
+  ])
+    archive.file(f, { name: `${base}/${f}` });
+  archive.append(
+    `# ${slug} — ${version}\n\nRelease Candidate; ready_for_sale=false.\n\nSource/database/manuals/tests/screenshots included. Local validation: Unit31, integration23, Playwright80passed/12plannedskips/0failed. Supabase Storage service, authorized payment provider, SMTP, physical devices and owner acceptance remain pending.\n\nSee docs/TEST-REPORT.md, docs/SECURITY.md, docs/OWNER-ACTIONS.md and release.json.\n\nRepository: https://github.com/Metmetza88/chaylueklab/tree/feature/woramet-school-store-20261124 (public).\n`,
+    { name: `${base}/PROJECT-STATUS.md` },
+  );
   archive.append(
     readFileSync(".env.example", "utf8").replace(
       "APP_VARIANT=store",

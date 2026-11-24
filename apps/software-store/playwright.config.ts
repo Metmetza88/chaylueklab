@@ -17,7 +17,9 @@ export default defineConfig({
       use: {
         ...devices["Desktop Chrome"],
         launchOptions: {
-          executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || "/usr/bin/chromium",
+          executablePath:
+            process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ||
+            "/usr/bin/chromium",
           args: ["--no-sandbox"],
         },
       },
@@ -28,7 +30,9 @@ export default defineConfig({
         ...devices["iPhone 13"],
         defaultBrowserType: "chromium",
         launchOptions: {
-          executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || "/usr/bin/chromium",
+          executablePath:
+            process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ||
+            "/usr/bin/chromium",
           args: ["--no-sandbox"],
         },
       },
@@ -38,7 +42,9 @@ export default defineConfig({
       use: {
         ...devices["Pixel 5"],
         launchOptions: {
-          executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || "/usr/bin/chromium",
+          executablePath:
+            process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ||
+            "/usr/bin/chromium",
           args: ["--no-sandbox"],
         },
       },
@@ -49,7 +55,9 @@ export default defineConfig({
         ...devices["iPad (gen 7)"],
         defaultBrowserType: "chromium",
         launchOptions: {
-          executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || "/usr/bin/chromium",
+          executablePath:
+            process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ||
+            "/usr/bin/chromium",
           args: ["--no-sandbox"],
         },
       },

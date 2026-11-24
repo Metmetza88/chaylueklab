@@ -30,7 +30,8 @@ async function dispatch(req: Request) {
     return NextResponse.json({ error: "invalid receiver" }, { status: 503 });
   try {
     const db = createAdmin();
-    await db.rpc("store_queue_daily_summary");
+    const { error: summaryError } = await db.rpc("store_queue_daily_summary");
+    if (summaryError) throw summaryError;
     const { data: events, error } = await db.rpc("store_claim_events", {
       p_limit: 5,
     });

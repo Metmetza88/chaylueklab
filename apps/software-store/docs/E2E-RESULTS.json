@@ -1,0 +1,562 @@
+{
+  "checked_at": "2026-11-24T03:26:02.119Z",
+  "environment": "Next.js 15.5.29 production build; real local PostgreSQL/GoTrue/PostgREST; Storage API not included",
+  "passed": 80,
+  "skipped": 12,
+  "failed": 0,
+  "physical_devices_tested": false,
+  "cases": [
+    {
+      "title": "public page / renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 4953
+    },
+    {
+      "title": "public page / renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 2852
+    },
+    {
+      "title": "public page / renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 5904
+    },
+    {
+      "title": "public page / renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 2977
+    },
+    {
+      "title": "public page /products renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 2950
+    },
+    {
+      "title": "public page /products renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 2712
+    },
+    {
+      "title": "public page /products renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 5735
+    },
+    {
+      "title": "public page /products renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 2179
+    },
+    {
+      "title": "public page /categories renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 2511
+    },
+    {
+      "title": "public page /categories renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 3072
+    },
+    {
+      "title": "public page /categories renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 6028
+    },
+    {
+      "title": "public page /categories renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 1562
+    },
+    {
+      "title": "public page /demo renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 3607
+    },
+    {
+      "title": "public page /demo renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 4517
+    },
+    {
+      "title": "public page /demo renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 12033
+    },
+    {
+      "title": "public page /demo renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 2162
+    },
+    {
+      "title": "public page /demo/met-school-pro renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 2573
+    },
+    {
+      "title": "public page /demo/met-school-pro renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 5307
+    },
+    {
+      "title": "public page /demo/met-school-pro renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 11289
+    },
+    {
+      "title": "public page /demo/met-school-pro renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 2605
+    },
+    {
+      "title": "public page /demo/met-admission renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 2712
+    },
+    {
+      "title": "public page /demo/met-admission renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 5615
+    },
+    {
+      "title": "public page /demo/met-admission renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 7998
+    },
+    {
+      "title": "public page /demo/met-admission renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 2678
+    },
+    {
+      "title": "public page /cart renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 3155
+    },
+    {
+      "title": "public page /cart renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 10532
+    },
+    {
+      "title": "public page /cart renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 7794
+    },
+    {
+      "title": "public page /cart renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 1983
+    },
+    {
+      "title": "public page /checkout renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 2658
+    },
+    {
+      "title": "public page /checkout renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 8663
+    },
+    {
+      "title": "public page /checkout renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 7920
+    },
+    {
+      "title": "public page /checkout renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 1767
+    },
+    {
+      "title": "public page /login renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 2200
+    },
+    {
+      "title": "public page /login renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 9266
+    },
+    {
+      "title": "public page /login renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 4488
+    },
+    {
+      "title": "public page /login renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 2107
+    },
+    {
+      "title": "public page /register renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 2809
+    },
+    {
+      "title": "public page /register renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 7019
+    },
+    {
+      "title": "public page /register renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 5983
+    },
+    {
+      "title": "public page /register renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 2309
+    },
+    {
+      "title": "public page /membership renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 2124
+    },
+    {
+      "title": "public page /membership renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 10283
+    },
+    {
+      "title": "public page /membership renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 4121
+    },
+    {
+      "title": "public page /membership renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 4090
+    },
+    {
+      "title": "public page /support renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 2475
+    },
+    {
+      "title": "public page /support renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 6126
+    },
+    {
+      "title": "public page /support renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 2718
+    },
+    {
+      "title": "public page /support renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 4617
+    },
+    {
+      "title": "public page /contact renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 2573
+    },
+    {
+      "title": "public page /contact renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 4616
+    },
+    {
+      "title": "public page /contact renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 3398
+    },
+    {
+      "title": "public page /contact renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 5013
+    },
+    {
+      "title": "public page /guide renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 3771
+    },
+    {
+      "title": "public page /guide renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 5437
+    },
+    {
+      "title": "public page /guide renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 2977
+    },
+    {
+      "title": "public page /guide renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 2617
+    },
+    {
+      "title": "public page /privacy renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 3391
+    },
+    {
+      "title": "public page /privacy renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 2649
+    },
+    {
+      "title": "public page /privacy renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 2061
+    },
+    {
+      "title": "public page /privacy renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 2312
+    },
+    {
+      "title": "public page /terms renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 4361
+    },
+    {
+      "title": "public page /terms renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 3135
+    },
+    {
+      "title": "public page /terms renders and fits the viewport",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 2321
+    },
+    {
+      "title": "public page /terms renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 2423
+    },
+    {
+      "title": "catalog filters and product details work",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 8121
+    },
+    {
+      "title": "catalog filters and product details work",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 5065
+    },
+    {
+      "title": "catalog filters and product details work",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 3710
+    },
+    {
+      "title": "catalog filters and product details work",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 3763
+    },
+    {
+      "title": "demo completes admission review and result announcement without submitting private data",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 3906
+    },
+    {
+      "title": "demo completes admission review and result announcement without submitting private data",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 3559
+    },
+    {
+      "title": "demo completes admission review and result announcement without submitting private data",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 2401
+    },
+    {
+      "title": "demo completes admission review and result announcement without submitting private data",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 3097
+    },
+    {
+      "title": "unknown products and protected APIs fail safely",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 2764
+    },
+    {
+      "title": "unknown products and protected APIs fail safely",
+      "project": "iPhone layout (Chromium)",
+      "status": "passed",
+      "duration_ms": 3218
+    },
+    {
+      "title": "unknown products and protected APIs fail safely",
+      "project": "Android layout",
+      "status": "passed",
+      "duration_ms": 2200
+    },
+    {
+      "title": "unknown products and protected APIs fail safely",
+      "project": "Tablet layout",
+      "status": "passed",
+      "duration_ms": 2582
+    },
+    {
+      "title": "signup uses real local GoTrue and establishes account session",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 6913
+    },
+    {
+      "title": "signup uses real local GoTrue and establishes account session",
+      "project": "iPhone layout (Chromium)",
+      "status": "skipped",
+      "duration_ms": 7
+    },
+    {
+      "title": "signup uses real local GoTrue and establishes account session",
+      "project": "Android layout",
+      "status": "skipped",
+      "duration_ms": 4
+    },
+    {
+      "title": "signup uses real local GoTrue and establishes account session",
+      "project": "Tablet layout",
+      "status": "skipped",
+      "duration_ms": 6
+    },
+    {
+      "title": "customer checkout, signed Sandbox webhook, entitlement and receipt",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 15262
+    },
+    {
+      "title": "customer checkout, signed Sandbox webhook, entitlement and receipt",
+      "project": "iPhone layout (Chromium)",
+      "status": "skipped",
+      "duration_ms": 6
+    },
+    {
+      "title": "customer checkout, signed Sandbox webhook, entitlement and receipt",
+      "project": "Android layout",
+      "status": "skipped",
+      "duration_ms": 3
+    },
+    {
+      "title": "customer checkout, signed Sandbox webhook, entitlement and receipt",
+      "project": "Tablet layout",
+      "status": "skipped",
+      "duration_ms": 2
+    },
+    {
+      "title": "school applicant submits and officer reviews through protected server actions",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 23156
+    },
+    {
+      "title": "school applicant submits and officer reviews through protected server actions",
+      "project": "iPhone layout (Chromium)",
+      "status": "skipped",
+      "duration_ms": 8
+    },
+    {
+      "title": "school applicant submits and officer reviews through protected server actions",
+      "project": "Android layout",
+      "status": "skipped",
+      "duration_ms": 4
+    },
+    {
+      "title": "school applicant submits and officer reviews through protected server actions",
+      "project": "Tablet layout",
+      "status": "skipped",
+      "duration_ms": 2
+    },
+    {
+      "title": "cross-school staff cannot view school admin, export or other student PDF",
+      "project": "Desktop Chromium",
+      "status": "passed",
+      "duration_ms": 14239
+    },
+    {
+      "title": "cross-school staff cannot view school admin, export or other student PDF",
+      "project": "iPhone layout (Chromium)",
+      "status": "skipped",
+      "duration_ms": 5
+    },
+    {
+      "title": "cross-school staff cannot view school admin, export or other student PDF",
+      "project": "Android layout",
+      "status": "skipped",
+      "duration_ms": 1
+    },
+    {
+      "title": "cross-school staff cannot view school admin, export or other student PDF",
+      "project": "Tablet layout",
+      "status": "skipped",
+      "duration_ms": 1
+    }
+  ]
+}

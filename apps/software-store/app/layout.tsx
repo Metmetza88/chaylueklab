@@ -35,7 +35,7 @@ export default async function Layout({
           <a className="skip-link" href="#main">
             ข้ามไปเนื้อหา
           </a>
-          <header className="site-header">
+          <header className="site-header school-header">
             <div className="container header-inner">
               <Link href={`/schools/${slug}`} className="brand">
                 <Command />

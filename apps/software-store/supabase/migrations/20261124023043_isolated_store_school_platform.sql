@@ -387,4 +387,38 @@ begin
 end $$;
 revoke all on function public.store_reject_order(uuid,uuid,text),public.school_register_document(uuid,uuid,text,text,text) from public,anon,authenticated;
 grant execute on function public.store_reject_order(uuid,uuid,text),public.school_register_document(uuid,uuid,text,text,text) to service_role;
+
+create function public.store_create_support(p_user uuid,p_subject text,p_message text) returns uuid language plpgsql set search_path='' as $$
+declare tid uuid;
+begin
+ insert into public.store_support(user_id,subject,message) values(p_user,p_subject,p_message) returning id into tid;
+ insert into public.store_audit(actor_id,action,target_id) values(p_user,'support.created',tid::text);
+ insert into public.store_outbox(topic,payload) values('support.created',jsonb_build_object('ticket_id',tid));
+ return tid;
+end $$;
+create function public.store_register_release(p_actor uuid,p_product uuid,p_version text,p_path text,p_sha text,p_changelog text) returns uuid language plpgsql set search_path='' as $$
+declare rid uuid;
+begin
+ if not exists(select 1 from public.store_profiles where id=p_actor and is_admin) then raise exception 'FORBIDDEN'; end if;
+ perform id from public.store_products where id=p_product for update;
+ if not found then raise exception 'PRODUCT_NOT_FOUND'; end if;
+ insert into public.store_releases(product_id,version,storage_path,sha256,changelog) values(p_product,p_version,p_path,p_sha,p_changelog) returning id into rid;
+ -- Keep the last tested version active until the owner attests the replacement.
+ insert into public.store_audit(actor_id,action,target_id,details) values(p_actor,'release.uploaded',rid::text,jsonb_build_object('sha256',p_sha));
+ insert into public.store_outbox(topic,payload) values('release.uploaded',jsonb_build_object('product_id',p_product,'version',p_version));
+ return rid;
+end $$;
+create function public.store_attest_release(p_actor uuid,p_release uuid,p_sha text,p_evidence text) returns void language plpgsql set search_path='' as $$
+declare pid uuid;
+begin
+ if not exists(select 1 from public.store_profiles where id=p_actor and is_admin) then raise exception 'FORBIDDEN'; end if;
+ if length(p_evidence) not between 30 and 2000 then raise exception 'INVALID_EVIDENCE'; end if;
+ update public.store_releases set tested_at=now(),test_evidence=p_evidence where id=p_release and sha256=p_sha returning product_id into pid;
+ if not found then raise exception 'RELEASE_HASH_MISMATCH'; end if;
+ update public.store_products set latest_release_id=p_release where id=pid;
+ insert into public.store_audit(actor_id,action,target_id,details) values(p_actor,'release.test-attested',p_release::text,jsonb_build_object('sha256',p_sha,'evidence',p_evidence));
+ insert into public.store_outbox(topic,payload) values('release.available',jsonb_build_object('product_id',pid,'release_id',p_release));
+end $$;
+revoke all on function public.store_create_support(uuid,text,text),public.store_register_release(uuid,uuid,text,text,text,text),public.store_attest_release(uuid,uuid,text,text) from public,anon,authenticated;
+grant execute on function public.store_create_support(uuid,text,text),public.store_register_release(uuid,uuid,text,text,text,text),public.store_attest_release(uuid,uuid,text,text) to service_role;
 commit;

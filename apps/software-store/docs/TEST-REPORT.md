@@ -1,20 +1,42 @@
-# รายงานผลทดสอบ
+# รายงานผลทดสอบจริง — 2026-11-24
 
-สถานะระหว่างเตรียม Release Candidate — 2026-11-24
-
-| รายการ | ผลที่มีหลักฐานแล้ว |
+| รายการ | ผล |
 |---|---|
-| TypeScript / ESLint | ผ่านชุดก่อนหน้า กำลังตรวจซ้ำหลัง dependency security update |
-| Unit / Security | 31/31 ผ่าน (HMAC/replay, PromptPay CRC, invalid amounts, CSV, redirects, image validation, PDF, ZIP release inspection) |
-| Integration / DB Security | 21/21 ผ่าน บน PostgreSQL17 + GoTrue + PostgREST จริง ดู INTEGRATION-RESULTS.json |
-| Production Build | ผ่านชุดแรก Next15.5.29 กำลังตรวจซ้ำหลัง security update |
-| Playwright | ชุดแรก 17 passed, 12 skipped, 3 timeout (public sweep รวม16หน้า) กำลังแยกต่อหน้าและรันบน Production Build |
-| Supabase Storage API / signed URL expiry | ยังไม่ผ่านการทดสอบบริการจริง Local มีเพียง schema fixture |
-| Payment provider Sandbox | ยังไม่มี authorized provider/adapter จึงยังไม่ทดสอบกับผู้ให้บริการจริง |
-| Physical iPhone/Safari/Android | ยังไม่ทดสอบอุปกรณ์จริง มี Chromium viewport tests เท่านั้น |
-| Vercel Preview | ถูก403 forbidden ขณะ create_project ยังไม่มี URL หรือ build logs ของ Vercel |
+| TypeScript | ผ่าน `next typegen && tsc --noEmit` รวมตรวจจาก ZIP ที่แตกแยกทั้งสองแพ็กเกจ |
+| ESLint | ผ่าน |
+| Production Build | ผ่าน Next.js15.5.29 หลังแก้ dependency และ transactional release/support |
+| Unit / Security | **31/31 ผ่าน** |
+| Integration / DB Security | **23/23 ผ่าน** บน PostgreSQL17 + GoTrue + PostgREST จริง |
+| Playwright Production | **80 passed, 12 skipped, 0 failed** ใช้เวลาประมาณ3.8นาที |
+| Responsive | 16หน้าสาธารณะ × 4viewport, ไม่มี horizontal overflow; Desktop/iPhone/Android/Tablet ใช้ Chromium ทั้งหมด |
+| Standalone school variant | root redirect, real DB site, school header และ390px layout ผ่าน |
+| Dependency Audit | 0 critical/high/moderate/low ตาม registry ณ เวลาตรวจ ดู DEPENDENCY-AUDIT.json |
+| Source ZIP | สร้างสองแพ็กเกจ ตรวจ CRC/สิ่งส่งมอบ/การไม่รวม secrets และ TypeScript จาก source ที่แตกแยกแล้ว (ใช้ dependencies ที่ติดตั้งตรวจแล้วร่วมกัน) |
 
-การทดสอบ Local ไม่แตะฐานข้อมูล Production ข้อมูลบัญชีและใบสมัครเป็นข้อมูลสมมติ ไม่ commit .env.test, test accounts, cookies หรือ traces ที่มี token
+หลักฐานแบบโครงสร้าง: `INTEGRATION-RESULTS.json`, `E2E-RESULTS.json`, `DEPENDENCY-AUDIT.json`
+
+12 skipped คือ authenticated workflows เดียวกันที่กำหนดให้รัน Desktop ครั้งเดียว ไม่รันซ้ำในอีก3viewport ส่วน responsive และ interaction tests รันทุกviewport ไม่ใช่การข้ามข้อทดสอบที่ล้มเหลว
+
+ชุดแรกพบ timeout จากการกวาด16หน้าต่อหนึ่ง test ใน Dev Build จึงแบ่งเป็นรายหน้าและรันกับ Production Build ต่อมาพบ selector ของป้าย Demo ซ้ำกับป้าย Sandbox แก้ให้เจาะจงป้าย Demo แล้วรันใหม่ทั้งหมดจนได้ผลข้างต้น
+
+## Workflow ที่ตรวจแล้ว
+
+- สมัครสมาชิกและ session ด้วย GoTrue จริงใน Local (email auto-confirm เฉพาะ Local)
+- Login, server-side prices, cart, atomic order, signed Sandbox bridge webhook, wrong amount, forged signature, retry, entitlement และ order receipt PDF
+- Coming Soon/missing product/duplicate cart/idempotency conflict, coupon race, canonical slip hash duplicate, order/VIP manipulation และ refund revocation
+- สมัครเรียนจริงลง Local DB, Thai PDF, เจ้าหน้าที่ตรวจใบสมัคร, CSV export และ cross-school admin/export/PDF denial
+- role isolation: owner/officer/editor/executive/parent, round/grade/school validation, distributed rate limits
+- private bucket policy fence ไม่กระทบ legacy bucket, outbox leases/daily idempotency, support transaction และ release replacement attestation
+- Demo ไม่ส่งใบสมัครส่วนบุคคลขึ้น Server; public pages และปุ่มเลือก/กรอง/ทดลองใช้งานทำงาน
+
+## สิ่งที่ยังไม่ผ่านการตรวจรับ
+
+- **Supabase Storage API จริง:** Local มีเพียง schema fixture ทดสอบ policy ได้ แต่ยังไม่ทดสอบ upload/private file/signed URL expiry กับ Storage service จริง เพราะ Docker image ติดพื้นที่ไม่พอ
+- **Payment provider Sandbox จริง:** ทดสอบ trusted bridge protocol แล้ว ยังไม่มีผู้ให้บริการตรวจเงิน/สลิปและ adapter ที่ได้รับอนุญาต
+- **SMTP delivery/recovery จริง:** Local Auth เปิด auto-confirm สำหรับ test เท่านั้น
+- **Physical devices:** Chromium viewport ไม่ยืนยัน Safari หรืออุปกรณ์จริง
+- **Vercel Preview:** create_project คืน403 forbidden ไม่มี Preview/Production URL และไม่มี Build/Runtime Logs ของ Vercel ให้ตรวจ
+- **Hosted DB advisors/backup restore:** ยังไม่ติดตั้งบน project ของเจ้าของ ไม่ได้ตรวจรับ production migration/restore
 
 ## รันทดสอบซ้ำ
 
@@ -28,15 +50,13 @@ node tests/local/start.mjs
 # อีก terminal:
 node tests/local/gateway.mjs
 npm run test:integration
-node --env-file=.env.test node_modules/next/dist/bin/next dev --hostname 0.0.0.0
+node --env-file=.env.test node_modules/next/dist/bin/next start --hostname 0.0.0.0
 # อีก terminal:
 node --env-file=.env.test node_modules/@playwright/test/cli.js test
 ```
 
-Local stack สร้างเฉพาะ container ชื่อ woramet-store-test-* บน port55431/55432/55499/55430 สคริปต์ integration มี destructive reset เฉพาะฐาน Local ที่ guard URL แล้ว ห้ามเอาไปชี้ Production
+Local stack ใช้เฉพาะ container woramet-store-test-* และ port55431/55432/55499/55430 integration script มี destructive reset เฉพาะฐาน Local ที่ guard URL แล้ว ห้ามชี้ Production ข้อมูลบัญชี/ใบสมัครสมมติ `.env.test`, test accounts, cookies และ traces ไม่ commit
 
-Playwright ใช้ Chromium ใน environment (`/usr/bin/chromium`) กรณี CI ที่ใช้ browser ที่ install ด้วย Playwright ให้กำหนด PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ตาม config
+Playwright ใช้ `/usr/bin/chromium` หรือกำหนด `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` ให้ตรง environment CI workflow เพิ่มไว้ใน `.github/workflows/software-store.yml` แต่ยังต้องตรวจผล GitHub Actions ของ commit ที่จะ merge แยกจากผล Local นี้
 
-## Gate ก่อนพร้อมจำหน่าย
-
-ต้องมี Storage upload/private access/signed expiry tests, provider-specific Sandbox result, SMTP confirmation/recovery, backup/restore, owner acceptance บนอุปกรณ์จริง และอนุมัติ Production ทุกเงื่อนไข สินค้าทั้งหมดจึงยัง Coming Soon แม้ Unit/DB/UI หลายส่วนผ่านแล้ว
+จนกว่าจะครบ external tests และ owner acceptance สินค้าทั้งหมดจึงยัง Coming Soon แม้ผล Local ผ่านแล้ว

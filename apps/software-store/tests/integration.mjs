@@ -500,6 +500,84 @@ await test("document registration is atomic and blocked after review", async () 
   });
   assert(a.error);
 });
+
+await test("support creation and notification commit together with private read access", async () => {
+  const r = await rpc("store_create_support", {
+    p_user: buyer.id,
+    p_subject: "ทดสอบช่วยเหลือ",
+    p_message: "ข้อมูลสมมติสำหรับการทดสอบระบบช่วยเหลือ",
+  });
+  assert.ifError(r.error);
+  assert.equal(
+    (
+      await client.query(
+        "select count(*)::int n from public.store_outbox where topic='support.created' and payload->>'ticket_id'=$1",
+        [r.data],
+      )
+    ).rows[0].n,
+    1,
+  );
+  assert.equal(
+    (await attacker.db.from("store_support").select("*").eq("id", r.data)).data
+      .length,
+    0,
+  );
+});
+await test("untested replacement release preserves old downloads and requires matching hash attestation", async () => {
+  const prior = (
+    await client.query(
+      "select latest_release_id from public.store_products where id=$1",
+      [pid2],
+    )
+  ).rows[0].latest_release_id;
+  const a = await rpc("store_register_release", {
+    p_actor: owner.id,
+    p_product: pid2,
+    p_version: "0.2.1-test",
+    p_path: "fixture/replacement.zip",
+    p_sha: "e".repeat(64),
+    p_changelog: "Local release metadata fixture only",
+  });
+  assert.ifError(a.error);
+  assert.equal(
+    (
+      await client.query(
+        "select latest_release_id from public.store_products where id=$1",
+        [pid2],
+      )
+    ).rows[0].latest_release_id,
+    prior,
+  );
+  assert(
+    (
+      await rpc("store_attest_release", {
+        p_actor: owner.id,
+        p_release: a.data,
+        p_sha: "f".repeat(64),
+        p_evidence: "Local test evidence for metadata fixture only",
+      })
+    ).error,
+  );
+  assert.ifError(
+    (
+      await rpc("store_attest_release", {
+        p_actor: owner.id,
+        p_release: a.data,
+        p_sha: "e".repeat(64),
+        p_evidence: "Local test evidence for metadata fixture only",
+      })
+    ).error,
+  );
+  assert.equal(
+    (
+      await client.query(
+        "select latest_release_id from public.store_products where id=$1",
+        [pid2],
+      )
+    ).rows[0].latest_release_id,
+    a.data,
+  );
+});
 writeFileSync(
   "tests/local/.accounts.json",
   JSON.stringify({

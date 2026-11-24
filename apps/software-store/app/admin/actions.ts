@@ -34,29 +34,18 @@ export async function uploadRelease(_s: State, f: FormData): Promise<State> {
         upsert: false,
       });
     if (uploadError) return { error: "อัปโหลดไม่สำเร็จ" };
-    const { data, error } = await db
-      .from("store_releases")
-      .insert({ product_id: id, version, changelog, sha256, storage_path })
-      .select("id")
-      .single();
+    const { error } = await db.rpc("store_register_release", {
+      p_actor: user.id,
+      p_product: id,
+      p_version: version,
+      p_path: storage_path,
+      p_sha: sha256,
+      p_changelog: changelog,
+    });
     if (error) {
       await db.storage.from("store-releases").remove([storage_path]);
       return { error: "เวอร์ชันซ้ำหรือบันทึกไม่สำเร็จ" };
     }
-    await db
-      .from("store_products")
-      .update({ latest_release_id: data.id, status: "coming_soon" })
-      .eq("id", id);
-    await db.from("store_audit").insert({
-      actor_id: user.id,
-      action: "release.uploaded",
-      target_id: data.id,
-      details: { sha256 },
-    });
-    await db.from("store_outbox").insert({
-      topic: "release.uploaded",
-      payload: { product_id: id, version },
-    });
     revalidatePath("/admin");
     return {
       success: `อัปโหลดแล้ว SHA-256 ${sha256} ยังไม่เปิดขายจนตรวจผลทดสอบและอนุมัติ`,
@@ -79,20 +68,13 @@ export async function attestRelease(_s: State, f: FormData): Promise<State> {
     const evidence = z.string().min(30).max(2000).parse(text(f, "evidence"));
     if (f.get("reviewed") !== "on")
       return { error: "ต้องตรวจหลักฐานของ ZIP เวอร์ชันนี้ก่อน" };
-    const { data, error } = await db
-      .from("store_releases")
-      .update({ tested_at: new Date().toISOString(), test_evidence: evidence })
-      .eq("id", id)
-      .eq("sha256", hash)
-      .select("id")
-      .single();
-    if (error || !data) return { error: "รหัส release หรือ SHA-256 ไม่ตรง" };
-    await db.from("store_audit").insert({
-      actor_id: user.id,
-      action: "release.test-attested",
-      target_id: id,
-      details: { sha256: hash, evidence },
+    const { error } = await db.rpc("store_attest_release", {
+      p_actor: user.id,
+      p_release: id,
+      p_sha: hash,
+      p_evidence: evidence,
     });
+    if (error) return { error: "รหัส release หรือ SHA-256 ไม่ตรง" };
     revalidatePath("/admin");
     return {
       success:

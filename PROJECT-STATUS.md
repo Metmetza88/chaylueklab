@@ -1,45 +1,89 @@
-# CHAYLUEKLAB SOFTWARE STORE — สถานะจากหลักฐานจริง
+# CHAYLUEKLAB SOFTWARE STORE — สถานะและหลักฐานจริง
 
-วันที่เริ่ม: 2026-11-24 UTC • ผู้พัฒนา WORAMET AI LAB
+อัปเดต 2026-11-24 UTC • WORAMET AI LAB
 
-## จุดเริ่มต้นและการสำรอง
-- Repository เดิม: Metmetza88/chaylueklab (ไม่สร้าง Repository ใหม่)
-- Branch: feature/woramet-school-store-20261124
-- ก่อนแก้: e493777066eee586a0fdeae54b04dda9e1ba64bb
-- main ที่ตรวจ: bbed5bd421a2c94b63000f4f64c26c4216af1ebf
-- สำรอง Git ทุก ref: /workspace/scratch/store-backups/chaylueklab-before-store.bundle
-- ต้นฉบับแตกแยกอ่านอย่างเดียว: /workspace/scratch/woramet-original/woramet-store
-- ZIP 1 และ 4: SHA-256 93c126d56b4a94e63f5a58f8ed6523752323b849750bc4dc0a728febacaf4702 (เหมือนกัน)
-- แอปร้านค้า: apps/software-store แยกจากเว็บหลัก ไม่มีการแก้ LIFE OS, ร้านเสื้อผ้า หรือ LINE OA
+**สถานะ: Source พร้อมตรวจรับเป็น Release Candidate; ยังไม่พร้อมเปิดขาย Production**
 
-## สิ่งที่ตรวจพบ
-- ZIP มี 27 ไฟล์ ไม่มี DEPLOY-TH.md หรือ supabase/catalog-drafts.sql
-- schema เดิมมี seed ยอดขายและรีวิวสมมติ ต้องนำออกจากระบบใหม่
-- checkout เดิมเขียน orders และ items คนละ transaction
-- webhook เดิมเป็น shared-secret header ไม่มี HMAC, event identity หรือ transaction reference
-- ไม่มี payment gate, release readiness gate, tests, lockfile, admin products, support และ multi-school application implementation
-- SQL ที่แนบเสริมใช้ CREATE TABLE IF NOT EXISTS กับ column names ที่ไม่ตรงฐานเดิม จึงใช้แทน migration upgrade ไม่ได้
-- SQL เสริมเปิดให้คนทั่วไปอ่าน application ทั้งหมดที่ is_demo_data=true และแก้ vip_expires_at ได้ จึงไม่ใช้โดยตรง
-- รายงานที่แนบกล่าวว่า 2 สินค้าพร้อมขาย แต่ไม่มี source, ZIP, screenshots หรือผลทดสอบรองรับ จึงไม่ถือว่าเป็นผลทดสอบจริง
+พัฒนาร้านค้า Next.js/TypeScript แยกใน `apps/software-store` และ source ของ MET School Pro + MET Admission พร้อม Local database/auth/payment tests แล้ว สินค้าทั้ง15รายการยัง Coming Soon ไม่มีสินค้าที่ผ่าน external acceptance พร้อมจำหน่ายในขณะนี้
 
-## การเชื่อมต่อที่ตรวจแล้ว
-- GitHub สิทธิ์ push/admin อ่านได้จริง
-- Vercel account/team ที่ connector เห็น: team_kA0EAug4JrrTT6ZIc54RXcmL — list_projects คืนรายการว่างทั้ง team และ personal scope
-- Supabase ที่เห็น: CHAYLUEKLAB Reminder Backend และ Metmetza88's Project; ระบบเดิมมีข้อมูลใช้งานจริง ต้องไม่ทับตารางเดิม
-- ยังไม่เปลี่ยน DNS, ยังไม่เปิดรับเงินจริง, ยังไม่อ้างว่าเชื่อม LINE หรือ Income Assistant สำเร็จ
+## สิ่งส่งมอบตามคำขอ
 
-## กำลังดำเนินการ
-ติดตั้ง dependency แบบ pin version, สร้าง schema แบบ namespaced, ร้านค้าและระบบโรงเรียน, tests และคู่มือ
+| รายการ | ผล/หลักฐาน |
+|---|---|
+| 1. เว็บไซต์ Production | ยังไม่มีการเปิด `store.chaylueklab.com` ไม่มี DNS ถูกเปลี่ยน |
+| 2. Preview URL | ยังสร้างไม่ได้ Vercel create_project คืน403 forbidden; ไม่มี Vercel deployment/build/runtime logs ให้อ้าง |
+| 3. GitHub Branch / PR | [Branch เดิม](https://github.com/Metmetza88/chaylueklab/tree/feature/woramet-school-store-20261124) Push แล้ว; PR จะบันทึกลิงก์เมื่อสร้างสำเร็จ |
+| 4. Admin | route `/admin`; โรงเรียน `/school-admin/<slug>` ยังไม่ deploy สาธารณะ |
+| 5. ผลทดสอบ | [TEST-REPORT](apps/software-store/docs/TEST-REPORT.md): Unit31, Integration23, Playwright80passed/12plannedskips/0failed, TypeScript/ESLint/Production Build ผ่าน |
+| 6. พร้อมขายจริง | **0 ระบบ** เพราะยังต้องตรวจ Storage/provider Sandbox/SMTP/อุปกรณ์จริงและเจ้าของตรวจรับ |
+| 7. ยังไม่เสร็จ | สองระบบแรกเป็น RC; อีก13ระบบเป็น roadmap ดูตารางด้านล่าง |
+| 8. ติดตั้งภาษาไทย | [DEPLOY-TH](apps/software-store/DEPLOY-TH.md), [คู่มือโรงเรียน](apps/software-store/docs/SCHOOL-USER-GUIDE-TH.md) |
+| 9. iPhone | [คู่มือ Admin ผ่าน iPhone](apps/software-store/docs/IPHONE-ADMIN-TH.md); responsive ผ่าน Chromium simulation ยังไม่ใช่ Safari device test |
+| 10. ค่าใช้จ่าย | [MONTHLY-COSTS](apps/software-store/docs/MONTHLY-COSTS.md) งบฐานตัวอย่าง USD45/เดือน ไม่ใช่ใบแจ้งหนี้จริง ไม่สมัครบริการเสียเงิน |
+| 11. Security | [SECURITY](apps/software-store/docs/SECURITY.md), [Dependency Audit](apps/software-store/docs/DEPENDENCY-AUDIT.json) registry auditพบ0ช่องโหว่ ณเวลาตรวจ ไม่ใช่คำรับรองว่าไร้ช่องโหว่ทุกชนิด |
+| 12. เจ้าของดำเนินการ | [OWNER-ACTIONS](apps/software-store/docs/OWNER-ACTIONS.md) และคำถาม staging/provider ที่ส่งไว้ ไม่มีการขอ secret ผ่านแชต |
 
-## Release gate
-สินค้าทั้ง 15 ระบบเป็น Coming Soon จนมี source, database, manuals, release ZIP และหลักฐานทดสอบครบ ไม่มีสินค้าพร้อมขายที่ยืนยันได้ในขณะเริ่มต้น
+## รายการผลิตภัณฑ์
 
-## อัปเดตไฟล์ล่าสุดและสิ่งที่ลงมือแล้ว
-- ZIP ล่าสุด SHA-256: e42f3204e6d7984fc07f78e95ef1d519a43f2d910f6ef7000f3298d1f5c80b38 มี DEPLOY-TH.md/catalog-drafts.sql แล้ว ใช้ฉบับนี้เป็นฐานและเทียบทุกไฟล์กับฉบับแรก
-- เพิ่มร้านค้าและ source MET School Pro/MET Admission พร้อม role, rounds, documents, Thai PDF, CSV และ school variants
-- UI Demo ไม่รับข้อมูลเด็กจริง ใช้ค่าตัวอย่างคงที่และ state ใน browser memory
-- สำเร็จการทดสอบชุดแรก Unit27 และ DB/Auth/RLS18 กับ PostgreSQL17 + GoTrueจริง + PostgRESTจริง
-- Playwright ชุดแรก signup, checkout, signed webhook Sandbox, payment retry, grant visibility, receipt PDF, school application/review/export และ cross-school denial ผ่าน; public sweep3ชุดติด timeoutรวม16หน้า จึงแยกเป็นรายหน้าและทดสอบ Production Build ต่อ
-- Local Supabase เต็มชุดและ Storage API pull ไม่สำเร็จ (no space left on device) ใช้ storage schema fixture แทน ห้ามถือว่าผ่าน Storage E2E
-- Vercel create_project POST /v11/projects ใน team_kA0EAug4JrrTT6ZIc54RXcmL คืน403 forbidden ไม่มีสิทธิ์สร้าง project; ไม่มี Vercel CLI, VERCEL_TOKEN หรือ CLI auth file ให้ใช้ fallback ไม่มี Project/Preview/Production/DNS ถูกสร้างหรือเปลี่ยน
-- รอเจ้าของระบุ staging Supabase และ authorized slip provider ผ่านคำถามที่ส่งแล้ว ไม่รับ secret ผ่านแชต
+| โปรแกรม | สถานะ source | จำหน่าย |
+|---|---|---|
+| MET School Pro | 0.2.0-rc.1: school website/news/settings/roles/source/schema/manuals/tests/ZIP | Coming Soon |
+| MET Admission | 0.2.0-rc.1: school website/rounds/applications/documents/review/ThaiPDF/CSV/dashboard/roles/source/schema/manuals/tests/ZIP | Coming Soon |
+| MET Student | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
+| MET Attendance | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
+| MET Schedule | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
+| MET Grades | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
+| MET Assignment | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
+| MET Certificate | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
+| MET Sport | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
+| MET Inventory | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
+| MET E-Office | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
+| MET Library | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
+| MET Parent | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
+| MET School Shop | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
+| MET Exam AI | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
+
+ZIPสำหรับตรวจรับอยู่ใน `apps/software-store/dist/` สองแพ็กเกจพร้อม manifest และ SHA-256 ดู [RELEASE-MANIFEST](apps/software-store/docs/RELEASE-MANIFEST.json) ไฟล์ ZIP ไม่ commitลงpublicrepoหรืออัปโหลดStorageจริงจนเลือกปลายทางที่อนุญาต
+
+## การสำรองและต้นฉบับ
+
+- Repositoryเดิม `Metmetza88/chaylueklab` เป็น public ไม่สร้าง Repository ใหม่ ไม่เปลี่ยน visibility
+- Branchเริ่มต้น `feature/woramet-school-store-20261124` ที่ `e493777066eee586a0fdeae54b04dda9e1ba64bb`; main ที่ตรวจ `bbed5bd421a2c94b63000f4f64c26c4216af1ebf`
+- สำรอง Git ทุกrefก่อนแก้: `/workspace/scratch/store-backups/chaylueklab-before-store.bundle` อยู่ภายนอก Git
+- ZIPชุดแรกสองไฟล์เหมือนกัน SHA256 `93c126d56b4a94e63f5a58f8ed6523752323b849750bc4dc0a728febacaf4702`
+- ZIPล่าสุดใช้เป็นฐาน SHA256 `e42f3204e6d7984fc07f78e95ef1d519a43f2d910f6ef7000f3298d1f5c80b38` สำเนาแตกไว้ `/workspace/scratch/woramet-latest/woramet-store`
+- [ตรวจทุกไฟล์ต้นฉบับ](apps/software-store/docs/SOURCE-REVIEW.md), [SHA256รายไฟล์](apps/software-store/docs/ORIGINAL-FILE-INVENTORY.json)
+- ไม่มีการแก้ตาราง/ข้อมูล hosted Supabase จึงไม่มีการอ้างว่าทำ Production DB backupแล้ว คู่มือบังคับสำรอง/restoreก่อนติดตั้งจริง
+- ไม่แก้ LIFE OS, ร้านเสื้อผ้า, LINE OA หรือ rootเว็บไซต์หลัก มีเพียงแอปใหม่ workflow CIใหม่และเอกสารสถานะ ไม่ merge เข้า main
+
+## หลักฐานการพัฒนาและทดสอบ
+
+- เพิ่ม additive migration ชื่อ `20261124023043_isolated_store_school_platform.sql` สร้างด้วย SupabaseCLI migration new ใช้ store_*/school_* และ store_private แยกจากตารางทั่วไป ไม่มีการแก้ auth trigger เดิม
+- ราคาคำนวณใน DB, atomic checkout/payment, coupon locking, idempotency, transaction reference/slip hashes, grants/refund, audit/outbox และ live gate
+- Auth getUser/RLS/role checks/private storage policy/rate limits/file validation/CSV escaping และ server-only service key
+- Sourceรูปแบบโรงเรียนติดตั้งแยกได้ด้วย APP_VARIANT=school; ทดสอบ root redirect/ข้อมูลจริงในLocal/phone390pxเพิ่มเติมแล้ว
+- Demoไม่รับชื่อ/เบอร์/ไฟล์จริง ใช้ค่าคงที่และ browser memory ไม่ส่งใบสมัครขึ้น Server ภาพ `public/screenshots` ถ่ายจากระบบทดลองที่รันจริงพร้อมป้ายข้อมูลสมมติ
+- Unit31/31, DB/Auth/RLS/transaction23/23, PlaywrightProduction80passed+12plannedskips ผ่าน ดูรายงานและ JSONหลักฐาน ไม่มีการนับ testsที่ยังไม่ได้รันเป็นผ่าน
+- public sweepชุดแรก timeoutเมื่อรวม16หน้าต่อtest; แบ่งต่อหน้าและใช้ Production Build แล้ว ต่อมาป้าย Sandboxทำให้selector Demoกำกวม แก้selectorและรันครบใหม่ผ่าน
+- Local Supabaseเต็มชุด/StorageAPIติดพื้นที่ Docker ไม่พอ จึงใช้ PostgreSQL17+GoTrue+PostgRESTจริงร่วมกับ storage schema fixture; **ยังไม่ทดสอบ Storage service/SignedURL expiry จริง**
+- ก่อนPushสแกนstagedfilesหารูปแบบsecret: ผ่าน ไม่มี .env.test/auth.env/rest.env/test accounts ใน Git หรือ ZIP
+- Commitแรก `6fc13e2` Pushสำเร็จ และมีการแก้เพิ่ม transaction release/support กับรายงานผลต่อท้ายใน commitถัดไป
+
+## การเชื่อมต่อที่ตรวจได้จริง
+
+| บริการ | ผล |
+|---|---|
+| GitHub | อ่าน/Push branchเดิมได้ สิทธิ์repo push/admin; ยังไม่ merge |
+| Vercel | เห็น team `team_kA0EAug4JrrTT6ZIc54RXcmL`; list_projectsทั้งteam/personalคืนว่าง; POST /v11/projects ชื่อ chaylueklab-software-storeคืน403 forbidden ไม่มี projectถูกสร้าง |
+| CLI fallback | ไม่มี VercelCLI, VERCEL_TOKEN หรือ CLI auth file ในWorkspace จึงไม่มี credentialสำรองสำหรับสิทธิ์ที่ขาด |
+| Supabase | เห็น CHAYLUEKLAB Reminder Backend (`bxaplhrunxiadjsdobyl`) และ Metmetza88's Project (`yobymeygbfiwlngmwjcn`); ตรวจ public table metadata ของระบบเดิมแล้ว ไม่เขียน hostedDB |
+| Payment provider | ยังไม่มีบัญชี/APIที่ได้รับอนุญาต ทดสอบเฉพาะ signed trusted bridgeบนLocalSandbox |
+| Command Center/Income Assistant/LINE | เตรียม protocolและoutboxแล้ว ยังไม่มี authorized endpoint/secret/recipient/scheduler จึงไม่ได้ส่งข้อความจริง |
+
+## ข้อจำกัดสำคัญก่อนขาย
+
+Repositoryเดิมเป็น **public** SourceในBranchอ่านได้สาธารณะ PrivateZIPไม่ได้ทำให้SourceในGitHubเป็นความลับ ต้องให้เจ้าของตัดสินใจvisibility/licenseก่อนขายแบบปิดซอร์ส โดยประเมินผลต่อPages/Integrationเดิมก่อนเปลี่ยน
+
+VIPมีสิทธิ์/วันหมดอายุ/ส่วนลดและadminจัดการแล้ว แต่ยังไม่เปิดขายแผนสมาชิก/ต่ออายุอัตโนมัติ ราคาแผน การเชื่อมSMTP การส่งสิทธิ์ทางข้อความ และ13สินค้าที่เหลือยังต้องพัฒนาหรือรับข้อมูลเพิ่ม ไม่ระบุว่าทุกฟีเจอร์ครบ Productionแล้ว
+
+**ไม่เปิดรับเงินจริง ไม่เปลี่ยนDNS และไม่ประกาศพร้อมขายจนผ่าน external tests และเจ้าของอนุมัติ**

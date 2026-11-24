@@ -150,15 +150,12 @@ export async function supportTicket(_prev: State, f: FormData): Promise<State> {
       })
       .parse({ subject: text(f, "subject"), message: text(f, "message") });
     const db = createAdmin();
-    const { data, error } = await db
-      .from("store_support")
-      .insert({ ...v, user_id: user.id })
-      .select("id")
-      .single();
+    const { error } = await db.rpc("store_create_support", {
+      p_user: user.id,
+      p_subject: v.subject,
+      p_message: v.message,
+    });
     if (error) return fail();
-    await db
-      .from("store_outbox")
-      .insert({ topic: "support.created", payload: { ticket_id: data.id } });
     revalidatePath("/support");
     return { success: "ส่งคำขอช่วยเหลือแล้ว" };
   } catch {

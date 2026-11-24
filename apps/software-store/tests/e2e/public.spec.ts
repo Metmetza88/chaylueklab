@@ -42,7 +42,7 @@ test("catalog filters and product details work", async ({ page }) => {
     page.getByRole("heading", { name: "MET Admission", exact: true }),
   ).toBeVisible();
   await page.getByRole("link", { name: /เปิดระบบทดลอง/ }).click();
-  await expect(page.locator(".demo-bar")).toContainText("ข้อมูลสมมติ");
+  await expect(page.locator("div.demo-bar")).toContainText("ข้อมูลสมมติ");
 });
 test("demo completes admission review and result announcement without submitting private data", async ({
   page,

@@ -1,7 +1,7 @@
 {
-  "date": "2026-11-24T03:13:15.175Z",
+  "date": "2026-11-24T03:19:40.100Z",
   "environment": "Local PostgreSQL 17 + real GoTrue + real PostgREST. Storage schema fixture only; Storage API not running.",
-  "passed": 21,
+  "passed": 23,
   "tests": [
     {
       "name": "anonymous cannot write order status or call privileged checkout",
@@ -85,6 +85,14 @@
     },
     {
       "name": "document registration is atomic and blocked after review",
+      "passed": true
+    },
+    {
+      "name": "support creation and notification commit together with private read access",
+      "passed": true
+    },
+    {
+      "name": "untested replacement release preserves old downloads and requires matching hash attestation",
       "passed": true
     }
   ]

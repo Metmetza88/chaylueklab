@@ -1,0 +1,15 @@
+{
+  "checked_at": "2026-11-24T03:23:24.842Z",
+  "all_dependencies": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "notes": [
+    "Pinned versions and lockfile",
+    "postcss and readdir-glob/minimatch overrides verified by build, unit and package tests"
+  ]
+}
