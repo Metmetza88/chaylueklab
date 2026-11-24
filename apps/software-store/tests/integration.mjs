@@ -48,6 +48,15 @@ async function test(name, fn) {
     evidence.push({ name, passed: true });
     process.stdout.write(`PASS ${name}\n`);
   } catch (e) {
+    if (process.env.GITHUB_ACTIONS === "true") {
+      const message = String(e.message ?? e)
+        .replace(/https?:\/\/\S+/g, "[URL redacted]")
+        .replaceAll("\n", " ")
+        .slice(0, 700);
+      process.stderr.write(
+        `::error title=Store integration ${name}::${message}\n`,
+      );
+    }
     evidence.push({ name, passed: false });
     throw e;
   }
@@ -59,8 +68,14 @@ async function user(label) {
     email,
     password,
     email_confirm: true,
+    role: "authenticated",
   });
   assert.ifError(error);
+  assert.equal(
+    data.user.role,
+    "authenticated",
+    "Local Auth fixture must issue authenticated role",
+  );
   const db = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
     auth: { persistSession: false },
   });

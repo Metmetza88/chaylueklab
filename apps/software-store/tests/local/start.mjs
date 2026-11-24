@@ -93,7 +93,7 @@ writeFileSync(
 );
 writeFileSync(
   "tests/local/auth.env",
-  `GOTRUE_JWT_SECRET=${secret}\nGOTRUE_DB_DRIVER=postgres\nGOTRUE_DB_DATABASE_URL=postgres://supabase_auth_admin:local-test-only@woramet-store-test-db:5432/postgres\nGOTRUE_API_HOST=0.0.0.0\nGOTRUE_API_PORT=9999\nAPI_EXTERNAL_URL=http://127.0.0.1:55431/auth/v1\nGOTRUE_SITE_URL=http://127.0.0.1:3000\nGOTRUE_JWT_AUD=authenticated\nGOTRUE_JWT_ADMIN_ROLES=service_role\nGOTRUE_EXTERNAL_EMAIL_ENABLED=true\nGOTRUE_MAILER_AUTOCONFIRM=true\nGOTRUE_LOG_LEVEL=warn\n`,
+  `GOTRUE_JWT_SECRET=${secret}\nGOTRUE_DB_DRIVER=postgres\nGOTRUE_DB_DATABASE_URL=postgres://supabase_auth_admin:local-test-only@woramet-store-test-db:5432/postgres\nGOTRUE_API_HOST=0.0.0.0\nGOTRUE_API_PORT=9999\nAPI_EXTERNAL_URL=http://127.0.0.1:55431/auth/v1\nGOTRUE_SITE_URL=http://127.0.0.1:3000\nGOTRUE_JWT_AUD=authenticated\nGOTRUE_JWT_DEFAULT_GROUP_NAME=authenticated\nGOTRUE_JWT_ADMIN_ROLES=service_role\nGOTRUE_EXTERNAL_EMAIL_ENABLED=true\nGOTRUE_MAILER_AUTOCONFIRM=true\nGOTRUE_LOG_LEVEL=warn\n`,
 );
 writeFileSync(
   "tests/local/rest.env",
