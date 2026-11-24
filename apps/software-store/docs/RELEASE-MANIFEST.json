@@ -12,8 +12,8 @@
     ],
     "license": "single-school",
     "file": "met-school-pro-v0.2.0-rc.1.zip",
-    "bytes": 2061509,
-    "sha256": "c755c45268f8d0a286ab6ce895d8402cca36cfe47157849da2658810749bab95"
+    "bytes": 2064386,
+    "sha256": "1246dd0328506cdd0c2855f4063c529fd8ec8c7f3bb099cf7b70c15dcc47cd34"
   },
   {
     "product": "met-admission",
@@ -28,7 +28,7 @@
     ],
     "license": "single-school",
     "file": "met-admission-v0.2.0-rc.1.zip",
-    "bytes": 2061270,
-    "sha256": "e69a9c9f0a76133504fa93fa0e14b3fbed94cce4dbad0e53c34b74f7dc6957f3"
+    "bytes": 2064143,
+    "sha256": "602559b6aa06c524f90639147a8908d0ef8c7bb920bc1ac0b4356403ea084350"
   }
 ]

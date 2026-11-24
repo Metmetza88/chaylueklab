@@ -12,7 +12,7 @@
 |---|---|
 | 1. เว็บไซต์ Production | ยังไม่มีการเปิด `store.chaylueklab.com` ไม่มี DNS ถูกเปลี่ยน |
 | 2. Preview URL | ยังสร้างไม่ได้ Vercel create_project คืน403 forbidden; ไม่มี Vercel deployment/build/runtime logs ให้อ้าง |
-| 3. GitHub Branch / PR | [Branch เดิม](https://github.com/Metmetza88/chaylueklab/tree/feature/woramet-school-store-20261124) Push แล้ว; PR จะบันทึกลิงก์เมื่อสร้างสำเร็จ |
+| 3. GitHub Branch / PR | [Branch เดิม](https://github.com/Metmetza88/chaylueklab/tree/feature/woramet-school-store-20261124) Push แล้ว; [Draft PR #55](https://github.com/Metmetza88/chaylueklab/pull/55) |
 | 4. Admin | route `/admin`; โรงเรียน `/school-admin/<slug>` ยังไม่ deploy สาธารณะ |
 | 5. ผลทดสอบ | [TEST-REPORT](apps/software-store/docs/TEST-REPORT.md): Unit31, Integration23, Playwright80passed/12plannedskips/0failed, TypeScript/ESLint/Production Build ผ่าน |
 | 6. พร้อมขายจริง | **0 ระบบ** เพราะยังต้องตรวจ Storage/provider Sandbox/SMTP/อุปกรณ์จริงและเจ้าของตรวจรับ |
@@ -67,7 +67,8 @@ ZIPสำหรับตรวจรับอยู่ใน `apps/software-stor
 - public sweepชุดแรก timeoutเมื่อรวม16หน้าต่อtest; แบ่งต่อหน้าและใช้ Production Build แล้ว ต่อมาป้าย Sandboxทำให้selector Demoกำกวม แก้selectorและรันครบใหม่ผ่าน
 - Local Supabaseเต็มชุด/StorageAPIติดพื้นที่ Docker ไม่พอ จึงใช้ PostgreSQL17+GoTrue+PostgRESTจริงร่วมกับ storage schema fixture; **ยังไม่ทดสอบ Storage service/SignedURL expiry จริง**
 - ก่อนPushสแกนstagedfilesหารูปแบบsecret: ผ่าน ไม่มี .env.test/auth.env/rest.env/test accounts ใน Git หรือ ZIP
-- Commitแรก `6fc13e2` Pushสำเร็จ และมีการแก้เพิ่ม transaction release/support กับรายงานผลต่อท้ายใน commitถัดไป
+- Commit `6fc13e2` และ `5213883` Pushสำเร็จ พร้อม transaction release/support และรายงานผล; [Draft PR #55](https://github.com/Metmetza88/chaylueklab/pull/55) เปิดแล้ว ไม่ merge
+- CI ของ PR เป็นการตรวจแยกจากผล Local ต้องดูสถานะ commit ล่าสุดใน GitHub Actions ก่อน merge
 
 ## การเชื่อมต่อที่ตรวจได้จริง
 

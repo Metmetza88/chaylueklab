@@ -59,8 +59,7 @@ for (const slug of ["met-school-pro", "met-admission"]) {
   });
   for (const dir of included)
     for (const f of files(dir)) {
-      if (f.startsWith("supabase/.") || f === "scripts/package-school.mjs")
-        continue;
+      if (f.startsWith("supabase/.")) continue;
       archive.file(f, { name: `${base}/${f}` });
     }
   for (const f of configs)
@@ -90,6 +89,7 @@ for (const slug of ["met-school-pro", "met-admission"]) {
     "docs/TEST-REPORT.md",
     "docs/INTEGRATIONS.md",
     "docs/OWNER-ACTIONS.md",
+    "docs/LICENSE.md",
     "docs/E2E-RESULTS.json",
     "docs/INTEGRATION-RESULTS.json",
     "docs/DEPENDENCY-AUDIT.json",
