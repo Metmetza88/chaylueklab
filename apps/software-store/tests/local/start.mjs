@@ -10,7 +10,15 @@ const run = (args, input) => {
   });
   if (r.status !== 0)
     throw Error(
-      `Local test container command failed: ${args.slice(0, 3).join(" ")}. Inspect Docker locally.`,
+      `Local test container command failed: ${args.slice(0, 3).join(" ")}: ${String(
+        r.stderr,
+      )
+        .replace(/https?:\/\/\S+/g, "[URL redacted]")
+        .replace(
+          /eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g,
+          "[TOKEN redacted]",
+        )
+        .slice(-1200)}`,
     );
   return r.stdout;
 };
@@ -54,7 +62,15 @@ await waitFor(
   () =>
     spawnSync(
       "docker",
-      ["exec", "woramet-store-test-db", "pg_isready", "-U", "postgres"],
+      [
+        "exec",
+        "woramet-store-test-db",
+        "pg_isready",
+        "-h",
+        "127.0.0.1",
+        "-U",
+        "postgres",
+      ],
       { stdio: "ignore" },
     ).status === 0,
 );

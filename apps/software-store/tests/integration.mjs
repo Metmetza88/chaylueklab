@@ -9,15 +9,14 @@ if (url !== "http://127.0.0.1:55431")
 const client = new pg.Client({
   connectionString: process.env.TEST_DATABASE_URL,
 });
-await client.connect();
 if (
-  !process.env.TEST_DATABASE_URL?.startsWith(
-    "postgres://postgres:local-test-only@127.0.0.1:55432/",
-  )
+  process.env.TEST_DATABASE_URL !==
+  "postgres://postgres:local-test-only@127.0.0.1:55432/postgres"
 )
   throw Error(
     "Refusing destructive reset outside the disposable local test database",
   );
+await client.connect();
 await client.query(
   "drop schema if exists store_private cascade; drop schema public cascade; create schema public; grant usage on schema public to anon,authenticated,service_role; grant all on schema public to service_role;",
 );
@@ -38,7 +37,16 @@ const service = createClient(url, process.env.SUPABASE_SERVICE_ROLE_KEY, {
 const anon = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
   auth: { persistSession: false },
 });
-await new Promise((r) => setTimeout(r, 500));
+let restReady = false;
+for (let i = 0; i < 40; i++) {
+  const { error } = await service.from("store_products").select("id").limit(1);
+  if (!error) {
+    restReady = true;
+    break;
+  }
+  await new Promise((r) => setTimeout(r, 250));
+}
+if (!restReady) throw Error("Local PostgREST did not load the test schema");
 let passed = 0;
 const evidence = [];
 async function test(name, fn) {
