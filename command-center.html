@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050914"><meta name="color-scheme" content="dark">
+<title>CHAYLUEKLAB AI COMMAND CENTER</title>
+<meta name="description" content="ศูนย์รวมโปรแกรมและบริการ AI: เลือกโปรแกรม ขอใบเสนอราคา และควบคุมงานอัตโนมัติ / Software marketplace, quotations and AI control in one place.">
+<meta property="og:title" content="CHAYLUEKLAB AI COMMAND CENTER"><meta property="og:description" content="Software marketplace, quotations and AI control."><meta property="og:type" content="website"><meta property="og:url" content="https://chaylueklab.com/command-center.html">
+<link rel="canonical" href="https://chaylueklab.com/command-center.html">
+<link rel="stylesheet" href="./assets/cc.css">
+<script type="module" src="./assets/cc-home.js"></script></head>
+<body><a class="skip" href="#main">ข้ามไปเนื้อหา</a><div id="nav"></div>
+<main id="main" class="cc-wrap">
+ <section class="hero"><div><h1 id="heroTitle"></h1><p id="heroSub"></p>
+  <div class="row"><a class="btn btn-primary" id="ctaShop" href="#shop"></a><a class="btn" id="ctaQuote" href="#quote"></a><a class="btn" id="ctaJoin" href="./console.html"></a></div></div>
+  <div class="hero-art" aria-hidden="true"><div class="grid-glow"><span></span><span></span><span></span></div></div></section>
+
+ <section class="block" id="shop"><h2 id="shopH"></h2><p class="sub" id="shopSub"></p>
+  <div class="tools"><input id="q" type="search" aria-label="ค้นหา"><select id="cat" aria-label="หมวดหมู่"></select><select id="stat" aria-label="สถานะ"></select></div>
+  <div id="products" aria-live="polite"></div></section>
+
+ <section class="block" id="services"><h2 id="svcH"></h2><p class="sub" id="svcSub"></p><div id="serviceList"></div></section>
+
+ <section class="block" id="control"><h2 id="ctlH"></h2><p class="sub" id="ctlSub"></p><div id="ctlCard"></div></section>
+
+ <section class="block" id="quote"><h2 id="quoteH"></h2><p class="sub" id="quoteSub"></p><div id="quoteBox"></div></section>
+
+ <section class="block" id="contact"><h2 id="contactH"></h2>
+  <form id="contactForm" class="card" novalidate><label for="cn">ชื่อ</label><input id="cn" name="name" maxlength="120" required autocomplete="name">
+  <label for="cc">อีเมลหรือเบอร์โทร / LINE</label><input id="cc" name="contact" maxlength="200" required><label for="cm">ข้อความ</label><textarea id="cm" name="message" maxlength="3000" required></textarea>
+  <div class="row" style="margin-top:12px"><button class="btn btn-primary" type="submit" id="contactBtn"></button></div><p class="msg" id="contactMsg" role="status"></p></form></section>
+</main>
+<footer><div class="cc-wrap">© CHAYLUEKLAB · <a href="./app-20261007.html">LIFE OS</a> · <a href="./control.html">Control Center (สต๊อก)</a></div></footer>
+<noscript><div class="cc-wrap"><p class="state">ต้องเปิด JavaScript เพื่อใช้งานหน้านี้</p></div></noscript>
+</body></html>
