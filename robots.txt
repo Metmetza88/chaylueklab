@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /command-center.html
+Disallow: /console.html
+Sitemap: https://chaylueklab.com/sitemap.xml
