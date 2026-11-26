@@ -29,7 +29,9 @@ export default function ActionForm({
         startTransition(() => dispatch(data));
       }}
     >
-      {children}
+      <fieldset disabled={pending} style={{ display: "contents" }}>
+        {children}
+      </fieldset>
       <button className="btn" disabled={pending}>
         {pending ? "กำลังดำเนินการ…" : label}
       </button>

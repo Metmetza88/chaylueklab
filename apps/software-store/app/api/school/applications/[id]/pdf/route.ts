@@ -17,9 +17,15 @@ export async function GET(
     const id = uuid.parse((await params).id);
     const { data: a } = await (await createClient())
       .from("school_applications")
-      .select("*,school_sites(name,academic_year),school_rounds(name)")
+      .select(
+        "application_no,grade_level,student_name,guardian_name,guardian_phone,previous_school,created_at,school_sites(name,academic_year),school_rounds(name)",
+      )
       .eq("id", id)
-      .single();
+      .single()
+      .overrideTypes<{
+        school_sites: { name: string; academic_year: number } | null;
+        school_rounds: { name: string } | null;
+      }>();
     if (!a) return NextResponse.json({ error: "not found" }, { status: 404 });
     const pdf = await makePdf("ใบสมัครเรียน", [
       a.school_sites?.name ?? "",

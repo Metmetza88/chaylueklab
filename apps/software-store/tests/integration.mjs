@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { randomUUID, createHash } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import pg from "pg";
-import { writeFileSync, readFileSync } from "node:fs";
+import { writeFileSync, readFileSync, readdirSync } from "node:fs";
 import sharp from "sharp";
 import { fixtureZip } from "./local/release-fixture.mjs";
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -39,12 +39,11 @@ if (storageEnabled) {
     "drop table if exists storage.objects; create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text,name text); alter table storage.objects enable row level security;",
   );
 }
-await client.query(
-  readFileSync(
-    "supabase/migrations/20261124023043_isolated_store_school_platform.sql",
-    "utf8",
-  ),
-);
+for (const migration of readdirSync("supabase/migrations")
+  .filter((name) => name.endsWith(".sql"))
+  .sort()) {
+  await client.query(readFileSync(`supabase/migrations/${migration}`, "utf8"));
+}
 await client.query(readFileSync("supabase/catalog-drafts.sql", "utf8"));
 await client.query("NOTIFY pgrst, 'reload schema'");
 const service = createClient(url, process.env.SUPABASE_SERVICE_ROLE_KEY, {
@@ -440,19 +439,19 @@ await test("cross-school staff and content editor cannot access private student 
   for (const u of [attacker, editor]) {
     const r = await u.db
       .from("school_applications")
-      .select("*")
+      .select("id")
       .eq("id", application);
     assert.ifError(r.error);
     assert.equal(r.data.length, 0);
   }
   const r = await owner.db
     .from("school_applications")
-    .select("*")
+    .select("id")
     .eq("id", application);
   assert.equal(r.data.length, 1);
   const a = await buyer.db
     .from("school_applications")
-    .select("*")
+    .select("id")
     .eq("id", application);
   assert.equal(a.data.length, 1);
 });
@@ -476,6 +475,62 @@ await test("cross-school review and client status manipulation are denied", asyn
   assert.ifError(
     (await rpc("school_review_application", { ...p, p_actor: owner.id })).error,
   );
+});
+await test("applicant receives the decision and note only after publication", async () => {
+  const args = { p_school: school, p_applicant: buyer.id };
+  const applicantResults = () =>
+    rpc("school_list_applicant_applications", args);
+  const hidden = await applicantResults();
+  assert.ifError(hidden.error);
+  assert.deepEqual(
+    hidden.data.map(({ id, status, review_note }) => ({
+      id,
+      status,
+      review_note,
+    })),
+    [{ id: application, status: "awaiting_publication", review_note: null }],
+  );
+  assert.deepEqual(
+    (
+      await rpc("school_list_applicant_applications", {
+        ...args,
+        p_school: other,
+      })
+    ).data,
+    [],
+  );
+  assert.deepEqual(
+    (
+      await rpc("school_list_applicant_applications", {
+        ...args,
+        p_applicant: attacker.id,
+      })
+    ).data,
+    [],
+  );
+
+  const grants = await client.query(`
+    select
+      has_column_privilege('authenticated', 'public.school_applications', 'status', 'select') as status,
+      has_column_privilege('authenticated', 'public.school_applications', 'review_note', 'select') as note,
+      has_function_privilege('authenticated', 'public.school_list_applicant_applications(uuid,uuid)', 'execute') as rpc
+  `);
+  assert.deepEqual(grants.rows[0], { status: false, note: false, rpc: false });
+  await client.query(
+    "update public.school_rounds set results_published=true where id=$1",
+    [round],
+  );
+  try {
+    const published = await applicantResults();
+    assert.ifError(published.error);
+    assert.equal(published.data[0].status, "approved");
+    assert.equal(published.data[0].review_note, "ทดสอบตรวจเอกสาร");
+  } finally {
+    await client.query(
+      "update public.school_rounds set results_published=false where id=$1",
+      [round],
+    );
+  }
 });
 await test("refund revokes grants and users cannot reinstate them", async () => {
   assert.ifError(

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { getViewer } from "@/lib/shop";
 import { schoolStaff } from "@/lib/school";
 import ActionForm from "@/components/ActionForm";
+import { z } from "zod";
+import { uuid } from "@/lib/security";
 import {
   saveSchool,
   uploadLogo,
@@ -11,12 +13,22 @@ import {
   reviewApplication,
   setSchoolMember,
 } from "../actions";
+
+const pageSize = 100;
+const applicationCursor = z.tuple([z.iso.datetime({ offset: true }), uuid]);
+
 export default async function Admin({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{
+    queue?: string | string[];
+    before?: string | string[];
+  }>;
 }) {
   const { slug } = await params;
+  const { queue, before } = await searchParams;
   const v = await getViewer();
   if (!v.user) redirect(`/login?next=/school-admin/${slug}`);
   let ctx;
@@ -28,20 +40,32 @@ export default async function Admin({
   const { site, role, db } = ctx;
   const canReview = ["owner", "officer"].includes(role);
   const canRead = canReview || role === "executive";
+  const pendingOnly = queue === "pending";
+  const cursor = applicationCursor.safeParse(
+    typeof before === "string" ? before.split("|") : null,
+  );
+  const applicationQuery = db
+    .from("school_applications")
+    .select("*,school_documents(id,kind)")
+    .eq("school_id", site.id)
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false })
+    .limit(pageSize + 1);
+  if (pendingOnly)
+    applicationQuery.in("status", ["submitted", "needs_documents"]);
+  if (cursor.success) {
+    const [createdAt, id] = cursor.data;
+    applicationQuery.or(
+      `created_at.lt.${createdAt},and(created_at.eq.${createdAt},id.lt.${id})`,
+    );
+  }
   const [
     { data: apps, error: appError },
     { data: posts },
     { data: rounds },
     { data: stats },
   ] = await Promise.all([
-    canRead
-      ? db
-          .from("school_applications")
-          .select("*,school_documents(id,kind)")
-          .eq("school_id", site.id)
-          .order("created_at", { ascending: false })
-          .limit(100)
-      : Promise.resolve({ data: [], error: null }),
+    canRead ? applicationQuery : Promise.resolve({ data: [], error: null }),
     ["owner", "editor"].includes(role)
       ? db
           .from("school_posts")
@@ -58,6 +82,15 @@ export default async function Admin({
       ? db.rpc("school_dashboard", { p_actor: v.user.id, p_school: site.id })
       : Promise.resolve({ data: null }),
   ]);
+  const visibleApps = apps?.slice(0, pageSize) ?? [];
+  const last = visibleApps.at(-1);
+  const queuePath = `/school-admin/${slug}`;
+  const nextParams = new URLSearchParams(
+    pendingOnly ? { queue: "pending" } : {},
+  );
+  if (last && apps && apps.length > pageSize) {
+    nextParams.set("before", `${last.created_at}|${last.id}`);
+  }
   return (
     <section className="section">
       <span className="eyebrow">MET SCHOOL PRO + MET ADMISSION</span>
@@ -92,12 +125,26 @@ export default async function Admin({
       )}
       {appError && <p className="error">โหลดใบสมัครไม่สำเร็จ</p>}
       {canRead && (
-        <section className="admin-section">
-          <h2>ใบสมัครล่าสุด</h2>
-          <p className="muted">
-            แสดง 100 รายการล่าสุด ส่งออก CSV ได้สูงสุด 10,000 รายการต่อครั้ง
-          </p>
-          {apps?.map((a) => (
+        <section className="admin-section" id="applications">
+          <h2>ใบสมัคร</h2>
+          <nav className="row" aria-label="ตัวกรองใบสมัคร">
+            <Link
+              className="btn ghost"
+              aria-current={!pendingOnly ? "page" : undefined}
+              href={`${queuePath}#applications`}
+            >
+              ทั้งหมด
+            </Link>
+            <Link
+              className="btn ghost"
+              aria-current={pendingOnly ? "page" : undefined}
+              href={`${queuePath}?queue=pending#applications`}
+            >
+              รอเจ้าหน้าที่หรือเอกสาร
+            </Link>
+          </nav>
+          {!appError && !visibleApps.length && <p>ไม่มีใบสมัครในหน้านี้</p>}
+          {visibleApps.map((a) => (
             <article className="panel stack" key={a.id}>
               <div className="row spaced">
                 <strong>{a.application_no}</strong>
@@ -142,7 +189,7 @@ export default async function Admin({
                       </select>
                     </label>
                     <label>
-                      หมายเหตุ (แสดงให้ผู้ปกครองเห็น)
+                      หมายเหตุ (ผลคัดเลือกและหมายเหตุจะแสดงเมื่อประกาศผล)
                       <textarea
                         name="note"
                         required
@@ -156,6 +203,26 @@ export default async function Admin({
               )}
             </article>
           ))}
+          {(cursor.success || nextParams.has("before")) && (
+            <nav className="row" aria-label="หน้าใบสมัคร">
+              {cursor.success && (
+                <Link
+                  className="btn ghost"
+                  href={`${queuePath}${pendingOnly ? "?queue=pending" : ""}#applications`}
+                >
+                  กลับหน้าแรกของคิว
+                </Link>
+              )}
+              {nextParams.has("before") && (
+                <Link
+                  className="btn ghost"
+                  href={`${queuePath}?${nextParams}#applications`}
+                >
+                  ดูใบสมัครก่อนหน้า
+                </Link>
+              )}
+            </nav>
+          )}
         </section>
       )}
       {["owner", "editor"].includes(role) && (

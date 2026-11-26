@@ -1,15 +1,26 @@
 import { notFound, redirect } from "next/navigation";
 import { getViewer } from "@/lib/shop";
 import { schoolPublic } from "@/lib/school";
-import { createClient } from "@/lib/supabase/server";
+import { createAdmin } from "@/lib/supabase/server";
 import { configured } from "@/lib/env";
 import ActionForm from "@/components/ActionForm";
 import { uploadDocument } from "@/app/school-admin/actions";
-const labels: Record<string, string> = {
+const labels = {
   submitted: "ส่งใบสมัครแล้ว",
   needs_documents: "ต้องแก้ไข/ส่งเอกสารเพิ่ม",
   approved: "ผ่านการคัดเลือก",
   rejected: "ไม่ผ่านการคัดเลือก",
+  awaiting_publication: "ตรวจแล้ว รอประกาศผล",
+};
+type ApplicantApplication = {
+  id: string;
+  application_no: string;
+  student_name: string;
+  grade_level: string;
+  round_name: string;
+  status: keyof typeof labels;
+  review_note: string | null;
+  school_documents: { id: string; kind: string }[];
 };
 export default async function Applications({
   params,
@@ -22,13 +33,11 @@ export default async function Applications({
   if (!user) redirect(`/login?next=/schools/${slug}/applications`);
   const site = await schoolPublic(slug);
   if (!site) notFound();
-  const db = await createClient();
-  const { data, error } = await db
-    .from("school_applications")
-    .select("*,school_documents(id,kind),school_rounds(name,results_published)")
-    .eq("school_id", site.id)
-    .eq("applicant_id", user.id)
-    .order("created_at", { ascending: false });
+  const { data: rows, error } = await createAdmin().rpc(
+    "school_list_applicant_applications",
+    { p_school: site.id, p_applicant: user.id },
+  );
+  const applications: ApplicantApplication[] = rows ?? [];
   return (
     <section className="section">
       <h1>ใบสมัครและสถานะของฉัน</h1>
@@ -36,20 +45,15 @@ export default async function Applications({
         {site.name} · ไม่มีการแสดงรายชื่อนักเรียนสู่สาธารณะ
       </p>
       {error && <p className="error">โหลดใบสมัครไม่สำเร็จ</p>}
-      {!data?.length && <p className="panel">ยังไม่มีใบสมัคร</p>}
-      {data?.map((a) => (
+      {!error && !applications.length && <p className="panel">ยังไม่มีใบสมัคร</p>}
+      {applications.map((a) => (
         <article className="panel stack" style={{ marginTop: 20 }} key={a.id}>
           <div className="row spaced">
             <h2>{a.application_no}</h2>
-            <span className="status">
-              {["approved", "rejected"].includes(a.status) &&
-              !a.school_rounds?.results_published
-                ? "ตรวจแล้ว รอประกาศผล"
-                : labels[a.status]}
-            </span>
+            <span className="status">{labels[a.status]}</span>
           </div>
           <p>
-            {a.student_name} · {a.grade_level} · {a.school_rounds?.name}
+            {a.student_name} · {a.grade_level} · {a.round_name}
           </p>
           {a.review_note && (
             <p className="notice">หมายเหตุจากเจ้าหน้าที่: {a.review_note}</p>
@@ -61,7 +65,7 @@ export default async function Applications({
             ดาวน์โหลดใบสมัคร PDF
           </a>
           <div className="row">
-            {a.school_documents?.map((d: any) => (
+            {a.school_documents.map((d) => (
               <a
                 key={d.id}
                 href={`/api/school/documents/${d.id}`}

@@ -19,9 +19,12 @@ Source สองผลิตภัณฑ์เป็น release candidate; ส�
 บน staging ที่เตรียมแล้ว รันตามลำดับใน transaction ด้วย SQL Editor/CLI ที่ยืนยัน Project แล้ว:
 
 - `supabase/migrations/20261124023043_isolated_store_school_platform.sql`
+- `supabase/migrations/20261126000100_school_applicant_result_visibility.sql`
 - `supabase/catalog-drafts.sql`
 
 Migration สร้างตารางใหม่ RLS ทุกตาราง exposed, RPC แบบ invoker ที่ grant เฉพาะ service_role, helper แบบ definer ใน schema private และ private buckets พร้อม restrictive storage policy ที่บล็อก client เฉพาะ bucket ของระบบใหม่
+
+ถ้าติดตั้ง migration แรกไว้แล้ว ให้รัน migration การเปิดเผยผลก่อนอัปเดตแอป รุ่นนี้อ่านสถานะใบสมัครผ่าน RPC ฝั่งเซิร์ฟเวอร์
 
 ตรวจ query ว่าไม่มี public bucket หรือ RLS ที่ปิดอยู่ และรัน Security Advisors ของ Project ใหม่ ตัวอย่างตรวจเฉพาะตารางใหม่:
 

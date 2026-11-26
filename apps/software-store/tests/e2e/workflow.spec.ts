@@ -209,6 +209,61 @@ test("school applicant submits and officer reviews through protected server acti
   expect(exported.status()).toBe(200);
   expect(await exported.text()).toContain("นักเรียนทดสอบอัตโนมัติ");
 });
+test("staff can reach older pending applications with identical timestamps", async ({
+  page,
+}) => {
+  const db = new pg.Client({ connectionString: process.env.TEST_DATABASE_URL });
+  await db.connect();
+  const slug = `queue-${randomUUID()}`;
+  try {
+    const {
+      rows: [school],
+    } = await db.query(
+      "select public.school_provision($1,$1,$2,'โรงเรียนทดสอบคิว') as id",
+      [accounts.owner.id, slug],
+    );
+    const {
+      rows: [round],
+    } = await db.query(
+      `insert into public.school_rounds(school_id,name,grade_levels,opens_at,closes_at)
+       values($1,'รอบทดสอบ',array['ม.1'],now(),now()+interval '1 day') returning id`,
+      [school.id],
+    );
+    await db.query(
+      `insert into public.school_applications
+         (school_id,round_id,applicant_id,grade_level,student_name,guardian_name,guardian_phone,consent_at,status)
+       select $1,$2,$3,'ม.1','นักเรียนคิว ' || n,'ผู้ปกครองสมมติ','0800000000',now(),
+         case when n = 103 then 'approved' else 'submitted' end
+       from generate_series(1,103) n`,
+      [school.id, round.id, accounts.buyer.id],
+    );
+
+    await login(page, accounts.owner);
+    await page.goto(`/school-admin/${slug}?queue=pending`);
+    const cards = page.locator("#applications article");
+    await expect(cards).toHaveCount(100);
+    const previous = await cards.locator("strong").allTextContents();
+    await page.getByRole("link", { name: "ดูใบสมัครก่อนหน้า" }).click();
+    await expect(cards).toHaveCount(2);
+    for (const number of await cards.locator("strong").allTextContents()) {
+      expect(previous).not.toContain(number);
+    }
+    await expect(
+      cards.first().getByRole("button", { name: "บันทึกผลตรวจ" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "ดูใบสมัครก่อนหน้า" }),
+    ).toHaveCount(0);
+  } finally {
+    await db.query(
+      `delete from public.school_applications
+       where school_id = (select id from public.school_sites where slug = $1)`,
+      [slug],
+    );
+    await db.query("delete from public.school_sites where slug=$1", [slug]);
+    await db.end();
+  }
+});
 test("cross-school staff cannot view school admin, export or other student PDF", async ({
   page,
 }) => {
