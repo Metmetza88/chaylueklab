@@ -40,6 +40,7 @@ if (process.argv[2] === "prepare") {
       {
         checked_at: new Date().toISOString(),
         source_commit: commit,
+        head_commit: process.env.STORE_SOURCE_COMMIT ?? null,
         environment:
           "Next.js production build, Chromium desktop/iPhone/Android/tablet viewports; synthetic local test accounts",
         status:
@@ -71,6 +72,7 @@ if (process.argv[2] === "prepare") {
           {
             checked_at: new Date().toISOString(),
             source_commit: commit,
+            head_commit: process.env.STORE_SOURCE_COMMIT ?? null,
             status: "not_run",
             passed: 0,
             tests: [],

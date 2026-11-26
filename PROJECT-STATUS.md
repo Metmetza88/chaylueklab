@@ -115,3 +115,7 @@ VIPมีสิทธิ์/วันหมดอายุ/ส่วนลดแ
 - แก้ ZIP credential-path validation และ private-file cache settings; Local TypeScript/ESLint/Build/Unit59/Integration23 ผ่าน (Local ยังใช้ Storage schema fixture)
 - Storage API image ยังเกินพื้นที่เครื่องแม้คืน cache จึงเพิ่ม full Storage job บน GitHub Actions พร้อมรายงาน current-run ที่ไม่รวม secrets; ผลชุดใหม่ยังรอ CI จริง ห้ามนับว่าผ่านล่วงหน้า
 - กำลังเตรียม RC.3 สินค้าทั้ง15ยัง Coming Soon และยังไม่มี Preview/Production URL
+
+- ทดสอบสร้าง Vercel Project แบบไม่เชื่อม GitHubเพื่อแยกสาเหตุแล้ว ยัง POST /v11/projectsคืน403 “You don't have permission to create the project.” ไม่มี projectถูกสร้าง ไม่ retryคำขอเดิม ไม่ถือว่าเปลี่ยน OAuthแล้วจะหายเอง CLIไม่มี token/auth fileสำรอง
+- CI รอบแรกของ full Storage เริ่ม service v1.98.6จริงได้แล้ว แต่ fixture ลบ metadataผ่านSQLถูก protect_delete ปฏิเสธ แก้ให้ fixture upload/removeผ่าน Storage APIโดยไม่ปิดตัวป้องกัน รายงานไม่นับชุดนี้ว่าผ่านก่อน rerun
+- เพิ่ม authenticated Admin responsive check: Local Desktop/iPhone layout/Android/Tablet ผ่าน4กรณี ไม่มี page overflow และเข้าถึง controlsได้ (Chromium simulation ไม่ใช่อุปกรณ์จริง)

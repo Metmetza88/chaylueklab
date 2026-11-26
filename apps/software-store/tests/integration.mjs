@@ -3,6 +3,8 @@ import { randomUUID, createHash } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import pg from "pg";
 import { writeFileSync, readFileSync } from "node:fs";
+import sharp from "sharp";
+import { fixtureZip } from "./local/release-fixture.mjs";
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const storageEnabled = process.env.TEST_STORAGE_API === "true";
 if (url !== "http://127.0.0.1:55431")
@@ -63,11 +65,33 @@ for (let i = 0; i < 40; i++) {
 if (!restReady) throw Error("Local PostgREST did not load the test schema");
 let passed = 0;
 const evidence = [];
+function saveEvidence(status) {
+  writeFileSync(
+    "docs/INTEGRATION-RESULTS.json",
+    JSON.stringify(
+      {
+        date: new Date().toISOString(),
+        source_commit: process.env.GITHUB_SHA ?? null,
+        head_commit: process.env.STORE_SOURCE_COMMIT ?? null,
+        status,
+        environment: storageEnabled
+          ? "Disposable PostgreSQL 17 + real GoTrue + real PostgREST + real Storage API v1.98.6 (file backend)."
+          : "Local PostgreSQL 17 + real GoTrue + real PostgREST. Storage schema fixture only; Storage API not running.",
+        passed,
+        failed: evidence.filter((t) => !t.passed).length,
+        tests: evidence,
+      },
+      null,
+      2,
+    ) + "\n",
+  );
+}
 async function test(name, fn) {
   try {
     await fn();
     passed++;
     evidence.push({ name, passed: true });
+    saveEvidence("running");
     process.stdout.write(`PASS ${name}\n`);
   } catch (e) {
     if (process.env.GITHUB_ACTIONS === "true") {
@@ -80,6 +104,7 @@ async function test(name, fn) {
       );
     }
     evidence.push({ name, passed: false });
+    saveEvidence("failed");
     throw e;
   }
 }
@@ -516,8 +541,42 @@ await test("outbox workers lease disjoint events and daily summary is idempotent
 });
 await test("restrictive storage fence blocks legacy permissive policies only on new buckets", async () => {
   await client.query(
-    "grant usage on schema storage to authenticated; grant select,insert,update,delete on storage.objects to authenticated; create policy local_legacy_allow on storage.objects for all to authenticated using(true) with check(true); insert into storage.buckets(id,name,public) values('legacy-test','legacy-test',false) on conflict(id) do nothing; insert into storage.objects(bucket_id,name) values('legacy-test','rls-fixture'),('store-releases','rls-fixture'),('school-documents','rls-fixture')",
+    "grant usage on schema storage to authenticated; grant select,insert,update,delete on storage.objects to authenticated; create policy local_legacy_allow on storage.objects for all to authenticated using(true) with check(true); insert into storage.buckets(id,name,public) values('legacy-test','legacy-test',false) on conflict(id) do nothing",
   );
+  const fixtures = [
+    ["legacy-test", "rls-fixture.txt", "text/plain"],
+    ["store-releases", "rls-fixture.zip", "application/zip"],
+    ["school-documents", "rls-fixture.png", "image/png"],
+  ];
+  if (storageEnabled) {
+    const png = await sharp({
+      create: { width: 2, height: 2, channels: 4, background: "#302e70" },
+    })
+      .png()
+      .toBuffer();
+    const zip = await fixtureZip();
+    for (const [bucket, path, contentType] of fixtures) {
+      const bytes =
+        contentType === "image/png"
+          ? png
+          : contentType === "application/zip"
+            ? zip
+            : Buffer.from("synthetic legacy fixture");
+      const result = await service.storage
+        .from(bucket)
+        .upload(path, bytes, { contentType, cacheControl: "0" });
+      assert(
+        !result.error,
+        `Storage fixture upload failed for ${bucket} (HTTP ${result.error?.statusCode ?? "unknown"})`,
+      );
+    }
+  } else {
+    for (const [bucket, path] of fixtures)
+      await client.query(
+        "insert into storage.objects(bucket_id,name) values($1,$2)",
+        [bucket, path],
+      );
+  }
   await client.query("begin");
   await client.query("set local role authenticated");
   const rows = await client.query("select bucket_id from storage.objects");
@@ -526,7 +585,16 @@ await test("restrictive storage fence blocks legacy permissive policies only on 
     ["legacy-test"],
   );
   await client.query("rollback");
-  await client.query("delete from storage.objects where name='rls-fixture'");
+  for (const [bucket, path] of fixtures) {
+    if (storageEnabled) {
+      const result = await service.storage.from(bucket).remove([path]);
+      assert(!result.error, `Storage fixture cleanup failed for ${bucket}`);
+    } else
+      await client.query(
+        "delete from storage.objects where bucket_id=$1 and name=$2",
+        [bucket, path],
+      );
+  }
 });
 await test("document registration is atomic and blocked after review", async () => {
   const a = await rpc("school_register_document", {
@@ -633,22 +701,7 @@ writeFileSync(
     application,
   }),
 );
-writeFileSync(
-  "docs/INTEGRATION-RESULTS.json",
-  JSON.stringify(
-    {
-      date: new Date().toISOString(),
-      source_commit: process.env.GITHUB_SHA ?? null,
-      environment: storageEnabled
-        ? "Disposable PostgreSQL 17 + real GoTrue + real PostgREST + real Storage API v1.98.6 (file backend)."
-        : "Local PostgreSQL 17 + real GoTrue + real PostgREST. Storage schema fixture only; Storage API not running.",
-      passed,
-      tests: evidence,
-    },
-    null,
-    2,
-  ),
-);
+saveEvidence("completed");
 await client.end();
 process.stdout.write(
   `${passed} integration/security checks passed. Local accounts saved in ignored file.\n`,

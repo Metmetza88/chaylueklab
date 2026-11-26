@@ -77,9 +77,16 @@ async function test(name, run) {
     await run();
     tests.push({ name, passed: true });
     process.stdout.write(`PASS ${name}\n`);
-  } catch {
+  } catch (e) {
     tests.push({ name, passed: false });
-    throw Error(`Real Storage check failed: ${name}`);
+    const detail = String(e.message ?? e)
+      .replace(/https?:\/\/\S+/g, "[URL redacted]")
+      .replace(
+        /eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g,
+        "[JWT redacted]",
+      )
+      .slice(0, 500);
+    throw Error(`Real Storage check failed: ${name}: ${detail}`);
   }
 }
 try {
@@ -278,6 +285,7 @@ try {
       {
         checked_at: new Date().toISOString(),
         source_commit: process.env.GITHUB_SHA ?? null,
+        head_commit: process.env.STORE_SOURCE_COMMIT ?? null,
         environment:
           "Real Supabase Storage API v1.98.6 + PostgreSQL 17 + GoTrue + PostgREST, disposable file backend; synthetic data only",
         passed: tests.filter((t) => t.passed).length,

@@ -1,8 +1,11 @@
 {
-  "date": "2026-11-26T14:16:51.542Z",
+  "date": "2026-11-26T14:26:28.851Z",
   "source_commit": null,
+  "head_commit": null,
+  "status": "completed",
   "environment": "Local PostgreSQL 17 + real GoTrue + real PostgREST. Storage schema fixture only; Storage API not running.",
   "passed": 23,
+  "failed": 0,
   "tests": [
     {
       "name": "anonymous cannot write order status or call privileged checkout",
