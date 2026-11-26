@@ -1,0 +1,74 @@
+{
+  "url": "https://rawcdn.githack.com/Metmetza88/chaylueklab/c9e7e8d5d288ca03e7f7776b9f431fa916520333/ai-money-studio/business-insights.html",
+  "sourceCommit": "c9e7e8d5d288ca03e7f7776b9f431fa916520333",
+  "date": "2026-11-26",
+  "engine": "Chromium 151.0.7922.173",
+  "platform": "Linux",
+  "assets": [
+    {
+      "path": "ai-money-studio/business-insights.html",
+      "sha256": "c1a9039fc31d9418b63de6fbdeb1177ef65e6793fb371ab217bf20f8f050322f"
+    },
+    {
+      "path": "ai-money-studio/business-insights.css",
+      "sha256": "fe0739080adb82be9c2b31b0a366f62a8922c033828a47cae817684a935e1983"
+    },
+    {
+      "path": "ai-money-studio/business-insights-core.js",
+      "sha256": "78f072e1e9b7e4508d7a3daaa815e021e716703049adfb1ca0f3756a21ad6b6a"
+    },
+    {
+      "path": "ai-money-studio/business-insights.js",
+      "sha256": "165c6fece242366d358d3851be3aa0bd5c79b35fbc27a36e0abace54b8b3c8d1"
+    },
+    {
+      "path": "ai-money-studio/woramet-mark.svg",
+      "sha256": "cc7946bd06becdfe9d91503bbcf14c94a7d9028e851782c184ea046d3a0fb990"
+    },
+    {
+      "path": "assets/fonts/control-thai.woff2",
+      "sha256": "1f5a173641bbcb3ca4fb0a986858b6b07f8cd5dd2ed61236b40548c7a3c7292f"
+    }
+  ],
+  "results": [
+    {
+      "width": 375,
+      "height": 812,
+      "passed": true,
+      "manualTotalBaht": 30,
+      "twoRowTotalBaht": 101,
+      "demoDoesNotMix": true,
+      "downloadPassed": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "passed": true,
+      "manualTotalBaht": 30,
+      "twoRowTotalBaht": 101,
+      "demoDoesNotMix": true,
+      "downloadPassed": true
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "passed": true,
+      "manualTotalBaht": 30,
+      "twoRowTotalBaht": 101,
+      "demoDoesNotMix": true,
+      "downloadPassed": true
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "passed": true,
+      "manualTotalBaht": 30,
+      "twoRowTotalBaht": 101,
+      "demoDoesNotMix": true,
+      "downloadPassed": true
+    }
+  ],
+  "postRequestsDuringAppFlow": 0,
+  "realIPhoneSafariTested": false,
+  "firstVisit": "Provider may display External Content Notice; select Open the page."
+}

@@ -65,7 +65,7 @@ WORAMET AI LAB — Business Insights helps small stores turn Thai or English sal
 | คำอธิบาย Problem / Solution / Track | ร่างไทยและอังกฤษด้านบน; ยืนยันชื่อ Track ทางการ |
 | Source code และ Commit | ใช้เฉพาะสาขาทดลอง; แนบลิงก์ Commit ที่เจ้าของตรวจแล้ว |
 | วิธีรัน / ข้อจำกัด / สถานะ AI | README สองภาษาและเอกสาร server |
-| Working demo URL | [ลิงก์ทดลองโค้ดรุ่น 8e7ca1c](https://rawcdn.githack.com/Metmetza88/chaylueklab/8e7ca1c40d2196c748c0320abff640a0affa9bc7/ai-money-studio/business-insights.html) ผ่าน githack **ลิงก์นี้ยังเป็นโค้ดเก่าก่อน commit 6ef8ecf (รูปแบบวันที่/บาทใหม่ยังไม่อยู่ในลิงก์) ต้องสร้างลิงก์ใหม่จาก commit ล่าสุดและให้เจ้าของอนุมัติก่อนส่ง**; ครั้งแรกกด Open the page; ยังต้องตรวจว่าผู้จัดยอมรับลิงก์บุคคลที่สามและการเผยแพร่ถาวร |
+| Working demo URL | [ลิงก์ทดลองโค้ดรุ่น c9e7e8d](https://rawcdn.githack.com/Metmetza88/chaylueklab/c9e7e8d5d288ca03e7f7776b9f431fa916520333/ai-money-studio/business-insights.html) ผ่าน githack **ลิงก์นี้ยังเป็นโค้ดเก่าก่อน commit 6ef8ecf (รูปแบบวันที่/บาทใหม่ยังไม่อยู่ในลิงก์) ต้องสร้างลิงก์ใหม่จาก commit ล่าสุดและให้เจ้าของอนุมัติก่อนส่ง**; ครั้งแรกกด Open the page; ยังต้องตรวจว่าผู้จัดยอมรับลิงก์บุคคลที่สามและการเผยแพร่ถาวร |
 | วิดีโอ 60–90 วินาที | มีสคริปต์ ยังไม่บันทึกหรืออัปโหลด |
 | ภาพประกอบหน้าจอ | มีหลักฐาน Chromium ข้อมูลสมมติใน `docs/woramet-qa/`; เจ้าของเลือกภาพส่ง |
 | ผลทดสอบและชุดข้อมูล | AUDIT-QA.md, tests และ fixtures สมมติ |

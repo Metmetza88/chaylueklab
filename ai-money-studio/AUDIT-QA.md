@@ -112,3 +112,27 @@ https://rawcdn.githack.com/Metmetza88/chaylueklab/8e7ca1c40d2196c748c0320abff640
 [หลักฐาน remote preview JSON](../docs/woramet-qa/mobile-preview-summary.json) · [ภาพ mobile preview จากลิงก์จริง](../docs/woramet-qa/mobile-preview-390.png)
 
 **ยังไม่ทดสอบ Safari บน iPhone จริงหรือ Windows จริง** ไม่มีการเรียก paid AI หรือส่งประกวด วิธี Cloudflare Quick Tunnel ที่ลองก่อนหน้านี้เชื่อมต่อจากเครื่อง Cloud ไม่ได้ จึงไม่ได้ใช้ และปิด local preview process ที่ไม่จำเป็นแล้ว การตรวจนี้ไม่ได้ยืนยันว่าผู้จัด Dojo ยอมรับ hosting provider ดังกล่าว
+
+## 26 พฤศจิกายน 2026 — ปรับให้กรอกยอดขายบนโทรศัพท์ได้โดยตรง
+
+ต่อยอดจากหัวสาขาเดิม `d969882` โดยรักษางานอื่นที่เพิ่มระหว่างทางไว้ แก้เฉพาะ Business Insights, tests และเอกสาร ไม่มีการเปลี่ยน main หรือระบบขายจริง
+
+- หน้าแรกเป็นแบบฟอร์มชื่อสินค้า จำนวน ราคาต่อชิ้น และวันที่ขาย เพิ่ม/ลบได้สูงสุด 100 รายการ แล้วกดสรุปยอด ใช้ validator และการคำนวณสตางค์ตัวเดิม
+- วันที่เดียวใช้กับทุกแถวในแบบฟอร์ม; ชุดข้อมูลหลายวันยังนำเข้า CSV ได้ ช่อง CSV ย้ายเข้าเมนูพับ
+- แยกตัวอย่างจากช่องกรอก พร้อมคำเตือน “ยอดนี้ไม่ใช่ยอดขายร้านคุณ” และรักษาคำเตือนเมื่อแก้ CSV จากตัวอย่าง ไม่รวมตัวอย่างเข้ากับรายการที่กรอก
+- การแก้/เพิ่ม/ลบรายการหรือวันที่ล้างรายงานเก่า และยกเลิกผลอ่านไฟล์ค้าง; ปุ่มล้างข้อมูลล้างทั้งสองรูปแบบ
+- สถานะข้อมูลยังอยู่เฉพาะในหน้านี้ ไม่มีการบันทึกถาวร ไม่มี AI API และไม่มีการนำข้อมูลร้านจริงมาทดสอบ
+
+ทดสอบ Business Insights **95/95 ข้อ** (ก่อนแก้รอบนี้ 88/88) และรันรวม root tests/LINE/local AI boundary ได้ **247/247 ข้อ** ผลจริงอยู่ใน [manual-entry/node-tests.txt](../docs/woramet-qa/manual-entry/node-tests.txt)
+
+Chromium บน Linux ผ่าน 320, 375, 390, 430 และ 1440 พิกเซล: กรอกปากกา 3×10 ได้ 30 บาท เพิ่มสมุด 2×35.50 ได้ 101 บาท แก้/ลบข้อมูล ตรวจค่าผิด ดูตัวอย่างแล้วย้อนกลับมาได้ 101 บาทเดิม พร้อม CSV และรายงานเดิม ไม่มี console/CSP errors หรือ network ภายนอกใน local app flow
+
+ลิงก์ทดลองที่เจ้าของอนุมัติให้อัปเดต ใช้ source Commit `c9e7e8d`:
+
+https://rawcdn.githack.com/Metmetza88/chaylueklab/c9e7e8d5d288ca03e7f7776b9f431fa916520333/ai-money-studio/business-insights.html
+
+ตรวจลิงก์จริงที่ 375, 390, 430 และ 1440 พิกเซล ผ่าน manual entry, ดาวน์โหลด TXT, กลับไปแก้, ตัวอย่างไม่ปนยอด และล้างข้อมูล HTML/CSS/JS/icon/font ทั้ง 6 ไฟล์ตรงกับ source bytes/SHA-256 ไม่มี POST ระหว่าง app flow (การรับทราบ External Content Notice ของผู้ให้บริการเกิดก่อนเริ่มนับ)
+
+[Remote QA JSON](../docs/woramet-qa/manual-entry/online-summary.json) · [ภาพหน้าแรก](../docs/woramet-qa/manual-entry/online-iphone-start.png) · [ภาพผล 30 บาท](../docs/woramet-qa/manual-entry/online-iphone-result.png)
+
+WebKit ยังเปิดไม่ได้เพราะขาด library ระบบเดิม จึง **ยังไม่ได้ทดสอบ Safari/iPhone จริงของรุ่นนี้** ภาพจากเจ้าของก่อนหน้านี้ยืนยันได้ว่ารุ่นเดิมเปิดและแสดงผลบน Safari/iPhone ได้ แต่ไม่ใช่การรับรอง flow ใหม่ครบทั้งหมด ลิงก์เป็น third-party static preview ฟรีแบบตรึง Commit ไม่ใช่การเปลี่ยน hosting/DNS ของ chaylueklab.com และไม่ได้ส่งประกวด

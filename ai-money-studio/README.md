@@ -40,13 +40,13 @@ node server/woramet/dev-server.mjs
 
 เจ้าของอนุมัติเปิดลิงก์ทดลองแยกแล้วเมื่อ 13 พฤศจิกายน 2026:
 
-[เปิด WORAMET AI LAB บนโทรศัพท์](https://rawcdn.githack.com/Metmetza88/chaylueklab/8e7ca1c40d2196c748c0320abff640a0affa9bc7/ai-money-studio/business-insights.html)
+[เปิด WORAMET AI LAB บนโทรศัพท์](https://rawcdn.githack.com/Metmetza88/chaylueklab/c9e7e8d5d288ca03e7f7776b9f431fa916520333/ai-money-studio/business-insights.html)
 
 1. เปิดลิงก์ใน Safari ถ้าเห็นหน้า **External Content Notice** ให้กด **Open the page**
 2. กด **ดูผลด้วยข้อมูลสมมติ** ควรเห็นยอดขาย **7,200 บาท**
 3. ทดลองเลือก CSV ที่ลบข้อมูลส่วนตัวแล้ว หรือดาวน์โหลดรายงานจากข้อมูลสมมติก่อน
 
-ลิงก์นี้เป็น static preview ผ่านบริการ githack ฟรี อ่านไฟล์จาก Commit `8e7ca1c` ที่อยู่ในสาขาทดลองเดิม ไม่สร้าง Repository/โปรเจกต์โฮสต์ใหม่ ไม่เปิด billing และไม่เปลี่ยน chaylueklab.com เป็นบริการบุคคลที่สามสำหรับทดลอง ไม่มีการรับประกัน uptime และจะคงโค้ดรุ่นนี้แม้ภายหลังสาขาจะมี Commit ใหม่ ตัวแอปยังประมวลผล CSV ในเบราว์เซอร์และปิด AI เหมือนเดิม
+ลิงก์นี้เป็น static preview ผ่านบริการ githack ฟรี อ่านไฟล์จาก Commit `c9e7e8d` ที่อยู่ในสาขาทดลองเดิม ไม่สร้าง Repository/โปรเจกต์โฮสต์ใหม่ ไม่เปิด billing และไม่เปลี่ยน chaylueklab.com เป็นบริการบุคคลที่สามสำหรับทดลอง ไม่มีการรับประกัน uptime และจะคงโค้ดรุ่นนี้แม้ภายหลังสาขาจะมี Commit ใหม่ ตัวแอปยังประมวลผล CSV ในเบราว์เซอร์และปิด AI เหมือนเดิม
 
 หน้าจอปรับตามขนาดมือถือ มีปุ่มแตะอย่างน้อย 44 พิกเซล และตัวอักษรช่องกรอก 16 พิกเซลเพื่อช่วยลดการซูมอัตโนมัติ เลือก CSV จากแอป Files ได้เมื่อเปิดหน้าเว็บผ่าน HTTP(S) ที่อุปกรณ์เข้าถึงได้
 

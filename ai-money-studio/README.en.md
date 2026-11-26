@@ -34,9 +34,9 @@ The preview binds only to `127.0.0.1`, serves an explicit static allowlist and d
 
 ## Phone preview (owner approved, 13 November 2026)
 
-[Open the tested mobile preview](https://rawcdn.githack.com/Metmetza88/chaylueklab/8e7ca1c40d2196c748c0320abff640a0affa9bc7/ai-money-studio/business-insights.html). On the provider's first-visit **External Content Notice**, click **Open the page**, then choose the fictional-data quick demo (THB 7,200).
+[Open the tested mobile preview](https://rawcdn.githack.com/Metmetza88/chaylueklab/c9e7e8d5d288ca03e7f7776b9f431fa916520333/ai-money-studio/business-insights.html). On the provider's first-visit **External Content Notice**, click **Open the page**, then choose the fictional-data quick demo (THB 7,200).
 
-This free third-party static preview serves the immutable public GitHub commit `8e7ca1c` from the existing experimental branch. No new repository or hosting project was created; no billing, main-branch changes or production-domain changes were made. There is no uptime guarantee, and later branch changes do not update this pinned URL. CSV stays in the app's browser memory; AI remains disabled. External Chromium QA passed 375, 390, 430 and 1440-pixel viewports, including Thai CSV import and TXT/JSON downloads. Actual iPhone Safari remains untested.
+This free third-party static preview serves the immutable public GitHub commit `c9e7e8d` from the existing experimental branch. No new repository or hosting project was created; no billing, main-branch changes or production-domain changes were made. There is no uptime guarantee, and later branch changes do not update this pinned URL. CSV stays in the app's browser memory; AI remains disabled. External Chromium QA passed 375, 390, 430 and 1440-pixel viewports, including Thai CSV import and TXT/JSON downloads. Actual iPhone Safari remains untested.
 
 ## Supported data and calculation rules
 
