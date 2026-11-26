@@ -100,7 +100,7 @@ main.addEventListener('submit',async event=>{
   const result=document.getElementById('quote-result');
   if(!slugs.length){result.textContent='กรุณาเลือกอย่างน้อย 1 โปรแกรม';return;}
   draft={schoolName:fields.get('school_name').trim(),note:fields.get('note').trim(),products:modules.filter(m=>slugs.includes(m.slug))};
-  result.innerHTML=quoteDraft(draft)+`<div class="stack-actions no-print"><button type="button" class="secondary" data-print-draft>พิมพ์สรุปคำขอ</button><button type="button" data-send-quote>เข้าสู่ระบบ / ส่งคำขอ</button></div><div id="send-status" role="status"></div>`;
+  result.innerHTML=quoteDraft(draft)+`<div class="no-print"><p>คัดลอกสรุป แล้วเปิด LINE ของ พ.สมนึก 2&3 เพื่อส่งข้อความให้ทีมงาน กรุณางดแนบข้อมูลนักเรียน</p><div class="stack-actions"><button type="button" class="secondary" data-copy-draft>คัดลอกสรุป</button><a class="button" href="https://lin.ee/8qkUbdt" target="_blank" rel="noopener noreferrer">เปิด LINE พ.สมนึก 2&3</a><button type="button" class="secondary" data-print-draft>พิมพ์สรุปคำขอ</button><button type="button" class="secondary" data-send-quote>เข้าสู่ระบบ / ส่งคำขอ</button></div><div id="send-status" role="status"></div></div>`;
  }
  if(form.id==='profile-form') await submitTask(form,async()=>{
   await api('customer-profile',{body:{school_id:schoolId,contact_name:new FormData(form).get('contact_name')}});toast('บันทึกข้อมูลผู้ติดต่อแล้ว');
@@ -137,6 +137,20 @@ main.addEventListener('click',async event=>{
  if(target.hasAttribute('data-print-draft')){
   const section=main.querySelector('section');section.classList.add('print-target');
   document.body.classList.add('printing');window.print();
+ }
+ if(target.hasAttribute('data-copy-draft')&&draft){
+  const status=document.getElementById('send-status');
+  const text=['ขอใบเสนอราคา Education 2570',`หน่วยงาน: ${draft.schoolName}`,`โปรแกรม: ${draft.products.map(product=>product.name).join(', ')}`,draft.note].filter(Boolean).join('\n');
+  try {
+   await navigator.clipboard.writeText(text);
+   status.textContent='คัดลอกแล้ว เปิด LINE แล้ววางข้อความเพื่อส่งคำขอ';
+  } catch {
+   const field=document.createElement('textarea');
+   field.value=text;field.readOnly=true;field.rows=5;
+   field.setAttribute('aria-label','สรุปคำขอสำหรับคัดลอก');
+   status.replaceChildren('เลือกคัดลอกข้อความด้านล่าง แล้วส่งให้ทีมงานผ่าน LINE',field);
+   field.focus();field.select();
+  }
  }
  if(target.hasAttribute('data-export-report'))downloadCsv(reportRows,'education-2570-report.csv');
  if(target.hasAttribute('data-send-quote')) {

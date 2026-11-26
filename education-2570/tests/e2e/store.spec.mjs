@@ -57,6 +57,7 @@ test('certificate escapes HTML and has a real print action',async({page})=>{
 test('quotation draft is honest, escapes inputs and does not claim submission',async({page})=>{
  await page.goto('/#/quote?module=exam-studio');await page.getByLabel('ชื่อโรงเรียน / หน่วยงาน').fill('โรงเรียนทดสอบ <script>');await page.getByLabel('รายละเอียดความต้องการ').fill('ผู้ใช้งาน 10 คน');
  await page.getByRole('button',{name:'สร้างสรุปคำขอ'}).click();await expect(page.locator('#quote-result')).toContainText('ยังไม่ได้ส่งให้ทีมงาน');await expect(page.locator('#quote-result script')).toHaveCount(0);
+ await expect(page.getByRole('link',{name:'เปิด LINE พ.สมนึก 2&3'})).toHaveAttribute('href','https://lin.ee/8qkUbdt');
  await page.getByRole('button',{name:'เข้าสู่ระบบ / ส่งคำขอ'}).click();await expect(page.locator('#send-status')).toContainText('ระบบบัญชียังไม่เชื่อมต่อ');
 });
 test('unconfigured login and workspace show actual blocker states',async({page})=>{
