@@ -14,7 +14,7 @@
     {
       "file": "chromium-desktop-sample-crest.jef",
       "format": "jef",
-      "sha256": "418156363c2eff34e599132e29922b017753cfd66bc461143ed1a6516a9a0141",
+      "sha256": "15efec3394d26bf9d758e23d64fba1c9ea5b7a1283c33967d7cc9afb4648c2c2",
       "stitch_count": 2779,
       "color_changes": 5,
       "machine_tested": false
@@ -39,7 +39,7 @@
     {
       "file": "chromium-iphone-sample-crest.jef",
       "format": "jef",
-      "sha256": "f6e9f413e41b1c20d4eddd558afdad2a0386165978cb521fd370bfc7b3a3f9a3",
+      "sha256": "d431e6cc31d19d6119091b4f4e9fd1336bccda10549dcde95ef174ff44800a45",
       "stitch_count": 2767,
       "color_changes": 5,
       "machine_tested": false
@@ -64,7 +64,7 @@
     {
       "file": "webkit-iphone-sample-crest.jef",
       "format": "jef",
-      "sha256": "176327afaca14960c732b8ae3475bacbd519223af929a69b1934023e60b4d290",
+      "sha256": "8f05c54d50fad8d0339fb521a6e2a5429f1b1c1a0d445119e8dc67064fc43d61",
       "stitch_count": 2767,
       "color_changes": 5,
       "machine_tested": false

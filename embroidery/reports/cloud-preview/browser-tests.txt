@@ -2,3 +2,4 @@ PASS chromium-desktop
 PASS chromium-iphone
 Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
 PASS webkit-iphone
+PASS 9 actual browser-downloaded machine files and nonblank PNG previews

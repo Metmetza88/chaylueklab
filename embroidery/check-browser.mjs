@@ -3,6 +3,23 @@ import assert from "node:assert/strict";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+function safeMessage(error) {
+  let message = error instanceof Error ? error.message : String(error);
+  if (process.env.VERCEL_OIDC_TOKEN) {
+    message = message.split(process.env.VERCEL_OIDC_TOKEN).join("[REDACTED]");
+  }
+  return message.replace(
+    /eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g,
+    "[REDACTED JWT]",
+  );
+}
+// Network-library errors may include request headers; never print raw errors.
+for (const event of ["unhandledRejection", "uncaughtException"]) {
+  process.on(event, (error) => {
+    console.error(safeMessage(error));
+    process.exit(1);
+  });
+}
 const { chromium, webkit, devices } = await import(
   process.env.PLAYWRIGHT_MODULE
     ? pathToFileURL(process.env.PLAYWRIGHT_MODULE).href
@@ -37,24 +54,35 @@ async function test(label, type, options) {
   const context = await browser.newContext({
       ...options,
       acceptDownloads: true,
+      proxy: process.env.EMBROIDERY_PROXY
+        ? { server: process.env.EMBROIDERY_PROXY }
+        : undefined,
     }),
     page = await context.newPage(),
     errors = [];
   if (process.env.VERCEL_OIDC_TOKEN) {
     // Keep the short-lived credential on the deployment origin only.
     // Never send it to Google Fonts or other third-party resources.
-    await context.route("**/*", (route) => {
+    await context.route("**/*", async (route) => {
       const headers = { ...route.request().headers() };
-      if (new URL(route.request().url()).origin === targetOrigin) {
+      const requestUrl = new URL(route.request().url());
+      if (
+        ["http:", "https:"].includes(requestUrl.protocol) &&
+        requestUrl.origin === targetOrigin
+      ) {
         headers["x-vercel-trusted-oidc-idp-token"] =
           process.env.VERCEL_OIDC_TOKEN;
+        // A redirect becomes a fresh browser request with its own origin check.
+        // Never let the authenticated network fetch follow it itself.
+        const response = await route.fetch({ headers, maxRedirects: 0 });
+        return route.fulfill({ response });
       } else {
         delete headers["x-vercel-trusted-oidc-idp-token"];
       }
       return route.continue({ headers });
     });
   }
-  page.on("pageerror", (e) => errors.push(e.message));
+  page.on("pageerror", (e) => errors.push(safeMessage(e)));
   const mobile = label.includes("iphone");
   async function properties() {
     if (mobile && !(await page.locator("#properties").isVisible()))
@@ -325,7 +353,7 @@ async function test(label, type, options) {
       fullPage: true,
     });
     console.error(label, await page.locator("#status").textContent(), errors);
-    throw error;
+    throw new Error(safeMessage(error));
   } finally {
     await browser.close();
   }

@@ -79,6 +79,7 @@ Preview: https://chailueklabaivercelready-nctmz3p4a-waramatw2546-4532.vercel.app
 - Cloud PNG 50 มม. / 3 สี สร้าง DST จริง 2,433 ฝีเข็ม, 2 Color Changes, END และความยาวสูงสุด 2.807 มม. ผ่าน pyembroidery readback
 - Browser regression ผ่าน Chromium Desktop, Chromium iPhone จำลอง และ WebKit iPhone จำลอง; ไฟล์ DST/PES/JEF ที่ดาวน์โหลดจริง 9 ไฟล์อ่านกลับได้ และ PNG ไม่ใช่ภาพว่าง
 - Preview คง Vercel Authentication ไว้ ผู้ใช้ต้องเข้าบัญชี Vercel ที่มีสิทธิ์ การทดสอบใช้ development OIDC เฉพาะ origin ของ deployment ไม่ส่ง token ไป Google Fonts/แหล่งภายนอก และไม่บันทึก token ในหลักฐาน
+- ตรวจกรณี HTTP redirect ด้วย sentinel จำลองสอง origin ผ่าน: origin ปลายทางภายนอกไม่ได้รับ credential; ตัวทดสอบไม่ส่ง credential ให้ blob/data URL และกรอง JWT จาก error log ก่อนพิมพ์
 - คืนค่าโดยเพิกถอน automation bypass key ที่ CLI สร้างเพื่อทดสอบ HTTP แล้ว คง SSO policy เดิม
 - Production ยังคง URL `chailueklabaivercelready-9mtfd8amg-waramatw2546-4532.vercel.app` และ commit `053670826f752dc5053e9dd574a9d0a53ae4dacc` ตรวจซ้ำแล้วตรงเดิม
 - หลังผู้ใช้อนุญาตให้ดำเนินงานต่อ มีการสร้างโปรเจกต์ `woramet-embroidery-preview` เปล่าไว้ แต่ยังไม่ได้ deploy ลงโปรเจกต์ใหม่นั้น เพราะ Vercel กำหนดครั้งแรกเป็น Production การทดสอบใช้งานจริงจึงอยู่ใน Preview ของโปรเจกต์เดิมที่เชื่อม Repository ตรงกัน

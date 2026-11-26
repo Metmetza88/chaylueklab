@@ -58,3 +58,5 @@ vercel deploy --project prj_zz7DosOYL0IZ4XYN7INZm3vwpzla --scope team_kA0EAug4Jr
 ```
 
 Browser regression ของ protected preview ใช้ token จาก `vercel env run --project ...` ใน memory เท่านั้น ตั้ง header เฉพาะ origin ของ deployment และไม่บันทึก HAR/trace/header credential ตัวแปร `EMBROIDERY_REPORT_DIR` เลือกโฟลเดอร์รายงานแยกได้
+
+เครื่องมือทดสอบ protected preview ตรวจเฉพาะ HTTP/HTTPS ของ origin เป้าหมาย ไม่ตาม redirect พร้อม credential และข้าม blob/data URL หากสภาพแวดล้อมต้องใช้ egress proxy ให้ตั้ง `EMBROIDERY_PROXY` สำหรับ Playwright context ข้อผิดพลาดถูกกรอง JWT ก่อนพิมพ์ log ผลตรวจ redirect ด้วย sentinel จำลองสอง origin อยู่ใน `reports/cloud-preview/header-redirect-check.json`
