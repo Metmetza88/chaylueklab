@@ -136,10 +136,12 @@ async function user(label) {
 const owner = await user("owner"),
   buyer = await user("buyer"),
   attacker = await user("attacker"),
-  editor = await user("editor");
+  editor = await user("editor"),
+  layoutOwner = await user("layout-owner"),
+  slipBuyer = await user("slip-buyer");
 await client.query(
-  "update public.store_profiles set is_admin=true where id=$1",
-  [owner.id],
+  "update public.store_profiles set is_admin=true where id=any($1::uuid[])",
+  [[owner.id, layoutOwner.id]],
 );
 const pids = (
   await client.query(
@@ -688,6 +690,16 @@ writeFileSync(
   "tests/local/.accounts.json",
   JSON.stringify({
     owner: { id: owner.id, email: owner.email, password: owner.password },
+    layoutOwner: {
+      id: layoutOwner.id,
+      email: layoutOwner.email,
+      password: layoutOwner.password,
+    },
+    slipBuyer: {
+      id: slipBuyer.id,
+      email: slipBuyer.email,
+      password: slipBuyer.password,
+    },
     buyer: { id: buyer.id, email: buyer.email, password: buyer.password },
     attacker: {
       id: attacker.id,

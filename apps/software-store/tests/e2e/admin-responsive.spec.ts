@@ -6,17 +6,19 @@ test("authenticated owner can use admin sections and controls without page overf
   page,
 }) => {
   await page.goto("/login");
-  await page.getByLabel("อีเมล", { exact: true }).fill(accounts.owner.email);
+  await page
+    .getByLabel("อีเมล", { exact: true })
+    .fill(accounts.layoutOwner.email);
   await page
     .getByLabel("รหัสผ่าน", { exact: true })
-    .fill(accounts.owner.password);
+    .fill(accounts.layoutOwner.password);
   await page.getByRole("button", { name: "เข้าสู่ระบบ", exact: true }).click();
   await expect(page).toHaveURL(/\/orders/);
   await page.goto("/admin");
   await expect(
     page.getByRole("heading", { name: "ภาพรวมร้านค้า", exact: true }),
   ).toBeVisible();
-  const product = page.locator("#products details").first();
+  const product = page.locator("#products details").nth(1);
   await product.locator("summary").click();
   await expect(product.locator('input[name="price_cents"]')).toBeVisible();
   await expect(product.locator('select[name="status"]')).toBeVisible();

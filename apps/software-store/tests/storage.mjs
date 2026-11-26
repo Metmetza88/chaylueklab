@@ -167,9 +167,12 @@ try {
       "Sign image",
     );
     const u = safeUrl(data.signedUrl);
-    const parts = u.searchParams.get("token").split(".");
-    parts[2] = (parts[2][0] === "a" ? "b" : "a") + parts[2].slice(1);
-    u.searchParams.set("token", parts.join("."));
+    const token = u.searchParams.get("token");
+    assert(token, "Storage API must return a bearer token");
+    u.searchParams.set(
+      "token",
+      (token[0] === "a" ? "b" : "a") + token.slice(1),
+    );
     assert.notEqual((await get(u)).status, 200);
   });
   await test("signed URLs expire at the real Storage origin", async () => {
