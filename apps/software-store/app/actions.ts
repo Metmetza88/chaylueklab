@@ -184,7 +184,11 @@ export async function uploadSlip(_prev: State, f: FormData): Promise<State> {
     const path = `${user.id}/${id}/${randomUUID()}.png`;
     const { error: uploadError } = await db.storage
       .from("store-slips")
-      .upload(path, image.data, { contentType: "image/png", upsert: false });
+      .upload(path, image.data, {
+        contentType: "image/png",
+        cacheControl: "0",
+        upsert: false,
+      });
     if (uploadError) return fail();
     const { error } = await db.rpc("store_register_slip", {
       p_order: id,

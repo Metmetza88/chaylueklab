@@ -105,3 +105,13 @@ VIPมีสิทธิ์/วันหมดอายุ/ส่วนลดแ
 - GitHub Workflow Deploy เพิ่มเป็นโค้ดใน PRเท่านั้น ยังไม่อยู่บนmain ไม่ได้ตั้งค่า Environment/Secrets แทนเมื่อ APIคืน403 และยังไม่มี Vercel URL จริง การทดสอบ CIสีเขียวไม่ใช่การเปิดขาย Production
 
 - ตรวจ configกับ applicable fields ของ official Vercel JSON Schemaผ่าน; ปิด `git.deploymentEnabled` เฉพาะ `apps/software-store/vercel.json` ให้ Git Integrationไม่ deployข้าม CI/approval และรวม configใน Source ZIPแล้ว
+
+## งานต่อเนื่อง 2026-11-26 รอบ Storage/ZIP security
+
+- ตรวจ PR55/Branch เดิมแล้ว main ยัง bbed5bd421a2c94b63000f4f64c26c4216af1ebf ไม่แก้หรือ Deploy เว็บไซต์หลัก
+- Vercel context ยังมี team เดิม plan Hobby, linkedProjects ว่าง ไม่มี Project ร้านค้าที่ตรวจยืนยันได้ ยังไม่ลอง POST ที่ถูกปฏิเสธซ้ำโดยไม่มีการเปลี่ยนสิทธิ์ และไม่ซื้อ/upgrade plan
+- Supabase ยังมีสอง Project เดิม ไม่มี staging ใหม่ที่ระบุ ไม่แก้ hosted schema/ข้อมูล
+- สำรอง Git ก่อนแก้รอบนี้ไว้ /workspace/scratch/store-backups/before-storage-20261126.bundle
+- แก้ ZIP credential-path validation และ private-file cache settings; Local TypeScript/ESLint/Build/Unit59/Integration23 ผ่าน (Local ยังใช้ Storage schema fixture)
+- Storage API image ยังเกินพื้นที่เครื่องแม้คืน cache จึงเพิ่ม full Storage job บน GitHub Actions พร้อมรายงาน current-run ที่ไม่รวม secrets; ผลชุดใหม่ยังรอ CI จริง ห้ามนับว่าผ่านล่วงหน้า
+- กำลังเตรียม RC.3 สินค้าทั้ง15ยัง Coming Soon และยังไม่มี Preview/Production URL

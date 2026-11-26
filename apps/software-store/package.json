@@ -1,6 +1,6 @@
 {
   "name": "@woramet/software-store",
-  "version": "0.2.0-rc.2",
+  "version": "0.2.0-rc.3",
   "private": true,
   "engines": {
     "node": ">=22"
@@ -14,7 +14,8 @@
     "test": "vitest run",
     "test:integration": "node --env-file-if-exists=.env.test tests/integration.mjs",
     "test:e2e": "playwright test",
-    "package:school": "node scripts/package-school.mjs"
+    "package:school": "node scripts/package-school.mjs",
+    "test:storage": "node --env-file-if-exists=.env.test tests/storage.mjs"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "1.1.1",

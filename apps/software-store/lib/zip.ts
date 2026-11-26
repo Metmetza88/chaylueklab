@@ -11,17 +11,33 @@ export function inspectRelease(buffer: Buffer): Promise<string[]> {
         const files: string[] = [];
         zip.on("error", reject);
         zip.on("entry", (entry) => {
-          const n = entry.fileName;
+          const n: string = entry.fileName;
+          const segments = n.toLowerCase().split("/");
+          const unsafeFile = segments.some(
+            (part) =>
+              (part.startsWith(".env") &&
+                ![".env.example", ".env.test.example"].includes(part)) ||
+              part.endsWith(".env") ||
+              [
+                ".git",
+                ".svn",
+                ".hg",
+                ".vercel",
+                "id_rsa",
+                "id_ed25519",
+              ].includes(part),
+          );
           total += entry.uncompressedSize;
           const mode = (entry.externalFileAttributes >>> 16) & 0o170000;
           if (
             n.startsWith("/") ||
+            /^[a-z]:/i.test(n) ||
             n.includes("\\") ||
             n.split("/").includes("..") ||
             mode === 0o120000 ||
             total > 300 * 1024 * 1024 ||
-            files.length > 5000 ||
-            /\/(\.env|id_rsa|id_ed25519)$/.test("/" + n)
+            files.length >= 5000 ||
+            unsafeFile
           ) {
             zip.close();
             return reject(new Error("UNSAFE_ZIP"));

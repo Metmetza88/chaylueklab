@@ -32,6 +32,27 @@ it("rejects ZIPs containing secret environment files", async () => {
     ),
   ).rejects.toThrow("UNSAFE_ZIP");
 });
+it.each([
+  "release/.env.local",
+  "release/.ENV.production",
+  "release/tests/local/auth.env",
+  "release/.git/config",
+  "release/.vercel/project.json",
+])("rejects bundled credentials or deployment state: %s", async (name) => {
+  await expect(
+    inspectRelease(await zip({ ...source, [name]: "fixture" })),
+  ).rejects.toThrow("UNSAFE_ZIP");
+});
+it("permits an environment template required for installation", async () => {
+  expect(
+    await inspectRelease(
+      await zip({
+        ...source,
+        "release/.env.example": "SUPABASE_URL=your-project",
+      }),
+    ),
+  ).toContain("release/.env.example");
+});
 it("rejects incomplete deliverables", async () => {
   await expect(
     inspectRelease(await zip({ "README.md": "only manual" })),

@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import pg from "pg";
 import { writeFileSync, readFileSync } from "node:fs";
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const storageEnabled = process.env.TEST_STORAGE_API === "true";
 if (url !== "http://127.0.0.1:55431")
   throw Error("Integration tests are restricted to the disposable local stack");
 const client = new pg.Client({
@@ -20,9 +21,22 @@ await client.connect();
 await client.query(
   "drop schema if exists store_private cascade; drop schema public cascade; create schema public; grant usage on schema public to anon,authenticated,service_role; grant all on schema public to service_role;",
 );
-await client.query(
-  "drop table if exists storage.objects; create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text); alter table storage.objects enable row level security;",
-);
+if (storageEnabled) {
+  const columns = await client.query(
+    "select column_name from information_schema.columns where table_schema='storage' and table_name='objects'",
+  );
+  assert(
+    columns.rows.some((c) => c.column_name === "metadata"),
+    "Real Storage API schema must be initialized before integration tests",
+  );
+  await client.query(
+    "drop policy if exists store_bucket_client_deny on storage.objects; drop policy if exists local_legacy_allow on storage.objects",
+  );
+} else {
+  await client.query(
+    "drop table if exists storage.objects; create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text,name text); alter table storage.objects enable row level security;",
+  );
+}
 await client.query(
   readFileSync(
     "supabase/migrations/20261124023043_isolated_store_school_platform.sql",
@@ -502,7 +516,7 @@ await test("outbox workers lease disjoint events and daily summary is idempotent
 });
 await test("restrictive storage fence blocks legacy permissive policies only on new buckets", async () => {
   await client.query(
-    "grant usage on schema storage to authenticated; grant select,insert,update,delete on storage.objects to authenticated; create policy local_legacy_allow on storage.objects for all to authenticated using(true) with check(true); insert into storage.objects(bucket_id) values('legacy-test'),('store-releases'),('school-documents')",
+    "grant usage on schema storage to authenticated; grant select,insert,update,delete on storage.objects to authenticated; create policy local_legacy_allow on storage.objects for all to authenticated using(true) with check(true); insert into storage.buckets(id,name,public) values('legacy-test','legacy-test',false) on conflict(id) do nothing; insert into storage.objects(bucket_id,name) values('legacy-test','rls-fixture'),('store-releases','rls-fixture'),('school-documents','rls-fixture')",
   );
   await client.query("begin");
   await client.query("set local role authenticated");
@@ -512,6 +526,7 @@ await test("restrictive storage fence blocks legacy permissive policies only on 
     ["legacy-test"],
   );
   await client.query("rollback");
+  await client.query("delete from storage.objects where name='rls-fixture'");
 });
 await test("document registration is atomic and blocked after review", async () => {
   const a = await rpc("school_register_document", {
@@ -623,8 +638,10 @@ writeFileSync(
   JSON.stringify(
     {
       date: new Date().toISOString(),
-      environment:
-        "Local PostgreSQL 17 + real GoTrue + real PostgREST. Storage schema fixture only; Storage API not running.",
+      source_commit: process.env.GITHUB_SHA ?? null,
+      environment: storageEnabled
+        ? "Disposable PostgreSQL 17 + real GoTrue + real PostgREST + real Storage API v1.98.6 (file backend)."
+        : "Local PostgreSQL 17 + real GoTrue + real PostgREST. Storage schema fixture only; Storage API not running.",
       passed,
       tests: evidence,
     },

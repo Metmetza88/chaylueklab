@@ -1,5 +1,6 @@
 {
-  "date": "2026-11-24T03:41:06.804Z",
+  "date": "2026-11-26T14:16:51.542Z",
+  "source_commit": null,
   "environment": "Local PostgreSQL 17 + real GoTrue + real PostgREST. Storage schema fixture only; Storage API not running.",
   "passed": 23,
   "tests": [

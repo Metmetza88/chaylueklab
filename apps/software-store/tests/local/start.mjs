@@ -2,6 +2,7 @@
 import { spawnSync } from "node:child_process";
 import { writeFileSync, readFileSync } from "node:fs";
 import { createHmac, randomBytes } from "node:crypto";
+const storageEnabled = process.env.TEST_STORAGE_API === "true";
 const run = (args, input) => {
   const r = spawnSync("docker", args, {
     input,
@@ -26,6 +27,7 @@ for (const name of [
   "woramet-store-test-db",
   "woramet-store-test-auth",
   "woramet-store-test-rest",
+  "woramet-store-test-storage",
 ]) {
   const r = spawnSync("docker", ["inspect", name], { stdio: "ignore" });
   if (r.status === 0)
@@ -50,7 +52,7 @@ run([
   "postgres:17-alpine",
 ]);
 async function waitFor(fn) {
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < 120; i++) {
     try {
       if (await fn()) return;
     } catch {}
@@ -86,6 +88,9 @@ run(
     "ON_ERROR_STOP=1",
   ],
   readFileSync("tests/local/bootstrap.sql", "utf8") +
+    (storageEnabled
+      ? readFileSync("tests/local/storage-bootstrap.sql", "utf8")
+      : "") +
     "\nalter role supabase_auth_admin set search_path=auth,public;\n",
 );
 const secret = randomBytes(40).toString("hex");
@@ -103,9 +108,11 @@ const jwt = (role) => {
   ).toString("base64url");
   return `${h}.${b}.${createHmac("sha256", secret).update(`${h}.${b}`).digest("base64url")}`;
 };
+const anonKey = jwt("anon");
+const serviceKey = jwt("service_role");
 writeFileSync(
   ".env.test",
-  `NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:55431\nNEXT_PUBLIC_SUPABASE_ANON_KEY=${jwt("anon")}\nSUPABASE_SERVICE_ROLE_KEY=${jwt("service_role")}\nAPP_URL=http://127.0.0.1:3000\nPAYMENT_MODE=sandbox\nPAYMENT_WEBHOOK_ENABLED=true\nPAYMENT_WEBHOOK_SECRET=${randomBytes(40).toString("hex")}\nPAYMENT_RECIPIENT_ID=local-sandbox-recipient\nTEST_DATABASE_URL=postgres://postgres:local-test-only@127.0.0.1:55432/postgres\n`,
+  `NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:55431\nNEXT_PUBLIC_SUPABASE_ANON_KEY=${anonKey}\nSUPABASE_SERVICE_ROLE_KEY=${serviceKey}\nAPP_URL=http://127.0.0.1:3000\nPAYMENT_MODE=sandbox\nPAYMENT_WEBHOOK_ENABLED=true\nPAYMENT_WEBHOOK_SECRET=${randomBytes(40).toString("hex")}\nPAYMENT_RECIPIENT_ID=local-sandbox-recipient\nTEST_DATABASE_URL=postgres://postgres:local-test-only@127.0.0.1:55432/postgres\nTEST_STORAGE_API=${storageEnabled}\n`,
 );
 writeFileSync(
   "tests/local/auth.env",
@@ -143,7 +150,10 @@ run(
     "-v",
     "ON_ERROR_STOP=1",
   ],
-  readFileSync("tests/local/platform.sql", "utf8"),
+  readFileSync("tests/local/platform.sql", "utf8") +
+    (storageEnabled
+      ? ""
+      : readFileSync("tests/local/storage-fixture.sql", "utf8")),
 );
 run([
   "run",
@@ -158,6 +168,47 @@ run([
   "127.0.0.1:55430:3001",
   "public.ecr.aws/supabase/postgrest:v16.6",
 ]);
+if (storageEnabled) {
+  writeFileSync(
+    "tests/local/storage.env",
+    [
+      `ANON_KEY=${anonKey}`,
+      `SERVICE_KEY=${serviceKey}`,
+      `AUTH_JWT_SECRET=${secret}`,
+      "DATABASE_URL=postgres://supabase_storage_admin:local-test-only@woramet-store-test-db:5432/postgres",
+      "POSTGREST_URL=http://woramet-store-test-rest:3001",
+      "STORAGE_PUBLIC_URL=http://127.0.0.1:55431",
+      "REQUEST_ALLOW_X_FORWARDED_PATH=true",
+      "FILE_SIZE_LIMIT=8388608",
+      "STORAGE_BACKEND=file",
+      "GLOBAL_S3_BUCKET=local-test-storage",
+      "FILE_STORAGE_BACKEND_PATH=/var/lib/storage",
+      "TENANT_ID=local-test-only",
+      "REGION=local",
+      "ENABLE_IMAGE_TRANSFORMATION=false",
+      "LOG_LEVEL=error",
+      `S3_PROTOCOL_ACCESS_KEY_ID=local-test-only`,
+      `S3_PROTOCOL_ACCESS_KEY_SECRET=${randomBytes(32).toString("hex")}`,
+      "",
+    ].join("\n"),
+  );
+  run([
+    "run",
+    "-d",
+    "--name",
+    "woramet-store-test-storage",
+    "--network",
+    "woramet-store-tests",
+    "--env-file",
+    "tests/local/storage.env",
+    "--tmpfs",
+    "/var/lib/storage:rw,size=67108864,mode=1777",
+    "-p",
+    "127.0.0.1:55500:5000",
+    "public.ecr.aws/supabase/storage-api:v1.98.6",
+  ]);
+  await waitFor(async () => (await fetch("http://127.0.0.1:55500/status")).ok);
+}
 process.stdout.write(
-  "Disposable PostgreSQL + GoTrue + PostgREST ready. Secrets saved only in ignored files. Start node tests/local/gateway.mjs, then npm run test:integration. Storage API is not part of this reduced stack.\n",
+  `Disposable PostgreSQL + GoTrue + PostgREST ready; Storage API ${storageEnabled ? "v1.98.6 running" : "not included (schema fixture only)"}. Secrets saved only in ignored files. Start node tests/local/gateway.mjs, then npm run test:integration.\n`,
 );

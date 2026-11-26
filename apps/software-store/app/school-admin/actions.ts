@@ -57,7 +57,10 @@ export async function uploadLogo(_s: State, f: FormData): Promise<State> {
     const path = `${site.id}/${randomUUID()}.png`;
     const { error } = await db.storage
       .from("school-branding")
-      .upload(path, image.data, { contentType: "image/png" });
+      .upload(path, image.data, {
+        contentType: "image/png",
+        cacheControl: "0",
+      });
     if (error) return fail();
     const { error: e } = await db
       .from("school_sites")
@@ -308,7 +311,11 @@ export async function uploadDocument(_s: State, f: FormData): Promise<State> {
     const path = `${application.school_id}/${id}/${randomUUID()}.png`;
     const { error } = await db.storage
       .from("school-documents")
-      .upload(path, image.data, { contentType: "image/png", upsert: false });
+      .upload(path, image.data, {
+        contentType: "image/png",
+        cacheControl: "0",
+        upsert: false,
+      });
     if (error) return fail();
     const { data: oldpath, error: recordError } = await db.rpc(
       "school_register_document",

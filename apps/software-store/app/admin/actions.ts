@@ -31,6 +31,7 @@ export async function uploadRelease(_s: State, f: FormData): Promise<State> {
       .from("store-releases")
       .upload(storage_path, buffer, {
         contentType: "application/zip",
+        cacheControl: "0",
         upsert: false,
       });
     if (uploadError) return { error: "อัปโหลดไม่สำเร็จ" };
