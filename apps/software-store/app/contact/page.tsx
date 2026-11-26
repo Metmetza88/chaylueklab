@@ -1,17 +1,23 @@
 import Link from "next/link";
+import { configured } from "@/lib/env";
+
 export default function Page() {
   return (
     <section className="prose">
       <span className="eyebrow">WORAMET AI LAB</span>
       <h1>ติดต่อเรา</h1>
       <p>
-        สอบถามโปรแกรม การติดตั้ง สิทธิ์ใช้งาน หรือการจัดการข้อมูลส่วนบุคคล
-        ผ่านช่องทางของ CHAYLUEKLAB
+        ขอประเมินงาน ติดตั้งระบบ หรือสอบถามโปรแกรมโรงเรียนผ่าน LINE ของ
+        CHAYLUEKLAB
+      </p>
+      <p>
+        แจ้งชื่อโปรแกรมที่สนใจ จำนวนผู้ใช้งานโดยประมาณ
+        และงานที่ต้องการให้ระบบช่วย
       </p>
       <div className="panel stack">
         <a
           className="btn"
-          href="https://line.me/R/ti/p/@215pcisl"
+          href="https://lin.ee/Vgg2m3N"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -24,12 +30,10 @@ export default function Page() {
         >
           เว็บไซต์หลัก CHAYLUEKLAB ↗
         </a>
-        <Link href="/support">ส่งคำขอช่วยเหลือในระบบ →</Link>
+        {configured() && <Link href="/support">ส่งคำขอช่วยเหลือในระบบ</Link>}
       </div>
       <p className="muted">
-        อย่าส่งรหัสผ่าน ข้อมูลบัตร หรือเอกสารของนักเรียนผ่านแชต ช่องทาง LINE
-        เป็นลิงก์จาก Repository เดิม
-        ส่วนการแจ้งเตือนอัตโนมัติยังต้องตั้งค่าและทดสอบก่อนเปิดใช้งาน
+        กรุณางดส่งรหัสผ่าน ข้อมูลบัตร หรือเอกสารของนักเรียนผ่านแชต
       </p>
     </section>
   );

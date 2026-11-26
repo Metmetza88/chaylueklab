@@ -3,11 +3,14 @@ import { getProducts } from "@/lib/shop";
 export default async function Products({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; category?: string; sort?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const sp = await searchParams;
   const { products: all, source } = await getProducts();
-  const q = (sp.q ?? "").slice(0, 100).toLocaleLowerCase("th");
+  const query = typeof sp.q === "string" ? sp.q.trim().slice(0, 100) : "";
+  const q = query.toLocaleLowerCase("th");
+  const category = typeof sp.category === "string" ? sp.category : "";
+  const sort = typeof sp.sort === "string" ? sp.sort : "";
   const cats = [...new Set(all.map((p) => p.category))];
   let products = all.filter(
     (p) =>
@@ -15,12 +18,13 @@ export default async function Products({
         `${p.name} ${p.tagline} ${p.description}`
           .toLocaleLowerCase("th")
           .includes(q)) &&
-      (!sp.category || p.category === sp.category),
+      (!category || p.category === category),
   );
-  if (sp.sort === "asc" || sp.sort === "desc")
+  if (sort === "asc" || sort === "desc")
     products = products.sort(
-      (a, b) => (a.price_cents - b.price_cents) * (sp.sort === "desc" ? -1 : 1),
+      (a, b) => (a.price_cents - b.price_cents) * (sort === "desc" ? -1 : 1),
     );
+  else products.sort((a, b) => a.name.localeCompare(b.name, "th"));
   return (
     <section className="section">
       <div className="page-heading">
@@ -34,14 +38,14 @@ export default async function Products({
           <input
             type="search"
             name="q"
-            defaultValue={sp.q}
+            defaultValue={query}
             placeholder="ค้นหาชื่อโปรแกรม หรืองานที่ต้องการ…"
             maxLength={100}
           />
         </label>
         <label>
           หมวดหมู่
-          <select name="category" defaultValue={sp.category ?? ""}>
+          <select name="category" defaultValue={category}>
             <option value="">ทุกหมวดหมู่</option>
             {cats.map((c) => (
               <option key={c}>{c}</option>
@@ -50,7 +54,7 @@ export default async function Products({
         </label>
         <label>
           เรียงลำดับ
-          <select name="sort" defaultValue={sp.sort ?? ""}>
+          <select name="sort" defaultValue={sort}>
             <option value="">ตามชื่อ</option>
             <option value="asc">ราคาน้อยไปมาก</option>
             <option value="desc">ราคามากไปน้อย</option>

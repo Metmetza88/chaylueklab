@@ -1,5 +1,5 @@
 import "./globals.css";
-import { paymentMode } from "@/lib/env";
+import { configured, paymentMode } from "@/lib/env";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Command, ArrowUpRight, ShieldCheck, Menu } from "lucide-react";
@@ -15,11 +15,11 @@ export const metadata: Metadata = {
     "โปรแกรมสำหรับโรงเรียน โดย WORAMET AI LAB ทดลองระบบ ดูรายละเอียด และจัดการซอฟต์แวร์ของคุณ",
 };
 export const dynamic = "force-dynamic";
-const links = [
+const publicLinks = [
   ["/products", "โปรแกรมทั้งหมด"],
   ["/categories", "หมวดหมู่"],
   ["/demo", "ทดลองใช้งาน"],
-  ["/membership", "สมาชิก VIP"],
+  ["/contact", "ติดต่อ"],
 ];
 export default async function Layout({
   children,
@@ -70,6 +70,10 @@ export default async function Layout({
       </html>
     );
   }
+  const accountsEnabled = configured();
+  const links = accountsEnabled
+    ? [...publicLinks, ["/membership", "สมาชิก VIP"]]
+    : publicLinks;
   return (
     <html lang="th">
       <body>
@@ -104,11 +108,18 @@ export default async function Layout({
                 ))}
               </nav>
               <div className="header-actions">
-                <CartLink />
-                <Link href={user ? "/orders" : "/login"} className="login-link">
-                  {user ? "บัญชีของฉัน" : "เข้าสู่ระบบ"}{" "}
-                  <ArrowUpRight size={15} />
-                </Link>
+                {accountsEnabled && (
+                  <>
+                    <CartLink />
+                    <Link
+                      href={user ? "/orders" : "/login"}
+                      className="login-link"
+                    >
+                      {user ? "บัญชีของฉัน" : "เข้าสู่ระบบ"}{" "}
+                      <ArrowUpRight size={15} />
+                    </Link>
+                  </>
+                )}
                 <details className="mobile-menu">
                   <summary aria-label="เปิดเมนู">
                     <Menu size={23} />
@@ -119,11 +130,14 @@ export default async function Layout({
                         {l}
                       </Link>
                     ))}
-                    <Link href="/orders">คำสั่งซื้อ</Link>
-                    <Link href="/downloads">ดาวน์โหลด</Link>
-                    <Link href="/support">แจ้งปัญหา</Link>
-                    <Link href="/contact">ติดต่อเรา</Link>
-                    <Link href="/admin">Admin</Link>
+                    {accountsEnabled && (
+                      <>
+                        <Link href="/orders">คำสั่งซื้อ</Link>
+                        <Link href="/downloads">ดาวน์โหลด</Link>
+                        <Link href="/support">แจ้งปัญหา</Link>
+                        {isAdmin && <Link href="/admin">Admin</Link>}
+                      </>
+                    )}
                   </nav>
                 </details>
               </div>
@@ -164,24 +178,30 @@ export default async function Layout({
                   <br />
                   พัฒนาโดย WORAMET AI LAB
                 </p>
-                <span className="trust">
-                  <ShieldCheck size={16} />{" "}
-                  ไฟล์โปรแกรมจัดส่งผ่านสิทธิ์ดาวน์โหลดส่วนตัว
-                </span>
+                {accountsEnabled && (
+                  <span className="trust">
+                    <ShieldCheck size={16} />{" "}
+                    ไฟล์โปรแกรมจัดส่งผ่านสิทธิ์ดาวน์โหลดส่วนตัว
+                  </span>
+                )}
               </div>
               <div>
                 <h3>เลือกโปรแกรม</h3>
                 <Link href="/products">โปรแกรมทั้งหมด</Link>
                 <Link href="/categories">หมวดหมู่โปรแกรม</Link>
                 <Link href="/demo">ทดลองใช้งาน</Link>
-                <Link href="/membership">สมาชิก VIP</Link>
+                {accountsEnabled && <Link href="/membership">สมาชิก VIP</Link>}
               </div>
               <div>
-                <h3>บัญชีและความช่วยเหลือ</h3>
-                <Link href="/orders">คำสั่งซื้อของฉัน</Link>
-                <Link href="/downloads">ดาวน์โหลดโปรแกรม</Link>
+                <h3>ความช่วยเหลือ</h3>
+                {accountsEnabled && (
+                  <>
+                    <Link href="/orders">คำสั่งซื้อของฉัน</Link>
+                    <Link href="/downloads">ดาวน์โหลดโปรแกรม</Link>
+                    <Link href="/support">แจ้งปัญหา</Link>
+                  </>
+                )}
                 <Link href="/guide">คู่มือการใช้งาน</Link>
-                <Link href="/support">แจ้งปัญหา</Link>
                 <Link href="/contact">ติดต่อเรา</Link>
                 {isAdmin && <Link href="/admin">Admin Dashboard</Link>}
                 {user && (
