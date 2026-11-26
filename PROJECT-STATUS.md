@@ -96,3 +96,10 @@ VIPมีสิทธิ์/วันหมดอายุ/ส่วนลดแ
 - เพิ่ม Workflow main/manual, Node22, read-only permissions, concurrency, pinnedCLI และตัวตรวจTeam/Project/Repo/Root/Domain/Payment/Commit/Approval Policy
 - GitHubอ่านEnvironmentsเดิมได้ แต่ PUT environmentใหม่และอ่านVariablesคืน403 ไม่มีการแก้ Environment เดิมหรือสร้าง environmentสำเร็จ
 - การDeployยังปิดไว้จนเจ้าของตั้งprotected environments/IDs/tokenและยืนยันProjectร้านค้า ดู docs/CI-DEPLOY-TH.md
+
+## ผลตรวจรับโค้ดล่าสุด 2026-11-26
+
+- Push commit `681e291541e4aa0263cdcbf536421bb2a41c3860` แล้ว [GitHub Actions run45783357503](https://github.com/Metmetza88/chaylueklab/actions/runs/45783357503) **success** บน Node22.23.5: actionlint/TypeScript/ESLint/Unit53/audit0/build/integration23/Playwright80passed+12plannedskips ผ่านทั้งหมด Quality checks และ CodeQL ผ่านเช่นกัน [CI-RESULTS](apps/software-store/docs/CI-RESULTS-20261126.json)
+- Source ZIPรุ่น0.2.0-rc.2 ทั้งสองแพ็กเกจตรวจ CRC/SHA-256/ไม่รวม secrets และแตก source ตรวจ TypeScriptผ่านจริง ใช้ dependencyชุดที่ติดตั้งตรวจแล้วร่วมกัน ไม่ใช่ clean installใหม่ทั้งสองชุด
+- PDFหลังเปลี่ยน staticfont ตรวจภาพเรนเดอร์และ text extractionผ่านทั้งภาษาไทย/อังกฤษ/เลขที่ใบสมัคร/ปี/ยอดเงิน [หลักฐาน](apps/software-store/docs/PDF-VALIDATION-20261126.json)
+- GitHub Workflow Deploy เพิ่มเป็นโค้ดใน PRเท่านั้น ยังไม่อยู่บนmain ไม่ได้ตั้งค่า Environment/Secrets แทนเมื่อ APIคืน403 และยังไม่มี Vercel URL จริง การทดสอบ CIสีเขียวไม่ใช่การเปิดขาย Production

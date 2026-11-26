@@ -1,0 +1,55 @@
+{
+  "checked_at": "2026-11-26T08:32:06.729Z",
+  "repository": "Metmetza88/chaylueklab",
+  "branch": "feature/woramet-school-store-20261124",
+  "commit": "681e291541e4aa0263cdcbf536421bb2a41c3860",
+  "url": "https://github.com/Metmetza88/chaylueklab/actions/runs/45783357503",
+  "workflow": "Software store checks",
+  "run_id": 45783357503,
+  "job_id": 139783958848,
+  "node": "v22.23.5",
+  "status": "completed",
+  "conclusion": "success",
+  "checks": {
+    "workflow_actionlint": "passed",
+    "npm_ci": "passed",
+    "typescript": "passed",
+    "eslint": "passed",
+    "unit": {
+      "passed": 53,
+      "failed": 0
+    },
+    "dependency_audit": {
+      "total_vulnerabilities": 0
+    },
+    "production_build": "passed",
+    "integration_security": {
+      "passed": 23,
+      "failed": 0
+    },
+    "playwright": {
+      "passed": 80,
+      "skipped": 12,
+      "failed": 0,
+      "skip_reason": "Authenticated workflows run on Desktop only; viewport tests run on all four Chromium projects."
+    }
+  },
+  "limitations": [
+    "Storage schema fixture only; Supabase Storage API not running.",
+    "Physical devices and Safari not tested.",
+    "Authorized payment-provider Sandbox and SMTP delivery not tested.",
+    "CI verification is not a Vercel deployment."
+  ],
+  "other_runs": [
+    {
+      "name": "Quality checks",
+      "run_id": 45783357507,
+      "conclusion": "success"
+    },
+    {
+      "name": "CodeQL",
+      "run_id": 45783357501,
+      "conclusion": "success"
+    }
+  ]
+}

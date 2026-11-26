@@ -7,7 +7,7 @@
 | Production Build | ผ่าน Next.js15.5.29 หลังแก้ dependency และ transactional release/support |
 | Unit / Security | **53/53 ผ่าน** |
 | Integration / DB Security | **23/23 ผ่าน** บน PostgreSQL17 + GoTrue + PostgREST จริง |
-| Playwright Production | **80 passed, 12 skipped, 0 failed** ใช้เวลาประมาณ3.8นาที |
+| Playwright Production | **80 passed, 12 skipped, 0 failed** CIล่าสุด42.4วินาที; Localรอบก่อนประมาณ3.8นาที |
 | Responsive | 16หน้าสาธารณะ × 4viewport, ไม่มี horizontal overflow; Desktop/iPhone/Android/Tablet ใช้ Chromium ทั้งหมด |
 | Standalone school variant | root redirect, real DB site, school header และ390px layout ผ่าน |
 | Dependency Audit | 0 critical/high/moderate/low ตาม registry ณ เวลาตรวจ ดู DEPENDENCY-AUDIT.json |
@@ -68,3 +68,15 @@ Playwright ใช้ `/usr/bin/chromium` หรือกำหนด `PLAYWRIGHT
 - actionlint1.7.12 (ตรวจ checksum) ผ่านทั้ง reusable verification และ CI/Deploy workflows
 - ตรวจ VercelCLI67.0.0 help สำหรับ deploy --skip-domain และ promote --yes แล้ว ยังไม่ใช้ credential deploy จริง
 - CI deploy ยังปิดไว้และยังไม่ผ่าน external acceptance; ไม่มี Preview/Production URL เกิดจากผลทดสอบ Local
+
+## GitHub Actions / Node 22 — ตรวจจริงวันที่ 2026-11-26
+
+[Software store checks run 45783357503](https://github.com/Metmetza88/chaylueklab/actions/runs/45783357503) ของ commit `681e291541e4aa0263cdcbf536421bb2a41c3860` ผ่านทั้งหมดบน Node22.23.5: actionlint, npm ci, TypeScript, ESLint, Unit53, audit0ช่องโหว่, production build, integration/security23 และ Playwright80passed/12plannedskips/0failed รวมเวลา browser42.4วินาที CI ใช้ disposable services จริงและ Storage schema fixture ตามข้อจำกัดเดิม
+
+Quality checks และ CodeQL ของ commitเดียวกันผ่านด้วย หลักฐานสรุปที่ไม่รวม secret อยู่ใน `CI-RESULTS-20261126.json` ส่วน `E2E-RESULTS.json`/`INTEGRATION-RESULTS.json` เป็นรายละเอียดรายข้อจากรอบ Local ที่ระบุวันที่อยู่ในไฟล์ ไม่ได้เปลี่ยนวันที่เพื่ออ้างว่าเป็นไฟล์ผล CI
+
+Workflow Deploy ใหม่ผ่าน actionlint และ guard tests แต่ยังไม่เคย Deploy Vercel จริง และยังไม่อยู่บนmain จึงยังเลือก workflow_dispatch จาก default branchไม่ได้ การเปิด Preview/Production ยังต้องตั้งสิทธิ์และ Project ตาม `CI-DEPLOY-TH.md`
+
+## ตรวจ PDF หลังแก้ฟอนต์
+
+พบว่า variable Latin font เดิมทำให้ตัวอักษรอังกฤษ/ตัวเลขใน PDFบางส่วนหาย แม้ PDFเปิดได้ จึงเปลี่ยนเฉพาะฟอนต์ PDF เป็น static Regular แล้วสร้าง/แปลง PDF เป็นภาพตรวจภาษาไทย พร้อมใช้ pdftotext ตรวจ DEMO, WORAMET AI LAB, เลขที่ใบสมัคร, ปีการศึกษาและยอดเงินผ่านทั้งหมด ดู `PDF-VALIDATION-20261126.json` และภาพ `public/screenshots/met-admission-pdf.png` ยังไม่ได้ทดสอบเครื่องพิมพ์จริง

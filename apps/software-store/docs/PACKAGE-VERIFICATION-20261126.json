@@ -1,0 +1,25 @@
+{
+  "checked_at": "2026-11-26",
+  "archives": [
+    {
+      "file": "met-school-pro-v0.2.0-rc.2.zip",
+      "files": 134,
+      "sha256": "7c62bfab31ce8aa4abaeb54ade2d7ee1a6ce1622349cbf77e8c771781eeb11be",
+      "crc": "passed",
+      "secret_pattern_scan": "passed",
+      "status": "release_candidate",
+      "ready_for_sale": false
+    },
+    {
+      "file": "met-admission-v0.2.0-rc.2.zip",
+      "files": 134,
+      "sha256": "ee977b4d5f4f428134146a520d3418ae6aae395091c01d165173b1bcc007d907",
+      "crc": "passed",
+      "secret_pattern_scan": "passed",
+      "status": "release_candidate",
+      "ready_for_sale": false
+    }
+  ],
+  "source_typecheck": "Both RC.2 packages were extracted and passed next typegen + tsc using shared installed dependencies before report-only additions.",
+  "clean_dependency_install_per_archive": false
+}

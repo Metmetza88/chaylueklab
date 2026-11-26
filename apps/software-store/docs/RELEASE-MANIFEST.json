@@ -1,7 +1,7 @@
 [
   {
     "product": "met-school-pro",
-    "version": "0.2.0-rc.1",
+    "version": "0.2.0-rc.2",
     "status": "release_candidate",
     "ready_for_sale": false,
     "requires": [
@@ -11,13 +11,13 @@
       "physical iPhone/Android acceptance"
     ],
     "license": "single-school",
-    "file": "met-school-pro-v0.2.0-rc.1.zip",
-    "bytes": 2064386,
-    "sha256": "1246dd0328506cdd0c2855f4063c529fd8ec8c7f3bb099cf7b70c15dcc47cd34"
+    "file": "met-school-pro-v0.2.0-rc.2.zip",
+    "bytes": 1207823,
+    "sha256": "7c62bfab31ce8aa4abaeb54ade2d7ee1a6ce1622349cbf77e8c771781eeb11be"
   },
   {
     "product": "met-admission",
-    "version": "0.2.0-rc.1",
+    "version": "0.2.0-rc.2",
     "status": "release_candidate",
     "ready_for_sale": false,
     "requires": [
@@ -27,8 +27,8 @@
       "physical iPhone/Android acceptance"
     ],
     "license": "single-school",
-    "file": "met-admission-v0.2.0-rc.1.zip",
-    "bytes": 2064143,
-    "sha256": "602559b6aa06c524f90639147a8908d0ef8c7bb920bc1ac0b4356403ea084350"
+    "file": "met-admission-v0.2.0-rc.2.zip",
+    "bytes": 1207558,
+    "sha256": "ee977b4d5f4f428134146a520d3418ae6aae395091c01d165173b1bcc007d907"
   }
 ]

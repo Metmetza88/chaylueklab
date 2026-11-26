@@ -90,6 +90,8 @@ for (const slug of ["met-school-pro", "met-admission"]) {
     "docs/INTEGRATIONS.md",
     "docs/OWNER-ACTIONS.md",
     "docs/CI-DEPLOY-TH.md",
+    "docs/CI-RESULTS-20261126.json",
+    "docs/PDF-VALIDATION-20261126.json",
     "docs/LICENSE.md",
     "docs/E2E-RESULTS.json",
     "docs/INTEGRATION-RESULTS.json",
