@@ -109,3 +109,5 @@ Webhook ในโค้ดเป็น **trusted bridge protocol** ต้อง�
 แตก ZIP แล้วเข้าโฟลเดอร์ที่มี package.json รัน npm ci และใช้ APP_VARIANT=school กับ SCHOOL_SLUG ที่สร้างด้วย bootstrap-owner.mjs สำหรับ Vercel Project ของโรงเรียนนี้ให้ Root Directoryเป็นจุดที่ package.json อยู่ (`.` เมื่อเชื่อม repo standalone) และใช้ Supabase Project/บัญชีของโรงเรียนตามสิทธิ์อนุญาต
 
 Workflow/guard ใน Repositoryหลักของ CHAYLUEKLAB จำกัดปลายทางเฉพาะร้านค้า `apps/software-store` จึงไม่ใช่คำสั่งสำหรับ Deploy Project ลูกค้าในชื่ออื่น อย่าเปลี่ยน Project ID ของร้านค้าเป็นโรงเรียนของลูกค้า ใช้การติดตั้งแยกตามหัวข้อนี้และตรวจ Auth/RLS/Storage ของโรงเรียนก่อนรับข้อมูลจริง
+
+`vercel.json` ของแอปปิด automatic Git deployments (`git.deploymentEnabled=false`) เพื่อให้ผ่าน CI/approval ก่อน release ร้านค้า ใช้ Workflow ในคู่มือ CI หรือสั่ง CLI ใน Project โรงเรียนแยกที่ได้รับอนุญาต การ Push อย่างเดียวจึงไม่ยืนยันว่า Deploy แล้ว

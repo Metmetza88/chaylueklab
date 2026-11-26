@@ -26,6 +26,7 @@ const configs = [
   "package-lock.json",
   "tsconfig.json",
   "next.config.ts",
+  "vercel.json",
   "middleware.ts",
   "eslint.config.mjs",
   "vitest.config.ts",

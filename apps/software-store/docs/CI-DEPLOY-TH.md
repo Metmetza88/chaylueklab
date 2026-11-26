@@ -14,6 +14,7 @@
 - ตรวจ env ที่ Vercel pull มา โดยบังคับ PAYMENT_MODE=disabled, LIVE_PAYMENTS_APPROVED ไม่เป็นtrue และ webhook ไม่เปิด สำหรับ release candidate นี้
 - ตรวจ URL/Project/commit/READY และทดสอบ16หน้าพร้อม health/สิทธิ์ดาวน์โหลด/ปิดWebhookบน deployment
 - Production build ใช้ `--prod --skip-domain` ยังไม่ assign โดเมน การ promote ต้อง manual action `promote-production` บนmain พร้อมการอนุมัติอีกครั้ง
+- `apps/software-store/vercel.json` ตั้ง `git.deploymentEnabled=false` เพื่อให้ Git Integration ไม่ Deploy ซ้ำข้ามด่าน CI/approval ใช้ Workflow หรือ CLI ที่ได้รับอนุมัติสำหรับร้านค้า
 - ไม่เพิ่ม DNS record และไม่เปลี่ยนเว็บไซต์หลักใน Workflow
 
 ## สถานะจริง

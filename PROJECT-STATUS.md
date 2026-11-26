@@ -103,3 +103,5 @@ VIPมีสิทธิ์/วันหมดอายุ/ส่วนลดแ
 - Source ZIPรุ่น0.2.0-rc.2 ทั้งสองแพ็กเกจตรวจ CRC/SHA-256/ไม่รวม secrets และแตก source ตรวจ TypeScriptผ่านจริง ใช้ dependencyชุดที่ติดตั้งตรวจแล้วร่วมกัน ไม่ใช่ clean installใหม่ทั้งสองชุด
 - PDFหลังเปลี่ยน staticfont ตรวจภาพเรนเดอร์และ text extractionผ่านทั้งภาษาไทย/อังกฤษ/เลขที่ใบสมัคร/ปี/ยอดเงิน [หลักฐาน](apps/software-store/docs/PDF-VALIDATION-20261126.json)
 - GitHub Workflow Deploy เพิ่มเป็นโค้ดใน PRเท่านั้น ยังไม่อยู่บนmain ไม่ได้ตั้งค่า Environment/Secrets แทนเมื่อ APIคืน403 และยังไม่มี Vercel URL จริง การทดสอบ CIสีเขียวไม่ใช่การเปิดขาย Production
+
+- ตรวจ configกับ applicable fields ของ official Vercel JSON Schemaผ่าน; ปิด `git.deploymentEnabled` เฉพาะ `apps/software-store/vercel.json` ให้ Git Integrationไม่ deployข้าม CI/approval และรวม configใน Source ZIPแล้ว

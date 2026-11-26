@@ -15,3 +15,5 @@
 - เพิ่ม CI and Deploy สำหรับ main/manual ด้วย Node22, concurrency และ read-only permissions
 - เพิ่ม scoped Vercel preflight, deployment/payment/domain guards, smoke tests และ protected-environment policy checks
 - Preview/staged production แยกจาก promotion; Token ไม่ปรากฏใน command arguments และไม่มีการแก้ Environment เดิม
+
+- ปิด auto-deploy จาก Git Integration เฉพาะแอปร้านค้าเพื่อให้ release ผ่าน CI/approval และรวม vercel.json ในแพ็กเกจ Source
