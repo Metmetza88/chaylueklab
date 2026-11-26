@@ -4,6 +4,7 @@ import {harness,SCHOOL,OTHER,env} from './helpers.mjs';
 import {createDatabase} from '../lib/supabase-client.mjs';
 import {esc} from '../src/views.mjs';
 import {securityHeaders} from '../scripts/security-headers.mjs';
+import {isValidEmail} from '../lib/platform-core.mjs';
 test('CSRF: POST requires exact configured Origin and application/json',async()=>{
  for(const headers of [{origin:'https://attacker.test'},{origin:''},{'content-type':'text/plain'}]){
   const h=harness();const result=await h.run('quotation',{method:'POST',body:{school_id:SCHOOL,modules:['exam-studio']},headers});assert.ok([403,415].includes(result.code));assert.equal(h.calls.length,0);
@@ -43,4 +44,9 @@ test('student cannot request quotation or provision a license',async()=>{
 test('client rejects secret and service-role keys even in server config',()=>{
  const legacy='e30.'+Buffer.from(JSON.stringify({role:'service_role'})).toString('base64url')+'.signature';
  for(const key of ['sb_secret_test_only',legacy])assert.throws(()=>createDatabase({env:{...env,EDU_SUPABASE_PUBLISHABLE_KEY:key}}),/Publishable Key/);
+});
+test('email validation handles repeated dots and long adversarial input without backtracking',async()=>{
+ assert.equal(isValidEmail('teacher@school.ac.th'),true);
+ for(const value of ['a@@school.test','a@.school.test','a@school..test','a@school.','a@-school.test','a b@school.test','a@'+'.'.repeat(100000)+'x'])assert.equal(isValidEmail(value),false);
+ const h=harness();assert.equal((await h.run('login',{method:'POST',body:{email:'a@'+'.'.repeat(200)+'x',password:'test'}})).code,400);assert.equal(h.calls.length,0);
 });

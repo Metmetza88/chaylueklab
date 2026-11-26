@@ -5,43 +5,43 @@
 
 Running 28 tests using 2 workers
 
-(node:16696) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:18353) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:16695) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:18354) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓   1 [Desktop Chromium] › tests/e2e/store.spec.mjs:19:1 › catalog search, availability filter, empty state and real demos only (2.4s)
-  ✓   2 [Desktop Chromium] › tests/e2e/store.spec.mjs:4:1 › homepage, illustrations and mobile layout (3.4s)
-  ✓   3 [Desktop Chromium] › tests/e2e/store.spec.mjs:26:1 › product details contain features, limitations and quotation without invented price (1.2s)
+  ✓   2 [Desktop Chromium] › tests/e2e/store.spec.mjs:19:1 › catalog search, availability filter, empty state and real demos only (2.7s)
+  ✓   1 [Desktop Chromium] › tests/e2e/store.spec.mjs:4:1 › homepage, illustrations and mobile layout (4.0s)
+  ✓   3 [Desktop Chromium] › tests/e2e/store.spec.mjs:26:1 › product details contain features, limitations and quotation without invented price (1.1s)
   ✓   5 [Desktop Chromium] › tests/e2e/store.spec.mjs:43:1 › preserved exam studio and online scoring work (2.1s)
   ✓   4 [Desktop Chromium] › tests/e2e/store.spec.mjs:33:1 › comparison limits three selections and persists selection (2.5s)
-  ✓   6 [Desktop Chromium] › tests/e2e/store.spec.mjs:50:1 › certificate escapes HTML and has a real print action (1.9s)
+  ✓   6 [Desktop Chromium] › tests/e2e/store.spec.mjs:50:1 › certificate escapes HTML and has a real print action (1.6s)
   ✓   7 [Desktop Chromium] › tests/e2e/store.spec.mjs:57:1 › quotation draft is honest, escapes inputs and does not claim submission (1.8s)
-  ✓   8 [Desktop Chromium] › tests/e2e/store.spec.mjs:62:1 › unconfigured login and workspace show actual blocker states (1.8s)
+  ✓   8 [Desktop Chromium] › tests/e2e/store.spec.mjs:62:1 › unconfigured login and workspace show actual blocker states (1.3s)
   ✓   9 [Desktop Chromium] › tests/e2e/store.spec.mjs:66:1 › help, manual and mobile menu links navigate (1.8s)
+  ✓  10 [Desktop Chromium] › tests/e2e/store.spec.mjs:91:1 › mocked account: login, school empty state and service request success (2.6s)
   ✓  11 [Desktop Chromium] › tests/e2e/store.spec.mjs:97:1 › mocked quote submission requires confirmation and selected school (1.9s)
-  ✓  10 [Desktop Chromium] › tests/e2e/store.spec.mjs:91:1 › mocked account: login, school empty state and service request success (2.4s)
-  ✓  13 [Desktop Chromium] › tests/e2e/store.spec.mjs:106:1 › mocked customer profile sends only current school and contact name (1.7s)
   ✓  12 [Desktop Chromium] › tests/e2e/store.spec.mjs:102:1 › mocked admin denies ordinary school admin and renders authorized admin (2.1s)
-(node:17357) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+  ✓  13 [Desktop Chromium] › tests/e2e/store.spec.mjs:106:1 › mocked customer profile sends only current school and contact name (1.8s)
+(node:19016) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
 Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
   ✓  14 [Desktop Chromium] › tests/e2e/store.spec.mjs:110:1 › mocked platform admin issues license only after approval checkbox (1.4s)
-(node:17423) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:19090) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
 Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
-  ✓  16 [iPhone WebKit] › tests/e2e/store.spec.mjs:19:1 › catalog search, availability filter, empty state and real demos only (2.0s)
-  ✓  17 [iPhone WebKit] › tests/e2e/store.spec.mjs:26:1 › product details contain features, limitations and quotation without invented price (990ms)
-  ✓  15 [iPhone WebKit] › tests/e2e/store.spec.mjs:4:1 › homepage, illustrations and mobile layout (4.1s)
-  ✓  19 [iPhone WebKit] › tests/e2e/store.spec.mjs:43:1 › preserved exam studio and online scoring work (2.0s)
+  ✓  16 [iPhone WebKit] › tests/e2e/store.spec.mjs:19:1 › catalog search, availability filter, empty state and real demos only (2.2s)
+  ✓  15 [iPhone WebKit] › tests/e2e/store.spec.mjs:4:1 › homepage, illustrations and mobile layout (5.0s)
+  ✓  17 [iPhone WebKit] › tests/e2e/store.spec.mjs:26:1 › product details contain features, limitations and quotation without invented price (1.3s)
+  ✓  19 [iPhone WebKit] › tests/e2e/store.spec.mjs:43:1 › preserved exam studio and online scoring work (2.1s)
   ✓  18 [iPhone WebKit] › tests/e2e/store.spec.mjs:33:1 › comparison limits three selections and persists selection (3.6s)
   ✓  20 [iPhone WebKit] › tests/e2e/store.spec.mjs:50:1 › certificate escapes HTML and has a real print action (1.9s)
-  ✓  22 [iPhone WebKit] › tests/e2e/store.spec.mjs:62:1 › unconfigured login and workspace show actual blocker states (1.2s)
-  ✓  21 [iPhone WebKit] › tests/e2e/store.spec.mjs:57:1 › quotation draft is honest, escapes inputs and does not claim submission (2.1s)
-  ✓  23 [iPhone WebKit] › tests/e2e/store.spec.mjs:66:1 › help, manual and mobile menu links navigate (2.5s)
-  ✓  24 [iPhone WebKit] › tests/e2e/store.spec.mjs:91:1 › mocked account: login, school empty state and service request success (2.6s)
-  ✓  26 [iPhone WebKit] › tests/e2e/store.spec.mjs:102:1 › mocked admin denies ordinary school admin and renders authorized admin (1.4s)
-  ✓  25 [iPhone WebKit] › tests/e2e/store.spec.mjs:97:1 › mocked quote submission requires confirmation and selected school (3.3s)
-  ✓  27 [iPhone WebKit] › tests/e2e/store.spec.mjs:106:1 › mocked customer profile sends only current school and contact name (1.5s)
-  ✓  28 [iPhone WebKit] › tests/e2e/store.spec.mjs:110:1 › mocked platform admin issues license only after approval checkbox (1.3s)
+  ✓  21 [iPhone WebKit] › tests/e2e/store.spec.mjs:57:1 › quotation draft is honest, escapes inputs and does not claim submission (2.2s)
+  ✓  22 [iPhone WebKit] › tests/e2e/store.spec.mjs:62:1 › unconfigured login and workspace show actual blocker states (1.5s)
+  ✓  24 [iPhone WebKit] › tests/e2e/store.spec.mjs:91:1 › mocked account: login, school empty state and service request success (2.3s)
+  ✓  23 [iPhone WebKit] › tests/e2e/store.spec.mjs:66:1 › help, manual and mobile menu links navigate (2.8s)
+  ✓  26 [iPhone WebKit] › tests/e2e/store.spec.mjs:102:1 › mocked admin denies ordinary school admin and renders authorized admin (1.5s)
+  ✓  25 [iPhone WebKit] › tests/e2e/store.spec.mjs:97:1 › mocked quote submission requires confirmation and selected school (2.7s)
+  ✓  27 [iPhone WebKit] › tests/e2e/store.spec.mjs:106:1 › mocked customer profile sends only current school and contact name (1.6s)
+  ✓  28 [iPhone WebKit] › tests/e2e/store.spec.mjs:110:1 › mocked platform admin issues license only after approval checkbox (1.8s)
 
-  28 passed (33.0s)
+  28 passed (34.3s)

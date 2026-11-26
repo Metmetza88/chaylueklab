@@ -47,7 +47,7 @@ Environment `education-preview`:
 - Secret `EDU_VERCEL_TOKEN` จาก credential ที่ได้รับอนุญาตแล้ว
 - Optional `EDU_VERCEL_AUTOMATION_BYPASS_SECRET` ที่มีอยู่ หาก Preview protection ต้องใช้ ห้ามปิด protection
 
-Workflow เดิม `.github/workflows/education-2570.yml`: install → ESLint → tests → local PostgreSQL/RLS → audit → build → artifact security → Playwright → (เมื่อเปิด flag) inspect project → Preview จาก SHA ของสาขาที่ระบุ → smoke test. ไม่ใช้ --prod, promote หรือ alias production. Project/team/root/repo mismatch ทำให้หยุดก่อน deploy
+Workflow เดิม `.github/workflows/education-2570.yml`: install → ESLint → tests → local PostgreSQL/RLS → audit → build → artifact security → Playwright + shared CodeQL → (เมื่อเปิด flag) inspect project → Preview จาก SHA ของสาขาที่ระบุ → smoke test. ไม่ใช้ --prod, promote หรือ alias production. Project/team/root/repo mismatch ทำให้หยุดก่อน deploy
 
 Production review เป็น manual workflow input + environment `education-production` เพื่อทบทวนหลักฐานเท่านั้น ไม่มี production deployment implementation ในงานนี้. ต้องตั้ง required reviewers/environment protection ใน GitHub ก่อนพิจารณาปล่อยจริง (ยังไม่เปลี่ยน settings นี้)
 

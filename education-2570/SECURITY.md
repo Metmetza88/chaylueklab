@@ -5,6 +5,7 @@
 - Project host จำกัด `yobymeygbfiwlngmwjcn.supabase.co`; schema จำกัด `education_2570`; ไม่มี table/action ที่ต่อโดยตรงจากผู้ใช้
 - ใช้ Publishable Key เท่านั้น ปฏิเสธ `sb_secret_` และ legacy JWT role `service_role`; ไม่พิมพ์ credentials/token ลง log
 - ยืนยัน session กับ `/auth/v1/user` ทุกคำขอ ใช้ `__Host-edu_session; HttpOnly; Secure; SameSite=Strict; Path=/` จำกัดอายุไม่เกิน 3600 วินาที ไม่เก็บ token ใน localStorage
+- การตรวจอีเมลใช้ bounded linear parsing เพื่อลด ReDoS; CodeQL gate ใช้ workflow ส่วนกลางเดิมและเป็น prerequisite ก่อน Preview
 - POST ต้อง Origin ตรง `EDU_APP_ORIGIN`, JSON และ payload ไม่เกิน 12KB. ไม่มี CORS สำหรับ third-party origins
 - Membership/role อ่านจากฐานข้อมูล ไม่เชื่อ role/school/user_id ในฟอร์ม และไม่ใช้ `user_metadata` เป็น authorization
 - RLS บนตารางใหม่ทั้งหมด, SELECT ผูก tenant, UPDATE มี USING/WITH CHECK, column grants จำกัด feature flag, service status, notification read_at และ contact name

@@ -184,12 +184,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3350,
+                  "duration": 3993,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:25.438Z",
+                  "startTime": "2026-11-26T08:49:43.283Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -207,7 +207,7 @@
                   "workerIndex": 2,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4136,
+                  "duration": 4974,
                   "errors": [],
                   "stdout": [],
                   "stderr": [
@@ -216,7 +216,7 @@
                     }
                   ],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:40.727Z",
+                  "startTime": "2026-11-26T08:49:58.805Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -245,12 +245,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 2384,
+                  "duration": 2700,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:25.400Z",
+                  "startTime": "2026-11-26T08:49:43.304Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -268,7 +268,7 @@
                   "workerIndex": 3,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 2005,
+                  "duration": 2237,
                   "errors": [],
                   "stdout": [],
                   "stderr": [
@@ -277,7 +277,7 @@
                     }
                   ],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:41.629Z",
+                  "startTime": "2026-11-26T08:50:00.507Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -306,12 +306,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 1185,
+                  "duration": 1095,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:28.293Z",
+                  "startTime": "2026-11-26T08:49:46.879Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -329,12 +329,12 @@
                   "workerIndex": 3,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 990,
+                  "duration": 1314,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:43.807Z",
+                  "startTime": "2026-11-26T08:50:03.025Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -363,12 +363,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 2475,
+                  "duration": 2494,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:29.271Z",
+                  "startTime": "2026-11-26T08:49:47.911Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -383,15 +383,15 @@
               "projectName": "iPhone WebKit",
               "results": [
                 {
-                  "workerIndex": 3,
-                  "parallelIndex": 1,
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3572,
+                  "duration": 3569,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:44.872Z",
+                  "startTime": "2026-11-26T08:50:03.991Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -420,12 +420,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 2052,
+                  "duration": 2103,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:29.569Z",
+                  "startTime": "2026-11-26T08:49:48.002Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -440,15 +440,15 @@
               "projectName": "iPhone WebKit",
               "results": [
                 {
-                  "workerIndex": 2,
-                  "parallelIndex": 0,
+                  "workerIndex": 3,
+                  "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 2002,
+                  "duration": 2063,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:45.165Z",
+                  "startTime": "2026-11-26T08:50:04.391Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -477,12 +477,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 1909,
+                  "duration": 1613,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:31.678Z",
+                  "startTime": "2026-11-26T08:49:50.135Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -497,15 +497,15 @@
               "projectName": "iPhone WebKit",
               "results": [
                 {
-                  "workerIndex": 2,
-                  "parallelIndex": 0,
+                  "workerIndex": 3,
+                  "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 1884,
+                  "duration": 1882,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:47.185Z",
+                  "startTime": "2026-11-26T08:50:06.523Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -534,12 +534,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1800,
+                  "duration": 1827,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:31.830Z",
+                  "startTime": "2026-11-26T08:49:50.469Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -554,15 +554,15 @@
               "projectName": "iPhone WebKit",
               "results": [
                 {
-                  "workerIndex": 3,
-                  "parallelIndex": 1,
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 2083,
+                  "duration": 2219,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:48.504Z",
+                  "startTime": "2026-11-26T08:50:07.585Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -591,12 +591,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 1755,
+                  "duration": 1272,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:33.609Z",
+                  "startTime": "2026-11-26T08:49:51.799Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -611,15 +611,15 @@
               "projectName": "iPhone WebKit",
               "results": [
                 {
-                  "workerIndex": 2,
-                  "parallelIndex": 0,
+                  "workerIndex": 3,
+                  "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 1207,
+                  "duration": 1529,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:49.118Z",
+                  "startTime": "2026-11-26T08:50:08.423Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -648,12 +648,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1823,
+                  "duration": 1752,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:33.677Z",
+                  "startTime": "2026-11-26T08:49:52.326Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -671,12 +671,12 @@
                   "workerIndex": 2,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 2495,
+                  "duration": 2781,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:50.367Z",
+                  "startTime": "2026-11-26T08:50:09.832Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -705,12 +705,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 2380,
+                  "duration": 2597,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:35.391Z",
+                  "startTime": "2026-11-26T08:49:53.102Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -728,12 +728,12 @@
                   "workerIndex": 3,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 2573,
+                  "duration": 2277,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:50.621Z",
+                  "startTime": "2026-11-26T08:50:10.011Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -762,12 +762,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1904,
+                  "duration": 1862,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:35.529Z",
+                  "startTime": "2026-11-26T08:49:54.126Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -782,15 +782,15 @@
               "projectName": "iPhone WebKit",
               "results": [
                 {
-                  "workerIndex": 2,
-                  "parallelIndex": 0,
+                  "workerIndex": 3,
+                  "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 3254,
+                  "duration": 2671,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:52.894Z",
+                  "startTime": "2026-11-26T08:50:12.318Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -816,15 +816,15 @@
               "projectName": "Desktop Chromium",
               "results": [
                 {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 2080,
+                  "duration": 2093,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:37.501Z",
+                  "startTime": "2026-11-26T08:49:55.719Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -839,15 +839,15 @@
               "projectName": "iPhone WebKit",
               "results": [
                 {
-                  "workerIndex": 3,
-                  "parallelIndex": 1,
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1405,
+                  "duration": 1455,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:53.216Z",
+                  "startTime": "2026-11-26T08:50:12.673Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -873,15 +873,15 @@
               "projectName": "Desktop Chromium",
               "results": [
                 {
-                  "workerIndex": 1,
-                  "parallelIndex": 1,
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1666,
+                  "duration": 1806,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:37.815Z",
+                  "startTime": "2026-11-26T08:49:56.095Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -896,15 +896,15 @@
               "projectName": "iPhone WebKit",
               "results": [
                 {
-                  "workerIndex": 3,
-                  "parallelIndex": 1,
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1525,
+                  "duration": 1637,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:54.671Z",
+                  "startTime": "2026-11-26T08:50:14.171Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -933,12 +933,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 1424,
+                  "duration": 1441,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:39.527Z",
+                  "startTime": "2026-11-26T08:49:57.875Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -953,15 +953,15 @@
               "projectName": "iPhone WebKit",
               "results": [
                 {
-                  "workerIndex": 2,
-                  "parallelIndex": 0,
+                  "workerIndex": 3,
+                  "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 1323,
+                  "duration": 1778,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-11-26T08:45:56.172Z",
+                  "startTime": "2026-11-26T08:50:15.005Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -979,8 +979,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-11-26T08:45:24.934Z",
-    "duration": 32983.933999999994,
+    "startTime": "2026-11-26T08:49:42.560Z",
+    "duration": 34310.104999999996,
     "expected": 28,
     "skipped": 0,
     "unexpected": 0,

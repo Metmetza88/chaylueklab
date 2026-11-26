@@ -78,9 +78,17 @@ jobs:
             education-2570/test-results/
           retention-days: 7
 
+  security-analysis:
+    name: CodeQL shared security gate
+    uses: ./.github/workflows/codeql.yml
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+
   preview:
     name: Education Preview and Smoke Test
-    needs: quality
+    needs: [quality, security-analysis]
     if: github.event_name == 'push' && github.ref == 'refs/heads/feature/education-2570' && vars.EDU_PREVIEW_ENABLED == 'true' && vars.EDU_COMMERCIAL_HOSTING_CONFIRMED == 'true'
     runs-on: ubuntu-latest
     environment: education-preview
@@ -115,7 +123,7 @@ jobs:
 
   production-approval:
     name: Owner production readiness review (no deployment)
-    needs: quality
+    needs: [quality, security-analysis]
     if: github.event_name == 'workflow_dispatch' && inputs.production_review
     runs-on: ubuntu-latest
     environment: education-production

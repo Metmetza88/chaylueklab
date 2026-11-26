@@ -13,6 +13,15 @@ export function requireText(value, max, min = 1) {
   if (typeof value !== 'string' || value.trim().length < min || value.trim().length > max) throw new HttpError(400, 'กรุณาตรวจสอบข้อมูลในแบบฟอร์ม');
   return value.trim();
 }
+/** ตรวจอีเมลด้วยการแบ่งส่วนแบบ O(n) ไม่ใช้ Regex ที่ย้อนหาจุดแบ่งซ้ำจนเกิด ReDoS */
+export function isValidEmail(value) {
+  if (typeof value !== 'string' || value.length > 254 || /\s/.test(value)) return false;
+  const parts = value.split('@');
+  if (parts.length !== 2 || !parts[0].length || parts[0].length > 64) return false;
+  const labels = parts[1].split('.');
+  return labels.length > 1 && labels.every(label => label.length > 0 && label.length <= 63 &&
+    /^[A-Za-z0-9-]+$/.test(label) && !label.startsWith('-') && !label.endsWith('-'));
+}
 /** รับเฉพาะรายการจากทะเบียนโปรแกรมและไม่รับราคาหรือสถานะจากผู้ใช้ */
 export function validateQuotation(body) {
   requireId(body?.school_id);

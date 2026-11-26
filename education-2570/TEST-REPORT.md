@@ -7,7 +7,7 @@
 | รายการ | ผล | หลักฐาน / ขอบเขต |
 |---|---|---|
 | ESLint 10.15.0 | PASS | `evidence/lint.log` |
-| Unit / API contract / Security regression | PASS 34/34 | `evidence/unit-api-security.log`; mock HTTP ไม่ใช่ live Supabase |
+| Unit / API contract / Security regression | PASS 35/35 | `evidence/unit-api-security.log`; mock HTTP ไม่ใช่ live Supabase |
 | PostgreSQL 17 integration | PASS 12/12 | `evidence/database-tests.log`; localhost fixture เท่านั้น |
 | Playwright Desktop Chromium + iPhone WebKit | PASS 28/28 | `evidence/e2e.log`, `evidence/playwright-results.json`; 14 scenarios × 2 engines, ไม่มี skipped tests |
 | Static build | PASS | `evidence/build.log` |
@@ -62,3 +62,7 @@ node scripts/smoke.mjs
 ```
 
 ภาพที่ตรวจด้วยตา: `evidence/home-Desktop-Chromium.png`, `evidence/home-iPhone-WebKit.png`. ไม่มีข้อมูลส่วนบุคคลจริงในภาพหรือ fixture
+
+## CodeQL และ CI
+
+Education workflow และ Quality checks ของ commit `7b24bed` ผ่านบน GitHub Runner จริง แต่ CodeQL ส่วนกลางตรวจพบ `js/polynomial-redos` severity 7.5 ใน Regex อีเมล (`api/education.mjs`). แก้เป็น bounded linear parser, เพิ่ม adversarial-input regression และเพิ่ม CodeQL reusable workflow เป็น dependency ของ Preview/Production review โดยไม่ลดเกณฑ์หรือ suppress finding. ผลของ source หลังแก้ดูได้จาก [PR checks](https://github.com/Metmetza88/chaylueklab/pull/58/checks). ไม่มีการ Deploy ระหว่างพบ finding

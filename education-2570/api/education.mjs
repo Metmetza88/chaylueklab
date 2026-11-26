@@ -1,5 +1,5 @@
 import { modules, categories } from '../src/catalog.mjs';
-import { HttpError, requireId, requireText, validateQuotation, pagination, requireMembership } from '../lib/platform-core.mjs';
+import { HttpError, requireId, requireText, isValidEmail, validateQuotation, pagination, requireMembership } from '../lib/platform-core.mjs';
 import { createDatabase } from '../lib/supabase-client.mjs';
 const GET = new Set(['config', 'catalog', 'me', 'workspace', 'quotations', 'services', 'notifications', 'profile', 'admin']);
 const POST = new Set(['login', 'logout', 'quotation', 'service', 'entitlement', 'module-flag', 'service-status', 'notification-read', 'customer-profile', 'provision']);
@@ -40,7 +40,7 @@ export function createEducationHandler({ env = process.env, fetchImpl = fetch } 
       if (!configured) throw new HttpError(503, 'ระบบบัญชียังไม่เชื่อมต่อ กรุณาใช้หน้าสาธิต');
       if (action === 'login') {
         const email = requireText(request.body?.email, 254);
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new HttpError(400, 'อีเมลไม่ถูกต้อง');
+        if (!isValidEmail(email)) throw new HttpError(400, 'อีเมลไม่ถูกต้อง');
         requireText(request.body?.password, 256, 1);
         const password = request.body.password;
         let session;

@@ -10,7 +10,7 @@ Repository `Metmetza88/chaylueklab` · branch `feature/education-2570` · PR htt
 - รักษา Exam Studio, Smart Exam, Smart Certificate เป็น 3 browser demo modules; ไม่ลบระบบสอบเดิม
 - โค้ด shared Auth/Workspace/Customer/Admin, module flags, License/Entitlement provisioning, notifications, service requests, reports/CSV พร้อม loading/error/empty/success states
 - Migration additive ใน education_2570 สำหรับ 11 shared tables + constraints/indexes/RLS/functions; **ยังไม่ apply จริง**
-- CI ของ Education: install/lint/tests/DB/security/build/Playwright/guarded Preview/smoke; Production เป็น review-only ไม่มี auto-deploy/promote
+- CI ของ Education: install/lint/tests/DB/security/build/Playwright + shared CodeQL gate ก่อน guarded Preview/smoke; Production เป็น review-only ไม่มี auto-deploy/promote
 - แบบ Figma Desktop/Mobile: https://www.figma.com/design/RzDmHcof1KJA13U8dHKMiV
 - เอกสาร ARCHITECTURE, DATABASE, SECURITY, TEST-REPORT, TOOLS-STATUS และหลักฐานทดสอบอยู่ในโฟลเดอร์นี้
 
@@ -18,7 +18,7 @@ Repository `Metmetza88/chaylueklab` · branch `feature/education-2570` · PR htt
 
 | สถานะ | รายการ |
 |---|---|
-| PASS | Local ESLint, 34 Unit/API/Security, 12 PostgreSQL integration, 28 Playwright E2E, build, artifact checks, npm audit (0), local smoke |
+| PASS | Local ESLint, 35 Unit/API/Security, 12 PostgreSQL integration, 28 Playwright E2E, build, artifact checks, npm audit (0), local smoke |
 | BLOCKED | Supabase Primary binding/credentials ไม่พร้อม: ไม่ได้ตรวจ 10 ตารางจริง, apply migration, advisors หรือทดสอบบัญชีจริง |
 | BLOCKED | Vercel target `psomnuek-education-2570` ตอบ 404 ใน Team ที่กำหนด; search ไม่พบ Project; CLI ยังไม่ login; ไม่มี Preview URL |
 | BLOCKED | Commercial hosting entitlement/ค่าใช้จ่ายของ Team ยังไม่ยืนยัน จึงไม่เปิด deploy flag หรือสมัครแผนใหม่ |
@@ -36,3 +36,5 @@ Repository `Metmetza88/chaylueklab` · branch `feature/education-2570` · PR htt
 5. UAT โรงเรียนจริงและเจ้าของอนุมัติความพร้อม/ราคา ก่อนเปิดใช้งานหรือพัฒนา Phase B ทีละโมดูลตามลำดับ
 
 ไม่มีการ Merge main, Deploy/Promote Production, เปลี่ยนเว็บไซต์หลัก, แก้ live schema อื่น, ซื้อบริการ หรือเรียก paid AI API ในงานนี้
+
+CodeQL เคยพบ ReDoS ในอีเมลของ commit 7b24bed และแก้ด้วย linear validation + regression test แล้วใน source นี้. [ผล CI ล่าสุดของ PR](https://github.com/Metmetza88/chaylueklab/pull/58/checks) เป็นหลักฐานการตรวจซ้ำบน Runner จริง ไม่ใช้ผล npm audit แทน SAST
