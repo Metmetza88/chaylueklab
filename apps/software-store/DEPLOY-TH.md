@@ -99,3 +99,13 @@ Webhook ในโค้ดเป็น **trusted bridge protocol** ต้อง�
 ## ข้อจำกัดก่อนใช้งานข้อมูลจริง
 
 ต้องยืนยันข้อมูลผู้ควบคุมข้อมูล นโยบายโรงเรียน ระยะเวลาเก็บและลบไฟล์ การสำรอง/restore Monitoring และผู้มีหน้าที่ตอบคำร้อง PDPA รวมทั้งทดสอบ iPhone Safari และ Android จริง การจำลอง viewport ไม่แทนการตรวจอุปกรณ์จริง
+
+## Workflow CI/Deploy ที่เพิ่ม 2026-11-26
+
+ดู [CI-DEPLOY-TH.md](docs/CI-DEPLOY-TH.md) สำหรับ main/manual dispatch, Node22, protected environments, Secrets และ staged production ที่ยังไม่ assign โดเมน ไม่ใช้ Environment เดิมของเว็บไซต์หลัก ค่าสิทธิ์ปัจจุบันยังไม่พอสร้าง Project/ตั้ง GitHub environments จึงต้องให้เจ้าของตั้งค่าตามคู่มือก่อน
+
+### เมื่อติดตั้งจาก ZIP ผลิตภัณฑ์โรงเรียนแยก
+
+แตก ZIP แล้วเข้าโฟลเดอร์ที่มี package.json รัน npm ci และใช้ APP_VARIANT=school กับ SCHOOL_SLUG ที่สร้างด้วย bootstrap-owner.mjs สำหรับ Vercel Project ของโรงเรียนนี้ให้ Root Directoryเป็นจุดที่ package.json อยู่ (`.` เมื่อเชื่อม repo standalone) และใช้ Supabase Project/บัญชีของโรงเรียนตามสิทธิ์อนุญาต
+
+Workflow/guard ใน Repositoryหลักของ CHAYLUEKLAB จำกัดปลายทางเฉพาะร้านค้า `apps/software-store` จึงไม่ใช่คำสั่งสำหรับ Deploy Project ลูกค้าในชื่ออื่น อย่าเปลี่ยน Project ID ของร้านค้าเป็นโรงเรียนของลูกค้า ใช้การติดตั้งแยกตามหัวข้อนี้และตรวจ Auth/RLS/Storage ของโรงเรียนก่อนรับข้อมูลจริง

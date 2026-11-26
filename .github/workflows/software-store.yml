@@ -1,8 +1,13 @@
 name: Software store checks
 on:
   pull_request:
-    paths: ['apps/software-store/**', '.github/workflows/software-store.yml']
+    paths: ['apps/software-store/**', '.github/workflows/software-store.yml', '.github/workflows/software-store-deploy.yml', '.github/actions/store-vercel-stage/**']
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      node_version:
+        type: string
+        default: '22'
 permissions:
   contents: read
 jobs:
@@ -20,9 +25,17 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: '24'
+          node-version: ${{ inputs.node_version || '22' }}
           cache: npm
           cache-dependency-path: apps/software-store/package-lock.json
+      - name: Validate GitHub workflows
+        working-directory: ${{ github.workspace }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/store-actionlint"
+          curl --fail --silent --show-error --location https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz --output "$RUNNER_TEMP/store-actionlint/tool.tar.gz"
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  $RUNNER_TEMP/store-actionlint/tool.tar.gz" | sha256sum --check --status
+          tar -xzf "$RUNNER_TEMP/store-actionlint/tool.tar.gz" -C "$RUNNER_TEMP/store-actionlint" actionlint
+          "$RUNNER_TEMP/store-actionlint/actionlint" .github/workflows/software-store.yml .github/workflows/software-store-deploy.yml
       - run: npm ci --ignore-scripts
       - run: npm run typecheck
       - run: npm run lint

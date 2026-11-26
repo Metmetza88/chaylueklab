@@ -42,3 +42,7 @@
 ## การเข้าถึง Source ใน GitHub
 
 Repository ที่เจ้าของระบุเป็น **public** และ Branch ที่ Push จึงอ่าน Source ได้สาธารณะ Private ZIP และ Signed URL จำกัดการดาวน์โหลดจากร้านค้า แต่ไม่ทำให้ Source ใน public GitHub เป็นความลับ ก่อนขายแบบปิดซอร์ส เจ้าของต้องเลือกกลยุทธ์การเข้าถึง/สิทธิ์ของ Repository เดิมให้เหมาะสม การเปลี่ยน visibility อาจกระทบ GitHub Pages/Integration เดิม จึงยังไม่ได้เปลี่ยนเอง และไม่ได้สร้าง Repository ใหม่
+
+## CI/Deploy isolation (2026-11-26)
+
+ใช้ action SHA/CLI version ที่ pin และ token เริ่มต้น contents:read ตรวจ protected environment ว่ามี owner เป็น reviewer เพียงคนเดียวและอนุญาต branch ชื่อที่กำหนด ก่อนนำ Vercel credential มาใช้ ตรวจ Team/Project/GitHub link/Root Directory/ทุกโดเมน บังคับ payment disabled ตรวจ deployment commit/READY และ smoke test ก่อน manual promotion แยกจาก staging --skip-domain ไม่มี token ใน command arguments หรือบันทึกลง Git รายละเอียดใน CI-DEPLOY-TH.md ทั้งหมดยังไม่ใช่ผลทดสอบ Deploy จริง เพราะสิทธิ์บริการคืน403

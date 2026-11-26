@@ -7,5 +7,5 @@ export default defineConfig({
       "server-only": path.resolve(import.meta.dirname, "tests/server-only.ts"),
     },
   },
-  test: { include: ["tests/**/*.test.ts"] },
+  test: { include: ["tests/**/*.test.{ts,mjs}"] },
 });

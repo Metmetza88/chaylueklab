@@ -1,6 +1,6 @@
 # CHAYLUEKLAB SOFTWARE STORE — สถานะและหลักฐานจริง
 
-อัปเดต 2026-11-24 UTC • WORAMET AI LAB
+อัปเดต 2026-11-26 UTC • WORAMET AI LAB
 
 **สถานะ: Source พร้อมตรวจรับเป็น Release Candidate; ยังไม่พร้อมเปิดขาย Production**
 
@@ -14,7 +14,7 @@
 | 2. Preview URL | ยังสร้างไม่ได้ Vercel create_project คืน403 forbidden; ไม่มี Vercel deployment/build/runtime logs ให้อ้าง |
 | 3. GitHub Branch / PR | [Branch เดิม](https://github.com/Metmetza88/chaylueklab/tree/feature/woramet-school-store-20261124) Push แล้ว; [Draft PR #55](https://github.com/Metmetza88/chaylueklab/pull/55) |
 | 4. Admin | route `/admin`; โรงเรียน `/school-admin/<slug>` ยังไม่ deploy สาธารณะ |
-| 5. ผลทดสอบ | [TEST-REPORT](apps/software-store/docs/TEST-REPORT.md): Unit31, Integration23, Playwright80passed/12plannedskips/0failed, TypeScript/ESLint/Production Build ผ่าน |
+| 5. ผลทดสอบ | [TEST-REPORT](apps/software-store/docs/TEST-REPORT.md): Unit53, Integration23, Playwright80passed/12plannedskips/0failed, TypeScript/ESLint/Production Build ผ่าน |
 | 6. พร้อมขายจริง | **0 ระบบ** เพราะยังต้องตรวจ Storage/provider Sandbox/SMTP/อุปกรณ์จริงและเจ้าของตรวจรับ |
 | 7. ยังไม่เสร็จ | สองระบบแรกเป็น RC; อีก13ระบบเป็น roadmap ดูตารางด้านล่าง |
 | 8. ติดตั้งภาษาไทย | [DEPLOY-TH](apps/software-store/DEPLOY-TH.md), [คู่มือโรงเรียน](apps/software-store/docs/SCHOOL-USER-GUIDE-TH.md) |
@@ -27,8 +27,8 @@
 
 | โปรแกรม | สถานะ source | จำหน่าย |
 |---|---|---|
-| MET School Pro | 0.2.0-rc.1: school website/news/settings/roles/source/schema/manuals/tests/ZIP | Coming Soon |
-| MET Admission | 0.2.0-rc.1: school website/rounds/applications/documents/review/ThaiPDF/CSV/dashboard/roles/source/schema/manuals/tests/ZIP | Coming Soon |
+| MET School Pro | 0.2.0-rc.2: school website/news/settings/roles/source/schema/manuals/tests/ZIP | Coming Soon |
+| MET Admission | 0.2.0-rc.2: school website/rounds/applications/documents/review/ThaiPDF/CSV/dashboard/roles/source/schema/manuals/tests/ZIP | Coming Soon |
 | MET Student | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
 | MET Attendance | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
 | MET Schedule | ยังไม่พัฒนา implementation สินค้า | Coming Soon |
@@ -63,7 +63,7 @@ ZIPสำหรับตรวจรับอยู่ใน `apps/software-stor
 - Auth getUser/RLS/role checks/private storage policy/rate limits/file validation/CSV escaping และ server-only service key
 - Sourceรูปแบบโรงเรียนติดตั้งแยกได้ด้วย APP_VARIANT=school; ทดสอบ root redirect/ข้อมูลจริงในLocal/phone390pxเพิ่มเติมแล้ว
 - Demoไม่รับชื่อ/เบอร์/ไฟล์จริง ใช้ค่าคงที่และ browser memory ไม่ส่งใบสมัครขึ้น Server ภาพ `public/screenshots` ถ่ายจากระบบทดลองที่รันจริงพร้อมป้ายข้อมูลสมมติ
-- Unit31/31, DB/Auth/RLS/transaction23/23, PlaywrightProduction80passed+12plannedskips ผ่าน ดูรายงานและ JSONหลักฐาน ไม่มีการนับ testsที่ยังไม่ได้รันเป็นผ่าน
+- Unit53/31, DB/Auth/RLS/transaction23/23, PlaywrightProduction80passed+12plannedskips ผ่าน ดูรายงานและ JSONหลักฐาน ไม่มีการนับ testsที่ยังไม่ได้รันเป็นผ่าน
 - public sweepชุดแรก timeoutเมื่อรวม16หน้าต่อtest; แบ่งต่อหน้าและใช้ Production Build แล้ว ต่อมาป้าย Sandboxทำให้selector Demoกำกวม แก้selectorและรันครบใหม่ผ่าน
 - Local Supabaseเต็มชุด/StorageAPIติดพื้นที่ Docker ไม่พอ จึงใช้ PostgreSQL17+GoTrue+PostgRESTจริงร่วมกับ storage schema fixture; **ยังไม่ทดสอบ Storage service/SignedURL expiry จริง**
 - ก่อนPushสแกนstagedfilesหารูปแบบsecret: ผ่าน ไม่มี .env.test/auth.env/rest.env/test accounts ใน Git หรือ ZIP
@@ -74,9 +74,9 @@ ZIPสำหรับตรวจรับอยู่ใน `apps/software-stor
 
 | บริการ | ผล |
 |---|---|
-| GitHub | อ่าน/Push branchเดิมได้ สิทธิ์repo push/admin; ยังไม่ merge |
+| GitHub | อ่าน/Push branchเดิมได้ Push branch เดิมได้; การอ่าน Variables/แก้ Environment คืน403 แม้ repo metadata รายงาน admin; ยังไม่ merge |
 | Vercel | เห็น team `team_kA0EAug4JrrTT6ZIc54RXcmL`; list_projectsทั้งteam/personalคืนว่าง; POST /v11/projects ชื่อ chaylueklab-software-storeคืน403 forbidden ไม่มี projectถูกสร้าง |
-| CLI fallback | ไม่มี VercelCLI, VERCEL_TOKEN หรือ CLI auth file ในWorkspace จึงไม่มี credentialสำรองสำหรับสิทธิ์ที่ขาด |
+| CLI fallback | ตรวจ Vercel CLI67 ผ่านคำสั่ง help ได้ แต่ไม่มี VERCEL_TOKEN หรือ CLI auth file ในWorkspace จึงไม่มี credentialสำรองสำหรับสิทธิ์ที่ขาด |
 | Supabase | เห็น CHAYLUEKLAB Reminder Backend (`bxaplhrunxiadjsdobyl`) และ Metmetza88's Project (`yobymeygbfiwlngmwjcn`); ตรวจ public table metadata ของระบบเดิมแล้ว ไม่เขียน hostedDB |
 | Payment provider | ยังไม่มีบัญชี/APIที่ได้รับอนุญาต ทดสอบเฉพาะ signed trusted bridgeบนLocalSandbox |
 | Command Center/Income Assistant/LINE | เตรียม protocolและoutboxแล้ว ยังไม่มี authorized endpoint/secret/recipient/scheduler จึงไม่ได้ส่งข้อความจริง |
@@ -88,3 +88,11 @@ Repositoryเดิมเป็น **public** SourceในBranchอ่านไ�
 VIPมีสิทธิ์/วันหมดอายุ/ส่วนลดและadminจัดการแล้ว แต่ยังไม่เปิดขายแผนสมาชิก/ต่ออายุอัตโนมัติ ราคาแผน การเชื่อมSMTP การส่งสิทธิ์ทางข้อความ และ13สินค้าที่เหลือยังต้องพัฒนาหรือรับข้อมูลเพิ่ม ไม่ระบุว่าทุกฟีเจอร์ครบ Productionแล้ว
 
 **ไม่เปิดรับเงินจริง ไม่เปลี่ยนDNS และไม่ประกาศพร้อมขายจนผ่าน external tests และเจ้าของอนุมัติ**
+
+## งานต่อเนื่อง 2026-11-26
+- ตรวจไฟล์แนบใหม่9ไฟล์เทียบSHAและโครงสร้าง ZIP ไม่ใช้รายงานพร้อมขายที่ไม่มีหลักฐานทดสอบ ดู ATTACHMENT-REVIEW-20261126.json
+- CI commit c7b1ecb ผ่าน Software store checks, Quality และ CodeQL จริง: https://github.com/Metmetza88/chaylueklab/actions/runs/45321105456
+- แก้ PDF ที่พบจากการเรนเดอร์ภาพจริงว่าภาษาอังกฤษและตัวเลขไม่ครบ ใช้ static TTF แยกจากฟอนต์เว็บ และตรวจภาพหลังแก้แล้ว
+- เพิ่ม Workflow main/manual, Node22, read-only permissions, concurrency, pinnedCLI และตัวตรวจTeam/Project/Repo/Root/Domain/Payment/Commit/Approval Policy
+- GitHubอ่านEnvironmentsเดิมได้ แต่ PUT environmentใหม่และอ่านVariablesคืน403 ไม่มีการแก้ Environment เดิมหรือสร้าง environmentสำเร็จ
+- การDeployยังปิดไว้จนเจ้าของตั้งprotected environments/IDs/tokenและยืนยันProjectร้านค้า ดู docs/CI-DEPLOY-TH.md

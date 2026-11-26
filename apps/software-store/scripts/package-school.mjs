@@ -10,7 +10,7 @@ import {
 } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
-const version = "0.2.0-rc.1";
+const version = JSON.parse(readFileSync("package.json", "utf8")).version;
 const included = [
   "app",
   "components",
@@ -89,6 +89,7 @@ for (const slug of ["met-school-pro", "met-admission"]) {
     "docs/TEST-REPORT.md",
     "docs/INTEGRATIONS.md",
     "docs/OWNER-ACTIONS.md",
+    "docs/CI-DEPLOY-TH.md",
     "docs/LICENSE.md",
     "docs/E2E-RESULTS.json",
     "docs/INTEGRATION-RESULTS.json",
@@ -96,7 +97,7 @@ for (const slug of ["met-school-pro", "met-admission"]) {
   ])
     archive.file(f, { name: `${base}/${f}` });
   archive.append(
-    `# ${slug} — ${version}\n\nRelease Candidate; ready_for_sale=false.\n\nSource/database/manuals/tests/screenshots included. Local validation: Unit31, integration23, Playwright80passed/12plannedskips/0failed. Supabase Storage service, authorized payment provider, SMTP, physical devices and owner acceptance remain pending.\n\nSee docs/TEST-REPORT.md, docs/SECURITY.md, docs/OWNER-ACTIONS.md and release.json.\n\nRepository: https://github.com/Metmetza88/chaylueklab/tree/feature/woramet-school-store-20261124 (public).\n`,
+    `# ${slug} — ${version}\n\nRelease Candidate; ready_for_sale=false.\n\nSource/database/manuals/tests/screenshots included. Local validation: Unit53, integration23, Playwright80passed/12plannedskips/0failed. Supabase Storage service, authorized payment provider, SMTP, physical devices and owner acceptance remain pending.\n\nSee docs/TEST-REPORT.md, docs/SECURITY.md, docs/OWNER-ACTIONS.md and release.json.\n\nRepository: https://github.com/Metmetza88/chaylueklab/tree/feature/woramet-school-store-20261124 (public).\n`,
     { name: `${base}/PROJECT-STATUS.md` },
   );
   archive.append(

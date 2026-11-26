@@ -7,11 +7,15 @@ export async function makePdf(title: string, lines: string[]) {
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
   const font = await doc.embedFont(
-    await readFile(path.join(process.cwd(), "public/fonts/NotoSansThai.ttf")),
+    await readFile(
+      path.join(process.cwd(), "public/fonts/NotoSansThai-Regular.ttf"),
+    ),
     { subset: true },
   );
   const latin = await doc.embedFont(
-    await readFile(path.join(process.cwd(), "public/fonts/NotoSans.ttf")),
+    await readFile(
+      path.join(process.cwd(), "public/fonts/NotoSans-Regular.ttf"),
+    ),
     { subset: true },
   );
   let page = doc.addPage([595, 842]);

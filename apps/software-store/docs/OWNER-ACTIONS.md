@@ -10,3 +10,5 @@
 8. **Automations:** ให้ endpoint/API scope และสิทธิ์ของ Command Center, Income Assistant, LINE OA รวมทั้งแผน scheduler/งบประมาณก่อนทดสอบส่งจริง Queue มีอยู่แล้ว แต่ยังไม่มีข้อความจริงถูกส่ง
 
 ผู้พัฒนาเตรียม source, migrations, scripts, tests, คู่มือ และ ZIP สำหรับตรวจรับแล้ว ไม่ต้องให้เจ้าของเขียนโค้ดส่วนเหล่านี้เอง เมื่อให้ข้อมูล/สิทธิ์ที่ขาดจึงดำเนิน external verification และ deploy ต่อได้
+
+การตั้ง CI/Deploy: ดู [CI-DEPLOY-TH.md](CI-DEPLOY-TH.md) สำหรับ Environments ร้านค้าแยก3รายการ, required owner reviewer, branch policies, Variables และ Secrets ที่ต้องตั้งผ่าน GitHub Settings ปัจจุบันการแก้ Environment/อ่าน Variables คืน403 จึงยังตั้งให้แทนไม่ได้ `STORE_DEPLOY_ENABLED` ยังไม่เปิด และไม่แก้ `Preview`, `Production`, `github-pages` เดิม
