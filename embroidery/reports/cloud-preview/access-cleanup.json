@@ -1,0 +1,8 @@
+{
+  "automation_key_created_for_http_verification": "revoked",
+  "original_sso_policy": {
+    "deploymentType": "all_except_custom_domains"
+  },
+  "sso_policy_unchanged": true,
+  "preview_home_page": "passed"
+}

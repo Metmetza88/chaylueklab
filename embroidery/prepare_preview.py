@@ -58,9 +58,10 @@ def main():
                                                  'excludeFiles': 'embroidery/licenses/**'}}}
     (target / 'vercel.json').write_text(json.dumps(config, indent=2) + '\n', encoding='utf-8')
     paths += ['build.mjs', 'vercel.json', '.vercelignore', 'source-version.json']
-    plan = {'status': 'prepared_not_deployed', 'project': 'woramet-embroidery-preview',
+    plan = {'status': 'prepared_not_deployed', 'project': 'chailueklab_ai_vercel_ready',
+            'project_id': 'prj_zz7DosOYL0IZ4XYN7INZm3vwpzla',
             'team_id': 'team_kA0EAug4JrrTT6ZIc54RXcmL', 'team_slug': 'waramatw2546-4532',
-            **version, 'automatic_git_deployments': False, 'production_deployment_authorized': False,
+            **version, 'changes_git_connection': False, 'deployment_source': 'isolated_upload', 'production_deployment_authorized': False,
             'files': {p: hashlib.sha256((target / p).read_bytes()).hexdigest() for p in paths}}
     (target / 'deployment-plan.json').write_text(json.dumps(plan, indent=2) + '\n', encoding='utf-8')
     print(f'Prepared {len(paths)} source files from {commit} in {target}; no cloud changes')

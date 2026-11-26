@@ -1,0 +1,81 @@
+{
+  "validation": "pyembroidery readback of actual browser downloads",
+  "machine_tested": false,
+  "results": [
+    {
+      "file": "chromium-desktop-sample-crest.dst",
+      "format": "dst",
+      "sha256": "b880e26bb22c3e6299a7154cae26c2d919e0de9ab590f925b0bcc6e71cad9492",
+      "stitch_count": 2779,
+      "color_changes": 5,
+      "machine_tested": false,
+      "max_stitch_mm": 2.807
+    },
+    {
+      "file": "chromium-desktop-sample-crest.jef",
+      "format": "jef",
+      "sha256": "418156363c2eff34e599132e29922b017753cfd66bc461143ed1a6516a9a0141",
+      "stitch_count": 2779,
+      "color_changes": 5,
+      "machine_tested": false
+    },
+    {
+      "file": "chromium-desktop-sample-crest.pes",
+      "format": "pes",
+      "sha256": "67b29a942845fe144c96a0c6cd1c52b069c3001da2a969c38794d1adb2da82e8",
+      "stitch_count": 2779,
+      "color_changes": 5,
+      "machine_tested": false
+    },
+    {
+      "file": "chromium-iphone-sample-crest.dst",
+      "format": "dst",
+      "sha256": "a914ca777d5f66b83c735a7c4da4444424094d846adc767b4808c2f8ebbb7a67",
+      "stitch_count": 2767,
+      "color_changes": 5,
+      "machine_tested": false,
+      "max_stitch_mm": 2.86
+    },
+    {
+      "file": "chromium-iphone-sample-crest.jef",
+      "format": "jef",
+      "sha256": "f6e9f413e41b1c20d4eddd558afdad2a0386165978cb521fd370bfc7b3a3f9a3",
+      "stitch_count": 2767,
+      "color_changes": 5,
+      "machine_tested": false
+    },
+    {
+      "file": "chromium-iphone-sample-crest.pes",
+      "format": "pes",
+      "sha256": "46690c91e98099e16400509e52cbe794f60bcae1c09ae770ccbf390edca93759",
+      "stitch_count": 2767,
+      "color_changes": 5,
+      "machine_tested": false
+    },
+    {
+      "file": "webkit-iphone-sample-crest.dst",
+      "format": "dst",
+      "sha256": "05b0eb0e2e420e65fe06096a64b9c6e45a48746321a1be62c25f3bd5ddbeb2aa",
+      "stitch_count": 2767,
+      "color_changes": 5,
+      "machine_tested": false,
+      "max_stitch_mm": 2.807
+    },
+    {
+      "file": "webkit-iphone-sample-crest.jef",
+      "format": "jef",
+      "sha256": "176327afaca14960c732b8ae3475bacbd519223af929a69b1934023e60b4d290",
+      "stitch_count": 2767,
+      "color_changes": 5,
+      "machine_tested": false
+    },
+    {
+      "file": "webkit-iphone-sample-crest.pes",
+      "format": "pes",
+      "sha256": "b1926a6f1c119dc7efb9bfb1f06c9c8780d05f7b917cf0c0d6f0b31731fb8eae",
+      "stitch_count": 2767,
+      "color_changes": 5,
+      "machine_tested": false
+    }
+  ]
+}

@@ -2,13 +2,14 @@
 from pathlib import Path
 import hashlib
 import json
+import os
 import math
 from PIL import Image
 from pyembroidery import read_dst, read_pes, read_jef, STITCH, COLOR_CHANGE, END, COMMAND_MASK
 
 
 def main():
-    root = Path(__file__).resolve().parent / "reports"
+    root = Path(os.environ.get("EMBROIDERY_REPORT_DIR", str(Path(__file__).resolve().parent / "reports")))
     results = []
     for path in sorted(root.glob("*-sample-crest.*")):
         if path.suffix == ".png":

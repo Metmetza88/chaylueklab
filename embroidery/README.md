@@ -6,6 +6,14 @@
 
 **สร้างไฟล์ DST จริงและตรวจอ่านกลับได้ด้วยซอฟต์แวร์ แต่ยังไม่ผ่านการปักด้วยเครื่อง Tajima หรืออุปกรณ์จริง ไม่รับประกันคุณภาพงานผลิต**
 
+## เปิดเว็บทดลองออนไลน์
+
+[เปิด WORAMET AI Embroidery Studio](https://chailueklabaivercelready-nctmz3p4a-waramatw2546-4532.vercel.app)
+
+ถ้า Vercel ถามให้เข้าสู่ระบบ ใช้บัญชี `waramatw2546-4532` ที่เป็นเจ้าของทีม บน iPhone กด **ตั้งค่า** เพื่ออัปโหลดภาพ ตั้งขนาด/สี แล้วกด **Auto Digitize** กด **ส่งออก DST** หลังตรวจ simulation และลำดับด้าย
+
+เป็น Preview ที่มี Vercel Authentication ยังไม่ใช่ระบบบัญชี owner/customer ของตัวแอป และยังไม่ใช่การเปิด Production อ่านผลตรวจออนไลน์ใน `reports/cloud-preview/` และ `TEST-REPORT.md`
+
 ## เปิดใช้งานบน Windows
 
 ติดตั้ง Python 3.12 และ Node.js 24 จากนั้นเปิด PowerShell ในโฟลเดอร์ Repository:
@@ -104,15 +112,15 @@ npx playwright install --with-deps chromium webkit
 node embroidery/check-browser.mjs
 ```
 
-ตัวแปร `EMBROIDERY_URL` เปลี่ยน base URL, `CHROMIUM_PATH` ใช้ Chromium ที่ติดตั้งไว้, `PLAYWRIGHT_MODULE` ใช้ path ไปที่ Playwright index.mjs จากภายนอก Repo ได้ รายงานและ screenshots อยู่ใน `reports/` มี Workflow แยก `embroidery-tests.yml` ทดสอบ Python บน Linux/Windows โดยไม่ deploy
+ตัวแปร `EMBROIDERY_REPORT_DIR` เลือกโฟลเดอร์รายงาน, `EMBROIDERY_EXPECTED_COMMIT` ตรวจ release stamp, `EMBROIDERY_URL` เปลี่ยน base URL, `CHROMIUM_PATH` ใช้ Chromium ที่ติดตั้งไว้, `PLAYWRIGHT_MODULE` ใช้ path ไปที่ Playwright index.mjs จากภายนอก Repo ได้ รายงานและ screenshots อยู่ใน `reports/` มี Workflow แยก `embroidery-tests.yml` ทดสอบ Python บน Linux/Windows โดยไม่ deploy
 
 ## Vercel และขอบเขตการเปลี่ยนแปลง
 
-กำหนด Python 3.12 ใน `.python-version` เพื่อให้ตรงกับ wheels ที่ทดสอบ คง buildCommand และ outputDirectory เดิมใน `vercel.json` เพิ่มเพียง config สำหรับ `api/embroidery.py` เพื่อ bundle `embroidery/` และจำกัดเวลา 30 วินาที รูปแบบ handler เป็น `BaseHTTPRequestHandler` ตาม Vercel Python Functions และใช้ requirements.txt ที่ root; Python ใช้งานได้จริงใน Local HTTP tests แต่ **ยังไม่ได้ยืนยัน Vercel cloud build/runtime** ต้องตรวจ Python version, function bundle size, dependencies และ timeout บนโปรเจกต์เดิม
+กำหนด Python 3.12 ใน `.python-version` เพื่อให้ตรงกับ wheels ที่ทดสอบ คง buildCommand และ outputDirectory เดิมใน `vercel.json` เพิ่มเพียง config สำหรับ `api/embroidery.py` เพื่อ bundle `embroidery/` และจำกัดเวลา 30 วินาที รูปแบบ handler เป็น `BaseHTTPRequestHandler` ตาม Vercel Python Functions และใช้ requirements.txt ที่ root; **ยืนยัน Vercel Preview build/runtime แล้ว**: Node 24.x, Python 3.12, Function ขนาด 82,912,162 bytes และ timeout 30 วินาที ผ่านการอัปโหลด PNG และตรวจอ่าน DST ที่สร้างบน cloud กลับจริง
 
 request จำกัด 3.6 MB, ภาพ 2.5 MB, response 4 MB, แบบ 100 วัตถุ/100,000 จุด และ 50,000 ฝีเข็ม ความละเอียด mask 8 px/mm บางภาพซับซ้อนต้องลดสี/ขนาด ห้ามใช้ Local server เป็น public production API
 
-บัญชี Vercel ที่เชื่อมต่อระหว่างงานนี้ไม่แสดงโปรเจกต์เดิม จึง **ไม่ได้ Deploy Preview หรือ Production และไม่ได้สร้างโปรเจกต์ใหม่** ไม่แก้ LIFE OS, LINE OA, ชำระเงิน, ฐานข้อมูล หรือหน้าเว็บไซต์หลัก
+Preview ใช้โปรเจกต์เดิม `chailueklab_ai_vercel_ready` ที่เชื่อมกับ Repository นี้ โดยอัปโหลดชุดลายปักแยกและระบุ Environment preview ชัดเจน Production ยังคง deployment และ commit เดิม ไม่แก้ LIFE OS, LINE OA, ชำระเงินหรือฐานข้อมูล ดูวิธีเตรียมชุดโค้ดใน `DEPLOY-PREVIEW.md` และสถานะการตั้งค่า agent ใน `VERCEL-SETUP.md`
 
 อ่านผลทดสอบจริงและสิ่งที่ยังไม่ยืนยันใน `TEST-REPORT.md` และใบอนุญาตใน `LICENSES.md`
 

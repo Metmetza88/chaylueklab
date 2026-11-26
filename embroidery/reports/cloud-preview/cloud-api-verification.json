@@ -1,0 +1,41 @@
+{
+  "url": "https://chailueklabaivercelready-nctmz3p4a-waramatw2546-4532.vercel.app",
+  "environment": "preview",
+  "source_commit": "88829abb073e8d59b3ebfa488f17b8f00db44493",
+  "status": "passed",
+  "machine_tested": false,
+  "fixture": "original synthetic crest; not school logo",
+  "metrics": {
+    "stitch_count": 2433,
+    "color_stops": 3,
+    "color_changes": 2,
+    "thread_colors": 3,
+    "jump_count": 872,
+    "trim_count": null,
+    "explicit_trim_count": 0,
+    "inferred_trim_count": 126,
+    "min_stitch_mm": 0.0,
+    "max_stitch_mm": 2.807,
+    "short_stitches": 121,
+    "anchor_stitches": 557,
+    "width_mm": 42.9,
+    "height_mm": 42.8,
+    "estimated_minutes": 21.9,
+    "estimate_spm": 600,
+    "bounds": [
+      -21.4,
+      -21.3,
+      21.5,
+      21.5
+    ]
+  },
+  "sha256": "f2a6440dfa9afa3667d66ef5dad9a1a74f26728b57df89b31b44d106aa7cdcf3",
+  "checks": [
+    "real cloud PNG conversion",
+    "DST readback",
+    "stitch count",
+    "color changes",
+    "END",
+    "length bound"
+  ]
+}

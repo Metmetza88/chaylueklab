@@ -1,6 +1,6 @@
 # รายงานตรวจสอบ WORAMET AI EMBROIDERY STUDIO
 
-วันที่: 23 พฤศจิกายน 2026 (UTC)
+การทดสอบ Local: 23 พฤศจิกายน 2026 • เพิ่มการตรวจ Vercel Preview: 26 พฤศจิกายน 2026
 Repository: `Metmetza88/chaylueklab` • Branch: `feature/woramet-dojo-mvp-20261113`
 ฐานก่อนแก้: `00e696e7267f7927557aada6fb76796105249d69`
 
@@ -17,7 +17,8 @@ Repository: `Metmetza88/chaylueklab` • Branch: `feature/woramet-dojo-mvp-20261
 | WebKit iPhone จำลอง 390 × 664 CSS px | ผ่าน รวมการวาดจุดด้วย touch events |
 | ไฟล์ DST/PES/JEF จาก browser download จริง 9 ไฟล์ | pyembroidery อ่านกลับได้, มี STITCH และ END, DST จำกัดความยาวตาม tolerance หน่วย 0.1 มม. |
 | SVG / PNG download ผ่าน UI | ผ่าน; SVG มี path geometry และ PNG ไม่ใช่ภาพว่าง |
-| Production / Preview deployment | ไม่ได้ดำเนินการ |
+| Vercel Preview | READY; cloud API และ browser regression ทั้ง 3 ชุดผ่าน |
+| Production เดิม | deployment/commit คงเดิม ไม่มี Production deployment จากงานนี้ |
 | เครื่อง Tajima จริง / iPhone หรือคอมพิวเตอร์ Windows ของผู้ใช้จริง | ยังไม่ได้ทดสอบ |
 
 Environment ที่ตรวจในเครื่องนี้: Linux, Python 3.12.14, Node 24.19.0, Pillow 12.0.0, NumPy 2.2.6, OpenCV headless 4.12.0, pyembroidery 1.5.1, Playwright 1.64.1, system Chromium และ Playwright WebKit 27.2 บน Linux เพิ่ม shared libraries สำหรับ WebKit ใน browser cache ของสภาพแวดล้อมทดสอบ ไม่ได้เปลี่ยน binary ของ browser หรือโค้ดเว็บเพื่อจำลองผลผ่าน การผ่าน WebKit จำลองไม่ใช่การทดสอบ Safari บนอุปกรณ์จริง
@@ -68,9 +69,20 @@ Browser tests ไม่ใช้ฐานข้อมูล ระบบ LIFE OS
 
 แก้เฉพาะหน้า embroidery, assets/embroidery, embroidery engine/CLI/docs/tests, api/embroidery.py, Python requirements, config เฉพาะ Function นี้, workflow ทดสอบและ ignore สำหรับ cache ไม่เปลี่ยนเนื้อหา/route ของเว็บไซต์หลักหรือระบบ LIFE OS/LINE OA/ชำระเงิน/ฐานข้อมูล
 
-กำหนด Python 3.12 ใน `.python-version` คง buildCommand และ outputDirectory เดิม เพิ่ม `includeFiles` สำหรับโมดูล Python และ maxDuration 30 วินาที ใช้ BaseHTTPRequestHandler entry point ตามเอกสาร Vercel Python Functions ทดสอบผ่าน Local HTTP server จริง แต่การ package dependency / cold start / timeout บน Vercel ยังไม่ยืนยัน
+กำหนด Python 3.12 ใน `.python-version` คง buildCommand และ outputDirectory เดิมของเว็บไซต์หลัก ใช้ build wrapper แยกสำหรับ Preview พร้อม BaseHTTPRequestHandler, includeFiles และ maxDuration 30 วินาที ยืนยัน cloud runtime Python 3.12, Node 24.x และ Function 82,912,162 bytes แล้ว การทดสอบนี้ไม่ได้รับรอง worst-case cold start หรือการทำงานทุกขนาดภาพ
 
-ตรวจ Vercel ด้วยเครื่องมือที่เชื่อมต่อแล้ว: ค้นโปรเจกต์ชื่อ chaylueklab, รายการในทีมที่เข้าถึงได้ และ Repo ID ไม่พบโปรเจกต์เดิม จึงไม่สร้างโปรเจกต์ใหม่ ไม่เปลี่ยนการตั้งค่า cloud และไม่ Deploy ไม่มีลิงก์ Preview ที่ยืนยันว่าเปิดได้
+Preview: https://chailueklabaivercelready-nctmz3p4a-waramatw2546-4532.vercel.app
+
+- Project `chailueklab_ai_vercel_ready` / `prj_zz7DosOYL0IZ4XYN7INZm3vwpzla`, Team `waramatw2546-4532`
+- Deployment `dpl_717dN2ic54AFr5xPgkfLaj43owYX`, Environment **preview**, source commit `88829abb073e8d59b3ebfa488f17b8f00db44493`
+- `/release.json` ตรงกับ source commit; `/` และ `/embroidery-studio.html` เปิดหน้า Studio ได้
+- Cloud PNG 50 มม. / 3 สี สร้าง DST จริง 2,433 ฝีเข็ม, 2 Color Changes, END และความยาวสูงสุด 2.807 มม. ผ่าน pyembroidery readback
+- Browser regression ผ่าน Chromium Desktop, Chromium iPhone จำลอง และ WebKit iPhone จำลอง; ไฟล์ DST/PES/JEF ที่ดาวน์โหลดจริง 9 ไฟล์อ่านกลับได้ และ PNG ไม่ใช่ภาพว่าง
+- Preview คง Vercel Authentication ไว้ ผู้ใช้ต้องเข้าบัญชี Vercel ที่มีสิทธิ์ การทดสอบใช้ development OIDC เฉพาะ origin ของ deployment ไม่ส่ง token ไป Google Fonts/แหล่งภายนอก และไม่บันทึก token ในหลักฐาน
+- คืนค่าโดยเพิกถอน automation bypass key ที่ CLI สร้างเพื่อทดสอบ HTTP แล้ว คง SSO policy เดิม
+- Production ยังคง URL `chailueklabaivercelready-9mtfd8amg-waramatw2546-4532.vercel.app` และ commit `053670826f752dc5053e9dd574a9d0a53ae4dacc` ตรวจซ้ำแล้วตรงเดิม
+- หลังผู้ใช้อนุญาตให้ดำเนินงานต่อ มีการสร้างโปรเจกต์ `woramet-embroidery-preview` เปล่าไว้ แต่ยังไม่ได้ deploy ลงโปรเจกต์ใหม่นั้น เพราะ Vercel กำหนดครั้งแรกเป็น Production การทดสอบใช้งานจริงจึงอยู่ใน Preview ของโปรเจกต์เดิมที่เชื่อม Repository ตรงกัน
+
 
 ## หลักฐาน
 
@@ -78,11 +90,12 @@ Browser tests ไม่ใช้ฐานข้อมูล ระบบ LIFE OS
 - `reports/browser-tests.txt`, `reports/browser-results.json`, `reports/browser-file-validation.json`
 - `reports/chromium-desktop.png`, `reports/chromium-iphone.png`, `reports/webkit-iphone.png`
 - `samples/synthetic-crest-50mm.dst`, `.threads.json`, `.report.json`
+- `reports/cloud-preview/`: ผล API cloud, browser regression, file readback, ภาพหน้าจอ และผลตรวจ Production เดิม
 
 คำขอ/ไฟล์ที่ดาวน์โหลดระหว่าง browser regression เป็น temporary artifacts ที่สร้างซ้ำได้ ไม่ใส่ทุกไฟล์ซ้ำใน git มี SHA-256 / จำนวนฝีเข็มใน `browser-file-validation.json` และมี fixture DST ตัวอย่างถาวรใน samples
 
 ## สิ่งที่ยังไม่ยืนยันหรือยังไม่พร้อม
 
-โลโก้โรงเรียนบ้านระหาร/อักษรไทย/ขอบจริงยังไม่ได้ทดสอบ เพราะยังไม่มีต้นฉบับ; ดู `SCHOOL-LOGO-TEST-PLAN.md` ไม่มีผลทดสอบจากเครื่อง Tajima, Windows/iPhone จริง หรือ Vercel cloud
+โลโก้โรงเรียนบ้านระหาร/อักษรไทย/ขอบจริงยังไม่ได้ทดสอบ เพราะยังไม่มีต้นฉบับ; ดู `SCHOOL-LOGO-TEST-PLAN.md` ยังไม่มีผลทดสอบจากเครื่อง Tajima หรืออุปกรณ์ Windows/iPhone ของผู้ใช้จริง
 
 ทุกชนิดฝีเข็มและ PES/JEF เป็น Experimental; Auto Satin, Text digitizing, Reshape raster objects, EMB และ Trim ยังไม่พร้อม ไม่มี authentication/สิทธิ์ owner จริง/คิวงานออนไลน์/การซิงค์หรือการรับเงินจริง Customer requests เก็บในเบราว์เซอร์และส่งต่อด้วย JSON เท่านั้น

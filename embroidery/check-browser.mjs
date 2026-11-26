@@ -9,7 +9,10 @@ const { chromium, webkit, devices } = await import(
     : "playwright"
 );
 const base = process.env.EMBROIDERY_URL || "http://127.0.0.1:4175";
-const output = resolve("embroidery/reports");
+const output = resolve(
+  process.env.EMBROIDERY_REPORT_DIR || "embroidery/reports",
+);
+const targetOrigin = new URL(base).origin;
 await mkdir(output, { recursive: true });
 const reports = [];
 const tests = [
@@ -37,6 +40,20 @@ async function test(label, type, options) {
     }),
     page = await context.newPage(),
     errors = [];
+  if (process.env.VERCEL_OIDC_TOKEN) {
+    // Keep the short-lived credential on the deployment origin only.
+    // Never send it to Google Fonts or other third-party resources.
+    await context.route("**/*", (route) => {
+      const headers = { ...route.request().headers() };
+      if (new URL(route.request().url()).origin === targetOrigin) {
+        headers["x-vercel-trusted-oidc-idp-token"] =
+          process.env.VERCEL_OIDC_TOKEN;
+      } else {
+        delete headers["x-vercel-trusted-oidc-idp-token"];
+      }
+      return route.continue({ headers });
+    });
+  }
   page.on("pageerror", (e) => errors.push(e.message));
   const mobile = label.includes("iphone");
   async function properties() {
@@ -82,6 +99,12 @@ async function test(label, type, options) {
         .getElementById("api-status")
         .textContent.includes("Engine พร้อม"),
     );
+    if (process.env.EMBROIDERY_EXPECTED_COMMIT) {
+      const release = await page.evaluate(async () =>
+        (await fetch("./release.json")).json(),
+      );
+      assert.equal(release.commit, process.env.EMBROIDERY_EXPECTED_COMMIT);
+    }
     await page.screenshot({
       path: resolve(output, `${label}.png`),
       fullPage: true,
@@ -232,26 +255,41 @@ async function test(label, type, options) {
       "ทดสอบลูกค้า",
     );
     // Start a design without an image, then confirm offline mode never fakes export.
-    await page.locator("summary").filter({ hasText: /^File$/ }).click();
+    await page
+      .locator("summary")
+      .filter({ hasText: /^File$/ })
+      .click();
     await page.locator('[data-action="new"]:visible').click();
     await tool("running");
-    await tapCanvas(rect.x + rect.width * .42, rect.y + rect.height * .45);
-    await tapCanvas(rect.x + rect.width * .55, rect.y + rect.height * .50);
+    await tapCanvas(rect.x + rect.width * 0.42, rect.y + rect.height * 0.45);
+    await tapCanvas(rect.x + rect.width * 0.55, rect.y + rect.height * 0.5);
     await page.locator('#drawing-bar [data-action="finish-path"]').click();
     await waitCompiled();
     assert.notEqual(await page.locator("#stitch-count").textContent(), "—");
-    await page.route("**/api/embroidery", route => route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ error: "API ไม่พร้อม" }) }));
+    await page.route("**/api/embroidery", (route) =>
+      route.fulfill({
+        status: 503,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "API ไม่พร้อม" }),
+      }),
+    );
     await page.reload();
-    await page.waitForFunction(() => document.getElementById("status").textContent.includes("API ยังไม่พร้อม"));
+    await page.waitForFunction(() =>
+      document.getElementById("status").textContent.includes("API ยังไม่พร้อม"),
+    );
     assert.notEqual(await page.locator("#stitch-count").textContent(), "—");
     let offlineDownload = false;
-    page.on("download", () => offlineDownload = true);
+    page.on("download", () => (offlineDownload = true));
     await page.locator('.command-actions [data-action="export-dst"]').click();
-    await page.waitForFunction(() => document.getElementById("status").textContent === "API ไม่พร้อม");
+    await page.waitForFunction(
+      () => document.getElementById("status").textContent === "API ไม่พร้อม",
+    );
     assert.equal(offlineDownload, false);
     assert.deepEqual(errors, []);
     reports.push({
       browser: label,
+      target_url: base,
+      expected_commit: process.env.EMBROIDERY_EXPECTED_COMMIT || null,
       status: "passed",
       viewport: await page.evaluate(() => ({
         width: innerWidth,

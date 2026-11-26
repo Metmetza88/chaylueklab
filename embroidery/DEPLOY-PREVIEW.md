@@ -19,9 +19,9 @@ node build.mjs
 ## เป้าหมายที่อนุญาตสำหรับการทดลอง
 
 - Team: `waramatw2546-4532` (`team_kA0EAug4JrrTT6ZIc54RXcmL`)
-- Project: `woramet-embroidery-preview`
+- Project เดิม: `chailueklab_ai_vercel_ready` (`prj_zz7DosOYL0IZ4XYN7INZm3vwpzla`)
 - Environment: **preview**
-- ไม่เชื่อม Git เพื่อป้องกันการ deploy Branch หลักอัตโนมัติ ใช้ source snapshot จาก Repository เดิม
+- คง Git connection เดิม ไม่เปลี่ยน Branch หลักหรือ project settings ใช้การอัปโหลด source snapshot เฉพาะโมดูล และ local vercel.json สำหรับ deployment นี้
 
 คำสั่ง Deploy ต้องระบุ Team, Project และ `--environment preview` ชัดเจน ห้ามใช้ `--prod`, Promote, Production domain หรือเปลี่ยนโปรเจกต์/ทีมโดยอัตโนมัติ
 
@@ -41,3 +41,20 @@ Preview อาจมี Vercel Authentication ตามค่าเริ่ม�
 4. POST ภาพตัวอย่างจริงเพื่อ Auto Digitize จากนั้นอ่าน DST ที่ได้รับกลับด้วย pyembroidery ตรวจจำนวนฝีเข็ม สี ขนาดและ END
 5. ทดสอบหน้าเว็บในเบราว์เซอร์ขนาด Desktop และ iPhone รวมอัปโหลด/จำลอง/ดาวน์โหลด
 6. บันทึกผลจริงเท่านั้น การ Deploy ผ่านไม่ใช่การยืนยันว่าใช้ผลิตกับเครื่อง Tajima ได้
+
+## Preview ที่ตรวจผ่านแล้ว
+
+URL: https://chailueklabaivercelready-nctmz3p4a-waramatw2546-4532.vercel.app
+
+Source: `88829abb073e8d59b3ebfa488f17b8f00db44493` • Deployment: `dpl_717dN2ic54AFr5xPgkfLaj43owYX`
+
+Vercel CLI กำหนดให้ deployment แรกของโปรเจกต์ใหม่เป็น Production จึงต้องใช้ Preview ของโปรเจกต์เดิมที่มี deployment อยู่แล้วและเชื่อมกับ Repository ตรงกัน ห้าม bootstrap ด้วย --prod หากยังไม่ได้รับอนุญาต Production โดยเฉพาะ โปรเจกต์ใหม่ `woramet-embroidery-preview` ที่สร้างระหว่างเตรียมงานยังว่างและไม่ได้รับ deployment
+
+ตัวอย่างคำสั่งจากโฟลเดอร์ที่เตรียมแล้ว หลังตรวจตัวตนและเป้าหมาย:
+
+```bash
+vercel project inspect chailueklab_ai_vercel_ready --json --scope team_kA0EAug4JrrTT6ZIc54RXcmL --non-interactive
+vercel deploy --project prj_zz7DosOYL0IZ4XYN7INZm3vwpzla --scope team_kA0EAug4JrrTT6ZIc54RXcmL --environment preview --non-interactive
+```
+
+Browser regression ของ protected preview ใช้ token จาก `vercel env run --project ...` ใน memory เท่านั้น ตั้ง header เฉพาะ origin ของ deployment และไม่บันทึก HAR/trace/header credential ตัวแปร `EMBROIDERY_REPORT_DIR` เลือกโฟลเดอร์รายงานแยกได้
