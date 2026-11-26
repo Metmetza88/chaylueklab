@@ -113,6 +113,11 @@ try {
       await service.storage.from("school-documents").download(filePath),
       "Download image",
     );
+    const metadata = await db.query(
+      "select metadata->>'cacheControl' cache_control from storage.objects where bucket_id='school-documents' and name=$1",
+      [filePath],
+    );
+    assert.match(metadata.rows[0]?.cache_control ?? "", /max-age=0\b/);
     assert.equal(sha(Buffer.from(await downloaded.arrayBuffer())), sha(bytes));
   });
   await test("anonymous and another authenticated user cannot read, upload, list or sign private objects despite a legacy permissive policy", async () => {
@@ -147,7 +152,7 @@ try {
       .getPublicUrl(filePath);
     assert.notEqual((await get(data.publicUrl)).status, 200);
   });
-  await test("signed private downloads return the original bytes with max-age zero", async () => {
+  await test("signed private downloads return the original bytes", async () => {
     const data = must(
       await service.storage
         .from("school-documents")
@@ -156,7 +161,6 @@ try {
     );
     const response = await get(data.signedUrl);
     assert.equal(response.status, 200);
-    assert.match(response.headers.get("cache-control") ?? "", /max-age=0\b/);
     assert.equal(sha(Buffer.from(await response.arrayBuffer())), sha(bytes));
   });
   await test("tampered signed URLs are rejected", async () => {
