@@ -58,13 +58,11 @@ test("real slip upload rejects duplicates, wrong amounts and unauthorized reads 
   await login(page, buyer);
   await page.goto("/orders");
   const first = page.locator(`article[id="${orders[0]}"]`);
-  await first
-    .getByLabel("ภาพสลิป PNG/JPEG ไม่เกิน 5 MB")
-    .setInputFiles({
-      name: "synthetic-slip.png",
-      mimeType: "image/png",
-      buffer: image,
-    });
+  await first.getByLabel("ภาพสลิป PNG/JPEG ไม่เกิน 5 MB").setInputFiles({
+    name: "synthetic-slip.png",
+    mimeType: "image/png",
+    buffer: image,
+  });
   await first
     .getByRole("button", { name: "ส่งหลักฐานให้ตรวจสอบ", exact: true })
     .click();
@@ -77,13 +75,11 @@ test("real slip upload rejects duplicates, wrong amounts and unauthorized reads 
     ).status(),
   ).toBe(403);
   const second = page.locator(`article[id="${orders[1]}"]`);
-  await second
-    .getByLabel("ภาพสลิป PNG/JPEG ไม่เกิน 5 MB")
-    .setInputFiles({
-      name: "duplicate-slip.png",
-      mimeType: "image/png",
-      buffer: image,
-    });
+  await second.getByLabel("ภาพสลิป PNG/JPEG ไม่เกิน 5 MB").setInputFiles({
+    name: "duplicate-slip.png",
+    mimeType: "image/png",
+    buffer: image,
+  });
   await second
     .getByRole("button", { name: "ส่งหลักฐานให้ตรวจสอบ", exact: true })
     .click();
@@ -133,6 +129,10 @@ test("real slip upload rejects duplicates, wrong amounts and unauthorized reads 
     .getByRole("button", { name: "ยืนยันยอดและเปิดสิทธิ์", exact: true })
     .click();
   await expect(form.getByRole("alert")).toContainText("ไม่สามารถยืนยันได้");
+  await expect(form.getByLabel("เลขอ้างอิงธุรกรรมจากธนาคาร")).not.toHaveValue(
+    "",
+  );
+  await expect(form.locator('input[name="bank_verified"]')).toBeChecked();
   expect(
     (
       await db.query("select status from public.store_orders where id=$1", [

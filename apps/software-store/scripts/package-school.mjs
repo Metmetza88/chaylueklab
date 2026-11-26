@@ -3,7 +3,7 @@ import {
   createWriteStream,
   existsSync,
   readdirSync,
-  statSync,
+  lstatSync,
   readFileSync,
   writeFileSync,
   mkdirSync,
@@ -38,12 +38,26 @@ function files(dir) {
   return readdirSync(dir).flatMap((n) => {
     const p = path.join(dir, n);
     if (
-      [".temp", ".branches", ".env.local", ".accounts.json"].includes(n) ||
+      [
+        ".temp",
+        ".branches",
+        ".env.local",
+        ".accounts.json",
+        ".git",
+        ".vercel",
+        "node_modules",
+        ".next",
+        "test-results",
+        "playwright-report",
+      ].includes(n) ||
       n.endsWith(".env") ||
       n.startsWith(".env")
     )
       return [];
-    return statSync(p).isDirectory() ? files(p) : [p];
+    const entry = lstatSync(p);
+    if (entry.isSymbolicLink())
+      throw new Error("Refusing a symlink in release source");
+    return entry.isDirectory() ? files(p) : [p];
   });
 }
 mkdirSync("dist", { recursive: true });
@@ -93,14 +107,18 @@ for (const slug of ["met-school-pro", "met-admission"]) {
     "docs/CI-DEPLOY-TH.md",
     "docs/CI-RESULTS-20261126.json",
     "docs/PDF-VALIDATION-20261126.json",
+    "docs/REAL-STORAGE-TESTS-TH.md",
+    "docs/STORAGE-RESULTS.json",
+    "docs/AUTHENTICATED-SCREENSHOTS-20261126.json",
+    "docs/FORM-RETENTION-20261126.json",
     "docs/LICENSE.md",
     "docs/E2E-RESULTS.json",
     "docs/INTEGRATION-RESULTS.json",
     "docs/DEPENDENCY-AUDIT.json",
   ])
-    archive.file(f, { name: `${base}/${f}` });
+    if (existsSync(f)) archive.file(f, { name: `${base}/${f}` });
   archive.append(
-    `# ${slug} — ${version}\n\nRelease Candidate; ready_for_sale=false.\n\nSource/database/manuals/tests/screenshots included. Local validation: Unit53, integration23, Playwright80passed/12plannedskips/0failed. Supabase Storage service, authorized payment provider, SMTP, physical devices and owner acceptance remain pending.\n\nSee docs/TEST-REPORT.md, docs/SECURITY.md, docs/OWNER-ACTIONS.md and release.json.\n\nRepository: https://github.com/Metmetza88/chaylueklab/tree/feature/woramet-school-store-20261124 (public).\n`,
+    `# ${slug} — ${version}\n\nRelease Candidate; ready_for_sale=false.\n\nSource/database/manuals/tests/screenshots included. Actual test counts, environments, source commits and limits are recorded in docs/TEST-REPORT.md and the included JSON evidence. A test script or successful CI check does not mean that Vercel/hosted services are deployed or accepted.\n\nHosted Supabase/Storage CDN, authorized payment provider, SMTP, physical devices and owner acceptance remain pending. See docs/SECURITY.md, docs/OWNER-ACTIONS.md and release.json.\n\nRepository: https://github.com/Metmetza88/chaylueklab/tree/feature/woramet-school-store-20261124 (public).\n`,
     { name: `${base}/PROJECT-STATUS.md` },
   );
   archive.append(
@@ -116,8 +134,8 @@ for (const slug of ["met-school-pro", "met-admission"]) {
     status: "release_candidate",
     ready_for_sale: false,
     requires: [
-      "Supabase Storage upload/download E2E",
-      "authorized payment provider Sandbox verification",
+      "Hosted Supabase Storage/CDN and deployment E2E",
+      "SMTP delivery and backup/restore verification",
       "school data/privacy owner approval",
       "physical iPhone/Android acceptance",
     ],

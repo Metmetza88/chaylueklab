@@ -1,5 +1,5 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, startTransition, useEffect, useRef } from "react";
 import type { State } from "@/app/actions";
 export default function ActionForm({
   action,
@@ -13,8 +13,22 @@ export default function ActionForm({
   className?: string;
 }) {
   const [state, dispatch, pending] = useActionState(action, {});
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (state.success) formRef.current?.reset();
+  }, [state]);
   return (
-    <form action={dispatch} className={className}>
+    <form
+      ref={formRef}
+      action={dispatch}
+      className={className}
+      onSubmit={(event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        // Dispatch manually so a validation error does not reset the user's fields.
+        startTransition(() => dispatch(data));
+      }}
+    >
       {children}
       <button className="btn" disabled={pending}>
         {pending ? "กำลังดำเนินการ…" : label}

@@ -262,7 +262,7 @@ test("admin ZIP upload rejects secret files and keeps untested replacements inac
   await page.goto("/admin");
   const form = page.locator("#releases form").first();
   const version = `0.2.0-e2e${randomUUID().replaceAll("-", "")}`;
-  await form.getByLabel("สินค้า", { exact: true }).selectOption(accounts.pid2);
+  await form.locator('select[name="product_id"]').selectOption(accounts.pid2);
   await form.getByLabel("เวอร์ชัน", { exact: true }).fill(version);
   await form
     .getByLabel("ประวัติการอัปเดต", { exact: true })
@@ -281,6 +281,9 @@ test("admin ZIP upload rejects secret files and keeps untested replacements inac
     .getByRole("button", { name: "อัปโหลด release", exact: true })
     .click();
   await expect(form.getByRole("alert")).toContainText("ZIP ไม่ปลอดภัย");
+  await expect(form.getByLabel("เวอร์ชัน", { exact: true })).toHaveValue(
+    version,
+  );
   const db = new pg.Client({ connectionString: process.env.TEST_DATABASE_URL });
   await db.connect();
   expect(

@@ -119,3 +119,8 @@ VIPมีสิทธิ์/วันหมดอายุ/ส่วนลดแ
 - ทดสอบสร้าง Vercel Project แบบไม่เชื่อม GitHubเพื่อแยกสาเหตุแล้ว ยัง POST /v11/projectsคืน403 “You don't have permission to create the project.” ไม่มี projectถูกสร้าง ไม่ retryคำขอเดิม ไม่ถือว่าเปลี่ยน OAuthแล้วจะหายเอง CLIไม่มี token/auth fileสำรอง
 - CI รอบแรกของ full Storage เริ่ม service v1.98.6จริงได้แล้ว แต่ fixture ลบ metadataผ่านSQLถูก protect_delete ปฏิเสธ แก้ให้ fixture upload/removeผ่าน Storage APIโดยไม่ปิดตัวป้องกัน รายงานไม่นับชุดนี้ว่าผ่านก่อน rerun
 - เพิ่ม authenticated Admin responsive check: Local Desktop/iPhone layout/Android/Tablet ผ่าน4กรณี ไม่มี page overflow และเข้าถึง controlsได้ (Chromium simulation ไม่ใช่อุปกรณ์จริง)
+
+- Storage API จริงผ่าน12กรณีใน CI run45843265671 รวม private upload/download, permission denial, URL signature/expiry ที่ origin และ bucket MIME/size; integration23ผ่านบน full serviceด้วย แต่รอบนี้ยังมี E2E2ข้อไม่ผ่านจึงไม่ระบุว่า CIทั้งหมดผ่าน
+- ตรวจพบฟอร์มล้างข้อมูลเมื่อ Serverคืน validation error จากการทดสอบจริง แก้ ActionFormให้เก็บข้อมูลบนerrorและresetบนsuccessแล้ว Local reproductionหลังแก้ยืนยันค่าคงอยู่ และ Local4 workflow regressionผ่าน กำลังrerunfull CI
+- เพิ่มภาพ Localจริงพร้อมข้อมูลสมมติ: Owner iPhone layout, SchoolAdmin และ SchoolPro site พร้อม SHAใน AUTHENTICATED-SCREENSHOTS-20261126.json
+- เริ่มต้นด้วย PromptPayแบบเจ้าของตรวจยอดเข้าธนาคารด้วยตนเองได้ตามขอบเขตเดิม APIตรวจสลิป/ธนาคารอัตโนมัติเป็นทางเลือกเมื่อมี APIอนุญาต ไม่ถือว่าAPIproviderเป็นเงื่อนไขของ Sourceโปรแกรมโรงเรียนทุกระบบ แต่ร้านค้ายังต้องผ่าน Sandbox/Hostedตรวจรับและเจ้าของอนุมัติเงินจริงก่อน

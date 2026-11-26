@@ -25,3 +25,5 @@
 - เพิ่มชุดทดสอบ Storage API จริง v1.98.6 บน CI และ browser checks ตั้งแต่อัปโหลดเอกสาร/ZIP ถึง download หลังชำระเงิน รวม revoke grant และ cross-school denial
 - เพิ่มรายงาน CI ที่กรอง credentials/signed URLs/raw browser state ออก และป้องกันรายงานเก่าถูกนับเป็นผลรอบใหม่
 - ยังเป็น Release Candidate, Coming Soon และปิดรับเงินจริง ผล Storage/Browser ใหม่ต้องอ้าง run ที่ผ่านจริง
+
+- แก้ฟอร์มให้รักษาข้อมูลที่กรอกเมื่อ validation ไม่ผ่าน และ reset หลังบันทึกสำเร็จ ทดสอบ regression ผ่าน signup/checkout/admission/review/cross-school ใน Local แล้ว
