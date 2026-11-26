@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "storage_adapter": "browser-indexeddb",
+  "job": {
+    "id": "uuid",
+    "type": ["design", "request"],
+    "status": ["draft", "working", "in_review", "ready_for_review"],
+    "name": "string",
+    "customer": "string, max 100",
+    "note": "string, max 1000",
+    "source": "optional PNG/JPEG data URL",
+    "design": "engine version 1, millimeters, ordered objects/paths/offsets",
+    "updated": "unix milliseconds"
+  },
+  "future_accounts": {
+    "enabled": false,
+    "provider": null,
+    "owner_authorization": "not_implemented",
+    "roles": ["owner", "customer"],
+    "required_before_online_jobs": ["authenticated user ID", "owner role check", "per-job access policy"]
+  },
+  "future_payments": {
+    "enabled": false,
+    "provider": null,
+    "currency": "THB",
+    "checkout_endpoint": null,
+    "webhook_endpoint": null,
+    "real_money": false
+  }
+}

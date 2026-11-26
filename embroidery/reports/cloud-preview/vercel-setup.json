@@ -1,0 +1,33 @@
+{
+  "guide": "https://vercel.com/get-started.md",
+  "cli": {
+    "version": "67.0.0",
+    "scope": "user-global",
+    "authenticated_as": "waramatw2546-4532",
+    "team": "team_kA0EAug4JrrTT6ZIc54RXcmL",
+    "role": "OWNER"
+  },
+  "guidance": {
+    "type": "standalone skills",
+    "scope": "user-global",
+    "installed_skills": 9,
+    "source": "vercel-labs/agent-skills",
+    "plugin_attempt": "not installed; vercel missing from Codex curated marketplace; plugin docs checked before fallback"
+  },
+  "mcp": {
+    "endpoint": "https://mcp.vercel.com",
+    "local_config": "/home/agent/.codex/config.toml",
+    "local_codex_auth_status": "not_logged_in",
+    "hosted_chatgpt_connector": "authenticated list_teams and documentation search succeeded",
+    "permission_defaults_changed": false,
+    "hosted_connector_limitation": "list_projects returned no visible projects and create_project returned 403; authenticated Vercel CLI was used for project operations"
+  },
+  "reload": "not required for CLI or currently available hosted tools",
+  "preview": {
+    "url": "https://chailueklabaivercelready-nctmz3p4a-waramatw2546-4532.vercel.app",
+    "environment": "preview",
+    "state": "READY",
+    "source_commit": "88829abb073e8d59b3ebfa488f17b8f00db44493"
+  },
+  "production_deployed": false
+}

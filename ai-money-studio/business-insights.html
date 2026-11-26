@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080b12">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>WORAMET AI LAB | Business Insights</title>
+  <link rel="icon" href="./woramet-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./business-insights.css">
+  <script src="./business-insights-core.js" defer></script>
+  <script src="./business-insights.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#workspace">ข้ามไปยังเครื่องมือ</a>
+<header class="topbar wrap">
+  <a class="brand" href="./business-insights.html" aria-label="WORAMET AI LAB หน้าเครื่องมือ"><span class="brand-mark" aria-hidden="true">W<span>·</span></span><span>WORAMET <b>AI LAB</b><small>TOOLS FOR SMALL BUSINESS</small></span></a>
+  <span class="header-state">เครื่องมือสรุปยอดขาย</span>
+</header>
+<main class="wrap">
+  <section class="hero simple-hero" aria-labelledby="title">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="signal" aria-hidden="true"></span> WORAMET · ผู้ช่วยร้านค้า</p>
+      <h1 id="title">จดยอดขายร้านคุณ<br><span>แล้วดูสรุปได้เลย</span></h1>
+      <p class="intro">กรอกชื่อสินค้า จำนวน และราคาต่อชิ้นด้านล่าง<br>เว็บจะรวมยอดและบอกว่าสินค้าไหนขายดีให้</p>
+    </div>
+  </section>
+  <section class="panel manual-panel" id="workspace" aria-labelledby="manual-title">
+    <div class="section-heading"><div><p class="eyebrow">เริ่มตรงนี้</p><h2 id="manual-title">กรอกรายการขายของคุณ</h2></div><span class="badge">ข้อมูลอยู่ในหน้านี้</span></div>
+    <p class="muted">เช่น ปากกา 3 ด้าม ราคาด้ามละ 10 บาท จะได้ยอดขาย 30 บาท</p>
+    <form id="sale-form" novalidate>
+      <div class="sale-date-field"><label for="sale-date">วันที่ขาย</label><input id="sale-date" type="date" aria-describedby="sale-date-help"><small id="sale-date-help">ใช้วันที่นี้กับทุกรายการด้านล่าง เปลี่ยนได้ตามวันที่ขายจริง</small></div>
+      <div id="sale-entries"></div>
+      <button id="add-sale" type="button" class="quiet">+ เพิ่มสินค้าอีก</button>
+      <div class="actions manual-actions"><button id="manual-analyze" class="primary" type="submit">สรุปยอดขาย</button><button id="manual-clear" type="button" class="quiet">ล้างข้อมูลทั้งหมด</button></div>
+      <p id="manual-status" class="status muted" role="status" aria-live="polite" aria-atomic="true">กรอกสินค้าอย่างน้อย 1 รายการ แล้วกด “สรุปยอดขาย”</p>
+    </form>
+    <p class="entry-privacy">ข้อมูลที่กรอกจะหายเมื่อปิดหรือโหลดหน้าใหม่ กดดาวน์โหลดรายงานเพื่อเก็บไว้ในเครื่อง</p>
+  </section>
+  <aside class="sample-choice" aria-label="ทดลองด้วยข้อมูลตัวอย่าง">
+    <div><b>อยากดูตัวอย่างก่อน?</b><small>ใช้ข้อมูลสมมติที่เตรียมไว้ ไม่ใช่ยอดร้านคุณ</small></div>
+    <button id="sample-quick" type="button" class="quick-demo">ดูผลด้วยข้อมูลสมมติ</button>
+  </aside>
+  <details class="csv-choice" id="csv-import">
+    <summary>มีไฟล์ยอดขายอยู่แล้ว? นำเข้า CSV ที่นี่</summary>
+  <section class="panel input-panel" id="csv-workspace" aria-labelledby="input-title">
+    <div class="section-heading"><div><p class="eyebrow">นำเข้าจากไฟล์</p><h2 id="input-title">เลือกไฟล์หรือวางตารางยอดขาย</h2></div><span class="micro">CSV · สูงสุด 2 MB / 10,000 รายการ</span></div>
+    <p class="muted">ทดลองด้วยข้อมูลสมมติก่อนได้ หลีกเลี่ยงข้อมูลลูกค้า เบอร์โทร และข้อมูลส่วนตัวในไฟล์</p>
+    <div class="input-grid">
+      <div class="import-box">
+        <span class="upload-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m-5 5 5-5 5 5M5 15v5h14v-5"/></svg></span>
+        <label for="file">เลือกไฟล์ยอดขาย CSV</label>
+        <p class="muted">เลือกจาก Files บน iPhone<br> หรือจากโฟลเดอร์บน Windows</p>
+        <input id="file" type="file" accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values,text/plain" aria-describedby="encoding-help">
+        <label for="encoding">รูปแบบตัวอักษรในไฟล์</label>
+        <select id="encoding" aria-describedby="encoding-help"><option value="auto">อัตโนมัติ (UTF-8 / UTF-16 BOM)</option><option value="utf-8">UTF-8</option><option value="windows-874">Windows-874 / ภาษาไทยรุ่นเก่า</option></select>
+        <small id="encoding-help">ถ้าภาษาไทยอ่านไม่ได้ ลอง Windows-874 หรือบันทึกไฟล์ใหม่เป็น CSV UTF-8</small>
+      </div>
+      <div class="paste-box">
+        <label for="csv">หรือวางข้อมูลจากตาราง</label>
+        <textarea id="csv" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="csv-help" placeholder="date,product,quantity,unit_price&#10;2026-11-01,สมุดตัวอย่าง,2,35.50"></textarea>
+        <small id="csv-help">คั่นด้วย comma, semicolon หรือ tab · ราคาเป็นบาท · รองรับเลขไทย</small>
+        <div class="actions"><button id="analyze" class="primary" type="button">วิเคราะห์ยอดขาย <span aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></span></button><button id="sample" type="button">ใส่ข้อมูลตัวอย่าง</button><button id="clear" class="quiet" type="button">ล้างข้อมูล</button></div>
+      </div>
+    </div>
+    <details class="format-help"><summary>ดูรูปแบบ CSV ที่รองรับ</summary><p>คอลัมน์จำเป็น: <code>product,quantity,unit_price</code> หรือ <code>สินค้า,จำนวน,ราคาต่อหน่วย</code> ถ้ามี comma ในชื่อหรือราคา ให้ใส่อัญประกาศคู่ เช่น <code>"1,200.50"</code></p><p>คอลัมน์วันที่ไม่บังคับ: <code>date</code> หรือ <code>วันที่</code> ใช้ <code>YYYY-MM-DD</code>, <code>DD/MM/YYYY</code> (วัน/เดือน/ปีเสมอ) หรือ <code>1 พ.ย. 2569</code> ราคาใส่ ฿ / THB / บาท ได้ รองรับ พ.ศ. และ ค.ศ. หากใส่วันที่ ต้องถูกต้องทุกแถว</p><p>จำนวนต้องเป็นจำนวนเต็มบวก ราคา 0 ขึ้นไปและไม่เกิน 2 ทศนิยม ไม่รองรับเลขทศนิยมแบบ comma ยอดรวมต้องอยู่ในขอบเขตที่คำนวณได้แม่นยำ หากมีแถวผิดจะให้แก้ก่อนวิเคราะห์ ไม่ข้ามรายการเงียบ ๆ</p><p>รายการซ้ำยังนับตามจริง คอลัมน์อื่นจะถูกละเว้น วันที่ที่ไม่มีข้อมูลจะไม่ถูกนับเป็นยอดศูนย์</p></details>
+    <p id="status" role="status" aria-live="polite" aria-atomic="true" class="status muted">เลือกไฟล์หรือวางตาราง แล้วกด “วิเคราะห์ยอดขาย”</p>
+  </section>
+  </details>
+  <section class="panel results-panel" id="results" hidden aria-labelledby="results-title">
+    <div class="section-heading"><div><p class="eyebrow">ผลจากข้อมูลที่เลือก</p><h2 id="results-title">สรุปยอดขาย</h2></div><span id="source-label" class="badge">ข้อมูลนำเข้า</span></div>
+    <p id="result-context" class="result-context" role="status"></p>
+    <p id="period" class="muted"></p>
+    <div class="metrics">
+      <div class="metric featured"><small>ยอดขายรวม · THB</small><strong id="revenue">—</strong><span>ก่อนหักต้นทุนและค่าใช้จ่าย</span></div>
+      <div class="metric"><small>จำนวนสินค้าที่ขาย</small><strong id="units">—</strong><span>ชิ้น</span></div>
+      </div>
+    <details class="extra-metrics"><summary>ดูจำนวนรายการและชนิดสินค้า</summary><div class="metrics">
+      <div class="metric"><small>รายการขายที่นำมารวม</small><strong id="rows">—</strong><span>แถวสินค้า ไม่ใช่จำนวนบิล</span></div>
+      <div class="metric"><small>ชนิดสินค้า</small><strong id="products">—</strong><span>แยกตามชื่อสินค้า</span></div>
+    </div>
+    </details>
+    <div class="actions"><button id="manual-return" type="button">กลับไปกรอกหรือแก้รายการขาย</button></div>
+    <div class="analysis-grid">
+      <div><h3>สินค้าขายดีตามยอดขาย</h3><p class="muted compact">แสดงสูงสุด 10 อันดับ · ดาวน์โหลดเพื่อดูทั้งหมด</p><div id="ranking"></div></div>
+      <details class="trend-box"><summary>ดูยอดขายแยกตามวันและแนวโน้ม</summary><p id="trend-summary" class="muted"></p><div id="daily" aria-label="ยอดขายรายวัน"></div><p class="micro">แสดง 14 วันที่มีข้อมูลล่าสุด · ไม่พยากรณ์ยอดขาย</p></details>
+    </div>
+    <details class="observations"><summary>ดูข้อสังเกตสำหรับวางแผนร้าน</summary><div id="insights"></div></details>
+    <div class="export-strip"><div><b>นำรายงานไปวางแผนต่อ</b><small>TXT สำหรับอ่าน · JSON สำหรับนำไปประมวลผล</small></div><div class="actions"><button id="export" type="button" disabled>ดาวน์โหลด .txt <span aria-hidden="true">↓</span></button><button id="export-json" type="button" disabled>ดาวน์โหลด .json</button></div></div>
+  </section>
+  <section class="panel marketing-panel" id="marketing" hidden aria-labelledby="marketing-title">
+    <div class="section-heading"><div><p class="eyebrow">นำไปใช้ต่อ</p><h2 id="marketing-title">จากสินค้าขายดี สู่โพสต์ถัดไป</h2></div><span class="badge">ร่างจากเทมเพลต</span></div>
+    <p class="muted">ใช้ชื่อสินค้ายอดขายสูงสุดในชุดนี้ ไม่สร้างรีวิว สรรพคุณ หรือส่วนลด ตรวจข้อมูลและสต็อกก่อนโพสต์จริง</p>
+    <pre id="post" tabindex="0" aria-label="ร่างข้อความโปรโมตที่เลือกคัดลอกได้"></pre>
+    <div class="actions"><button id="copy" type="button" disabled>คัดลอกข้อความ</button><button id="download-post" class="quiet" type="button" disabled>บันทึกร่าง .txt</button></div>
+    <p id="copy-status" role="status" aria-live="polite" class="muted"></p>
+  </section>
+  <div class="engine-note"><span class="badge">สูตร + เทมเพลต</span><p>รวมยอดด้วยการคำนวณ และร่างโพสต์ด้วยเทมเพลต <strong>ยังไม่ใช้ Generative AI</strong></p></div>
+  <section class="privacy-note"><span aria-hidden="true">◈</span><div><h2>คุณควบคุมข้อมูลของคุณ</h2><p>ไม่มีบัญชี ไม่มีการบันทึกลงฐานข้อมูล และไม่มีการส่งไฟล์ไป AI ข้อมูลอยู่ในหน้านี้จนกว่าจะล้างหรือปิดหน้า รายงานที่คุณดาวน์โหลดอาจมีชื่อสินค้าและยอดขาย ควรเก็บไว้เป็นส่วนตัว</p></div></section>
+</main>
+<footer class="wrap"><span>WORAMET AI LAB <span aria-hidden="true">/</span> BUSINESS INSIGHTS</span><small>สาขาทดลอง · เตรียม Dojo 2026 · ไม่รับประกันรายได้</small></footer>
+</body>
+</html>

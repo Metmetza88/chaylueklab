@@ -1,0 +1,37 @@
+{
+  "engine": "chromium",
+  "version": "151.0.7922.173",
+  "platform": "linux",
+  "results": [
+    {
+      "screen": "small-mobile",
+      "viewport": "320x640",
+      "passed": true
+    },
+    {
+      "screen": "iphone-375",
+      "viewport": "375x812",
+      "passed": true
+    },
+    {
+      "screen": "iphone-390",
+      "viewport": "390x844",
+      "passed": true
+    },
+    {
+      "screen": "iphone-430",
+      "viewport": "430x932",
+      "passed": true
+    },
+    {
+      "screen": "desktop-1440",
+      "viewport": "1440x900",
+      "passed": true
+    }
+  ],
+  "directFilePassed": false,
+  "directFileNote": "Cloud browser policy blocks file://; local HTTP preview passed. Direct-file support is unverified.",
+  "realIPhoneSafariTested": false,
+  "nativeWindowsTested": false,
+  "externalRequests": 0
+}

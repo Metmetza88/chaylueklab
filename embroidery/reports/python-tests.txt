@@ -1,0 +1,28 @@
+test_aspect_ratio_and_one_color_foreground (test_engine.EngineTests.test_aspect_ratio_and_one_color_foreground) ... ok
+test_cli_writes_machine_file_and_color_sidecar (test_engine.EngineTests.test_cli_writes_machine_file_and_color_sidecar) ... ok
+test_color_changes_only_between_colors_and_without_origin_move (test_engine.EngineTests.test_color_changes_only_between_colors_and_without_origin_move) ... ok
+test_dst_is_real_binary_and_roundtrip_matches_preview (test_engine.EngineTests.test_dst_is_real_binary_and_roundtrip_matches_preview) ... ok
+test_editing_order_color_visibility_and_offsets_are_in_export (test_engine.EngineTests.test_editing_order_color_visibility_and_offsets_are_in_export) ... ok
+test_export_pes_jef_and_reject_fake_emb (test_engine.EngineTests.test_export_pes_jef_and_reject_fake_emb) ... ok
+test_fifteen_colors_allowed_and_fraction_rejected (test_engine.EngineTests.test_fifteen_colors_allowed_and_fraction_rejected) ... ok
+test_invalid_dimensions_finiteness_fabric_and_auto_satin (test_engine.EngineTests.test_invalid_dimensions_finiteness_fabric_and_auto_satin) ... ok
+test_invalid_images_and_decompression_bomb (test_engine.EngineTests.test_invalid_images_and_decompression_bomb) ... ok
+test_jpeg_supported_and_transparency_does_not_become_black (test_engine.EngineTests.test_jpeg_supported_and_transparency_does_not_become_black) ... ok
+test_long_vector_is_split_instead_of_single_50mm_stitch (test_engine.EngineTests.test_long_vector_is_split_instead_of_single_50mm_stitch) ... ok
+test_manual_satin_alternates_two_rails_and_polygon_fill (test_engine.EngineTests.test_manual_satin_alternates_two_rails_and_polygon_fill) ... ok
+test_stitch_length_bound_after_dst_quantization (test_engine.EngineTests.test_stitch_length_bound_after_dst_quantization) ... ok
+test_tatami_stagger_holes_and_rotation (test_engine.EngineTests.test_tatami_stagger_holes_and_rotation) ... ok
+test_trim_inference_is_separate_from_literal_dst_simulation (test_engine.EngineTests.test_trim_inference_is_separate_from_literal_dst_simulation) ... ok
+test_underlay_precedes_fill_and_pull_expands_area (test_engine.EngineTests.test_underlay_precedes_fill_and_pull_expands_area) ... ok
+test_untrusted_design_limits (test_engine.EngineTests.test_untrusted_design_limits) ... ok
+test_white_is_optional_and_blank_rejected (test_engine.EngineTests.test_white_is_optional_and_blank_rejected) ... ok
+test_bad_json_media_type_and_non_object (test_http.HTTPTests.test_bad_json_media_type_and_non_object) ... ok
+test_conversion_and_export_over_real_http (test_http.HTTPTests.test_conversion_and_export_over_real_http) ... ok
+test_health_and_capabilities_are_truthful (test_http.HTTPTests.test_health_and_capabilities_are_truthful) ... ok
+test_oversize_request_is_rejected_before_body_is_read (test_http.HTTPTests.test_oversize_request_is_rejected_before_body_is_read) ... ok
+test_unsupported_emb_and_auto_satin_are_rejected (test_http.HTTPTests.test_unsupported_emb_and_auto_satin_are_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 1.580s
+
+OK

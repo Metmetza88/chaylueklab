@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-26T14:31:43.413Z",
+  "environment": "Linux; emulated iPhone; no physical Windows/iPhone/Tajima test",
+  "results": [
+    {
+      "browser": "chromium-desktop",
+      "target_url": "https://chailueklabaivercelready-nctmz3p4a-waramatw2546-4532.vercel.app",
+      "expected_commit": "88829abb073e8d59b3ebfa488f17b8f00db44493",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "checks": [
+        "no horizontal overflow",
+        "sample",
+        "IndexedDB save/reopen",
+        "color/offset/order",
+        "undo/redo",
+        "running",
+        "satin",
+        "tatami",
+        "reshape",
+        "drag",
+        "simulation",
+        "binary DST download",
+        "PES/JEF/SVG/PNG download",
+        "mouse point entry",
+        "upload/auto digitize",
+        "customer local draft",
+        "owner local status",
+        "JSON import",
+        "new design without image",
+        "offline sample with explicit unavailable API and no fake export"
+      ],
+      "javascript_errors": []
+    },
+    {
+      "browser": "chromium-iphone",
+      "target_url": "https://chailueklabaivercelready-nctmz3p4a-waramatw2546-4532.vercel.app",
+      "expected_commit": "88829abb073e8d59b3ebfa488f17b8f00db44493",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "checks": [
+        "no horizontal overflow",
+        "sample",
+        "IndexedDB save/reopen",
+        "color/offset/order",
+        "undo/redo",
+        "running",
+        "satin",
+        "tatami",
+        "reshape",
+        "drag",
+        "simulation",
+        "binary DST download",
+        "PES/JEF/SVG/PNG download",
+        "emulated touch points on iPhone",
+        "upload/auto digitize",
+        "customer local draft",
+        "owner local status",
+        "JSON import",
+        "new design without image",
+        "offline sample with explicit unavailable API and no fake export"
+      ],
+      "javascript_errors": []
+    },
+    {
+      "browser": "webkit-iphone",
+      "target_url": "https://chailueklabaivercelready-nctmz3p4a-waramatw2546-4532.vercel.app",
+      "expected_commit": "88829abb073e8d59b3ebfa488f17b8f00db44493",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "checks": [
+        "no horizontal overflow",
+        "sample",
+        "IndexedDB save/reopen",
+        "color/offset/order",
+        "undo/redo",
+        "running",
+        "satin",
+        "tatami",
+        "reshape",
+        "drag",
+        "simulation",
+        "binary DST download",
+        "PES/JEF/SVG/PNG download",
+        "emulated touch points on iPhone",
+        "upload/auto digitize",
+        "customer local draft",
+        "owner local status",
+        "JSON import",
+        "new design without image",
+        "offline sample with explicit unavailable API and no fake export"
+      ],
+      "javascript_errors": []
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+# Transient downloads made by the browser regression; keep results/screenshots/logs.
+*-sample-crest.dst
+*-sample-crest.pes
+*-sample-crest.jef
+*-sample-crest.stitches.svg
+*-sample-crest.preview.png
+*.request.json
+*-failure.png

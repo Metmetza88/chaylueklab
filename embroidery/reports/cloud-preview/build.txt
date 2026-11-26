@@ -1,0 +1,3 @@
+PASS public routes, shared Stock markup, configured LIFF and server endpoint
+PASS public routes, shared Stock markup, configured LIFF and server endpoint
+PASS public artifact: 89 files; server code, SQL, secrets and test fixtures excluded

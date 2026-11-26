@@ -6,3 +6,7 @@ node_modules/
 _site/
 _site-*/
 codeql-results/
+
+# Python cache for isolated embroidery function
+api/__pycache__/
+.venv-embroidery/

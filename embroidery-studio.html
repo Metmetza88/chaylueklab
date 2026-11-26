@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#183b39" />
+    <meta
+      name="description"
+      content="พื้นที่ออกแบบลายปัก WORAMET รุ่นทดลอง พร้อมจำลองฝีเข็มและส่งออก DST จริง"
+    />
+    <title>WORAMET — AI Embroidery Studio</title>
+    <link rel="stylesheet" href="./assets/embroidery/studio.css" />
+    <script type="module" src="./assets/embroidery/studio.mjs"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a
+        class="brand"
+        href="./embroidery-studio.html"
+        aria-label="WORAMET Embroidery Studio"
+        ><span class="brandmark">W<span>✳</span></span
+        ><span>WORAMET<small>AI EMBROIDERY STUDIO</small></span></a
+      >
+      <span class="project-title"
+        ><i class="dot"></i><span id="project-name">แบบตัวอย่างสังเคราะห์</span
+        ><span class="version">MVP / 01</span></span
+      >
+      <div class="header-actions">
+        <span id="api-status" class="service">กำลังตรวจ API…</span
+        ><select id="mode" aria-label="โหมดการทำงาน">
+          <option value="owner">เจ้าของร้าน</option>
+          <option value="customer">ลูกค้า</option></select
+        ><button data-action="save" class="save-top">บันทึกงาน</button>
+      </div>
+    </header>
+    <nav class="menubar" aria-label="เมนูโปรแกรม">
+      <div id="menus" class="menus"></div>
+      <span class="experimental">● Experimental · ยังไม่ทดสอบปักจริง</span>
+    </nav>
+    <div class="commandbar">
+      <button
+        id="toggle-tools"
+        class="mobile-toggle"
+        aria-expanded="false"
+        aria-controls="toolbox"
+      >
+        ☰ เครื่องมือ
+      </button>
+      <div class="breadcrumb">
+        STUDIO <span>/</span>
+        <strong id="document-label">sample-crest · 50 mm</strong>
+      </div>
+      <div class="command-actions">
+        <button data-action="undo" title="เลิกทำ Ctrl+Z" aria-label="เลิกทำ">
+          ↶</button
+        ><button
+          data-action="redo"
+          title="ทำซ้ำ Ctrl+Shift+Z"
+          aria-label="ทำซ้ำ"
+        >
+          ↷</button
+        ><span class="divider"></span><button data-action="fit">พอดีจอ</button
+        ><button data-action="export-dst" class="primary">↓ ส่งออก DST</button
+        ><button
+          id="toggle-properties"
+          class="mobile-toggle"
+          aria-expanded="false"
+          aria-controls="properties"
+        >
+          ตั้งค่า ☷
+        </button>
+      </div>
+    </div>
+    <main class="workspace" id="workspace">
+      <aside class="toolbox" id="toolbox" aria-label="เครื่องมือวาด">
+        <span class="rail-label">TOOLS</span>
+        <div id="tools"></div>
+        <div class="tool-bottom">
+          <button data-action="help" class="tool" title="คู่มือและข้อจำกัด">
+            <span>?</span><small>คู่มือ</small>
+          </button>
+        </div>
+      </aside>
+      <section class="canvas-panel" aria-label="พื้นที่ออกแบบลายปัก">
+        <div class="canvas-top">
+          <div class="view-tabs">
+            <button id="view-stitch" class="active">ลายฝีเข็ม</button
+            ><button id="view-source">ภาพต้นฉบับ</button>
+          </div>
+          <div class="canvas-tags">
+            <span>TAJIMA / หัวเดียว</span
+            ><span id="hoop-size">พื้นที่แบบ 50 × 50 มม.</span>
+          </div>
+        </div>
+        <div class="stage-wrap" id="stage-wrap">
+          <canvas
+            id="stage"
+            aria-label="ตัวอย่างฝีเข็ม ตารางและไม้บรรทัดมิลลิเมตร"
+          ></canvas>
+          <div class="stage-corner">mm</div>
+          <div class="stage-note">
+            <span class="dot"></span>
+            <span id="stage-caption">SYNTHETIC SAMPLE · ไม่ใช่ตราโรงเรียน</span>
+          </div>
+          <div class="zoom-controls">
+            <button data-action="zoom-out" aria-label="ซูมออก">−</button
+            ><button data-action="fit" id="zoom-label">100%</button
+            ><button data-action="zoom-in" aria-label="ซูมเข้า">＋</button
+            ><button
+              data-action="actual"
+              title="ขนาดจริงขึ้นอยู่กับการสอบเทียบจอ"
+            >
+              1:1*
+            </button>
+          </div>
+        </div>
+        <div id="drawing-bar" class="drawing-bar" hidden>
+          <span id="drawing-label">แตะเพื่อวางจุด</span
+          ><button data-action="finish-path" class="primary">จบเส้น ✓</button
+          ><button data-action="cancel-path">ยกเลิก</button>
+        </div>
+        <div class="simulation">
+          <button data-action="play" id="play" title="จำลองคำสั่งจาก DST">
+            ▶ จำลอง</button
+          ><input
+            id="simulation"
+            type="range"
+            min="0"
+            max="100"
+            value="100"
+            aria-label="ความคืบหน้าการปัก"
+          /><span id="simulation-count">— / —</span
+          ><select id="speed" aria-label="ความเร็วจำลอง">
+            <option value="150">ช้า</option>
+            <option value="700" selected>ปกติ</option>
+            <option value="2500">เร็ว</option></select
+          ><label><input id="show-jumps" type="checkbox" /> Jump</label>
+        </div>
+        <div class="thread-tray">
+          <div class="tray-heading">
+            <span>THREAD PALETTE <small>สีด้ายของแบบ</small></span
+            ><button data-action="threads">↓ ลำดับสี</button>
+          </div>
+          <div id="palette" class="palette"></div>
+          <div class="sequence-line">
+            <span>COLOR SEQUENCE</span>
+            <div id="color-sequence"></div>
+          </div>
+        </div>
+      </section>
+      <aside class="properties" id="properties">
+        <div class="panel-heading">
+          <span>ตั้งค่าลายปัก</span><small>DESIGN PROPERTIES</small>
+        </div>
+        <div class="property-scroll">
+          <section class="panel-section">
+            <div class="section-title"><span>01</span> ภาพและขนาด</div>
+            <label class="upload-zone" for="upload"
+              ><span class="upload-icon">↥</span
+              ><strong>อัปโหลดโลโก้ของคุณ</strong
+              ><small>JPG, PNG · สูงสุด 2.5 MB / 12 MP</small
+              ><input
+                id="upload"
+                type="file"
+                accept="image/png,image/jpeg" /></label
+            ><button data-action="sample" class="text-button">
+              เปิดแบบตัวอย่างสังเคราะห์
+            </button>
+            <div class="field-pair">
+              <label
+                >กว้าง <span>mm</span
+                ><input
+                  id="width"
+                  type="number"
+                  min="10"
+                  max="120"
+                  step=".1"
+                  value="50" /></label
+              ><label
+                >สูง <span>mm 🔗</span
+                ><input
+                  id="height"
+                  type="number"
+                  value="50"
+                  readonly
+                  title="รักษาสัดส่วนจากภาพ"
+              /></label>
+            </div>
+            <p class="field-note">
+              รักษาสัดส่วนภาพ · ขนาด 10–120 มม. รวมขอบว่างของภาพ
+            </p>
+            <p id="actual-size" class="field-note"></p>
+            <div class="field-pair">
+              <label>จำนวนสีด้าย<select id="colors"></select></label
+              ><label
+                >ประเภทผ้า<select id="fabric">
+                  <option value="woven">ผ้าทอ / นักเรียน</option>
+                  <option value="knit">ผ้ายืด</option>
+                  <option value="cap">หมวก</option>
+                </select></label
+              >
+            </div>
+            <label class="check-row"
+              ><input id="remove-white" type="checkbox" checked /> ตัดพื้นขาว
+              (ปิดหากต้องปักด้ายขาว)</label
+            >
+          </section>
+          <section class="panel-section">
+            <div class="section-title">
+              <span>02</span> ฝีเข็ม <em>Experimental</em>
+            </div>
+            <label
+              >Stitch Type<select id="stitch-type">
+                <option value="tatami">Tatami Fill · Experimental</option>
+                <option value="running">Running Stitch · Experimental</option>
+                <option disabled>Auto Satin · Not Available</option>
+              </select></label
+            >
+            <div class="field-pair">
+              <label
+                >Stitch Length <span>mm</span
+                ><input
+                  id="length"
+                  type="number"
+                  min=".5"
+                  max="8"
+                  step=".1"
+                  value="2.8" /></label
+              ><label
+                >ระยะห่างแถว <span>mm</span
+                ><input
+                  id="density"
+                  type="number"
+                  min=".3"
+                  max="1.2"
+                  step=".05"
+                  value=".45"
+              /></label>
+            </div>
+            <div class="field-pair">
+              <label
+                >Stitch Angle <span>°</span
+                ><input
+                  id="angle"
+                  type="number"
+                  min="-180"
+                  max="180"
+                  value="30" /></label
+              ><label
+                >Pull Comp. <span>mm</span
+                ><input
+                  id="pull"
+                  type="number"
+                  min="0"
+                  max=".4"
+                  step=".05"
+                  value=".15"
+              /></label>
+            </div>
+            <label class="check-row"
+              ><input id="underlay" type="checkbox" checked /> Underlay ·
+              เส้นขอบและรองพื้นห่าง</label
+            ><label
+              >Satin Width สำหรับวาด <span>mm</span
+              ><input
+                id="satin-width"
+                type="number"
+                min=".5"
+                max="6"
+                step=".1"
+                value="2" /></label
+            ><button id="digitize" class="digitize-button">
+              ✳ Auto Digitize <span>สร้างฝีเข็ม</span>
+            </button>
+            <p class="field-note" id="settings-note">
+              ปรับค่าฝีเข็มแล้วกดสร้างใหม่จากภาพ · แทนที่การแก้แบบเดิม
+            </p>
+          </section>
+          <section class="panel-section owner-section">
+            <div class="section-title"><span>03</span> Object Properties</div>
+            <label>วัตถุที่เลือก<select id="object-select"></select></label>
+            <div id="object-properties">
+              <div class="field-pair">
+                <label>ชื่อวัตถุ<input id="object-name" maxlength="80" /></label
+                ><label
+                  >สีด้าย<input id="object-color" type="color" value="#176f68"
+                /></label>
+              </div>
+              <div class="field-pair">
+                <label
+                  >X Offset <span>mm</span
+                  ><input
+                    id="object-x"
+                    type="number"
+                    step=".1"
+                    min="-120"
+                    max="120" /></label
+                ><label
+                  >Y Offset <span>mm</span
+                  ><input
+                    id="object-y"
+                    type="number"
+                    step=".1"
+                    min="-120"
+                    max="120"
+                /></label>
+              </div>
+              <label class="check-row"
+                ><input id="object-visible" type="checkbox" checked />
+                เปิดการปักวัตถุนี้</label
+              >
+              <div class="object-actions">
+                <button data-action="move-up" aria-label="เลื่อนลำดับขึ้น">
+                  ↑ ก่อน</button
+                ><button data-action="move-down" aria-label="เลื่อนลำดับลง">
+                  ↓ หลัง</button
+                ><button data-action="delete">ลบวัตถุ</button>
+              </div>
+              <p id="object-info" class="field-note"></p>
+            </div>
+          </section>
+          <section class="panel-section customer-section" hidden>
+            <div class="section-title">
+              <span>03</span> คำขอลูกค้า · Local Draft
+            </div>
+            <label
+              >ชื่อลูกค้า / ชื่องาน<input
+                id="customer-name"
+                maxlength="100"
+                placeholder="เช่น เสื้อทีม 20 ตัว" /></label
+            ><label
+              >รายละเอียด<textarea
+                id="customer-note"
+                maxlength="1000"
+                rows="3"
+                placeholder="ระบุสีและรายละเอียดที่ต้องการ"
+              ></textarea></label
+            ><button data-action="customer-request" class="primary full">
+              บันทึกคำขอในเครื่อง
+            </button>
+            <p class="field-note">
+              ยังไม่ส่งถึงร้าน ดาวน์โหลดไฟล์คำขอแล้วส่งให้ร้านด้วยตนเอง
+              ไม่มีบัญชีหรือการรับชำระเงิน
+            </p>
+          </section>
+          <section class="panel-section">
+            <div class="section-title"><span>04</span> ตรวจสอบก่อนส่งออก</div>
+            <div id="warnings" class="warnings"></div>
+            <button data-action="history" class="full">
+              ☷ ประวัติงานในเครื่อง
+            </button>
+          </section>
+        </div>
+      </aside>
+    </main>
+    <footer class="statusbar">
+      <span
+        ><i class="dot"></i
+        ><span id="status" role="status" aria-live="polite"
+          >พร้อมออกแบบ</span
+        ></span
+      >
+      <div>
+        <span>ฝีเข็ม <strong id="stitch-count">—</strong></span
+        ><span>สี <strong id="thread-count">—</strong></span
+        ><span>เวลาประมาณ <strong id="time">—</strong></span
+        ><span id="status-zoom">100%</span><strong class="format">DST</strong>
+      </div>
+    </footer>
+    <div id="toast" class="toast" role="status" hidden></div>
+    <dialog id="modal">
+      <div class="modal-header">
+        <h2 id="modal-title"></h2>
+        <button data-action="close-modal" aria-label="ปิด">×</button>
+      </div>
+      <div id="modal-body"></div>
+    </dialog>
+    <input
+      id="project-file"
+      type="file"
+      accept="application/json,.json"
+      hidden
+    />
+  </body>
+</html>

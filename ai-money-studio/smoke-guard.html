@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080d16">
+<meta name="description" content="SMOKE GUARD AI — ทดลองใช้กล้อง iPhone ตรวจจับบริเวณที่ AI สงสัยว่าเป็นควัน">
+<title>SMOKE GUARD AI | WORAMET AI LAB</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark;background:#080d16;color:#f1f6ff}
+*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse 90% 50% at 50% 0,#15283b 0,#080d16 72%);line-height:1.5}
+a{color:#94e9d1}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}
+header,main,footer{max-width:760px;margin:auto;padding:18px}header{display:flex;gap:12px;align-items:center;justify-content:space-between;border-bottom:1px solid #26364a}
+.brand{font-size:13px;letter-spacing:.12em;font-weight:800;color:#a1ead9}h1{font-size:clamp(30px,7vw,48px);letter-spacing:-.035em;line-height:1.12;margin:9px 0 12px}h1 span{color:#77e0c6}
+.lead{color:#b9c6d5;margin:0 0 22px}.tag{display:inline-block;color:#77e0c6;border:1px solid #286e66;background:#092a2d;border-radius:50px;padding:5px 10px;font-size:12px;font-weight:800}
+.panel{background:#101c2c;border:1px solid #304159;border-radius:22px;padding:16px;margin:14px 0;box-shadow:0 14px 40px #0002}
+.camera{position:relative;overflow:hidden;border-radius:16px;background:#03070f;min-height:180px;display:grid;place-items:center}
+canvas{display:block;width:100%;height:auto;max-height:65vh;object-fit:contain}
+.hint{position:absolute;top:10px;left:10px;padding:5px 10px;border-radius:9px;background:#020911cc;color:#c7d5df;font-size:12px}
+.state{display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:12px;border:1px solid #3b526d;border-radius:13px;background:#1b2c3f}
+.dot{width:11px;height:11px;flex:none;background:#c6a660;border-radius:100%;margin-top:6px}
+.state.ok .dot{background:#68d4b3}.state.warn .dot{background:#ff9b78}
+.status-title{font-weight:800}.status-sub{font-size:12px;color:#b7c7d8}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{border:1px solid #52677d;background:#21334a;border-radius:13px;color:#f3f7fd;padding:14px 10px;min-height:52px;font-weight:750;text-align:center}
+.btn.primary{background:#77e0c6;color:#052723;border-color:#77e0c6}.btn:focus-visible,.pick:focus-within{outline:3px solid #d8f5eb;outline-offset:2px}
+.pick{position:relative;display:grid;place-items:center}.pick input{position:absolute;opacity:0;inset:0;width:100%;height:100%;cursor:pointer}
+.secondary{display:flex;gap:10px;margin-top:10px}.secondary .btn{flex:1;font-size:14px}
+.note{font-size:13px;color:#becbda}.note strong{color:#fff}.warning{border-left:3px solid #ebba6a;padding-left:12px;color:#ffdfab}
+footer{font-size:12px;color:#96a7b8;text-align:center;padding-bottom:36px}
+@media(max-width:380px){header,main,footer{padding:13px}.panel{padding:11px}.btn{font-size:13px}}
+</style>
+</head>
+<body>
+<header><div class="brand">WORAMET AI LAB</div><a href="./index.html">เครื่องมืออื่น</a></header>
+<main>
+<span class="tag">AI CAMERA · EXPERIMENTAL MVP</span>
+<h1>SMOKE <span>GUARD AI</span></h1>
+<p class="lead">เปิดกล้องหรือเลือกรูปภาพ แล้วให้ AI วงกรอบบริเวณที่สงสัยว่าเป็นควัน ไม่ต้องสมัครบัญชี</p>
+<section class="panel" aria-label="หน้าตรวจจับควัน">
+<div class="camera">
+<canvas id="viewer" width="640" height="360" role="img" aria-label="ภาพกล้องหรือภาพอัปโหลดพร้อมกรอบผลตรวจ AI"></canvas>
+<div id="liveTag" class="hint">พร้อมเริ่มใช้งาน</div>
+</div>
+<div id="state" class="state" role="status" aria-live="polite">
+<div class="dot"></div><div><div id="statusTitle" class="status-title">ยังไม่เปิดกล้อง</div><div id="statusText" class="status-sub">กดเปิดกล้อง หรือเลือกรูปภาพเพื่อทดลอง</div></div>
+</div>
+<div class="actions">
+<button class="btn primary" id="start" type="button">📷 เปิดกล้อง</button>
+<label class="btn pick">🖼️ เลือกรูปภาพ <input id="file" aria-label="เลือกรูปภาพ" type="file" accept="image/jpeg,image/png,image/webp,image/*"></label>
+</div>
+<div class="secondary">
+<button class="btn" id="stop" type="button" disabled>หยุดกล้อง</button>
+<button class="btn" id="save" type="button" disabled>บันทึกภาพผลตรวจ</button>
+</div>
+</section>
+<section class="panel">
+<strong>วิธีใช้งาน</strong>
+<p class="note">1. กด <strong>เปิดกล้อง</strong> แล้วอนุญาตให้ Safari ใช้กล้อง</p>
+<p class="note">2. ระบบจะส่งภาพตัวอย่างไปวิเคราะห์เป็นระยะ (ประมาณทุก 3 วินาที) แล้ววาดกรอบหาก AI ตรวจพบ</p>
+<p class="note">3. กด <strong>บันทึกภาพผลตรวจ</strong> เพื่อเก็บภาพพร้อมกรอบที่แสดงอยู่บนหน้าจอ</p>
+<p class="note warning"><strong>ข้อควรระวัง:</strong> AI อาจตรวจไม่พบควันจริง หรือมองไอน้ำ/หมอกเป็นควัน แอปนี้เป็นเพียงต้นแบบทดลอง ไม่ใช่เครื่องเตือนไฟไหม้ที่ผ่านการรับรอง หากเห็นควันหรือสงสัยว่ามีไฟไหม้ ให้ปฏิบัติตามขั้นตอนความปลอดภัยทันที ไม่ต้องรอผล AI</p>
+<p class="note">ความเป็นส่วนตัว: เมื่อกดวิเคราะห์ ภาพตัวอย่างจากกล้องหรือรูปภาพจะถูกส่งผ่านเซิร์ฟเวอร์ของเว็บไปยัง Roboflow เพื่อประมวลผล แอปนี้ไม่ได้บันทึกภาพลงฐานข้อมูลของเรา โปรดอย่าส่องข้อมูลส่วนตัวหรือบุคคลอื่นโดยไม่ได้รับอนุญาต</p>
+</section>
+</main>
+<footer>SMOKE GUARD AI · WORAMET AI LAB · รุ่นทดลองสำหรับการพัฒนาและทดสอบ</footer>
+<script>
+(function(){
+'use strict';
+var canvas=document.getElementById('viewer'), ctx=canvas.getContext('2d');
+var start=document.getElementById('start'),stop=document.getElementById('stop'),save=document.getElementById('save'),file=document.getElementById('file');
+var state=document.getElementById('state'),statusTitle=document.getElementById('statusTitle'),statusText=document.getElementById('statusText'),liveTag=document.getElementById('liveTag');
+var video=document.createElement('video'); video.muted=true; video.playsInline=true; video.autoplay=true;
+var stream=null, picture=null, mode='idle', predictions=[], resultSize=null, timer=null, controller=null, sequence=0, ready=false, scanning=false;
+var sample=document.createElement('canvas'),sampleCtx=sample.getContext('2d');
+function status(title,description,type){statusTitle.textContent=title;statusText.textContent=description||'';state.className='state'+(type?' '+type:'');}
+function resetBoxes(){predictions=[];resultSize=null;}
+function resizeFor(source){var w=source.videoWidth||source.naturalWidth||640,h=source.videoHeight||source.naturalHeight||360;var f=Math.min(1,960/w);canvas.width=Math.max(1,Math.round(w*f));canvas.height=Math.max(1,Math.round(h*f));}
+function drawPlaceholder(){
+ctx.fillStyle='#07101c';ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.strokeStyle='#28405b';ctx.lineWidth=2;
+ctx.strokeRect(canvas.width/2-38,canvas.height/2-28,76,56);
+ctx.beginPath();ctx.arc(canvas.width/2,canvas.height/2,18,0,Math.PI*2);ctx.stroke();
+ctx.fillStyle='#839bb1';ctx.font='16px system-ui';ctx.textAlign='center';
+ctx.fillText('รอเปิดกล้องหรือเลือกรูปภาพ',canvas.width/2,canvas.height/2+60);
+}
+function drawBoxes(){
+if(!resultSize)return;
+var sx=canvas.width/resultSize.width, sy=canvas.height/resultSize.height;
+ctx.textAlign='left';ctx.lineWidth=Math.max(2,canvas.width/330);
+predictions.forEach(function(p){
+var x=Math.max(0,(p.x-p.width/2)*sx),y=Math.max(0,(p.y-p.height/2)*sy);
+var w=Math.min(canvas.width-x,p.width*sx),h=Math.min(canvas.height-y,p.height*sy);
+ctx.strokeStyle='#ff685e';ctx.strokeRect(x,y,w,h);
+var text='ควันที่สงสัย '+Math.round(p.confidence*100)+'%';
+ctx.font='bold '+Math.max(12,Math.round(canvas.width/39))+'px system-ui';
+var tw=ctx.measureText(text).width+12,ty=Math.max(0,y-27);
+ctx.fillStyle='#e6433b';ctx.fillRect(x,ty,Math.min(tw,canvas.width-x),26);
+ctx.fillStyle='white';ctx.fillText(text,x+6,ty+19,Math.max(20,canvas.width-x-8));
+});
+}
+function draw(){
+if(mode==='camera' && video.readyState>=2){ctx.drawImage(video,0,0,canvas.width,canvas.height);}
+else if(mode==='image' && picture){ctx.drawImage(picture,0,0,canvas.width,canvas.height);}
+else {drawPlaceholder();}
+drawBoxes();
+requestAnimationFrame(draw);
+}
+function cancelPending(){
+sequence++;clearTimeout(timer);timer=null;
+if(controller){controller.abort();controller=null;}scanning=false;
+}
+function stopCamera(keepStatus){
+cancelPending();
+if(stream){stream.getTracks().forEach(function(t){t.stop();});stream=null;}
+video.srcObject=null;stop.disabled=true;start.disabled=false;
+if(mode==='camera'){mode='idle';resetBoxes();liveTag.textContent='กล้องหยุดแล้ว';save.disabled=true;if(!keepStatus)status('หยุดกล้องแล้ว','กดเปิดกล้องเพื่อทดลองอีกครั้ง');}
+}
+function source(){return mode==='camera'?video:(mode==='image'?picture:null);}
+function grab(){
+var s=source();if(!s || (mode==='camera' && video.readyState<2))return null;
+var sw=mode==='camera'?s.videoWidth:s.naturalWidth,sh=mode==='camera'?s.videoHeight:s.naturalHeight;
+if(!sw || !sh)return null;
+var ratio=Math.min(1,640/sw);sample.width=Math.round(sw*ratio);sample.height=Math.round(sh*ratio);
+sampleCtx.drawImage(s,0,0,sample.width,sample.height);
+return sample.toDataURL('image/jpeg',0.68);
+}
+function problem(code){
+var m={
+ai_not_configured:'ระบบตรวจจับ AI ยังไม่ได้เปิดใช้งานบนเซิร์ฟเวอร์',
+model_unavailable:'ติดต่อโมเดล AI ไม่สำเร็จ โปรดลองใหม่',
+model_timeout_or_network:'AI ตอบช้าหรือเครือข่ายขัดข้อง',
+rate_limited:'ใช้งานถี่เกินไป โปรดเว้นระยะก่อนทดลองอีกครั้ง',
+image_too_large:'ภาพใหญ่เกินไป กรุณาใช้ภาพขนาดเล็ก',
+invalid_image:'รูปภาพไม่รองรับ โปรดเลือกรูปใหม่'
+};
+return m[code]||'ยังตรวจจับไม่ได้ โปรดลองใหม่';
+}
+async function analyze(){
+if(scanning||!source())return;
+var id=sequence;
+if(!ready){status('ยังไม่ได้เชื่อม AI','เซิร์ฟเวอร์ต้องตั้งค่า Roboflow ก่อนจึงตรวจจับควันจริงได้','warn');return;}
+var data=grab();if(!data)return;
+scanning=true;controller=new AbortController();
+status('AI กำลังตรวจสอบภาพ','ส่งภาพตัวอย่างไปวิเคราะห์บนเซิร์ฟเวอร์');
+try{
+var response=await fetch('/api/smoke-detect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:data}),signal:controller.signal,cache:'no-store'});
+var out=await response.json();
+if(id!==sequence)return;
+if(!response.ok)throw new Error(out.error||'server_error');
+predictions=Array.isArray(out.predictions)?out.predictions:[];resultSize=out.image||null;
+save.disabled=false;
+if(predictions.length){status('AI พบจุดที่สงสัยว่าเป็นควัน','วงกรอบ '+predictions.length+' จุด · เป็นเพียงผลคาดการณ์ ไม่ใช่การยืนยันว่ามีไฟไหม้','warn');}
+else {status('AI ไม่พบควันในภาพนี้','ผลนี้ไม่ได้ยืนยันว่าบริเวณนั้นปลอดภัย','ok');}
+} catch(e){
+if(id!==sequence)return;
+resetBoxes();status('ยังวิเคราะห์ไม่สำเร็จ',problem(e.message),'warn');
+} finally{
+scanning=false;controller=null;
+if(id===sequence && mode==='camera'){timer=setTimeout(analyze,3000);}
+}
+}
+async function checkReady(){
+try{var res=await fetch('/api/smoke-detect',{cache:'no-store'});if(!res.ok)throw new Error('no_api');var data=await res.json();ready=Boolean(data.ready);}
+catch{ready=false;}
+if(!ready && mode==='idle')status('เปิดดูหน้ากล้องได้ แต่ยังตรวจ AI ไม่ได้','รอตั้งค่ากุญแจ Roboflow ฝั่งเซิร์ฟเวอร์','warn');
+}
+start.addEventListener('click',async function(){
+if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+status('ไม่สามารถเปิดกล้องได้','ต้องเปิดผ่าน Safari หรือ Chrome บนลิงก์ HTTPS','warn');return;
+}
+stopCamera(true);picture=null;mode='idle';resetBoxes();
+try{
+status('กำลังขอสิทธิ์กล้อง','กดอนุญาตเมื่อ iPhone ถาม');
+stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280}},audio:false});
+video.srcObject=stream;await video.play();resizeFor(video);mode='camera';stop.disabled=false;start.disabled=true;save.disabled=true;
+liveTag.textContent='ภาพจากกล้อง · ตรวจทุก ~3 วินาที';
+analyze();
+}catch(e){stopCamera(true);status('เปิดกล้องไม่ได้','ตรวจสิทธิ์กล้องใน Safari แล้วลองใหม่ ('+(e.name||'error')+')','warn');}
+});
+stop.addEventListener('click',function(){stopCamera(false);});
+file.addEventListener('change',function(){
+var f=file.files&&file.files[0];if(!f)return;
+if(!f.type.startsWith('image/') || f.size>8*1024*1024){status('ไฟล์ใช้ไม่ได้','โปรดเลือกภาพ JPG/PNG/WEBP ขนาดไม่เกิน 8 MB','warn');return;}
+stopCamera(true);picture=null;resetBoxes();
+var objectUrl=URL.createObjectURL(f),img=new Image();
+img.onload=function(){URL.revokeObjectURL(objectUrl);picture=img;mode='image';resizeFor(img);liveTag.textContent='ภาพที่เลือก';save.disabled=true;analyze();};
+img.onerror=function(){URL.revokeObjectURL(objectUrl);status('อ่านภาพไม่ได้','ลองเลือกรูปอื่น','warn');};
+img.src=objectUrl;
+});
+save.addEventListener('click',function(){
+if(!source())return;
+var a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download='smoke-guard-result.png';document.body.appendChild(a);a.click();a.remove();
+});
+document.addEventListener('visibilitychange',function(){if(document.hidden && mode==='camera')stopCamera(false);});
+drawPlaceholder();requestAnimationFrame(draw);checkReady();
+})();
+</script>
+</body></html>

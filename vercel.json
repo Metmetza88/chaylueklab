@@ -3,5 +3,12 @@
   "framework": null,
   "installCommand": "",
   "buildCommand": "node --test tests/*.test.mjs && node scripts/build-public-site.mjs",
-  "outputDirectory": "_site"
+  "outputDirectory": "_site",
+  "functions": {
+    "api/embroidery.py": {
+      "maxDuration": 30,
+      "includeFiles": "embroidery/**",
+      "excludeFiles": "{embroidery/tests/**,embroidery/samples/**,embroidery/reports/**,embroidery/licenses/**,embroidery/**/__pycache__/**}"
+    }
+  }
 }
