@@ -6,6 +6,7 @@
   'use strict';
   const MAX_BYTES = 2 * 1024 * 1024;
   const MAX_ROWS = 10000;
+  const MAX_MANUAL_ROWS = 100;
   const fmt = n => new Intl.NumberFormat('th-TH', { maximumFractionDigits: 2 }).format(n);
   const money = cents => {
     const fraction = String(cents % 100).padStart(2, '0').replace(/0+$/, '');
@@ -225,8 +226,23 @@
       '', 'ยอดขายรายวันที่มีข้อมูล', ...report.daily.map(d => d.date + ' | ฿' + money(d.revenueCents)),
       '', 'ข้อสังเกต', ...report.tips, !report.trend.available ? report.trend.reason : '', '', 'ร่างข้อความจากเทมเพลต', report.post].join('\r\n');
   }
+  // Keep typed values as strings; the same CSV validator and integer-money engine
+  // handle both entry methods. Quoting every cell prevents names creating columns.
+  function manualCSV(entries, date = '') {
+    if (!Array.isArray(entries) || !entries.length || entries.length > MAX_MANUAL_ROWS) fail('กรอกได้ตั้งแต่ 1 ถึง 100 รายการ');
+    if (typeof date !== 'string') fail('วันที่ขายไม่ถูกต้อง');
+    const quote = value => {
+      if (typeof value !== 'string') fail('กรุณากรอกชื่อสินค้า จำนวน และราคา');
+      return '"' + value.replace(/"/g, '""') + '"';
+    };
+    const header = date ? 'date,product,quantity,unit_price' : 'product,quantity,unit_price';
+    return [header, ...entries.map(entry => {
+      if (!entry || typeof entry !== 'object') fail('รายการขายไม่ถูกต้อง');
+      return (date ? [date, entry.product, entry.quantity, entry.price] : [entry.product, entry.quantity, entry.price]).map(quote).join(',');
+    })].join('\n');
+  }
   const sample = ['date,product,quantity,unit_price', '2026-11-01,FIRST CHAPTER Ivory,2,600', '2026-11-02,FIRST CHAPTER Noir,3,600',
     '2026-11-03,FIRST CHAPTER Forest,1,600', '2026-11-04,FIRST CHAPTER Ivory,2,600', '2026-11-05,FIRST CHAPTER Noir,1,600',
     '2026-11-06,FIRST CHAPTER Forest,2,600', '2026-11-07,FIRST CHAPTER Ivory,1,600'].join('\n');
-  return { MAX_BYTES, MAX_ROWS, fmt, money, decodeCSV, parseCSV, parseSales, parseDate, analyze, reportText, sample };
+  return { MAX_BYTES, MAX_ROWS, MAX_MANUAL_ROWS, fmt, money, decodeCSV, parseCSV, parseSales, parseDate, analyze, reportText, manualCSV, sample };
 });

@@ -15,6 +15,9 @@ function element() {
     addEventListener(event, handler) { this.handlers[event] = handler; },
     replaceChildren(...items) { this.children = items; },
     append(...items) { this.children.push(...items); },
+    setAttribute(name, value) { this[name] = value; },
+    focus() {},
+    scrollIntoView() {},
     remove() {},
     click() { return this.handlers.click?.(); }
   };
@@ -40,6 +43,53 @@ function deferred() { let resolve, reject; const promise = new Promise((yes, no)
 const buffer = text => new TextEncoder().encode(text).buffer;
 const inputFile = (text, wait) => ({ size: buffer(text).byteLength, arrayBuffer: () => wait || Promise.resolve(buffer(text)) });
 function load($, file) { $('file').files = [file]; return $('file').handlers.change({ target: { files: [file] } }); }
+function fillManual($, values, row = 0) {
+  const fields = $('sale-entries').children[row].children[1].children;
+  values.forEach((value, i) => { const input = fields[i].children[1]; input.value = value; input.handlers.input(); });
+}
+function submitManual($) { $('sale-form').handlers.submit({ preventDefault() {} }); }
+
+test('phone form summarizes typed sales without a CSV file', () => {
+  const $ = app(); fillManual($, ['ปากกา', '3', '10']); submitManual($);
+  assert.equal($('revenue').textContent, '฿30'); assert.equal($('units').textContent, '3');
+  assert.equal($('source-label').textContent, 'รายการที่คุณกรอก');
+  assert.match($('result-context').textContent, /ไม่ได้ดึงจากระบบขาย/);
+});
+test('manual rows add, edit and delete without stale report or sample mixing', () => {
+  const $ = app(); fillManual($, ['ปากกา', '3', '10']);
+  $('add-sale').click(); fillManual($, ['สมุด', '2', '35.50'], 1); submitManual($);
+  assert.equal($('revenue').textContent, '฿101');
+  $('sample-quick').click(); assert.equal($('revenue').textContent, '฿7,200');
+  assert.match($('result-context').textContent, /ไม่ใช่ยอดขายร้านคุณ/);
+  $('manual-return').click(); assert.equal($('results').hidden, true);
+  submitManual($); assert.equal($('revenue').textContent, '฿101');
+  fillManual($, ['ปากกา', '4', '10']); assert.equal($('results').hidden, true);
+  $('export').click(); assert.equal($.blobs.length, 0);
+  $('sale-entries').children[1].children[2].click(); submitManual($);
+  assert.equal($('revenue').textContent, '฿40');
+});
+test('blank, malformed and fractional prices in the manual form fail with no report', () => {
+  for (const values of [['', '3', '10'], ['Pen', '0', '10'], ['Pen', '3', ''], ['Pen', '3', '0.001']]) {
+    const $ = sampleApp(); fillManual($, values); submitManual($);
+    assert.equal($('results').hidden, true); assert.equal($('export').disabled, true);
+    assert.match($('manual-status').className, /error/);
+    assert.match($('manual-status').textContent, /สินค้าแถวที่ 1/);
+  }
+});
+test('manual edit cancels a pending file import; clear removes all manual rows', async () => {
+  const $ = app(), wait = deferred(); const operation = load($, inputFile('x', wait.promise));
+  fillManual($, ['Pen', '3', '10']); submitManual($);
+  wait.resolve(buffer('product,qty,price\nOLD,1,999')); await operation;
+  assert.equal($('revenue').textContent, '฿30');
+  $('add-sale').click(); $('manual-clear').click();
+  assert.equal($('sale-entries').children.length, 1); assert.equal($('results').hidden, true);
+  assert.equal($('sale-entries').children[0].children[1].children[0].children[1].value, '');
+});
+test('editing a demo CSV retains an explicit fictional-data warning', () => {
+  const $ = sampleApp(); $('csv').value += '\n2026-11-07,Extra,1,1'; $('csv').handlers.input(); $('analyze').click();
+  assert.match($('source-label').textContent, /ข้อมูลสมมติ/);
+  assert.match($('result-context').textContent, /ไม่ใช่ยอดขายร้านคุณ/);
+});
 
 test('sample data: 7 rows, 12 units, 3 products, THB 7200', () => {
   const $ = sampleApp();

@@ -45,10 +45,39 @@ const { chromium, webkit } = require(process.env.PLAYWRIGHT_MODULE || 'playwrigh
       await page.goto(base + appPath);
       await page.evaluate(() => document.fonts.ready);
       await fits();
-      assert.equal(await page.locator('h1').textContent(), 'มองยอดขายให้ชัดวางแผนร้านให้ง่าย');
+      assert.equal(await page.locator('h1').textContent(), 'จดยอดขายร้านคุณแล้วดูสรุปได้เลย');
       if (screen.width === 390 || screen.width === 1440) await page.screenshot({ path: path.join(out, `${engineName}-${screen.name}-start.png`), fullPage: true });
+      // Primary phone workflow: type three values, then summarize without a file.
+      await page.getByLabel('ชื่อสินค้า', { exact: true }).fill('ปากกา');
+      await page.getByLabel('จำนวนที่ขาย', { exact: true }).fill('3');
+      await page.getByLabel('ราคาขายต่อชิ้น (บาท)', { exact: true }).fill('10');
+      await page.locator('#manual-analyze').click();
+      assert.equal(await page.locator('#revenue').textContent(), '฿30');
+      assert.equal(await page.locator('#units').textContent(), '3');
+      assert.match(await page.locator('#source-label').textContent(), /รายการที่คุณกรอก/);
+      await fits();
+      if (screen.width === 390 || screen.width === 1440) await page.screenshot({ path: path.join(out, `${engineName}-${screen.name}-manual-results.png`), fullPage: true });
+      await page.locator('#manual-return').click();
+      await page.locator('#add-sale').click();
+      await page.getByLabel('ชื่อสินค้า', { exact: true }).nth(1).fill('สมุด');
+      await page.getByLabel('จำนวนที่ขาย', { exact: true }).nth(1).fill('2');
+      await page.getByLabel('ราคาขายต่อชิ้น (บาท)', { exact: true }).nth(1).fill('35.50');
+      await page.locator('#manual-analyze').click();
+      assert.equal(await page.locator('#revenue').textContent(), '฿101');
+      await page.locator('#manual-return').click();
+      await page.getByLabel('จำนวนที่ขาย', { exact: true }).first().fill('0');
+      await page.locator('#manual-analyze').click();
+      assert.equal(await page.locator('#results').isVisible(), false);
+      assert.match(await page.locator('#manual-status').textContent(), /สินค้าแถวที่ 1/);
+      await page.getByLabel('จำนวนที่ขาย', { exact: true }).first().fill('3');
+      await page.locator('#sample-quick').click();
+      assert.match(await page.locator('#result-context').textContent(), /ไม่ใช่ยอดขายร้านคุณ/);
+      await page.locator('#manual-return').click();
+      await page.locator('#manual-analyze').click();
+      assert.equal(await page.locator('#revenue').textContent(), '฿101');
       await page.locator('#sample-quick').click();
       assert.equal(await page.locator('#revenue').textContent(), '฿7,200');
+      await page.locator('#csv-import > summary').click();
       await page.locator('#sample').click(); await page.locator('#analyze').click();
       assert.equal(await page.locator('#revenue').textContent(), '฿7,200');
       assert.equal(await page.locator('#units').textContent(), '12');
@@ -75,6 +104,8 @@ const { chromium, webkit } = require(process.env.PLAYWRIGHT_MODULE || 'playwrigh
       await page.locator('#csv').fill('product,qty,price\nBad,-1,20'); await page.locator('#analyze').click();
       assert.equal(await page.locator('#results').isVisible(), false); assert.match(await page.locator('#status').textContent(), /แถวที่ 2/);
       await page.locator('#clear').click(); assert.equal(await page.locator('#csv').inputValue(), '');
+      assert.equal(await page.getByLabel('ชื่อสินค้า', { exact: true }).count(), 1);
+      assert.equal(await page.getByLabel('ชื่อสินค้า', { exact: true }).inputValue(), '');
       assert.deepEqual(remote, [], 'No external network requests allowed');
       assert.deepEqual(responseErrors, [], 'All requested local assets should load');
       assert.deepEqual(errors, [], 'Browser should have no JavaScript or CSP errors');
@@ -86,6 +117,7 @@ const { chromium, webkit } = require(process.env.PLAYWRIGHT_MODULE || 'playwrigh
     let directFilePassed = false, directFileNote = '';
     try {
       await filePage.goto(pathToFileURL(path.resolve(__dirname, '../business-insights.html')).href);
+      await filePage.locator('#csv-import > summary').click();
       await filePage.locator('#sample').click(); await filePage.locator('#analyze').click();
       assert.equal(await filePage.locator('#revenue').textContent(), '฿7,200'); directFilePassed = true;
     } catch (error) {

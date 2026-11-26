@@ -146,3 +146,23 @@ test('local timestamps reject impossible hours, minutes and seconds', () => {
     assert.equal(core.parseDate(value), '2026-11-01', value);
   }
 });
+
+test('manual entry uses the same exact money, date and CSV escaping rules', () => {
+  const text = core.manualCSV([{ product: 'ปากกา, "ฟ้า"', quantity: '๓', price: '0.10' }, { product: 'สมุด', quantity: '2', price: '0.20' }], '2026-11-26');
+  const r = core.analyze(text);
+  assert.equal(r.revenueCents, 70); assert.equal(r.units, 5);
+  assert.equal(r.daily[0].date, '2026-11-26'); assert.equal(r.rank[1].product, 'ปากกา, "ฟ้า"');
+  assert.equal(core.analyze(core.manualCSV([{product:'Pen',quantity:'1',price:'2'}])).daily.length, 0);
+});
+test('manual entry rejects missing fields, injected rows, invalid dates and excessive rows', () => {
+  for (const [entries, date] of [
+    [[{product:'Pen',quantity:'1',price:''}], ''],
+    [[{product:'Pen\nFake',quantity:'1',price:'10'}], ''],
+    [[{product:'Pen',quantity:'1',price:'10'}], '2026-02-30'],
+    [[{product:'Pen',quantity:'1,1',price:'10'}], ''],
+    [[{product:'Pen',quantity:'1',price:10}], ''],
+    [[], ''], [null, ''], [Array(101).fill({product:'Pen',quantity:'1',price:'10'}), '']
+  ]) assert.throws(() => core.analyze(core.manualCSV(entries, date)));
+  const r = core.analyze(core.manualCSV([{product:'<script>alert(1)</script>',quantity:'1',price:'10'}]));
+  assert.equal(r.rank[0].product, '<script>alert(1)</script>');
+});

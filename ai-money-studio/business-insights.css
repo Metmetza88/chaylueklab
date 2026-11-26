@@ -1018,3 +1018,59 @@ button.quick-demo {
 button.quick-demo:hover {
   background: #2b2419;
 }
+
+/* Phone-first sales entry: the owner's data is the primary path. */
+.header-state { color: var(--muted); font-size: 11px; text-align: right; }
+.simple-hero { display: block; padding: 30px 0 10px; }
+.simple-hero:after { display: none; }
+.simple-hero h1 { font-size: clamp(28px, 4vw, 44px); line-height: 1.4; margin: 8px 0 12px; }
+.simple-hero .intro { margin-bottom: 18px; }
+.manual-panel { border-color: #605134; }
+.sale-date-field { max-width: 320px; margin: 18px 0; }
+.sale-date-field small, .entry-privacy { display: block; font-size: 11px; line-height: 1.8; color: var(--muted); }
+.sale-date-field input, .sale-fields input { display: block; width: 100%; min-width: 0; min-height: 48px; padding: 11px 12px; background: #090f18; color: #eff5fa; border: 1px solid #4d6073; border-radius: 8px; font-size: 16px; }
+.sale-fields input::placeholder { color: #8595a6; opacity: 1; }
+.sale-card { min-width: 0; border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin: 0 0 16px; background: #0c131d; }
+.sale-card legend { padding: 0 8px; color: var(--gold); font-size: 12px; }
+.sale-fields { display: grid; grid-template-columns: 1.6fr .8fr 1fr; gap: 14px; }
+.sale-fields > div { min-width: 0; }
+.sale-fields label { font-size: 12px; }
+.remove-sale { margin-top: 12px; min-height: 44px; font-size: 11px; }
+.manual-actions .primary { font-size: 16px; padding: 13px 26px; min-height: 50px; }
+.entry-privacy { margin: 16px 0 0; }
+.sample-choice { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; margin: 0 0 20px; border: 1px dashed #675638; border-radius: 12px; }
+.sample-choice b { font-size: 13px; font-weight: 600; }
+.sample-choice small { display: block; font-size: 11px; line-height: 1.8; margin-top: 5px; }
+.sample-choice .quick-demo { margin: 0; }
+.csv-choice { margin-bottom: 24px; }
+.csv-choice > summary { padding: 14px 18px; border: 1px solid var(--line); border-radius: 10px; font-size: 13px; }
+.csv-choice .input-panel { margin-top: 14px; }
+.results-panel > .metrics, .extra-metrics .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.extra-metrics { margin-top: 12px; }
+.extra-metrics summary { font-size: 12px; }
+.extra-metrics .metrics { margin-top: 4px; }
+.result-context { border-radius: 10px; padding: 13px 15px; font-size: 13px; line-height: 1.8; margin: 12px 0; }
+.sample-warning { background: #3a2a12; border: 1px solid #a98440; color: #ffe3a5; font-weight: 600; }
+.entered-data { background: #111e29; border: 1px solid #324e63; color: #c2deef; }
+.trend-box > summary, .observations > summary { padding: 0; font-weight: 600; font-size: 14px; }
+.trend-box[open] > summary, .observations[open] > summary { margin-bottom: 10px; }
+@media (max-width: 640px) {
+  .topbar { min-height: 70px; }
+  .header-state { font-size: 9px; max-width: 85px; }
+  .simple-hero { padding-top: 22px; }
+  .simple-hero .eyebrow { font-size: 10px; }
+  .simple-hero .intro { font-size: 13px; }
+  .manual-panel { padding: 18px 14px; }
+  .sale-date-field { margin-block: 14px; }
+  .sale-card { padding: 13px; }
+  .sale-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px 10px; }
+  .sale-fields > div:first-child { grid-column: 1 / -1; }
+  .sale-fields label { font-size: 11px; }
+  .manual-actions { gap: 8px; }
+  .manual-actions .primary { flex: 1; padding-inline: 15px; }
+  .sample-choice { flex-wrap: wrap; padding: 14px; }
+  .result-context { font-size: 12px; }
+  .analysis-grid { margin-top: 22px; }
+}
+
+.sale-date-field small { margin-top: 8px; }

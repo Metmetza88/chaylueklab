@@ -6,6 +6,12 @@ A browser-based toolkit for small stores: import sales CSV, understand revenue a
 
 [ภาษาไทย](README.md) · [Audit and QA evidence](AUDIT-QA.md) · [Dojo preparation](DOJO-READINESS.md) · [Demo script](DEMO-SCRIPT.md) · [AI boundary](../server/woramet/README.md)
 
+## Phone-first manual entry (26 November 2026)
+
+The default screen now accepts product name, units sold and unit price directly. Enter `Pen / 3 / 10`, then select **สรุปยอดขาย** to see THB 30. Add more product rows if needed (up to 100), or return to edit them. All typed rows use the selected sale date, defaulting to the device's local date. CSV import remains available in a collapsed section for multi-date or larger datasets.
+
+Fictional examples are a separate path with a prominent warning. They never merge into manual entries. Both paths use the same CSV validation and integer-satang calculations; edits, deletion, date changes and clear invalidate old reports and pending file reads. There is no new storage: reload/close clears the page; download a report to keep it. AI remains disabled.
+
 ## Run locally
 
 Use the existing `Metmetza88/chaylueklab` repository and `feature/woramet-dojo-mvp-20261113` branch, with Node.js 24 LTS:
