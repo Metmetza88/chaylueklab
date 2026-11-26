@@ -1,12 +1,28 @@
 {
   "name": "psomnuek-education-2570",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
-    "lint": "node --check api/education.mjs && node --check lib/education-core.mjs && node --check tests/education.test.mjs && node --check scripts/build.mjs",
+    "lint": "eslint .",
     "test": "node --test tests/*.test.mjs",
-    "build": "node scripts/build.mjs"
+    "test:db": "node --test tests/db/*.test.mjs",
+    "test:e2e": "playwright test",
+    "test:security": "node --test tests/security.test.mjs",
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/serve.mjs",
+    "check:security": "node scripts/security-check.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "eslint": "10.15.0",
+    "pg": "8.16.3",
+    "supabase": "3.4.0"
+  },
+  "dependencies": {
+    "@fontsource/noto-sans-thai": "5.3.0"
   }
 }

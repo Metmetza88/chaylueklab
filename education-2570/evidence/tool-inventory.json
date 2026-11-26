@@ -1,0 +1,49 @@
+{
+  "checkedAt": {
+    "current_time": "2026-11-26 08:35:16 UTC"
+  },
+  "services": [
+    {
+      "service": "github",
+      "exposedToolCount": 89
+    },
+    {
+      "service": "supabase",
+      "exposedToolCount": 36
+    },
+    {
+      "service": "vercel",
+      "exposedToolCount": 280
+    },
+    {
+      "service": "figma",
+      "exposedToolCount": 52
+    },
+    {
+      "service": "composio",
+      "exposedToolCount": 11
+    },
+    {
+      "service": "google_drive",
+      "exposedToolCount": 47
+    },
+    {
+      "service": "gmail",
+      "exposedToolCount": 21
+    },
+    {
+      "service": "adobe",
+      "exposedToolCount": 96
+    },
+    {
+      "service": "plugin_management",
+      "exposedToolCount": 6
+    },
+    {
+      "service": "cloud_environment",
+      "exposedToolCount": 4
+    }
+  ],
+  "vibeSeoExposedTools": 0,
+  "note": "Tool presence is not authenticated access. Actual connection results are in TOOLS-STATUS.md."
+}

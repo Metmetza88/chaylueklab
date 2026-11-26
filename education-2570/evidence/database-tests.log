@@ -1,0 +1,25 @@
+
+> psomnuek-education-2570@0.2.0 test:db
+> node --test tests/db/*.test.mjs
+
+▶ PostgreSQL migration, RLS, constraints and query plans on local fixture
+  ✔ preserves all ten original tables, indexes and outside-schema sentinel (8.012586ms)
+  ✔ all 21 tables have RLS and public sees only published catalog (5.021707ms)
+  ✔ member can create own quotation; audit and notification are atomic (9.869229ms)
+  ✔ school B cannot read school A quotations, services, customers, licenses or audit (15.230147ms)
+  ✔ cross-school writes, forged author, unknown module and self-escalation are denied (11.594287ms)
+  ✔ notification updates limited to own read_at; audit cannot be forged (16.682283ms)
+  ✔ only platform admin can provision license and entitlement (16.695252ms)
+  ✔ trial module never grants real usage; flag, expiry and revocation enforced (31.751542ms)
+  ✔ provision RPC is atomic, rejects ordinary users and rolls back duplicate grants (12.210338ms)
+  ✔ customer can only update own contact name and student cannot request a quote (10.357309ms)
+  ✔ all foreign keys have leading indexes and paginated query can use index (6.208992ms)
+✔ PostgreSQL migration, RLS, constraints and query plans on local fixture (352.021903ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 430.749208

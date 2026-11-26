@@ -1,17 +1,18 @@
-name: Education 2570 - Quality and Safe Release
+name: Education 2570 - Quality and Safe Preview
 
 on:
   pull_request:
     branches: [main]
-    paths:
-      - 'education-2570/**'
-      - '.github/workflows/education-2570.yml'
+    paths: ['education-2570/**', '.github/workflows/education-2570.yml']
   push:
-    branches: [main]
-    paths:
-      - 'education-2570/**'
-      - '.github/workflows/education-2570.yml'
+    branches: ['feature/education-2570']
+    paths: ['education-2570/**', '.github/workflows/education-2570.yml']
   workflow_dispatch:
+    inputs:
+      production_review:
+        description: 'Request a readiness review only (does not deploy production)'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -22,94 +23,104 @@ concurrency:
 
 jobs:
   quality:
-    name: Lint, Unit Tests, Build
+    name: Lint, Tests, Security, Build, E2E
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: local-test-only
+        ports: ['55470:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    defaults:
+      run:
+        working-directory: education-2570
     steps:
-      - name: Checkout source
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Checkout existing repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
-      - name: Set up Node.js 22
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - name: Node.js 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
           cache: npm
           cache-dependency-path: education-2570/package-lock.json
       - name: Install locked dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
-        working-directory: education-2570
-      - name: Lint / syntax check
+      - name: ESLint
         run: npm run lint
-        working-directory: education-2570
-      - name: Automated tests
+      - name: Unit, API contract and security tests
         run: npm test
-        working-directory: education-2570
-      - name: Build
+      - name: PostgreSQL migration and two-school RLS integration
+        run: npm run test:db
+      - name: Dependency security
+        run: npm audit --audit-level=high
+      - name: Build Education only
         run: npm run build
-        working-directory: education-2570
+      - name: Artifact and migration security
+        run: npm run check:security
+      - name: Install test browsers
+        run: npx playwright install --with-deps chromium webkit
+      - name: Desktop and iPhone emulation E2E
+        run: npm run test:e2e
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: education-2570-evidence
+          path: |
+            education-2570/evidence/
+            education-2570/test-results/
+          retention-days: 7
 
-  deploy:
-    name: Stage, smoke test, promote Education only
+  preview:
+    name: Education Preview and Smoke Test
     needs: quality
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.EDU_DEPLOY_ENABLED == 'true'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feature/education-2570' && vars.EDU_PREVIEW_ENABLED == 'true' && vars.EDU_COMMERCIAL_HOSTING_CONFIRMED == 'true'
     runs-on: ubuntu-latest
-    environment: education-production
+    environment: education-preview
     env:
-      VERCEL_ORG_ID: ${{ vars.EDU_VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ vars.EDU_VERCEL_PROJECT_ID }}
       VERCEL_TOKEN: ${{ secrets.EDU_VERCEL_TOKEN }}
-      VERCEL_CLI_VERSION: ${{ vars.EDU_VERCEL_CLI_VERSION }}
+      EDU_VERCEL_PROJECT_ID: ${{ vars.EDU_VERCEL_PROJECT_ID }}
+      EDU_PREVIEW_ENABLED: ${{ vars.EDU_PREVIEW_ENABLED }}
+      EDU_COMMERCIAL_HOSTING_CONFIRMED: ${{ vars.EDU_COMMERCIAL_HOSTING_CONFIRMED }}
     steps:
-      - name: Checkout reviewed commit
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
-      - name: Set up Node.js 22
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
-      - name: Verify deployment settings
-        shell: bash
+      - name: Install pinned Vercel CLI
+        run: npm install --global vercel@67.0.0 --ignore-scripts --no-audit --no-fund
+      - name: Inspect exact existing Education project (never auto-link)
+        run: vercel project inspect psomnuek-education-2570 --scope team_kA0EAug4JrrTT6ZIc54RXcmL --json --non-interactive > /tmp/education-project.json
+        working-directory: education-2570
+      - name: Deploy branch SHA using existing Git connection and verified root
+        id: deploy
         run: |
           set -euo pipefail
-          test -n "${VERCEL_ORG_ID:?missing EDU_VERCEL_ORG_ID}"
-          test -n "${VERCEL_PROJECT_ID:?missing EDU_VERCEL_PROJECT_ID}"
-          test -n "${VERCEL_TOKEN:?missing EDU_VERCEL_TOKEN}"
-          [[ "${VERCEL_CLI_VERSION:?missing EDU_VERCEL_CLI_VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
-      - name: Install reviewed Vercel CLI
-        run: npm install --global "vercel@${VERCEL_CLI_VERSION}"
-      - name: Pull only Education project configuration
-        run: vercel pull --yes --environment=production
-        working-directory: education-2570
-      - name: Build with Vercel
-        run: vercel build --prod
-        working-directory: education-2570
-      - name: Stage production without changing any domain
-        id: stage
-        shell: bash
-        working-directory: education-2570
-        run: |
-          set -euo pipefail
-          DEPLOYMENT_URL="$(vercel deploy --prebuilt --prod --skip-domain)"
-          DEPLOYMENT_URL="$DEPLOYMENT_URL" node --input-type=module -e '
-            const url = new URL(process.env.DEPLOYMENT_URL);
-            if (url.protocol !== "https:" || url.origin !== process.env.DEPLOYMENT_URL || !url.hostname.endsWith(".vercel.app")) process.exit(1);
-          '
-          printf 'url=%s\n' "$DEPLOYMENT_URL" >> "$GITHUB_OUTPUT"
-      - name: Verify staged static page
-        shell: bash
+          URL="$(node education-2570/scripts/preview-deploy.mjs)"
+          printf 'url=%s\n' "$URL" >> "$GITHUB_OUTPUT"
+      - name: Smoke test preview
         env:
-          DEPLOYMENT_URL: ${{ steps.stage.outputs.url }}
-          BYPASS_SECRET: ${{ secrets.EDU_VERCEL_AUTOMATION_BYPASS_SECRET }}
+          EDU_PREVIEW_URL: ${{ steps.deploy.outputs.url }}
+          EDU_VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.EDU_VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: node education-2570/scripts/smoke.mjs
+
+  production-approval:
+    name: Owner production readiness review (no deployment)
+    needs: quality
+    if: github.event_name == 'workflow_dispatch' && inputs.production_review
+    runs-on: ubuntu-latest
+    environment: education-production
+    steps:
+      - name: Review-only gate
         run: |
-          set -euo pipefail
-          if [[ -n "$BYPASS_SECRET" ]]; then
-            curl --fail --silent --show-error --retry 3 --header "x-vercel-protection-bypass: ${BYPASS_SECRET}" "$DEPLOYMENT_URL" | grep -q 'EDUCATION 2570'
-          else
-            curl --fail --silent --show-error --retry 3 "$DEPLOYMENT_URL" | grep -q 'EDUCATION 2570'
-          fi
-      - name: Promote tested release
-        env:
-          DEPLOYMENT_URL: ${{ steps.stage.outputs.url }}
-        run: vercel promote "$DEPLOYMENT_URL"
-        working-directory: education-2570
+          echo 'This workflow does not deploy or promote production.'
+          echo 'Owner must review FINAL-STATUS.md, live RLS tests, hosting terms and Preview evidence before authorizing a separate release.'

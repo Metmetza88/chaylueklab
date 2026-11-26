@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-11-26T08:46:44.037Z",
+  "timezone": "Asia/Bangkok",
+  "scope": "local fixture and browser emulation; live Supabase and Vercel blocked",
+  "baseCommit": "9df07e2af1195132ee216d49199a54702c1ea26c",
+  "sourceSha256": "cf8f37e1dec243b105c8e9cd2192e7cf96165d89df424435d152f3bc4b524eca",
+  "sourceFileCount": 48,
+  "unitApiSecurity": {
+    "pass": 34,
+    "fail": 0
+  },
+  "database": {
+    "pass": 12,
+    "fail": 0
+  },
+  "playwright": {
+    "startTime": "2026-11-26T08:45:24.934Z",
+    "duration": 32983.933999999994,
+    "expected": 28,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "dependencyAudit": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  }
+}

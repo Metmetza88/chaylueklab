@@ -1,42 +1,59 @@
-# Education 2570 | พ.สมนึก 2&3
-ส่วนนี้แยกอยู่ใน `education-2570/` ของ Repository เดิม `Metmetza88/chaylueklab` ไม่แก้เว็บหลัก
-## Run
+# Education 2570 — Software Store & Shared Platform
+
+Repository เดิม `Metmetza88/chaylueklab` · branch `feature/education-2570` · PR #58 · root `education-2570`.
+ไม่ใช่เว็บระบบสอบเฉพาะทาง ระบบข้อสอบเดิมถูกเก็บเป็น 3 browser demos ภายใน Software Store
+
 ```bash
 cd education-2570
-npm ci
-npm run lint # Syntax checks; ยังไม่ใช่ ESLint
-npm test     # Automated Node tests
+npm ci --ignore-scripts
+npm run lint
+npm test
 npm run build
+npm run check:security
+npm run dev
+# เปิด http://127.0.0.1:4170
 ```
-## Vercel
-สร้าง **Vercel Project แยก** ที่ GitHub repo เดิม, Root Directory: `education-2570`, Framework: Other, Output Directory: `dist`. อย่าใช้โดเมนของเว็บหลักโดยไม่ได้ตรวจสอบก่อน
 
-Environment Variables ฝั่ง **Vercel Project Education**:
-- `EDU_SUPABASE_URL` = Supabase URL ที่มี Schema `education_2570`
-- `EDU_SUPABASE_PUBLISHABLE_KEY` = Publishable Key (ไม่ใช่ Service Role/Secret)
+ทดสอบฐานข้อมูล (ต้องใช้ PostgreSQL ท้องถิ่นเท่านั้น):
+```bash
+docker run --name edu2570-test-db -e POSTGRES_PASSWORD=local-test-only -p 127.0.0.1:55470:5432 -d postgres:17-alpine
+npm run test:db
+```
 
-Supabase Integrations > Data API ต้องเพิ่ม `education_2570` ใน exposed schemas เฉพาะเมื่อเช็ก RLS/GRANT แล้ว ข้อมูลใน Schema ปัจจุบันยังไม่มีข้อมูลตัวอย่างจริง ข้อมูลและการ Login หน้าเว็บเดโมยังไม่ได้เชื่อม API
-## GitHub Actions
-Workflow `.github/workflows/education-2570.yml` ทำงานกับ PR / Push สู่ main เฉพาะเมื่อไฟล์ Education เปลี่ยน ติดตั้ง Dependencies ด้วย `npm ci` → Syntax Check → Tests → Build; ทุกขั้นผิดพลาดทำให้ Job ล้มเหลว ควรตั้ง branch protection ให้ job `Lint, Unit Tests, Build` เป็น required และเปิด GitHub Notification สำหรับ Workflow Failure
+ห้ามตั้ง TEST_DATABASE_URL เป็นฐานข้อมูลจริง test runner ปฏิเสธ host ที่ไม่ใช่ localhost/127.0.0.1. ตัว fixture ลบ/สร้าง test schema เพื่อทดสอบซ้ำ ใช้เฉพาะฐานข้อมูลทดสอบแบบทิ้งได้
 
-Deployment **ปิดไว้ค่าเริ่มต้น** (`EDU_DEPLOY_ENABLED` ยังไม่ตั้ง) ต้องสร้างโปรเจกต์ Vercel แยกและเช็ก Project ID ก่อนเปิด
+```bash
+npx playwright install --with-deps chromium webkit
+npm run test:e2e
+```
 
-GitHub Actions **Variables**:
-- `EDU_DEPLOY_ENABLED=true` เมื่อพร้อมเท่านั้น
-- `EDU_VERCEL_ORG_ID`
-- `EDU_VERCEL_PROJECT_ID` (Education project เท่านั้น)
-- `EDU_VERCEL_CLI_VERSION` เวอร์ชันที่ตรวจสอบแล้วแบบ `x.y.z`
+## Runtime configuration
 
-GitHub Actions **Environment**: `education-production`, จำกัด Branch เฉพาะ `main` และตั้ง Required Reviewers ตามนโยบาย
+ดู `.env.example`. Vercel server env: `EDU_SUPABASE_URL` ของ project ที่ระบุ, `EDU_SUPABASE_PUBLISHABLE_KEY`, `EDU_APP_ORIGIN` แบบ exact https origin ของ Education Preview/แอปจริง, `EDU_PLATFORM_ENABLED=false` จนกว่า live database/auth checks ผ่าน
 
-**Secrets** (กำหนดใน Environment นี้):
-- `EDU_VERCEL_TOKEN` (least privilege)
-- `EDU_VERCEL_AUTOMATION_BYPASS_SECRET` (เฉพาะเมื่อเปิด Deployment Protection)
+Local server ไม่อ่าน .env อัตโนมัติ ต้อง export ตัวแปรอย่างปลอดภัยเองหากมีสิทธิ์. ไม่มีการอ่าน credentials จาก repo เดิมมาใช้เอง. เว็บสาธารณะ/เดโมไม่ต้องมี backend keys; Workspace แสดงสถานะจริงเมื่อยังไม่เชื่อม
 
-CI Deploy: Vercel pull → Vercel build → `vercel deploy --prebuilt --prod --skip-domain` → ตรวจหน้าเว็บบน URL ที่ Stage → `vercel promote`. ถ้าทดสอบไม่ผ่านจะไม่ Promote. ต้องตรวจว่า Git Integration ของ Vercel ไม่ได้ปล่อย Production ซ้ำ
+## Preview เท่านั้น
 
-## Database
-Schema ปัจจุบันอยู่ในบัญชี Supabase Primary; RLS เปิดทุกตาราง, grants SELECT เป็น authenticated เท่านั้น และมี Index 12 จุดใน `sql/education_2570_fk_indexes.sql` ที่เพิ่มแล้ววันที่ 26 พ.ย. 2026 ไม่แก้ข้อมูลระบบอื่น. ก่อนใช้งานจริงต้องทดสอบ JWT, schema exposure และ RLS ด้วยบัญชีทดสอบ
+Target เดิม: `psomnuek-education-2570`, Team `team_kA0EAug4JrrTT6ZIc54RXcmL`, root `education-2570`, repo ID `1400009958`. ขณะตรวจ MCP ตอบ 404 / search ไม่พบ Project และ CLI ไม่ได้ login. **ยังไม่มี Preview URL**
 
-## Limitations
-API ตอนนี้รองรับ GET me/catalog/quotes และ POST estimate (คำนวณเท่านั้น ไม่บันทึกใบเสนอราคา); หน้าสาธิตยังไม่เชื่อม API และไม่ควรอ้างว่าเปิดระบบโรงเรียนจริงสำเร็จ
+ห้ามสร้าง Project หรือใช้ Project เว็บหลักแทน. หลังเจ้าของแก้ connection/access ให้ตรวจ metadata เดิมและ free/commercial entitlement ก่อนตั้ง variables:
+
+- `EDU_PREVIEW_ENABLED=true`
+- `EDU_COMMERCIAL_HOSTING_CONFIRMED=true` เฉพาะเมื่อยืนยันสิทธิ์ใช้งานและไม่มีค่าใช้จ่ายเพิ่มแล้ว
+- `EDU_VERCEL_PROJECT_ID` จาก Project เดิมที่ตรวจได้จริง ห้ามเดา
+
+Environment `education-preview`:
+- Secret `EDU_VERCEL_TOKEN` จาก credential ที่ได้รับอนุญาตแล้ว
+- Optional `EDU_VERCEL_AUTOMATION_BYPASS_SECRET` ที่มีอยู่ หาก Preview protection ต้องใช้ ห้ามปิด protection
+
+Workflow เดิม `.github/workflows/education-2570.yml`: install → ESLint → tests → local PostgreSQL/RLS → audit → build → artifact security → Playwright → (เมื่อเปิด flag) inspect project → Preview จาก SHA ของสาขาที่ระบุ → smoke test. ไม่ใช้ --prod, promote หรือ alias production. Project/team/root/repo mismatch ทำให้หยุดก่อน deploy
+
+Production review เป็น manual workflow input + environment `education-production` เพื่อทบทวนหลักฐานเท่านั้น ไม่มี production deployment implementation ในงานนี้. ต้องตั้ง required reviewers/environment protection ใน GitHub ก่อนพิจารณาปล่อยจริง (ยังไม่เปลี่ยน settings นี้)
+
+## เอกสาร/หลักฐาน
+
+- `ARCHITECTURE.md`, `DATABASE.md`, `SECURITY.md`
+- `TOOLS-STATUS.md`, `TEST-REPORT.md`, `FINAL-STATUS.md`
+- `evidence/` มี log/รายงานทดสอบและ screenshot ที่ใช้ข้อมูลสมมติ
+- Figma: https://www.figma.com/design/RzDmHcof1KJA13U8dHKMiV
