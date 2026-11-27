@@ -403,9 +403,13 @@
     padding: 8px 0;
   }
   .storefront .header-actions {
+    position: relative;
     flex: 1;
     justify-content: flex-end;
     flex-wrap: wrap;
+  }
+  .storefront .mobile-menu {
+    position: static;
   }
   .storefront .header-actions:has(.cart-link) .market-header-actions {
     margin-inline-end: auto;
