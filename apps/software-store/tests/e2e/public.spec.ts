@@ -37,6 +37,9 @@ for (const path of pages)
   });
 test("catalog filters and product details work", async ({ page }) => {
   await page.goto("/products");
+  await expect(
+    page.getByRole("link", { name: "หน้ารวมระบบโรงเรียน" }),
+  ).toHaveAttribute("href", "https://education.chaylueklab.com/");
   await page.getByRole("searchbox").fill("MET Admission");
   await page.getByRole("button", { name: "ค้นหา", exact: true }).click();
   await expect(page.locator(".product-card")).toHaveCount(1);

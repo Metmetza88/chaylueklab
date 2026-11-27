@@ -82,7 +82,7 @@ export default async function Layout({
             ข้ามไปเนื้อหา
           </a>
           <div className="top-bar">
-            <span>SOFTWARE FOR THE NEXT GENERATION OF SCHOOLS</span>
+            <a href="https://education.chaylueklab.com/">หน้ารวมระบบโรงเรียน</a>
             <Link href="/guide">
               คู่มือเริ่มต้นใช้งาน <ArrowUpRight size={12} />
             </Link>
