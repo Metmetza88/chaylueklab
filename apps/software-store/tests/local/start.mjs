@@ -2,10 +2,19 @@
 import { spawnSync } from "node:child_process";
 import { writeFileSync, readFileSync } from "node:fs";
 import { createHmac, randomBytes } from "node:crypto";
+// Docker Hub mirrors the same immutable Supabase fixture manifests as ECR Public.
+const authImage =
+  "supabase/gotrue@sha256:ba8c0c82c574756c835c696df2a2c698020cc408a42034013d3712e34de7964d"; // v2.198.0
+const restImage =
+  "postgrest/postgrest@sha256:5ce030c153500fe90ba157da4da8ba99ab51d3bc7b95e071bd0b544b67a632f7"; // v16.6
+const storageImage =
+  "supabase/storage-api@sha256:b09a1904222a7bcc750b00c375c24e7409e7e514474dbc1bd9183bc57cc95bde"; // v1.98.6
 const storageEnabled = process.env.TEST_STORAGE_API === "true";
 const appUrl = process.env.TEST_APP_URL || "http://127.0.0.1:3000";
 if (!/^http:\/\/(?:127\.0\.0\.1|localhost):\d{2,5}$/.test(appUrl)) {
-  throw Error("TEST_APP_URL must be a loopback HTTP origin with an explicit port");
+  throw Error(
+    "TEST_APP_URL must be a loopback HTTP origin with an explicit port",
+  );
 }
 const run = (args, input) => {
   const r = spawnSync("docker", args, {
@@ -137,7 +146,7 @@ run([
   "tests/local/auth.env",
   "-p",
   "127.0.0.1:55499:9999",
-  "public.ecr.aws/supabase/gotrue:v2.198.0",
+  authImage,
 ]);
 await waitFor(async () => {
   const r = await fetch("http://127.0.0.1:55499/health");
@@ -170,7 +179,7 @@ run([
   "tests/local/rest.env",
   "-p",
   "127.0.0.1:55430:3001",
-  "public.ecr.aws/supabase/postgrest:v16.6",
+  restImage,
 ]);
 if (storageEnabled) {
   writeFileSync(
@@ -209,7 +218,7 @@ if (storageEnabled) {
     "/var/lib/storage:rw,size=67108864,mode=1777",
     "-p",
     "127.0.0.1:55500:5000",
-    "public.ecr.aws/supabase/storage-api:v1.98.6",
+    storageImage,
   ]);
   await waitFor(async () => (await fetch("http://127.0.0.1:55500/status")).ok);
 }

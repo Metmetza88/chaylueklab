@@ -37,9 +37,14 @@ test("a quote combines packages, persists selections and prepares one LINE messa
     .getByRole("button", { name: "ดูรายละเอียด / ขอใบเสนอราคา" })
     .click();
   const dialog = page.getByRole("dialog");
-  await dialog
-    .getByRole("radio", { name: /พร้อมติดตั้งและเอกสารจัดซื้อ/ })
-    .check();
+  const packageOption = dialog.getByRole("radio", {
+    name: /พร้อมติดตั้งและเอกสารจัดซื้อ/,
+  });
+  await packageOption.check();
+  expect((await packageOption.boundingBox())?.width).toBeLessThan(32);
+  expect(
+    await dialog.evaluate((element) => element.scrollWidth),
+  ).toBeLessThanOrEqual((await dialog.boundingBox())!.width + 1);
   await dialog.getByRole("button", { name: "เพิ่มลงใบเสนอราคา" }).click();
   await page.keyboard.press("Escape");
   await certificate.getByRole("button", { name: "เพิ่มลงใบเสนอราคา" }).click();

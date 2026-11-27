@@ -165,6 +165,16 @@
 .market-card .market-preview {
   min-height: 182px;
 }
+.market-card .market-preview:has(.mini-dashboard) {
+  height: auto;
+  min-height: clamp(182px, 19vw, 255px);
+  padding-bottom: 26px;
+}
+@media (min-width: 851px) {
+  .featured-collection .market-featured .market-preview:has(.mini-dashboard) {
+    height: 100%;
+  }
+}
 .market-card .quote-add {
   width: 100%;
   justify-content: center;
@@ -194,7 +204,8 @@
   padding: 10px;
 }
 .quote-packages label {
-  display: flex;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
   align-items: start;
   gap: 8px;
   font-size: 14px;
@@ -203,10 +214,12 @@
   display: block;
   color: var(--muted);
 }
-.quote-packages input {
-  width: auto;
-  flex: none;
-  margin-top: 7px;
+.market-dialog .quote-packages input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  padding: 0;
+  margin: 4px 0 0;
 }
 .quote-cart {
   border-block: 1px solid var(--line);
