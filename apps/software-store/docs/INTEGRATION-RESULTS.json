@@ -1,7 +1,7 @@
 {
-  "date": "2026-11-26T19:16:03.724Z",
-  "source_commit": "10b998ad1bc4831a578c6121cbfe7ee28f19d0a9",
-  "head_commit": "630909534cddee87c1f472f228681cc2fed298fa",
+  "date": "2026-11-27T07:11:43.757Z",
+  "source_commit": "7200473112c721e97f9dc0f71acfaacd6227e788",
+  "head_commit": "ef123d5c261e02ee6ddc6becaccb1d642b5947b6",
   "status": "completed",
   "environment": "Disposable PostgreSQL 17 + real GoTrue + real PostgREST + real Storage API v1.98.6 (file backend).",
   "passed": 24,

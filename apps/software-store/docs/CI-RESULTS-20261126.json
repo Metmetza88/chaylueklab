@@ -1,13 +1,13 @@
 {
-  "checked_at": "2026-11-27T00:46:38.162161+00:00",
+  "checked_at": "2026-11-27T07:20:01.417221+00:00",
   "version": "0.2.0-rc.3",
   "repository": "Metmetza88/chaylueklab",
   "branch": "feature/woramet-school-store-20261124",
-  "commit": "630909534cddee87c1f472f228681cc2fed298fa",
-  "checkout_commit": "10b998ad1bc4831a578c6121cbfe7ee28f19d0a9",
-  "url": "https://github.com/Metmetza88/chaylueklab/actions/runs/45882142018",
-  "run_id": 45882142018,
-  "job_id": 140123816050,
+  "commit": "ef123d5c261e02ee6ddc6becaccb1d642b5947b6",
+  "checkout_commit": "7200473112c721e97f9dc0f71acfaacd6227e788",
+  "url": "https://github.com/Metmetza88/chaylueklab/actions/runs/45956592838",
+  "run_id": 45956592838,
+  "job_id": 140364390514,
   "node": "v22.23.5",
   "status": "completed",
   "conclusion": "success",
@@ -35,16 +35,16 @@
       "backend": "file"
     },
     "playwright": {
-      "passed": 87,
+      "passed": 99,
       "skipped": 21,
       "failed": 0,
       "framework_errors": 0,
-      "skip_reason": "Seven mutating authenticated workflows run on Desktop only. Public and authenticated Owner layouts run on four Chromium viewports."
+      "skip_reason": "Seven mutating authenticated workflows run on Desktop only; other public and authenticated Owner layouts run on four Chromium viewports."
     }
   },
   "artifact": {
-    "id": 15147372745,
-    "sha256": "ab8b256bb092090b3f08f1a94e203283ed23a381aff7d4578a3352e05b562ae7",
+    "id": 15179296914,
+    "sha256": "830fdfde46eccb38b99042735df7b48d54c0ca9f2f7b8dc09ec02d658b4eb051",
     "reports": [
       "INTEGRATION-RESULTS.json",
       "STORAGE-RESULTS.json",
@@ -57,7 +57,7 @@
     "CodeQL: success"
   ],
   "limitations": [
-    "Hosted Supabase/CDN not configured or verified. Vercel storefront Preview is READY; see VERCEL-PREVIEW-20261127.json.",
+    "Hosted Supabase/CDN not configured or verified. Vercel Preview is READY and HTTP smoke tested separately.",
     "Real bank transactions, authorized provider integration, SMTP delivery, backup/restore and physical devices not tested.",
     "Manual PromptPay verification is the initial workflow; a provider API is optional until authorized.",
     "All school products remain Coming Soon; ready for sale count is zero."

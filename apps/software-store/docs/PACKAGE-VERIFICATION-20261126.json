@@ -1,27 +1,31 @@
 {
-  "checked_at": "2026-11-26",
+  "checked_at": "2026-11-27T07:20:50.706240+00:00",
+  "code_commit": "ef123d5c261e02ee6ddc6becaccb1d642b5947b6",
   "archives": [
     {
-      "file": "met-school-pro-v0.2.0-rc.2.zip",
-      "files": 135,
-      "sha256": "35d297030100aa58156c615a2472b49b1c8fd45459fd48c582426acb4179859c",
+      "file": "met-school-pro-v0.2.0-rc.3.zip",
+      "files": 163,
+      "sha256": "17200425628b8fbdf050ad9dd39a9988ee6b66e54d78dc388d524bdedf4eac08",
       "crc": "passed",
-      "secret_pattern_scan": "passed",
-      "vercel_config_included": true,
+      "secret_path_and_pattern_scan": "passed",
+      "required_files": "passed",
+      "source_matches_typechecked_extraction": true,
       "status": "release_candidate",
       "ready_for_sale": false
     },
     {
-      "file": "met-admission-v0.2.0-rc.2.zip",
-      "files": 135,
-      "sha256": "cfc67df34c4e862df050235a6404f48a507a45ff8d516322117892423fc017f9",
+      "file": "met-admission-v0.2.0-rc.3.zip",
+      "files": 163,
+      "sha256": "08a411e9fe492d19628449449f6f0c27c15618a1287a54473e34c8923ca5a082",
       "crc": "passed",
-      "secret_pattern_scan": "passed",
-      "vercel_config_included": true,
+      "secret_path_and_pattern_scan": "passed",
+      "required_files": "passed",
+      "source_matches_typechecked_extraction": true,
       "status": "release_candidate",
       "ready_for_sale": false
     }
   ],
-  "source_typecheck": "Both RC.2 TypeScript sources were extracted and passed next typegen + tsc using shared installed dependencies. Final packaging adds verified deployment configuration and reports; TypeScript source is unchanged.",
-  "clean_dependency_install_per_archive": false
+  "source_typecheck": "Both source trees extracted from the RC.3 packages passed next typegen + tsc using shared installed dependencies. Final archives contain byte-identical TypeScript/JavaScript/SQL/package source; only documentation/evidence changed afterward.",
+  "clean_dependency_install_per_archive": false,
+  "ci_verification": "https://github.com/Metmetza88/chaylueklab/actions/runs/45956592838"
 }

@@ -1,7 +1,7 @@
 {
-  "checked_at": "2026-11-26T19:16:06.893Z",
-  "source_commit": "10b998ad1bc4831a578c6121cbfe7ee28f19d0a9",
-  "head_commit": "630909534cddee87c1f472f228681cc2fed298fa",
+  "checked_at": "2026-11-27T07:11:46.826Z",
+  "source_commit": "7200473112c721e97f9dc0f71acfaacd6227e788",
+  "head_commit": "ef123d5c261e02ee6ddc6becaccb1d642b5947b6",
   "environment": "Real Supabase Storage API v1.98.6 + PostgreSQL 17 + GoTrue + PostgREST, disposable file backend; synthetic data only",
   "passed": 12,
   "failed": 0,

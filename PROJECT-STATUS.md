@@ -11,7 +11,7 @@
 | รายการ | ผลจริง |
 |---|---|
 | เว็บไซต์ | [store.chaylueklab.com](https://store.chaylueklab.com) เปิดได้ เป็นแคตตาล็อก/Demo ที่ยังไม่เชื่อม Supabase พบโดเมนผูกอยู่แล้วและตรวจอ่านเท่านั้น ไม่เปลี่ยน DNS หรือ promote Production ในงานนี้ |
-| Preview | [Vercel Preview](https://chaylueklab-software-store-321z6fjfu-waramatw2546-4532.vercel.app) READY จาก source6309095; คง SSO ไว้ ดูหลักฐาน Preview และ commit ล่าสุดใน docs/VERCEL-PREVIEW-20261127.json |
+| Preview | [Vercel Preview](https://chaylueklab-software-store-azoqphrr9-waramatw2546-4532.vercel.app) READY จาก sourceef123d5; คง SSO ไว้ ดูหลักฐาน Preview และ commit ล่าสุดใน docs/VERCEL-PREVIEW-20261127.json |
 | GitHub | [Branch เดิม](https://github.com/Metmetza88/chaylueklab/tree/feature/woramet-school-store-20261124) และ [Draft PR55](https://github.com/Metmetza88/chaylueklab/pull/55) ยังไม่ merge main |
 | Admin | [Admin](https://store.chaylueklab.com/admin) redirect ไป login ตามสิทธิ์ ยังใช้บัญชี Hosted ไม่ได้จนตั้ง Supabase/Auth; ระบบจริงผ่าน CI และมีภาพจากฐานข้อมูล Local สมมติ |
 | ผลทดสอบ | [TEST-REPORT](apps/software-store/docs/TEST-REPORT.md), CI-RESULTS และ JSON หลักฐานแยก source commit; CI และ Live storefront tests เป็นคนละชุด |
@@ -114,3 +114,11 @@
 - ตรวจ Supabase ทั้งสองบัญชีอีกครั้ง ยังไม่มี staging ที่ระบุ ไม่แก้ Reminder Backend หรือ Project ทั่วไปเพื่อเดาว่าเป็นฐานข้อมูลร้าน
 - ตรวจ Plugin Management: สิทธิ์ ChatGPTของ Vercel/GitHub อนุญาตการทำงาน แต่ไม่ถือเป็นสิทธิ์ API/Settings ของบริการ ตรวจ TinyFish wallet แบบอ่านอย่างเดียว ไม่หักเครดิต/เติมเงิน/เปลี่ยน auto-reload ไม่มีงานเสียงหรือส่งข้อความออกผ่าน ElevenLabs
 - ใช้ Master Knowledge snapshot เป็นข้อมูลประกอบ และตรวจสิ่งที่เปลี่ยนจาก connector/Repository จริง ไม่ใช้ข้อความ historicalว่าเป็นผลทดสอบปัจจุบัน
+
+## หลักฐานส่งมอบล่าสุด — 27 พฤศจิกายน 2026
+
+- Commit `ef123d5c261e02ee6ddc6becaccb1d642b5947b6` [CI run45956592838](https://github.com/Metmetza88/chaylueklab/actions/runs/45956592838) success: Node22.23.5, TypeScript/ESLint/actionlint/npm ci/audit0/build, Unit59, Integration24, Storage API12, Playwright99passed/21plannedskips/0failed; QualityและCodeQLผ่าน
+- CI artifact15179296914 ดาวน์โหลดและตรวจSHA256ตรงGitHubแล้ว รายงานทั้งสามผูก head/checkout commitจริง
+- Preview `https://chaylueklab-software-store-azoqphrr9-waramatw2546-4532.vercel.app` เป็น READY, target Preview, sourcecommitตรง ทดสอบ42 HTTP checksผ่าน ไม่พบ error/fatal logsที่ตรงเกณฑ์ในช่วงตรวจ คงSSOและไม่มีDBHosted/เงินจริง
+- Source ZIPสองระบบแตกตรวจTypeScriptผ่านจริงกับinstalled dependenciesร่วมกัน ไม่ใช่clean installแยกสองครั้ง สถานะRC.3/ready_for_sale=false รายละเอียดhashสุดท้ายใน RELEASE-MANIFEST/PACKAGE-VERIFICATION
+- mainยัง bbed5bd421a2c94b63000f4f64c26c4216af1ebf ไม่ merge/เปลี่ยนDNS/เปิดเงินจริง/ซื้อแผน/แก้Hosted DB ขั้นต่อไปที่ต้องใช้เจ้าของคือระบุ Supabase stagingที่อนุญาตและตั้งค่าที่จำเป็นในบริการโดยตรง ไม่ส่งsecretผ่านแชต

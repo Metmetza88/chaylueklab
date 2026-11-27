@@ -30,12 +30,12 @@ const sampleId = "11111111-1111-4111-8111-000000000001";
 test("all public page templates and unconfigured access boundaries render without horizontal overflow", async ({ page }, info) => {
   test.setTimeout(360_000);
   const rows: Record<string, unknown>[] = [];
-  const errors: string[] = [];
+  const errors: { path: string; message: string }[] = [];
   const externalRequests: string[] = [];
   const baseURL = String(info.project.use.baseURL || process.env.BASE_URL || "http://127.0.0.1:3041");
   const allowedOrigin = new URL(baseURL).origin;
   expect(["127.0.0.1", "localhost"].includes(new URL(baseURL).hostname)).toBe(true);
-  page.on("pageerror", (error) => errors.push(error.message.slice(0, 300)));
+  page.on("pageerror", (error) => errors.push({ path: new URL(page.url()).pathname, message: error.message.slice(0, 300) }));
   await page.route("**/*", async (route) => {
     const target = new URL(route.request().url());
     if (target.origin !== allowedOrigin && !["data:", "blob:"].includes(target.protocol)) {
