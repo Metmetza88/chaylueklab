@@ -136,3 +136,5 @@
 - แท็บฟีเจอร์สลับภาพหน้าจอจริงและคำอธิบายในหน้าเดิม รองรับคีย์บอร์ด พร้อมFAQ4คำถามก่อนท้ายเว็บ ข้อมูลอบรมและการใช้ข้อมูลนักเรียนระบุขอบเขตตามจริง
 - ทดสอบCounter/แท็บ/FAQทั้ง4viewportผ่าน12กรณี ตรวจrootMetadataต่อหลังพบReact418ในbrowser audit ไม่ปิดassertion แก้ให้metadataอยู่ในheadแล้วLocal public audit5passed/3plannedskips,184route checks,0browser errors ดู docs/HOME-SECTIONS-TESTS-20261127.json
 - กำลังเตรียมCI/PreviewของcommitรวมภาพDemoและส่วนหน้าแรกใหม่ สถานะยังไม่ใช่เปิดขายและไม่ได้แก้HostedDB/DNS/เงินจริง
+
+- CIของ23de772ผ่าน Unit85/Integration24/Storage12 และBrowser128กรณี แต่public auditAndroidยังพบReact418หนึ่งกรณี จึงยังไม่เผยแพร่Production แยกแถบprogress/กลับด้านบนให้อยู่ในLayoutโดยตรงแทนการเพิ่มportalลงbodyระหว่างhydrate และคงassertionbrowser errorไว้เพื่อตรวจซ้ำ
