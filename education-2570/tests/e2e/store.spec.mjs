@@ -32,6 +32,20 @@ test('the shared homepage goes to catalog, demos, procurement and the school wor
  await entry.getByRole('link',{name:/^เข้าพื้นที่โรงเรียน/}).click();
  await expect(page.getByRole('heading',{level:1})).toHaveText('พื้นที่ทำงานโรงเรียน');
 });
+test('home highlights the two synthetic teacher demos without sign-in',async({page})=>{
+ await page.goto('/');
+ const featured=page.getByRole('group',{name:'เดโมสำหรับครู'});
+ await expect(featured).toBeVisible();
+ await expect(page.getByText('เดโมใช้ข้อมูลสมมติ · ยังไม่ต้องเข้าสู่ระบบ')).toBeVisible();
+ await featured.getByRole('link',{name:'ทดลองสร้างข้อสอบ',exact:true}).click();
+ await expect(page.getByRole('heading',{level:1})).toHaveText('Exam Studio');
+ await page.goBack();
+ await featured.getByRole('link',{name:'ทดลองทำเกียรติบัตร',exact:true}).click();
+ await expect(page.getByRole('heading',{level:1})).toHaveText('Smart Certificate');
+ await page.goBack();
+ await page.getByRole('link',{name:'เตรียมคำขอใบเสนอราคา',exact:true}).click();
+ await expect(page.getByRole('heading',{level:1})).toHaveText('ขอใบเสนอราคา');
+});
 test('catalog search, availability filter, empty state and real demos only',async({page})=>{
  await page.goto('/#/catalog');await expect(page.locator('.product-card')).toHaveCount(17);
  await page.getByRole('searchbox').fill('QR Code');await expect(page.locator('.product-card')).toHaveCount(2);

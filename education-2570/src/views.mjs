@@ -35,9 +35,14 @@ export function home() {
   <section class="campus-hero">
     <div class="container campus-grid">
       <div class="campus-copy">
-        <p class="eyebrow">CHAYLUEKLAB · พ.สมนึก 2&amp;3</p>
+        <p class="campus-brand"><span aria-hidden="true">◆</span> วรเมธ โซลูชัน · ในเครือ พ.สมนึก 2&amp;3</p>
         <h1>งานโรงเรียนที่ง่ายขึ้น<br><span>ทุกระบบเริ่มที่นี่</span></h1>
-        <p class="campus-lead">เลือกงานที่ต้องการ แล้วไปต่อยังระบบที่เกี่ยวข้อง</p>
+        <p class="campus-lead">สร้างข้อสอบ ทดลองสอบออนไลน์ และออกเกียรติบัตร แล้วเลือกโปรแกรมที่เหมาะกับโรงเรียนจากหน้าเดียว</p>
+        <div class="campus-featured" role="group" aria-label="เดโมสำหรับครู">
+          <a class="campus-demo-primary" href="#/demo/exam-studio">ทดลองสร้างข้อสอบ</a>
+          <a class="campus-demo-secondary" href="#/demo/smart-certificate">ทดลองทำเกียรติบัตร</a>
+        </div>
+        <p class="campus-demo-note">เดโมใช้ข้อมูลสมมติ · ยังไม่ต้องเข้าสู่ระบบ</p>
         <nav class="campus-entry" aria-label="เลือกงานที่ต้องการ">
           ${entryLinks.map(([icon, title, description, href]) => `<a href="${href}"><span class="campus-entry-icon" aria-hidden="true">${icon}</span><strong>${title}</strong><span class="campus-entry-description">${description}</span></a>`).join('')}
         </nav>
@@ -52,6 +57,14 @@ export function home() {
         <figcaption>ภาพจากเดโมเว็บไซต์โรงเรียน · CHAYLUEKLAB</figcaption>
       </figure>
     </div>
+  </section>
+  <section class="container campus-next" aria-labelledby="campus-next-title">
+    <div class="campus-next-heading"><p class="eyebrow">สำหรับครูและฝ่ายจัดซื้อ</p><h2 id="campus-next-title">จากทดลองใช้ ถึงเตรียมขอราคา</h2></div>
+    <ol class="campus-steps">
+      <li><strong>ลองทำงานด้วยข้อมูลสมมติ</strong><p>ดูขั้นตอนสร้างข้อสอบ สอบออนไลน์ และทำเกียรติบัตร</p><a href="#/demos">ดูเดโมทั้งหมด</a></li>
+      <li><strong>เลือกเฉพาะโปรแกรมที่ต้องใช้</strong><p>ค้นตามหมวดหรือเปรียบเทียบก่อนจัดชุดให้โรงเรียน</p><a href="#/catalog">สำรวจแคตตาล็อก</a></li>
+      <li><strong>เตรียมสรุปให้ฝ่ายจัดซื้อ</strong><p>เลือกโปรแกรมและสร้างสรุปคำขอไว้ตรวจทานก่อนส่ง</p><a href="#/quote">เตรียมคำขอใบเสนอราคา</a></li>
+    </ol>
   </section>
   `;
 }
