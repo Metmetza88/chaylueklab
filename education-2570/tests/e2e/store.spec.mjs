@@ -27,7 +27,7 @@ test('the shared homepage goes to catalog, demos, procurement and the school wor
  await expect(page.locator('.product-card')).toHaveCount(3);
  await page.getByRole('link',{name:'หน้าหลัก',exact:true}).click();
  await entry.getByRole('link',{name:/^ราคาและเอกสารจัดซื้อ/}).click();
- await expect(page.getByRole('link',{name:'ดูเอกสารจัดซื้อและแบบฟอร์ม .ac.th'})).toHaveAttribute('href','https://store.chaylueklab.com/school-systems#procurement-samples');
+ await expect(page.getByRole('link',{name:'ดูเอกสารจัดซื้อและแบบฟอร์ม .ac.th'})).toHaveAttribute('href','https://store.chaylueklab.com/school-systems#procurement');
  await page.getByRole('link',{name:'หน้าหลัก',exact:true}).click();
  await entry.getByRole('link',{name:/^เข้าพื้นที่โรงเรียน/}).click();
  await expect(page.getByRole('heading',{level:1})).toHaveText('พื้นที่ทำงานโรงเรียน');
