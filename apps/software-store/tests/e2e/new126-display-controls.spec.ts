@@ -48,7 +48,9 @@ test("device reduced-motion preference disables animation and back-to-top works"
   await expect(top).toBeVisible();
   const box = await top.boundingBox();
   const viewport = page.viewportSize()!;
-  expect(box!.y).toBeGreaterThan(viewport.height - 100);
+  const line = await page.getByRole("link", { name: "แชท LINE", exact: true }).boundingBox();
+  expect(line).not.toBeNull();
+  expect(box!.y + box!.height).toBeLessThanOrEqual(line!.y);
   expect(box!.x).toBeGreaterThan(viewport.width - 100);
   await top.click();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(5);
