@@ -104,3 +104,18 @@ html[data-store-motion=on] .market-float-line{animation:store-line-nudge 3s ease
 }
 @media(max-width:370px){.market-header .header-inner{width:calc(100% - 16px)}.market-header .brand>span:last-child{font-size:12px}.market-header .brand i{display:none}}
 @media print{.market-float,.market-mobile-nav,.market-popup{display:none!important}.market-store{padding-bottom:0}}
+.market-popup-body p{color:#34486e;font-size:1rem;line-height:1.65}
+.market-popup-body p strong{color:#172e72}
+.market-popup-body .muted{color:#435779}
+.market-catalog .page-heading{padding-top:5px}
+@media(max-width:600px){
+ .market-catalog{padding-top:22px}
+ .market-catalog .page-heading{padding-block:2px 14px}
+ .market-catalog .page-heading h1{font-size:clamp(27px,8.7vw,35px);margin-block:4px}
+ .market-catalog .page-heading p{margin:0}
+ .market-catalog .filters{gap:8px;padding:10px}
+ .market-catalog .filters label{gap:3px}
+ .market-catalog .filters :is(input,select,.btn){min-height:43px;padding-top:7px;padding-bottom:7px}
+ .market-catalog .results{margin-block:13px}
+ .market-catalog .results p{margin:0}
+}

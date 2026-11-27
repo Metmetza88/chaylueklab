@@ -28,7 +28,7 @@ export default async function Products({
   else products.sort((a, b) => a.name.localeCompare(b.name, "th"));
   products.sort(pinSports);
   return (
-    <section className="section">
+    <section className="section market-catalog">
       <div className="page-heading">
         <span className="eyebrow">THE SCHOOL SOFTWARE COLLECTION</span>
         <h1>โปรแกรมทั้งหมด</h1>
@@ -65,7 +65,7 @@ export default async function Products({
         <button className="btn">ค้นหา</button>
       </form>
       <div className="row spaced results">
-        <p>{products.length} โปรแกรม</p>
+        <p aria-live="polite">{products.length} โปรแกรม</p>
         <span className="muted">
           {source === "database"
             ? "แคตตาล็อกจากฐานข้อมูล"
