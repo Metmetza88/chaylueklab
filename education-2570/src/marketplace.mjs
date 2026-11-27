@@ -1,15 +1,17 @@
-export const procurementDocs = 'https://store.chaylueklab.com/school-systems#procurement';
+export const procurementDocs = 'https://store.chaylueklab.com/school-systems#procurement-samples';
 export const sports = {
   slug: 'met-sport',
   name: 'ระบบบริหารจัดการแข่งขันกีฬาสีภายในโรงเรียน',
   tagline: 'MET Sport · จัดทีมสีและบันทึกผลการแข่งขัน',
-  description: 'วางแผนจัดทีมสีและบันทึกผลการแข่งขันกีฬาสีของโรงเรียน สอบถามความพร้อมก่อนกำหนดวันใช้งาน',
+  description: 'ทดลองจัดตารางและบันทึกผลการแข่งขันกีฬาสี สั่งทำตามขอบเขตโครงการได้',
   category: 'activities',
   status: 'development',
-  image: '/assets/met-sport.svg',
+  image: '/assets/met-sport-demo.webp',
   features: ['จัดทีมสี', 'บันทึกผลแข่งขัน'],
-  price: '฿990',
-  limitations: 'MET Sport ยังไม่เปิดขาย ราคาเป้าหมายอาจเปลี่ยนแปลงก่อนเปิดขาย ยังไม่ใช่ราคายืนยันหรือใบเสนอราคา',
+  price: 'ขอใบเสนอราคา',
+  offer: 'เปิดรับออเดอร์',
+  demo: 'https://store.chaylueklab.com/demo/met-sport',
+  limitations: 'เดโมใช้ข้อมูลสมมติ ร้านจะยืนยันราคา วันติดตั้ง และขอบเขตในใบเสนอราคา',
   detail: 'https://store.chaylueklab.com/products/met-sport',
   quote: '#/quote?module=activities&interest=met-sport',
   quoteNote: 'สนใจ MET Sport ระบบบริหารจัดการแข่งขันกีฬาสีภายในโรงเรียน'
@@ -23,10 +25,10 @@ const paths={
 export const marketIcon = name => `<svg class="market-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths[name]}</svg>`;
 
 export const answers = {
-  price:'MET Sport มีราคาเป้าหมาย ฿990 จากแคตตาล็อก MET แต่ยังไม่เปิดขายและราคาอาจเปลี่ยน ส่วนระบบอื่นให้ระบุโปรแกรมและขอบเขตงานเพื่อขอใบเสนอราคา',
+  price:'MET Sport เปิดรับออเดอร์ ระบุจำนวนทีม รายการแข่งขัน และบริการที่ต้องการเพื่อขอใบเสนอราคาตามขอบเขตงาน',
   documents:'สอบถามใบเสนอราคา ใบส่งของ และเอกสารผู้ขายได้ตามรายการที่ฝ่ายพัสดุของโรงเรียนขอ เริ่มจากเปิดเอกสารจัดซื้อหรือเตรียมคำขอใบเสนอราคาในเว็บนี้',
   budget:'การเบิกงบขึ้นอยู่กับประเภทโครงการ งบที่ได้รับอนุมัติ และขั้นตอนของโรงเรียน ควรให้ฝ่ายพัสดุยืนยันก่อนสั่งงาน ระบุชื่อโครงการและเอกสารที่ต้องใช้ในคำขอได้',
-  sports:'MET Sport อยู่ในแผนพัฒนา ยังไม่เปิดขาย แจ้งวันจัดกีฬาสี จำนวนทีมสี และงานที่ต้องการให้ทีมงานช่วยประเมินความพร้อมได้',
+  sports:'MET Sport ทดลองบันทึกผลและดูตารางคะแนนได้ แจ้งวันจัดกีฬาสี จำนวนทีม และขอบเขตที่ต้องการเพื่อประเมินงานได้',
   fallback:'ตอนนี้ผมตอบอัตโนมัติได้เรื่องราคา กีฬาสี เอกสารจัดซื้อ และการเบิกงบ เลือกหัวข้อด้านบน หรือสอบถามทีมงานทาง LINE สำหรับกรณีเฉพาะโรงเรียน'
 };
 export function answerQuestion(question) {

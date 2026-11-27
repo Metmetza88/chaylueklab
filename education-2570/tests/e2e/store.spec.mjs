@@ -27,7 +27,7 @@ test('the shared homepage goes to catalog, demos, procurement and the school wor
  await expect(page.locator('.product-card')).toHaveCount(3);
  await page.getByRole('link',{name:'หน้าหลัก',exact:true}).click();
  await entry.getByRole('link',{name:/^ราคาและเอกสารจัดซื้อ/}).click();
- await expect(page.getByRole('link',{name:'ดูเอกสารจัดซื้อและแบบฟอร์ม .ac.th'})).toHaveAttribute('href','https://store.chaylueklab.com/school-systems#procurement');
+ await expect(page.getByRole('link',{name:'ดูเอกสารจัดซื้อและแบบฟอร์ม .ac.th'})).toHaveAttribute('href','https://store.chaylueklab.com/school-systems#procurement-samples');
  await page.getByRole('link',{name:'หน้าหลัก',exact:true}).click();
  await entry.getByRole('link',{name:/^เข้าพื้นที่โรงเรียน/}).click();
  await expect(page.getByRole('heading',{level:1})).toHaveText('พื้นที่ทำงานโรงเรียน');
@@ -54,11 +54,11 @@ test('catalog counters begin when scrolled into view, with a reduced-motion fall
  await expect(stats).toHaveAttribute('data-counter-state','waiting');
  await stats.scrollIntoViewIfNeeded();
  await expect(stats).toHaveAttribute('data-counter-state','done');
- await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','6']);
+ await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','7']);
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.reload();
  await stats.scrollIntoViewIfNeeded();
- await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','6']);
+ await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','7']);
  expect(await stats.getAttribute('data-counter-state')).toBeNull();
 });
 test('home tabs swap the sample screen in place and FAQ answers toggle',async({page})=>{
@@ -227,15 +227,14 @@ test('marketplace search filters real cards and the sports card stays first in m
 test('marketplace details link to procurement and prefill the existing sports quotation draft',async({page})=>{
  await page.goto('/#/catalog');
  const sport=page.locator('.product-card').first();
- await expect(sport).toContainText('ราคาเป้าหมาย');
- await expect(sport).toContainText('฿990');
- await expect(sport).toContainText('ยังไม่เปิดขาย');
- await expect(sport.getByRole('img')).toHaveAttribute('src','/assets/met-sport.svg');
+ await expect(sport).toContainText('ขอใบเสนอราคา');
+ await expect(sport).toContainText('เปิดรับออเดอร์');
+ await expect(sport.getByRole('img')).toHaveAttribute('src','/assets/met-sport-demo.webp');
  const cta=sport.getByRole('button',{name:'ดูรายละเอียด / ขอใบเสนอราคา'});
  await cta.click();
  const dialog=page.getByRole('dialog');
  await expect(dialog).toHaveAccessibleName('ระบบบริหารจัดการแข่งขันกีฬาสีภายในโรงเรียน');
- await expect(dialog.getByRole('link',{name:'ดูเอกสารจัดซื้อและแบบฟอร์ม'})).toHaveAttribute('href','https://store.chaylueklab.com/school-systems#procurement');
+ await expect(dialog.getByRole('link',{name:'ดูเอกสารจัดซื้อและแบบฟอร์ม'})).toHaveAttribute('href','https://store.chaylueklab.com/school-systems#procurement-samples');
  await dialog.getByRole('button',{name:'ปิดรายละเอียด'}).click();await expect(dialog).toBeHidden();
  await expect(cta).toBeFocused();
  await cta.click();
@@ -255,7 +254,7 @@ test('marketplace quick questions, notifications, LINE and five mobile shortcuts
  await page.getByRole('button',{name:/ถามได้เลย/}).click();
  let dialog=page.getByRole('dialog');
  await dialog.getByRole('button',{name:'ราคา',exact:true}).click();
- await expect(dialog.getByRole('log')).toContainText('ราคาเป้าหมาย ฿990');
+ await expect(dialog.getByRole('log')).toContainText('MET Sport เปิดรับออเดอร์');
  await dialog.getByRole('textbox',{name:'พิมพ์คำถาม'}).fill('เบิกงบได้ไหม');
  await dialog.getByRole('button',{name:'ถาม',exact:true}).click();
  await expect(dialog.getByRole('log')).toContainText('งบที่ได้รับอนุมัติ');
@@ -267,7 +266,7 @@ test('marketplace quick questions, notifications, LINE and five mobile shortcuts
  if(info.project.name==='iPhone WebKit'){
    await expect(nav.getByRole('link')).toHaveCount(4);await expect(nav.getByRole('button')).toHaveCount(1);
    await expect(nav.getByRole('link',{name:'หน้าแรก'})).toHaveAttribute('aria-current','page');
-   await expect(nav.getByRole('link',{name:'เอกสารเบิกงบ'})).toHaveAttribute('href','https://store.chaylueklab.com/school-systems#procurement');
+   await expect(nav.getByRole('link',{name:'เอกสารเบิกงบ'})).toHaveAttribute('href','https://store.chaylueklab.com/school-systems#procurement-samples');
    await nav.getByRole('link',{name:'ขอใบเสนอราคา'}).click();
    await expect(nav.getByRole('link',{name:'ขอใบเสนอราคา'})).toHaveAttribute('aria-current','page');
    await nav.getByRole('button',{name:'ติดต่อเรา'}).click();
