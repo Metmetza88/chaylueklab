@@ -21,9 +21,9 @@ test("visitor can choose a persistent theme, pause motion and close controls by 
   expect(widths.content).toBeLessThanOrEqual(widths.viewport + 2);
   expect(widths.panel.left).toBeGreaterThanOrEqual(0);
   expect(widths.panel.right).toBeLessThanOrEqual(widths.viewport + 1);
-  mkdirSync("/workspace/library-files/store126-screens", { recursive: true });
+  mkdirSync("test-results/premium/store126-screens", { recursive: true });
   const device = info.project.name.replace(/[^a-zA-Z0-9]+/g, "-").replace(/-$/, "");
-  await page.screenshot({ path: `/workspace/library-files/store126-screens/${device}-aurora-display-controls.png`, animations: "disabled" });
+  await page.screenshot({ path: `test-results/premium/store126-screens/${device}-aurora-display-controls.png`, animations: "disabled" });
   await page.keyboard.press("Escape");
   await expect(page.locator(".display-controls")).not.toHaveAttribute("open", "");
   await expect(trigger).toBeFocused();

@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { ProductArt } from "@/components/ProductCard";
+import Image from "next/image";
 import { productDemos } from "@/lib/product-demos";
+import styles from "./demo.module.css";
 export default function Page() {
   return (
     <section className="section">
@@ -10,20 +11,40 @@ export default function Page() {
         สำรวจขั้นตอนใช้งานด้วยข้อมูลสมมติ ไม่มีการรับข้อมูลเด็กจริงในระบบทดลอง
       </p>
       <div className="info-grid">
-        {productDemos.map(({ slug, name, description }) => (
-          <article className="product-card" key={slug}>
-            <ProductArt slug={slug} />
-            <div className="product-content stack">
-              <span className="status">Interactive Demo · ข้อมูลสมมติ</span>
-              <h2>{name}</h2>
-              <p>{description}</p>
-              <Link className="btn" href={`/demo/${slug}`}>
-                เปิดระบบทดลอง →
-              </Link>
-              <Link href={`/products/${slug}`}>รายละเอียดโปรแกรม</Link>
-            </div>
-          </article>
-        ))}
+        {productDemos.map(
+          ({ slug, name, description, preview, previewAlt }, index) => (
+            <article className="product-card" key={slug}>
+              <figure className={styles.figure}>
+                <Link
+                  className={styles.preview}
+                  href={`/demo/${slug}`}
+                  aria-label={`เปิด ${name} จากภาพหน้าจอ`}
+                >
+                  <Image
+                    src={preview}
+                    alt={previewAlt}
+                    fill
+                    sizes="(max-width: 850px) calc(100vw - 32px), 628px"
+                    priority={index === 0}
+                    className={styles.screenshot}
+                  />
+                </Link>
+                <figcaption className={styles.caption}>
+                  ภาพหน้าจอจากระบบทดลอง · ข้อมูลสมมติ
+                </figcaption>
+              </figure>
+              <div className="product-content stack">
+                <span className="status">Interactive Demo · ข้อมูลสมมติ</span>
+                <h2>{name}</h2>
+                <p>{description}</p>
+                <Link className="btn" href={`/demo/${slug}`}>
+                  เปิดระบบทดลอง →
+                </Link>
+                <Link href={`/products/${slug}`}>รายละเอียดโปรแกรม</Link>
+              </div>
+            </article>
+          ),
+        )}
       </div>
       <p className="notice">
         เดโมใช้ข้อมูลสมมติในเบราว์เซอร์

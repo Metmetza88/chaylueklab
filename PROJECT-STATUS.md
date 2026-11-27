@@ -122,3 +122,10 @@
 - Preview `https://chaylueklab-software-store-azoqphrr9-waramatw2546-4532.vercel.app` เป็น READY, target Preview, sourcecommitตรง ทดสอบ42 HTTP checksผ่าน ไม่พบ error/fatal logsที่ตรงเกณฑ์ในช่วงตรวจ คงSSOและไม่มีDBHosted/เงินจริง
 - Source ZIPสองระบบแตกตรวจTypeScriptผ่านจริงกับinstalled dependenciesร่วมกัน ไม่ใช่clean installแยกสองครั้ง สถานะRC.3/ready_for_sale=false รายละเอียดhashสุดท้ายใน RELEASE-MANIFEST/PACKAGE-VERIFICATION
 - mainยัง bbed5bd421a2c94b63000f4f64c26c4216af1ebf ไม่ merge/เปลี่ยนDNS/เปิดเงินจริง/ซื้อแผน/แก้Hosted DB ขั้นต่อไปที่ต้องใช้เจ้าของคือระบุ Supabase stagingที่อนุญาตและตั้งค่าที่จำเป็นในบริการโดยตรง ไม่ส่งsecretผ่านแชต
+
+## หน้าเลือก Demo แสดงภาพหน้าจอจริง — 27 พฤศจิกายน 2026
+
+- ผู้ใช้ยืนยันว่าต้องการเห็นหน้าจอโปรแกรมบนการ์ด Demo จับภาพจริงจาก School Pro/Admission/Attendance ที่ทำงานบนเว็บปัจจุบัน source7342451 โดยใช้ข้อมูลสมมติและไม่มี POST แล้วเปลี่ยนไอคอนเป็นภาพพร้อมลิงก์เข้าโปรแกรม
+- รับ Premium theme จาก Branch codex/premium-store-20261127 เข้าสู่ Branch featureเดิมแบบ fast-forward เพื่อให้มีธีมและตัวควบคุมการแสดงผลของ Productionปัจจุบัน
+- Local TypeScript/ESLint/Buildผ่าน Unit85ผ่าน Browserเฉพาะส่วนนี้13passed/3plannedskips/0failed ครบ4viewport รวมโหลดภาพ/เปิดแต่ละโปรแกรม/การตั้งค่าธีมและ320px ดู docs/DEMO-CHOOSER-TESTS-20261127.json
+- รูปที่จับ/URLต้นทาง/SHAอยู่ใน docs/DEMO-PREVIEW-CAPTURES-20261127.json ส่วนวิธีแก้และ rollbackอยู่ใน docs/DEMO-CHOOSER-20261127.md ยังไม่อ้างผล Deploy หรือ CIของcommitใหม่นี้ก่อนตรวจจริง

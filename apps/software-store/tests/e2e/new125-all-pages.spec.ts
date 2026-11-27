@@ -23,7 +23,7 @@ const absentPages = [
   "/schools/not-a-real-school",
   ...(!configured ? ["/schools/not-a-real-school/apply", "/schools/not-a-real-school/applications"] : []),
 ];
-const reportDir = "/workspace/library-files";
+const reportDir = process.env.STORE_BROWSER_REPORT_DIR || "test-results/premium";
 const screenDir = reportDir + "/store126-screens";
 const sampleId = "11111111-1111-4111-8111-000000000001";
 

@@ -1,0 +1,52 @@
+{
+  "checked_at": "2026-11-27T11:24:53.406Z",
+  "viewport": {
+    "width": 1440,
+    "height": 1600
+  },
+  "captures": [
+    {
+      "slug": "met-school-pro",
+      "source_url": "https://store.chaylueklab.com/demo/met-school-pro",
+      "source_commit": "7342451193b09728c2579f82a5a2946841fb8275",
+      "source_deployment_id": "dpl_8v4tjHWSkcmgKaQQmcV2oQHehxw2",
+      "view": "School website and news",
+      "file": "/screenshots/demos/met-school-pro.png",
+      "width": 1280,
+      "height": 729,
+      "sha256": "0e36a86a7d29d950c2c369d14208cecb5477e33872feaa9ecd28a5c07efc7339",
+      "synthetic_data_only": true,
+      "server_post_requests": 0,
+      "method": "Unedited Chromium screenshot of the actual rendered demo interface"
+    },
+    {
+      "slug": "met-admission",
+      "source_url": "https://store.chaylueklab.com/demo/met-admission",
+      "source_commit": "7342451193b09728c2579f82a5a2946841fb8275",
+      "source_deployment_id": "dpl_8v4tjHWSkcmgKaQQmcV2oQHehxw2",
+      "view": "Admission form",
+      "file": "/screenshots/demos/met-admission.png",
+      "width": 1280,
+      "height": 660,
+      "sha256": "1ef7fd65d25aefb9443b19cec075715ac0b375161272f0a1183d49554561597f",
+      "synthetic_data_only": true,
+      "server_post_requests": 0,
+      "method": "Unedited Chromium screenshot of the actual rendered demo interface"
+    },
+    {
+      "slug": "met-attendance",
+      "source_url": "https://store.chaylueklab.com/demo/met-attendance",
+      "source_commit": "7342451193b09728c2579f82a5a2946841fb8275",
+      "source_deployment_id": "dpl_8v4tjHWSkcmgKaQQmcV2oQHehxw2",
+      "view": "Attendance filters, counts and roster",
+      "file": "/screenshots/demos/met-attendance.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "270dfb99fdc85fbc259c6a8b1230cc31c2f13e580caf0a2b5949fa4e02bfa5fd",
+      "synthetic_data_only": true,
+      "server_post_requests": 0,
+      "method": "Unedited Chromium screenshot of the actual rendered demo interface"
+    }
+  ],
+  "scope": "Public synthetic demo interfaces. No customer accounts, real student data, submitted applications or payments."
+}

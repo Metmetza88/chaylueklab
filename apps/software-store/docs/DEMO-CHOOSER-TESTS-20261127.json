@@ -1,0 +1,30 @@
+{
+  "checked_at": "2026-11-27T11:32:20.333006+00:00",
+  "source_base_commit": "7342451193b09728c2579f82a5a2946841fb8275",
+  "working_tree_verification": true,
+  "source_file_sha256": {
+    "app/demo/page.tsx": "92e459e18ff851058ac684a8ca4475a955dba78db5a308ab32f0b89ad9a3adb1",
+    "app/demo/demo.module.css": "c5179651d5db7cabf13e69b63cc459ea3ca0cac9de3a022180465247b5c526e0",
+    "lib/product-demos.ts": "ca9fc8341b81ea31311e8e54ff455c9e3ddff7ddedd6db5181c7d595998818ea"
+  },
+  "environment": "Local production build, synthetic demos, hosted database unconfigured",
+  "node": "v24.19.0",
+  "typescript": "passed",
+  "eslint": "passed",
+  "production_build": "passed",
+  "unit": {
+    "passed": 85,
+    "failed": 0
+  },
+  "playwright": {
+    "passed": 13,
+    "skipped": 3,
+    "failed": 0,
+    "flaky": 0,
+    "framework_errors": 0,
+    "skip_reason": "The 320px boundary testcase runs once on Desktop Chromium; three duplicate viewport executions are explicitly skipped."
+  },
+  "physical_devices_tested": false,
+  "scope": "All three preview images load and link to matching programs. Theme persistence, motion controls, keyboard use and narrow-screen menus checked on four Chromium viewports.",
+  "capture_evidence": "DEMO-PREVIEW-CAPTURES-20261127.json"
+}

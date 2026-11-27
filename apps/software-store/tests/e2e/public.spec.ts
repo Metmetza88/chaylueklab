@@ -35,6 +35,40 @@ for (const path of pages)
       await page.locator('a[href="#"],button:not([type]):empty').count(),
     ).toBe(0);
   });
+test("demo chooser displays captured interfaces and each image opens its program", async ({
+  page,
+}) => {
+  for (const name of ["MET School Pro", "MET Admission", "MET Attendance"]) {
+    await page.goto("/demo");
+    const card = page.getByRole("article").filter({
+      has: page.getByRole("heading", { name, exact: true }),
+    });
+    const image = card.getByRole("img", { name: new RegExp(`หน้าจอ ${name}`) });
+    await image.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() =>
+        image.evaluate((element: HTMLImageElement) => element.naturalWidth),
+      )
+      .toBeGreaterThan(0);
+    await expect(card.locator("figcaption")).toContainText("ข้อมูลสมมติ");
+    const button = card.getByRole("link", {
+      name: "เปิดระบบทดลอง →",
+      exact: true,
+    });
+    const href = await button.getAttribute("href");
+    await card
+      .getByRole("link", { name: `เปิด ${name} จากภาพหน้าจอ`, exact: true })
+      .click();
+    await expect(page).toHaveURL(new RegExp(`${href}$`));
+    await expect(
+      page.getByRole("heading", {
+        name: name === "MET Attendance" ? "เช็กชื่อและติดตามการมาเรียน" : name,
+        exact: true,
+      }),
+    ).toBeVisible();
+  }
+});
+
 test("catalog filters and product details work", async ({ page }) => {
   await page.goto("/products");
   await expect(
