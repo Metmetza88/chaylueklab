@@ -6,7 +6,8 @@ import { ProductArt } from "@/components/ProductCard";
 import { getProducts, baht } from "@/lib/shop";
 import { paymentMode } from "@/lib/env";
 import ProductGallery from "@/components/ProductGallery";
-import { productDemos } from "@/lib/product-demos";
+import MiniDashboard from "@/components/MiniDashboard";
+import { displayStatus, hasLocalDemo } from "@/lib/procurement";
 
 const screenshots: Record<string, { file: string; label: string }[]> = {
   "met-school-pro": [
@@ -28,7 +29,7 @@ export default async function Product({
   const { products } = await getProducts();
   const p = products.find((x) => x.slug === slug);
   if (!p) notFound();
-  const hasDemo = productDemos.some((demo) => demo.slug === slug);
+  const hasDemo = hasLocalDemo(slug);
   const images = screenshots[slug];
   return (
     <section className="section">
@@ -40,7 +41,12 @@ export default async function Product({
           {images ? (
             <ProductGallery images={images} />
           ) : (
-            <ProductArt slug={slug} large />
+            <>
+              <div className="market-preview detail-mock">
+                <MiniDashboard slug={slug} name={p.name} />
+              </div>
+              <ProductArt slug={slug} large />
+            </>
           )}
         </div>
         <div className="stack">
@@ -48,11 +54,7 @@ export default async function Product({
           <h1>{p.name}</h1>
           <h2>{p.tagline}</h2>
           <p className="muted">{p.description}</p>
-          <span className="status">
-            {p.status === "ready"
-              ? "พร้อมจำหน่าย"
-              : "Coming Soon · ยังไม่เปิดจำหน่าย"}
-          </span>
+          <span className="status">{displayStatus(p.status, hasDemo)}</span>
           <div className="detail-price">
             {baht(p.price_cents)}
             <small>

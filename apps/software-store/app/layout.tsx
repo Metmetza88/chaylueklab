@@ -1,6 +1,9 @@
 import "./globals.css";
 import "./premium.css";
 import "./marketplace.css";
+import "./sales.css";
+import { StoreProviders, QuoteCartLink } from "@/components/QuoteCart";
+import SellerDetails from "@/components/SellerDetails";
 import MarketplaceDock, {
   MarketplaceHeader,
 } from "@/components/MarketplaceControls";
@@ -14,7 +17,6 @@ import {
   Menu,
   UserRound,
 } from "lucide-react";
-import { CartProvider } from "@/lib/cart";
 import { baht, getProducts, getViewer } from "@/lib/shop";
 import { sportFirst } from "@/lib/marketplace";
 import CartLink from "@/components/CartLink";
@@ -44,6 +46,7 @@ const publicLinks = [
   ["/products", "โปรแกรมทั้งหมด"],
   ["/categories", "หมวดหมู่"],
   ["/demo", "ทดลองใช้งาน"],
+  ["/compare", "เปรียบเทียบ"],
   ["/contact", "ติดต่อ"],
 ];
 export default async function Layout({
@@ -113,7 +116,14 @@ export default async function Layout({
   return (
     <html lang="th">
       <body className="storefront">
-        <CartProvider>
+        <StoreProviders
+          products={products.map(({ slug, name, price_cents, status }) => ({
+            slug,
+            name,
+            price_cents,
+            status,
+          }))}
+        >
           <a className="skip-link" href="#main">
             ข้ามไปเนื้อหา
           </a>
@@ -227,6 +237,7 @@ export default async function Layout({
                   <br />
                   พัฒนาโดย WORAMET AI LAB
                 </p>
+                <SellerDetails />
                 {accountsEnabled && (
                   <span className="trust">
                     <ShieldCheck size={16} />{" "}
@@ -238,6 +249,8 @@ export default async function Layout({
                 <h3>เลือกโปรแกรม</h3>
                 <Link href="/products">โปรแกรมทั้งหมด</Link>
                 <Link href="/categories">หมวดหมู่โปรแกรม</Link>
+                <Link href="/compare">เปรียบเทียบโปรแกรม</Link>
+                <QuoteCartLink />
                 <Link href="/demo">ทดลองใช้งาน</Link>
                 {accountsEnabled && <Link href="/membership">สมาชิก VIP</Link>}
               </div>
@@ -272,7 +285,7 @@ export default async function Layout({
           </footer>
           <ViewportControls />
           <MarketplaceDock products={marketplaceProducts} />
-        </CartProvider>
+        </StoreProviders>
       </body>
     </html>
   );

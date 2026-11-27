@@ -17,13 +17,7 @@ export type Product = {
   features: string[];
   latest_release_id: string | null;
 };
-export const baht = (cents: number) =>
-  new Intl.NumberFormat("th-TH", {
-    style: "currency",
-    currency: "THB",
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 0,
-  }).format(cents / 100);
+export { money as baht } from "@/lib/procurement";
 export const getViewer = cache(async () => {
   if (!configured()) return { user: null, isVip: false, isAdmin: false };
   const db = await createClient();

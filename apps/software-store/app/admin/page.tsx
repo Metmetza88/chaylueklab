@@ -521,7 +521,7 @@ function ProductForm({ p }: { p?: any }) {
         <label>
           สถานะ
           <select name="status" defaultValue={p?.status ?? "coming_soon"}>
-            <option value="coming_soon">Coming Soon</option>
+            <option value="coming_soon">รอตรวจรับความพร้อม</option>
             <option value="ready">
               พร้อมจำหน่าย (ต้องมี release ที่ทดสอบแล้ว)
             </option>

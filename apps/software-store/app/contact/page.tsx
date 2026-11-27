@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { ConsolidatedQuote } from "@/components/QuoteCart";
+import SellerDetails from "@/components/SellerDetails";
 import QuoteMessage from "@/components/QuoteMessage";
 import { lineContact, procurementHref } from "@/lib/marketplace";
 import { getProducts } from "@/lib/shop";
@@ -42,7 +44,9 @@ export default async function Page({
         <p>
           ระบุข้อมูลของโรงเรียน คัดลอกข้อความ แล้วเปิด LINE เพื่อส่งให้ทางร้าน
         </p>
+        <ConsolidatedQuote initialSlug={selected?.slug} />
         <QuoteMessage product={programName || undefined} />
+        <SellerDetails />
         <Link href={procurementHref}>ดูเอกสารเบิกงบ →</Link>
         <a
           className="btn"

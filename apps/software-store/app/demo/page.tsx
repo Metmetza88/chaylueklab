@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { productDemos } from "@/lib/product-demos";
+import { linkedDemos, trialLine } from "@/lib/procurement";
 import styles from "./demo.module.css";
 export default function Page() {
   return (
@@ -46,6 +47,20 @@ export default function Page() {
           ),
         )}
       </div>
+      <div className="info-grid demo-links">
+        {linkedDemos.map(({ name, href, description }) => (
+          <article className="panel stack" key={href}>
+            <h2>{name}</h2>
+            <p>{description}</p>
+            <Link className="btn" href={href}>
+              ทดลอง{name} →
+            </Link>
+          </article>
+        ))}
+      </div>
+      <a className="btn ghost" href={trialLine}>
+        ขอรหัสทดลองใช้ทาง LINE OA @125cbuuu ↗
+      </a>
       <p className="notice">
         เดโมใช้ข้อมูลสมมติในเบราว์เซอร์
         สถานะการเปิดบริการของแต่ละระบบดูได้จากหน้ารายละเอียดโปรแกรม

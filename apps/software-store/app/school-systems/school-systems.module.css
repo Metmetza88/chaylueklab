@@ -10,7 +10,7 @@
   border: 1px solid #354b63;
   border-radius: 22px;
   background:
-    radial-gradient(ellipse at top right, #214844, transparent 62%), #141d2e;
+    radial-gradient(ellipse at top right, #2444a0, transparent 68%), #101c37;
 }
 .hero h1 {
   font-size: clamp(34px, 5vw, 58px);

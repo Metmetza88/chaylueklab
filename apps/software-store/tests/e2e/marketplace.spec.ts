@@ -55,7 +55,7 @@ test("product quote keeps the product context and opens the existing LINE channe
     dialog.getByText("เอกสารประกอบการเบิกงบโครงการกีฬาสี"),
   ).toBeVisible();
   await expect(
-    dialog.getByText("ราคาเป้าหมาย · ยังไม่เปิดจำหน่าย"),
+    dialog.getByText("ราคาเป้าหมาย · ขอประเมินการติดตั้ง"),
   ).toBeVisible();
   await dialog.getByRole("link", { name: "ขอใบเสนอราคา", exact: true }).click();
   await expect(page).toHaveURL(/\/contact\?product=met-sport#quotation$/);

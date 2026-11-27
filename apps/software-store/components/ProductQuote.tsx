@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { useId, useRef } from "react";
-import { procurementHref, quoteHref } from "@/lib/marketplace";
+import { QuotePackages } from "./QuoteCart";
+import { procurementHref } from "@/lib/marketplace";
 import { DialogTitle } from "./MarketplaceControls";
 
 export default function ProductQuote({
   slug,
   name,
   hasDemo,
+  seller,
   description,
   features,
   price,
@@ -18,6 +20,7 @@ export default function ProductQuote({
   slug: string;
   name: string;
   hasDemo: boolean;
+  seller: React.ReactNode;
   description: string;
   features: string[];
   price: string;
@@ -55,7 +58,9 @@ export default function ProductQuote({
           <p className="market-quote-price">
             <strong>{price}</strong>
             <span>
-              {ready ? "ราคาตามแคตตาล็อก" : "ราคาเป้าหมาย · ยังไม่เปิดจำหน่าย"}
+              {ready
+                ? "ราคาตามแคตตาล็อก"
+                : "ราคาเป้าหมาย · ขอประเมินการติดตั้ง"}
             </span>
           </p>
           <p>
@@ -63,14 +68,13 @@ export default function ProductQuote({
             ทีมงานจะยืนยันราคาและขอบเขตก่อนส่งใบเสนอราคา
           </p>
         </div>
+        <QuotePackages
+          slug={slug}
+          price={price}
+          close={() => dialog.current?.close()}
+        />
+        {seller}
         <div className="market-links">
-          <Link
-            className="market-primary"
-            href={quoteHref(slug)}
-            onClick={() => dialog.current?.close()}
-          >
-            ขอใบเสนอราคา
-          </Link>
           <Link href={procurementHref} onClick={() => dialog.current?.close()}>
             ดูเอกสารเบิกงบ
           </Link>

@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { QuoteCartLink } from "@/components/QuoteCart";
 import ProductCard from "@/components/ProductCard";
 import { matchesProduct, sportFirst } from "@/lib/marketplace";
 import { getProducts } from "@/lib/shop";
@@ -29,6 +31,10 @@ export default async function Products({
         <span className="eyebrow">THE SCHOOL SOFTWARE COLLECTION</span>
         <h1>โปรแกรมทั้งหมด</h1>
         <p className="muted">เลือกเครื่องมือที่เหมาะกับโรงเรียนของคุณ</p>
+        <div className="market-links">
+          <Link href="/compare">เปรียบเทียบโปรแกรม</Link>
+          <QuoteCartLink />
+        </div>
       </div>
       <form className="filters">
         <label className="search-field">

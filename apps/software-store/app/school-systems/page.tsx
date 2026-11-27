@@ -8,6 +8,10 @@ import {
   Globe2,
   School,
 } from "lucide-react";
+import HomeFeatures from "@/components/HomeFeatures";
+import SellerDetails from "@/components/SellerDetails";
+import { quoteHref } from "@/lib/marketplace";
+import { money, servicePrice } from "@/lib/procurement";
 import styles from "./school-systems.module.css";
 
 export const metadata: Metadata = {
@@ -17,6 +21,16 @@ export const metadata: Metadata = {
 };
 
 const modules = [
+  {
+    name: "กีฬาสีและกิจกรรม",
+    description:
+      "ทดลองจัดการคะแนนและดูอันดับคณะสีด้วยข้อมูลสมมติ ขอประเมินความพร้อมสำหรับงานจริง",
+    demo: "met-sport",
+  },
+  {
+    name: "เลือกตั้งสภานักเรียน",
+    description: "สอบถามขอบเขตงานและการตรวจสิทธิ์ผู้ลงคะแนนก่อนจัดโครงการ",
+  },
   {
     name: "รับสมัครและมอบตัว",
     description:
@@ -133,6 +147,40 @@ export default function SchoolSystems() {
         </div>
       </section>
 
+      <HomeFeatures />
+      <section className={styles.section} id="packages">
+        <h2>เลือกขอบเขตการติดตั้ง</h2>
+        <div className={styles.procurement}>
+          <article>
+            <h3>ติดตั้งเอง</h3>
+            <p>
+              ราคาเริ่มต้นตามแคตตาล็อก ตรวจความพร้อมของไฟล์ คู่มือ
+              และพื้นที่ใช้งานก่อนสั่งซื้อ
+            </p>
+            <Link className="btn ghost" href="/products">
+              เลือกโปรแกรม
+            </Link>
+          </article>
+          <article>
+            <h3>พร้อมติดตั้งและเอกสารจัดซื้อ</h3>
+            <p>
+              {money(servicePrice.min)}–{money(servicePrice.max)} ต่อระบบ ·
+              ประเมินโลโก้ การนำเข้า DMC ตามสิทธิ์โรงเรียน อบรม
+              และเอกสารตามขอบเขต
+            </p>
+            <Link className="btn ghost" href={quoteHref()}>
+              ขอประเมินการติดตั้ง
+            </Link>
+          </article>
+          <article>
+            <h3>ชุดหลายระบบ</h3>
+            <p>เลือกหลายรายการและสรุปความต้องการเป็นคำขอใบเสนอราคาเดียว</p>
+            <Link className="btn ghost" href="/compare">
+              เปรียบเทียบและเลือก
+            </Link>
+          </article>
+        </div>
+      </section>
       <section className={styles.section} id="procurement">
         <h2>ราคา เอกสารจัดซื้อ และโดเมนโรงเรียน</h2>
         <div className={styles.procurement}>
@@ -237,10 +285,11 @@ export default function SchoolSystems() {
             และงานที่อยากเริ่มในเทอมถัดไป
           </p>
         </div>
-        <Link className="btn" href="/contact">
+        <Link className="btn" href={quoteHref()}>
           ปรึกษาและขอใบเสนอราคา <ArrowRight size={16} />
         </Link>
       </section>
+      <SellerDetails />
     </div>
   );
 }

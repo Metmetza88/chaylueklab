@@ -1,5 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
+import MiniDashboard from "./MiniDashboard";
+import SellerDetails from "./SellerDetails";
+import { AddQuoteItem } from "./QuoteCart";
+import { displayStatus, hasLocalDemo } from "@/lib/procurement";
 import ProductQuote from "./ProductQuote";
 import { sportSlug, sportTitle } from "@/lib/marketplace";
 import { productDemos } from "@/lib/product-demos";
@@ -51,6 +55,7 @@ export default function ProductCard({ p }: { p: Product }) {
   const sport = p.slug === sportSlug;
   const title = sport ? sportTitle : p.name;
   const ready = p.status === "ready";
+  const demo = hasLocalDemo(p.slug);
   const price = baht(p.price_cents);
   return (
     <article
@@ -68,31 +73,7 @@ export default function ProductCard({ p }: { p: Product }) {
               sizes="(max-width: 600px) 90vw, (max-width: 950px) 46vw, 400px"
             />
           ) : (
-            <div className="market-mock" aria-hidden="true">
-              <div className="market-mock-bar">
-                <span /> <strong>{p.name}</strong>
-              </div>
-              <div className="market-mock-body">
-                <b>{sport ? "สรุปการแข่งขัน" : p.tagline}</b>
-                <div className="market-mock-tiles">
-                  {sport
-                    ? ["ทีมสีฟ้า", "ทีมสีทอง", "ทีมสีเขียว"].map(
-                        (team, index) => (
-                          <div key={team}>
-                            {team}
-                            <strong>{[86, 75, 62][index]}</strong>
-                          </div>
-                        ),
-                      )
-                    : p.features.slice(0, 3).map((feature) => (
-                        <div key={feature}>
-                          {feature}
-                          <span />
-                        </div>
-                      ))}
-                </div>
-              </div>
-            </div>
+            <MiniDashboard slug={p.slug} name={p.name} />
           )}
           <span className="market-ribbon">
             {sport
@@ -101,14 +82,16 @@ export default function ProductCard({ p }: { p: Product }) {
                 ? "มีหน้าจอเดโม"
                 : "หน้าจอจำลอง"}
           </span>
-          {sport && <small className="market-sample">ข้อมูลตัวอย่าง</small>}
+          {!preview && (
+            <small className="market-sample">ภาพจำลอง · ข้อมูลสมมติ</small>
+          )}
         </div>
       </Link>
       <div className="product-content">
         <div className="row spaced">
           <span className="category-label">{p.category}</span>
           <span className={`status ${p.status === "ready" ? "ready" : ""}`}>
-            {p.status === "ready" ? "พร้อมจำหน่าย" : "Coming Soon"}
+            {displayStatus(p.status, demo)}
           </span>
         </div>
         <h3>
@@ -137,13 +120,20 @@ export default function ProductCard({ p }: { p: Product }) {
         <ProductQuote
           slug={p.slug}
           name={title}
-          hasDemo={Boolean(preview)}
+          hasDemo={demo}
+          seller={<SellerDetails />}
           description={p.description}
           features={p.features}
           price={price}
           ready={ready}
           sport={sport}
         />
+        <AddQuoteItem slug={p.slug} />
+        {demo && (
+          <Link className="btn ghost quote-add" href={`/demo/${p.slug}`}>
+            ทดลองเล่น Demo
+          </Link>
+        )}
       </div>
     </article>
   );
