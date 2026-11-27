@@ -85,11 +85,11 @@ test('home tabs swap the sample screen in place and FAQ answers toggle',async({p
  await expect(answer).toBeHidden();
 });
 test('catalog search, availability filter, empty state and real demos only',async({page})=>{
- await page.goto('/#/catalog');await expect(page.locator('.product-card')).toHaveCount(17);
+ await page.goto('/#/catalog');await expect(page.locator('.product-card')).toHaveCount(18);
  await page.getByRole('searchbox').fill('QR Code');await expect(page.locator('.product-card')).toHaveCount(2);
  await page.getByRole('searchbox').fill('not-existing-test');await expect(page.getByRole('heading',{name:'ยังไม่พบโปรแกรม'})).toBeVisible();
  await page.getByRole('searchbox').fill('');await page.getByLabel('สถานะโปรแกรม').selectOption('trial');await expect(page.locator('.product-card')).toHaveCount(3);
- await page.getByLabel('สถานะโปรแกรม').selectOption('development');await expect(page.locator('.card-actions a')).toHaveCount(0);
+ await page.getByLabel('สถานะโปรแกรม').selectOption('development');await expect(page.locator('.card-actions a[href^="#/demo/"]')).toHaveCount(0);
 });
 test('the catalog starter bundle opens each demo and preselects all three quotation items',async({page})=>{
  await page.goto('/#/catalog');
@@ -157,7 +157,7 @@ test('help, manual and mobile menu links navigate',async({page},info)=>{
  await page.goto('/#/help');await page.getByText('เชื่อม AI หรือ e-GP แล้วหรือยัง?',{exact:true}).click();await expect(page.getByText(/ไม่มีการอ้างการรับรอง/)).toBeVisible();
  await page.goto('/#/manual');await expect(page.getByRole('heading',{name:'1. สำรวจโปรแกรม'})).toBeVisible();
  if(info.project.name==='iPhone WebKit'){
-  await page.getByRole('button',{name:'เปิดเมนู'}).click();await expect(page.getByRole('navigation')).toBeVisible();await page.getByRole('navigation').getByRole('link',{name:'โปรแกรมทั้งหมด',exact:true}).click();await expect(page.getByRole('heading',{level:1})).toHaveText('แคตตาล็อกซอฟต์แวร์');
+  await page.getByRole('button',{name:'เปิดเมนู'}).click();const mainNav=page.getByRole('navigation',{name:'เมนูหลัก'});await expect(mainNav).toBeVisible();await mainNav.getByRole('link',{name:'โปรแกรมทั้งหมด',exact:true}).click();await expect(page.getByRole('heading',{level:1})).toHaveText('แคตตาล็อกซอฟต์แวร์');
  }
 });
 /** ใช้ mock เฉพาะทดสอบ UI flow; ไม่ใช่หลักฐานเชื่อม Supabase จริง */
@@ -203,4 +203,85 @@ test('mocked platform admin issues license only after approval checkbox',async({
  await form.getByRole('button',{name:'ออก License และสิทธิ์โรงเรียน'}).click();expect(received.filter(r=>r.action==='provision')).toHaveLength(0);
  await form.getByRole('checkbox').check();await form.getByRole('button',{name:'ออก License และสิทธิ์โรงเรียน'}).click();await expect(page.locator('#toast')).toContainText('ออกสิทธิ์เรียบร้อยแล้ว');
  expect(received.find(r=>r.action==='provision').body).toEqual({school_id:SCHOOL,module_slug:'smart-exam',expires_on:'2027-12-01'});
+});
+test('marketplace search filters real cards and the sports card stays first in matching results',async({page})=>{
+ await page.goto('/');
+ const featured=page.getByRole('region',{name:'ไฮไลต์สำหรับโรงเรียน'});
+ await expect(featured.locator('[data-market-card]').first()).toHaveAttribute('data-market-card','met-sport');
+ await page.getByRole('button',{name:'ค้นหาโปรแกรมจากแถบด้านบน'}).click();
+ const input=page.getByRole('searchbox',{name:'พิมพ์ชื่อโปรแกรมหรือคุณสมบัติ'});
+ await input.fill('กีฬาสี');
+ await expect(page.getByRole('heading',{level:1})).toHaveText('แคตตาล็อกซอฟต์แวร์');
+ await expect(input).toBeFocused();
+ await expect(page.locator('#catalog-list .product-card')).toHaveCount(1);
+ await expect(page.locator('#catalog-list .product-card').first()).toHaveAttribute('data-market-card','met-sport');
+ await input.fill('');
+ await expect(page.locator('#catalog-list .product-card')).toHaveCount(18);
+ await expect(page.locator('#catalog-list .product-card').first()).toHaveAttribute('data-market-card','met-sport');
+ await input.fill('QR Code');
+ await expect(page.locator('#catalog-list .product-card')).toHaveCount(2);
+ await expect(page.locator('#catalog-list .featured-product')).toHaveCount(0);
+ await input.press('Escape');
+ await expect(input).toBeHidden();
+});
+test('marketplace details link to procurement and prefill the existing sports quotation draft',async({page})=>{
+ await page.goto('/#/catalog');
+ const sport=page.locator('.product-card').first();
+ await expect(sport).toContainText('ราคาเป้าหมาย');
+ await expect(sport).toContainText('฿990');
+ await expect(sport).toContainText('ยังไม่เปิดขาย');
+ await expect(sport.getByRole('img')).toHaveAttribute('src','/assets/met-sport.svg');
+ const cta=sport.getByRole('button',{name:'ดูรายละเอียด / ขอใบเสนอราคา'});
+ await cta.click();
+ const dialog=page.getByRole('dialog');
+ await expect(dialog).toHaveAccessibleName('ระบบบริหารจัดการแข่งขันกีฬาสีภายในโรงเรียน');
+ await expect(dialog.getByRole('link',{name:'ดูเอกสารจัดซื้อและแบบฟอร์ม'})).toHaveAttribute('href','https://store.chaylueklab.com/school-systems#procurement');
+ await dialog.getByRole('button',{name:'ปิดรายละเอียด'}).click();await expect(dialog).toBeHidden();
+ await expect(cta).toBeFocused();
+ await cta.click();
+ await dialog.getByRole('link',{name:'เตรียมคำขอใบเสนอราคา'}).click();
+ await expect(dialog).toBeHidden();
+ await expect(page.locator('#quote-form input[value="activities"]')).toBeChecked();
+ await expect(page.getByLabel('รายละเอียดความต้องการ')).toHaveValue(/MET Sport/);
+ await page.getByLabel('ชื่อโรงเรียน / หน่วยงาน').fill('โรงเรียนทดสอบ');
+ await page.getByRole('button',{name:'สร้างสรุปคำขอ'}).click();
+ await expect(page.locator('#quote-result')).toContainText('MET Sport');
+ await expect(page.locator('#quote-result')).toContainText('ยังไม่ได้ส่งให้ทีมงาน');
+});
+test('marketplace quick questions, notifications, LINE and five mobile shortcuts work',async({page},info)=>{
+ await page.goto('/');
+ const line=page.getByRole('link',{name:'แชท LINE พ.สมนึก 2&3'});
+ await expect(line).toHaveAttribute('href','https://lin.ee/8qkUbdt');
+ await page.getByRole('button',{name:/ถามได้เลย/}).click();
+ let dialog=page.getByRole('dialog');
+ await dialog.getByRole('button',{name:'ราคา',exact:true}).click();
+ await expect(dialog.getByRole('log')).toContainText('ราคาเป้าหมาย ฿990');
+ await dialog.getByRole('textbox',{name:'พิมพ์คำถาม'}).fill('เบิกงบได้ไหม');
+ await dialog.getByRole('button',{name:'ถาม',exact:true}).click();
+ await expect(dialog.getByRole('log')).toContainText('งบที่ได้รับอนุมัติ');
+ await dialog.getByRole('button',{name:'ปิดกล่องถามตอบ'}).click();
+ await page.getByRole('button',{name:'แจ้งเตือน',exact:true}).click();
+ await expect(dialog.getByRole('link',{name:'เปิดบัญชีลูกค้าและแจ้งเตือน'})).toHaveAttribute('href','#/account');
+ await dialog.getByRole('button',{name:'ปิดแจ้งเตือน'}).click();
+ const nav=page.getByRole('navigation',{name:'ทางลัดบนมือถือ'});
+ if(info.project.name==='iPhone WebKit'){
+   await expect(nav.getByRole('link')).toHaveCount(4);await expect(nav.getByRole('button')).toHaveCount(1);
+   await expect(nav.getByRole('link',{name:'หน้าแรก'})).toHaveAttribute('aria-current','page');
+   await expect(nav.getByRole('link',{name:'เอกสารเบิกงบ'})).toHaveAttribute('href','https://store.chaylueklab.com/school-systems#procurement');
+   await nav.getByRole('link',{name:'ขอใบเสนอราคา'}).click();
+   await expect(nav.getByRole('link',{name:'ขอใบเสนอราคา'})).toHaveAttribute('aria-current','page');
+   await nav.getByRole('button',{name:'ติดต่อเรา'}).click();
+   await expect(dialog.getByRole('link',{name:'เปิด LINE พ.สมนึก 2&3'})).toHaveAttribute('href','https://lin.ee/8qkUbdt');
+   await dialog.getByRole('button',{name:'ปิดช่องทางติดต่อ'}).click();
+   await page.setViewportSize({width:320,height:640});
+   await nav.getByRole('link',{name:'ระบบทั้งหมด'}).click();
+   await expect(page.locator('[data-market-card="met-sport"]')).toBeVisible();
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+   const buttonBox=await line.boundingBox(),navBox=await nav.boundingBox();
+   expect(buttonBox.y+buttonBox.height).toBeLessThan(navBox.y);
+ }else{
+   await expect(nav).toBeHidden();
+   await page.locator('.market-header-actions').getByRole('button',{name:'ติดต่อเรา'}).click();
+   await expect(dialog.getByRole('link',{name:'เปิด LINE พ.สมนึก 2&3'})).toBeVisible();
+ }
 });

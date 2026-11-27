@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+<defs><linearGradient id="b" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#061c67"/><stop offset="1" stop-color="#144ace"/></linearGradient></defs>
+<rect width="640" height="360" fill="url(#b)"/>
+<circle cx="620" cy="28" r="128" fill="#73a1ff" opacity=".2"/>
+<circle cx="7" cy="360" r="132" fill="#759cff" opacity=".15"/>
+<g font-family="system-ui,sans-serif">
+<rect x="66" y="58" width="508" height="256" rx="16" fill="#050f39" opacity=".45" transform="translate(0 8)"/>
+<rect x="66" y="58" width="508" height="256" rx="16" fill="#f5f8ff"/>
+<path d="M82 58h476a16 16 0 0 1 16 16v24H66V74a16 16 0 0 1 16-16" fill="#10296c"/>
+<circle cx="86" cy="78" r="4" fill="#ffcc6b"/><circle cx="100" cy="78" r="4" fill="#7fe0d2"/><circle cx="114" cy="78" r="4" fill="#b7cafd"/>
+<text x="143" y="84" fill="#fff" font-size="17" font-weight="700">MET SPORT</text><text x="552" y="83" text-anchor="end" fill="#e6f0ff" font-size="11">CONCEPT PREVIEW</text>
+<rect x="66" y="98" width="116" height="216" fill="#e7efff"/>
+<text x="84" y="130" fill="#142d77" font-size="11" font-weight="700">SPORTS DAY</text>
+<rect x="81" y="145" width="84" height="23" rx="5" fill="#213fb6"/><text x="91" y="160" font-size="10" fill="white">Overview</text>
+<text x="91" y="187" font-size="10" fill="#193578">Teams</text><text x="91" y="211" font-size="10" fill="#193578">Results</text>
+<text x="204" y="128" fill="#13275f" font-size="16" font-weight="700">Team standings</text>
+<g fill="white" stroke="#d3def4"><rect x="204" y="142" width="104" height="51" rx="7"/><rect x="320" y="142" width="104" height="51" rx="7"/><rect x="436" y="142" width="114" height="51" rx="7"/><rect x="204" y="209" width="346" height="82" rx="8"/></g>
+<g font-size="11" fill="#193578"><text x="219" y="163">Teams</text><text x="335" y="163">Matches</text><text x="451" y="163">Medals</text><text x="219" y="230">RED</text><text x="219" y="251">BLUE</text><text x="219" y="272">GOLD</text></g>
+<g font-size="15" font-weight="700" fill="#13275f"><text x="219" y="182">4</text><text x="335" y="182">12</text><text x="451" y="182">18</text></g>
+<rect x="268" y="223" width="149" height="8" rx="4" fill="#d63766"/><rect x="268" y="244" width="218" height="8" rx="4" fill="#3557df"/><rect x="268" y="265" width="103" height="8" rx="4" fill="#d99a21"/>
+</g></svg>

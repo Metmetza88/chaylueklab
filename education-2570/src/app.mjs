@@ -1,5 +1,6 @@
 import { modules } from './catalog.mjs';
 import * as view from './views.mjs';
+import { isMarketplaceSearching, syncMarketplace } from './marketplace-ui.mjs';
 import { demoPage,generateQuestions,questionList,scoreAnswers,updateCertificate,quoteDraft } from '../modules/demos.mjs';
 import { api,downloadCsv } from './api-client.mjs';
 const main=document.getElementById('main');
@@ -115,6 +116,7 @@ async function renderRoute() {
   if(path==='/')animateHomeStats();
   document.title=`${main.querySelector('h1')?.textContent??'Education 2570'} | Education 2570 — พ.สมนึก 2&3`;
   setCompare();
+  syncMarketplace(path);
   // การ์ดหน้าหลักใช้ข้อมูลการเลือกปัจจุบันหลัง render
   document.querySelectorAll('[data-compare]').forEach(input=>{input.checked=compare.includes(input.dataset.compare);});
  } catch(error) {if(isCurrent())main.innerHTML=renderError(error);}
@@ -230,5 +232,5 @@ document.querySelector('.mobile-menu').addEventListener('click',event=>{
  button.setAttribute('aria-expanded',String(open));document.getElementById('navigation').classList.toggle('open',open);
 });
 window.addEventListener('afterprint',()=>{document.body.classList.remove('printing');document.querySelectorAll('.print-target').forEach(el=>el.classList.remove('print-target'));});
-window.addEventListener('hashchange',()=>{void renderRoute();main.focus({preventScroll:true});window.scrollTo(0,0);});
+window.addEventListener('hashchange',()=>{void renderRoute();if(!isMarketplaceSearching())main.focus({preventScroll:true});window.scrollTo(0,0);});
 setCompare();void renderRoute();
