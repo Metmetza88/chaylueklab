@@ -129,3 +129,10 @@
 - รับ Premium theme จาก Branch codex/premium-store-20261127 เข้าสู่ Branch featureเดิมแบบ fast-forward เพื่อให้มีธีมและตัวควบคุมการแสดงผลของ Productionปัจจุบัน
 - Local TypeScript/ESLint/Buildผ่าน Unit85ผ่าน Browserเฉพาะส่วนนี้13passed/3plannedskips/0failed ครบ4viewport รวมโหลดภาพ/เปิดแต่ละโปรแกรม/การตั้งค่าธีมและ320px ดู docs/DEMO-CHOOSER-TESTS-20261127.json
 - รูปที่จับ/URLต้นทาง/SHAอยู่ใน docs/DEMO-PREVIEW-CAPTURES-20261127.json ส่วนวิธีแก้และ rollbackอยู่ใน docs/DEMO-CHOOSER-20261127.md ยังไม่อ้างผล Deploy หรือ CIของcommitใหม่นี้ก่อนตรวจจริง
+
+## เพิ่มหน้าแรกตามคำขอ — 27 พฤศจิกายน 2026
+
+- เพิ่มCounterต่อจากHero ใช้15โปรแกรม/3Demo/2SourceRCที่ตรวจได้ ไม่ใช้ตัวเลขลูกค้า150+/นักเรียน100000/ลดเวลา70%ที่ยังไม่มีข้อมูลยืนยัน
+- แท็บฟีเจอร์สลับภาพหน้าจอจริงและคำอธิบายในหน้าเดิม รองรับคีย์บอร์ด พร้อมFAQ4คำถามก่อนท้ายเว็บ ข้อมูลอบรมและการใช้ข้อมูลนักเรียนระบุขอบเขตตามจริง
+- ทดสอบCounter/แท็บ/FAQทั้ง4viewportผ่าน12กรณี ตรวจrootMetadataต่อหลังพบReact418ในbrowser audit ไม่ปิดassertion แก้ให้metadataอยู่ในheadแล้วLocal public audit5passed/3plannedskips,184route checks,0browser errors ดู docs/HOME-SECTIONS-TESTS-20261127.json
+- กำลังเตรียมCI/PreviewของcommitรวมภาพDemoและส่วนหน้าแรกใหม่ สถานะยังไม่ใช่เปิดขายและไม่ได้แก้HostedDB/DNS/เงินจริง

@@ -1,0 +1,39 @@
+{
+  "checked_at": "2026-11-27T14:05:02.395808+00:00",
+  "source_base_commit": "903ec1e2947723fa93329392b133e52ba96aa399",
+  "working_tree_verification": true,
+  "source_hashes": {
+    "app/page.tsx": "af849b6fe8e0be34f6da45efd80c5f73beaa1d6e8ce1bacf69f085021ffb4de1",
+    "next.config.ts": "2a49c7068ca7fc7e7fdce1373ebc310813b0e638d58c5afc738f5d8d9e78ab79",
+    "components/HomeStats.tsx": "034f7a5f10b3b2a0722251b0a0a6f416bfe896e3a5a87bf1e5219b75f1535ebc",
+    "components/HomeFeatures.tsx": "4f4885e43fed3402fe0047ad6f535e5a91a53f43277dc5a879a0906da95a6758",
+    "components/HomeFAQ.tsx": "4f8522e6d01b69d0976bb26095b7ec6016f2832a29a79cd72e7e5e4025fc2dfd",
+    "components/home-sections.module.css": "1c133bcb287e53b1a008c3832d8983f06ce8bad501665b718635161b09beb55e",
+    "lib/product-demos.ts": "e824f8c3805060be3eae89594ddc317dcd470e64eed1eea4ad78afd87010d8be"
+  },
+  "displayed_inventory_metrics": {
+    "catalog_products": 15,
+    "interactive_demos": 3,
+    "release_candidate_source_products": 2
+  },
+  "adoption_metrics_verified": false,
+  "typescript": "passed",
+  "eslint": "passed",
+  "production_build": "passed",
+  "home_interaction_checks": {
+    "passed": 12,
+    "failed": 0,
+    "scope": "Counter visibility/reduced-motion, no-navigation feature tabs/keyboard, native FAQ touch/keyboard on four Chromium viewports before final metadata configuration change."
+  },
+  "final_public_audit": {
+    "passed": 5,
+    "skipped": 3,
+    "failed": 0,
+    "framework_errors": 0,
+    "route_checks": 184,
+    "browser_runtime_errors": 0,
+    "scope": "All public templates and anonymous boundaries after blocking metadata in head; four Chromium viewports. Extra identical API denial checks run once on Desktop."
+  },
+  "physical_devices_tested": false,
+  "pending": "Full CI and deployment verification for the combined final commit."
+}

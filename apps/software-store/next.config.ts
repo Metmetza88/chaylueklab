@@ -2,7 +2,9 @@ import type { NextConfig } from "next";
 const dev = process.env.NODE_ENV !== "production";
 const config: NextConfig = {
   poweredByHeader: false,
-  outputFileTracingIncludes: {"/api/**": ["./public/fonts/*.ttf"]},
+  // Keep metadata in <head>; avoid streamed metadata racing client hydration.
+  htmlLimitedBots: /.*/,
+  outputFileTracingIncludes: { "/api/**": ["./public/fonts/*.ttf"] },
   experimental: { serverActions: { bodySizeLimit: "8mb" }, cpus: 2 },
   async headers() {
     return [

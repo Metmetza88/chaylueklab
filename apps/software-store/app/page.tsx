@@ -7,15 +7,20 @@ import {
   ShieldCheck,
   MonitorSmartphone,
   Check,
-  ChevronRight,
 } from "lucide-react";
 import { getProducts } from "@/lib/shop";
 import ProductCard from "@/components/ProductCard";
+import HomeStats from "@/components/HomeStats";
+import HomeFeatures from "@/components/HomeFeatures";
+import HomeFAQ from "@/components/HomeFAQ";
+import { productDemos } from "@/lib/product-demos";
 export default async function Home() {
   if (process.env.APP_VARIANT === "school")
     redirect(`/schools/${process.env.SCHOOL_SLUG ?? "my-school"}`);
   const { products, source } = await getProducts();
-  const readyCount = products.filter((product) => product.status === "ready").length;
+  const readyCount = products.filter(
+    (product) => product.status === "ready",
+  ).length;
   const featured = [...products]
     .sort(
       (a, b) =>
@@ -27,7 +32,9 @@ export default async function Home() {
     <>
       <section className="hero hero-premium">
         <div className="hero-artwork" aria-hidden="true" />
-        <div className="hero-coordinate" aria-hidden="true">CHAYLUEKLAB / DIGITAL COLLECTION</div>
+        <div className="hero-coordinate" aria-hidden="true">
+          CHAYLUEKLAB / DIGITAL COLLECTION
+        </div>
         <div className="hero-copy">
           <span className="pill">
             <span className="dot" /> WORAMET AI LAB · BUILT FOR EDUCATION
@@ -52,7 +59,11 @@ export default async function Home() {
               ทดลองใช้งาน <ArrowUpRight size={18} />
             </Link>
           </div>
-          <p className="hero-status">{readyCount === 0 ? "อยู่ระหว่างพัฒนา · ทดลองด้วยข้อมูลสมมติก่อนเปิดจำหน่าย" : "ดูสถานะพร้อมจำหน่ายและรายละเอียดของแต่ละโปรแกรม"}</p>
+          <p className="hero-status">
+            {readyCount === 0
+              ? "อยู่ระหว่างพัฒนา · ทดลองด้วยข้อมูลสมมติก่อนเปิดจำหน่าย"
+              : "ดูสถานะพร้อมจำหน่ายและรายละเอียดของแต่ละโปรแกรม"}
+          </p>
           <div className="hero-proof">
             <span>
               <Check size={15} /> รายละเอียด Source Code และคู่มือ
@@ -136,6 +147,27 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      <HomeStats
+        stats={[
+          {
+            value: products.length,
+            label: "โปรแกรมในแคตตาล็อก",
+            detail: "ดูสถานะและแผนพัฒนาในหน้าสินค้า",
+          },
+          {
+            value: productDemos.length,
+            label: "ระบบที่เปิดทดลองได้",
+            detail: "ใช้ข้อมูลสมมติในเบราว์เซอร์",
+          },
+          {
+            value: productDemos.filter(
+              (demo) => demo.stage === "release_candidate",
+            ).length,
+            label: "Source Code รุ่นทดสอบ",
+            detail: "รอตรวจรับก่อนเปิดจำหน่าย",
+          },
+        ]}
+      />
       <div className="capability-strip">
         <span>สร้างมาเพื่อโรงเรียนไทย</span>
         <div>
@@ -174,45 +206,7 @@ export default async function Home() {
           ))}
         </div>
       </section>
-      <section className="admission-feature">
-        <div className="feature-number">01 / FLAGSHIP</div>
-        <div>
-          <span className="eyebrow">MET ADMISSION</span>
-          <h2>
-            รับสมัครนักเรียน
-            <br />
-            เป็นเรื่องง่ายกว่าที่เคย
-          </h2>
-          <p className="muted">
-            ตั้งแต่กรอกใบสมัคร ตรวจเอกสาร จนถึงประกาศผล
-            <br />
-            เส้นทางเดียวที่ทั้งผู้ปกครองและเจ้าหน้าที่ใช้งานได้
-          </p>
-          <Link className="btn ghost" href="/demo/met-admission">
-            สำรวจระบบรับสมัคร <ArrowUpRight size={18} />
-          </Link>
-        </div>
-        <div className="feature-steps">
-          {[
-            ["01", "สมัครได้จากทุกที่", "เลือกชั้นเรียนและแนบเอกสารผ่านมือถือ"],
-            ["02", "จัดการอย่างเป็นระบบ", "ตรวจข้อมูลและติดตามสถานะใบสมัคร"],
-            [
-              "03",
-              "เข้าถึงข้อมูลอย่างเหมาะสม",
-              "แยกสิทธิ์ผู้ปกครอง เจ้าหน้าที่ และโรงเรียน",
-            ],
-          ].map(([n, h, t]) => (
-            <div key={n}>
-              <span>{n}</span>
-              <div>
-                <h3>{h}</h3>
-                <p>{t}</p>
-              </div>
-              <ChevronRight size={18} />
-            </div>
-          ))}
-        </div>
-      </section>
+      <HomeFeatures />
       <section className="section">
         <div className="section-heading">
           <div>
@@ -246,6 +240,7 @@ export default async function Home() {
           ))}
         </div>
       </section>
+      <HomeFAQ />
     </>
   );
 }
