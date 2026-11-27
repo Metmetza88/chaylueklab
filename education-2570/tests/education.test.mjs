@@ -11,7 +11,7 @@ test('catalog covers 14 categories; only real demos have trial links; no unappro
 });
 test('quotation validates module registry, strips supplied prices and deduplicates',()=>{
  const clean=validateQuotation({school_id:SCHOOL,modules:['smart-exam','smart-exam'],note:' Test ',price:1,status:'approved'});
- assert.deepEqual(clean,{school_id:SCHOOL,module_slugs:['smart-exam'],note:'Test',status:'requested',currency:'THB'});
+ assert.deepEqual(clean,{school_id:SCHOOL,module_slugs:['smart-exam'],note:'Test'});
  assert.throws(()=>validateQuotation({school_id:SCHOOL,modules:['fake']}));assert.throws(()=>validateQuotation({school_id:1,modules:[]}));
 });
 test('pagination rejects injection, negative and unbounded pages',()=>{

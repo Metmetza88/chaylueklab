@@ -28,7 +28,7 @@ export function validateQuotation(body) {
   if (!Array.isArray(body.modules) || body.modules.length < 1 || body.modules.length > 17) throw new HttpError(400, 'กรุณาเลือกโปรแกรม');
   const slugs = [...new Set(body.modules)];
   if (!slugs.every(slug => modules.some(module => module.slug === slug))) throw new HttpError(400, 'ไม่พบโปรแกรมที่เลือก');
-  return { school_id: body.school_id, module_slugs: slugs, note: requireText(body.note ?? '', 2000, 0), status: 'requested', currency: 'THB' };
+  return { school_id: body.school_id, module_slugs: slugs, note: requireText(body.note ?? '', 2000, 0) };
 }
 /** ทุกการอ่านมีขนาดหน้าที่จำกัดและป้องกัน offset ติดลบ */
 export function pagination(query = {}) {

@@ -49,6 +49,18 @@ test('PostgreSQL migration, RLS, constraints and query plans on local fixture',a
   await t.test('school B cannot read school A quotations, services, customers, licenses or audit',async()=>{
    for(const table of ['quotation_requests','service_requests','customers','licenses','school_module_entitlements','audit_logs','school_subscriptions','notifications'])assert.equal((await asUser(U2,'select * from education_2570.'+table+' where school_id=$1',[A])).rowCount,0);
   });
+  await t.test('teachers and students cannot read another person’s request or school audit',async()=>{
+   const teacher='20000000-0000-4000-8000-000000000009';
+   const student='20000000-0000-4000-8000-000000000010';
+   await q("insert into education_2570.members(school_id,user_id,role) values ($1,$2,'teacher'),($1,$3,'student')",[A,teacher,student]);
+   assert.equal((await asUser(teacher,'select id from education_2570.quotation_requests where id=$1',[quoteId])).rowCount,0);
+   assert.equal((await asUser(student,'select id from education_2570.quotation_requests where id=$1',[quoteId])).rowCount,0);
+   assert.equal((await asUser(teacher,'select id from education_2570.audit_logs where school_id=$1',[A])).rowCount,0);
+   const service=await asUser(student,'insert into education_2570.service_requests(school_id,created_by,subject,description) values ($1,$2,$3,$4) returning id',[A,student,'Test topic','Test body']);
+   assert.equal(service.rowCount,1);
+   assert.equal((await asUser(teacher,'select id from education_2570.service_requests where id=$1',[service.rows[0].id])).rowCount,0);
+   assert.equal((await asUser(U1,'select id from education_2570.service_requests where id=$1',[service.rows[0].id])).rowCount,1);
+  });
   await t.test('cross-school writes, forged author, unknown module and self-escalation are denied',async()=>{
    await assert.rejects(asUser(U2,'insert into education_2570.quotation_requests(school_id,created_by,module_slugs) values($1,$2,$3)',[A,U2,['exam-studio']]),/row-level security/);
    await assert.rejects(asUser(U1,'insert into education_2570.quotation_requests(school_id,created_by,module_slugs) values($1,$2,$3)',[A,U2,['exam-studio']]),/row-level security/);

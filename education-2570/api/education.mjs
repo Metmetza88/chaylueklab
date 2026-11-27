@@ -125,7 +125,7 @@ export function createEducationHandler({ env = process.env, fetchImpl = fetch } 
         return response.status(200).json(await db.select(table, { select: '*', school_id: 'eq.' + schoolId, order: 'created_at.desc', ...page }));
       }
       if (action === 'quotation') return response.status(201).json(await db.insert('quotation_requests', { ...validateQuotation(request.body), created_by: user.id }));
-      if (action === 'service') return response.status(201).json(await db.insert('service_requests', { school_id: schoolId, created_by: user.id, subject: requireText(request.body?.subject, 200), description: requireText(request.body?.description, 4000), status: 'open' }));
+      if (action === 'service') return response.status(201).json(await db.insert('service_requests', { school_id: schoolId, created_by: user.id, subject: requireText(request.body?.subject, 200), description: requireText(request.body?.description, 4000) }));
       throw new HttpError(405, 'ไม่รองรับการทำงานนี้');
     } catch (error) {
       return response.status(error instanceof HttpError ? error.status : 503).json({ error: error instanceof HttpError ? error.message : 'ระบบไม่พร้อมให้บริการ กรุณาลองใหม่ภายหลัง' });

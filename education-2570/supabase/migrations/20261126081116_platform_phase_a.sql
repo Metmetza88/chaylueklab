@@ -36,6 +36,11 @@ $$;
 create function education_2570.is_school_staff(school uuid) returns boolean language sql stable security invoker set search_path='' as $$
  select auth.uid() is not null and exists(select 1 from education_2570.members where school_id=school and user_id=(select auth.uid()) and role in ('admin','teacher'));
 $$;
+create function education_2570.is_school_admin(school uuid) returns boolean language sql stable security invoker set search_path='' as $$
+ select exists (select 1 from education_2570.members m where m.school_id=school and m.user_id=(select auth.uid()) and m.role='admin');
+$$;
+revoke all on function education_2570.is_school_admin(uuid) from public,anon,authenticated;
+grant execute on function education_2570.is_school_admin(uuid) to authenticated;
 revoke all on function education_2570.is_school_staff(uuid) from public,anon,authenticated;
 grant execute on function education_2570.is_school_staff(uuid) to authenticated;
 revoke all on function education_2570.is_platform_admin(), education_2570.is_school_member(uuid) from public,anon,authenticated;
@@ -124,7 +129,7 @@ begin
   execute format('alter table education_2570.%I enable row level security',t);
   execute format('revoke all on education_2570.%I from anon, authenticated',t);
  end loop;
- foreach t in array array['school_subscriptions','licenses','school_module_entitlements','customers','quotation_requests','service_requests','audit_logs'] loop
+ foreach t in array array['school_subscriptions','licenses','school_module_entitlements'] loop
   execute format('create policy tenant_read on education_2570.%I for select to authenticated using (education_2570.is_school_member(school_id) or education_2570.is_platform_admin())',t);
   execute format('grant select on education_2570.%I to authenticated',t);
  end loop;
@@ -134,13 +139,27 @@ begin
   execute format('grant insert,update on education_2570.%I to authenticated',t);
  end loop;
 end $$;
+grant select on education_2570.customers,education_2570.quotation_requests,education_2570.service_requests,education_2570.audit_logs to authenticated;
+create policy contact_read on education_2570.customers for select to authenticated using (
+ (user_id=(select auth.uid()) and education_2570.is_school_member(school_id)) or education_2570.is_platform_admin()
+);
+create policy quotation_read on education_2570.quotation_requests for select to authenticated using (
+ (created_by=(select auth.uid()) and education_2570.is_school_staff(school_id)) or education_2570.is_school_admin(school_id) or education_2570.is_platform_admin()
+);
+create policy service_read on education_2570.service_requests for select to authenticated using (
+ (created_by=(select auth.uid()) and education_2570.is_school_member(school_id)) or education_2570.is_school_admin(school_id) or education_2570.is_platform_admin()
+);
+create policy audit_read on education_2570.audit_logs for select to authenticated using (
+ education_2570.is_school_admin(school_id) or education_2570.is_platform_admin()
+);
 grant usage on schema education_2570 to anon,authenticated;
 grant select on education_2570.software_categories,education_2570.software_modules to anon,authenticated;
 create policy public_categories on education_2570.software_categories for select to anon,authenticated using(true);
 create policy published_modules on education_2570.software_modules for select to anon,authenticated using(published);
 grant update(enabled) on education_2570.software_modules to authenticated;
 create policy platform_module_update on education_2570.software_modules for update to authenticated using(education_2570.is_platform_admin()) with check(education_2570.is_platform_admin());
-grant insert on education_2570.quotation_requests,education_2570.service_requests to authenticated;
+grant insert(school_id,created_by,module_slugs,note) on education_2570.quotation_requests to authenticated;
+grant insert(school_id,created_by,subject,description) on education_2570.service_requests to authenticated;
 create policy member_quote_request on education_2570.quotation_requests for insert to authenticated with check(education_2570.is_school_staff(school_id) and created_by=(select auth.uid()) and status='requested');
 create policy member_service_request on education_2570.service_requests for insert to authenticated with check(education_2570.is_school_member(school_id) and created_by=(select auth.uid()) and status='open');
 grant update(status) on education_2570.service_requests to authenticated;

@@ -14,12 +14,49 @@ export function productCard(module, selected = []) {
   return `<article class="product-card"><a class="product-image" href="#/product/${module.slug}" aria-label="รายละเอียด ${esc(module.name)}"><img src="${module.image}" width="640" height="360" loading="lazy" alt="ภาพแนวคิด ${esc(module.name)}">${badge(module)}</a><div class="product-body"><div class="product-category">${esc(categoryName(module.category))}</div><h3><a href="#/product/${module.slug}">${esc(module.name)}</a></h3><p>${esc(module.tagline)}</p><div class="product-bottom"><strong>ขอใบเสนอราคา</strong><a href="#/product/${module.slug}">ดูรายละเอียด →</a></div><div class="card-actions">${module.demo ? `<a class="button secondary small" href="${module.demo}">ทดลองใช้งาน →</a>` : ''}<label class="check-label"><input type="checkbox" data-compare="${module.slug}" ${selected.includes(module.slug)?'checked':''}> เปรียบเทียบ</label></div></div></article>`;
 }
 export function home() {
-  return `<section class="hero"><div class="container hero-grid"><div><div class="eyebrow">School software & services</div><h1>งานโรงเรียนที่ง่ายขึ้น<br>เริ่มที่<span>ซอฟต์แวร์ที่ใช่</span></h1><p>ศูนย์รวมโปรแกรมสำหรับโรงเรียน สถานศึกษา และหน่วยงานราชการ เลือกเครื่องมือให้เหมาะกับงาน แล้วเติบโตไปด้วยกัน</p><div class="hero-actions"><a class="button" href="#/catalog">สำรวจโปรแกรมทั้งหมด <span>→</span></a><a class="button secondary" href="#/demo/exam-studio">ทดลองใช้งาน</a></div><div class="hero-note"><span>เลือกตามความต้องการ</span><span>มีทีมดูแลหลังการขาย</span></div></div><div class="hero-visual" aria-label="ภาพแนวคิดพื้นที่ทำงานโรงเรียน"><div class="hero-orbit"></div><div class="preview-window"><div class="preview-bar"><span class="dots">●●●</span><span>EDUCATION 2570 · School Workspace</span><span>→</span></div><div class="preview-body"><div class="preview-side"><b>EDUCATION 2570</b><span>▥ ภาพรวมโรงเรียน</span><span>▦ โปรแกรมของฉัน</span><span>▤ เอกสาร</span><span>♙ บัญชีผู้ใช้งาน</span><span>⚙ ตั้งค่า</span></div><div class="preview-content"><h3>ทุกงาน เชื่อมถึงกัน</h3><p>พื้นที่เดียวสำหรับโปรแกรมของโรงเรียน</p><div class="preview-tiles"><div class="preview-tile"><b>▦</b>พัสดุครุภัณฑ์</div><div class="preview-tile"><b>▤</b>งานสารบรรณ</div><div class="preview-tile"><b>▧</b>งานวิชาการ</div></div><div class="preview-chart" aria-hidden="true"><span style="height:30%"></span><span style="height:50%"></span><span style="height:38%"></span><span style="height:75%"></span><span style="height:62%"></span><span style="height:93%"></span><span style="height:80%"></span></div></div></div></div><div class="float-label"><span class="symbol">✓</span><span><strong>ออกแบบเพื่อโรงเรียน</strong>สิทธิ์ใช้งานแยกตามหน่วยงาน</span></div><small class="visual-caption">ภาพแนวคิดแพลตฟอร์ม · สถานะแต่ละโปรแกรมดูได้ในแคตตาล็อก</small></div></div></section>
-  <div class="container trust-row">${[['▦','14 หมวดซอฟต์แวร์','ครอบคลุมงานของโรงเรียน'],['→','ขยายได้ตามงาน','เลือกโปรแกรมที่ต้องการ'],['♙','แยกพื้นที่โรงเรียน','แยกข้อมูลตามโรงเรียน'],['♡','ดูแลหลังการขาย','รับคำขอผ่านระบบช่วยเหลือ']].map(([icon,title,sub])=>`<div class="trust-item"><span class="symbol">${icon}</span><span><strong>${title}</strong><small>${sub}</small></span></div>`).join('')}</div>
-  <section class="section"><div class="container"><div class="section-head"><div><div class="eyebrow">Explore by category</div><h2>ทุกงานโรงเรียน มีเครื่องมือที่เหมาะสม</h2><p>เริ่มจากหมวดงานที่คุณต้องการพัฒนา</p></div><a class="ghost" href="#/catalog">ดูทั้งหมด →</a></div><div class="category-grid">${categories.map((c,i)=>`<a class="category" href="#/catalog?category=${c.slug}"><span class="symbol">${icons[i]}</span><span>${esc(c.name)}</span></a>`).join('')}</div></div></section>
-  <section class="section soft"><div class="container"><div class="section-head"><div><div class="eyebrow">Try it yourself</div><h2>รู้จักโปรแกรม ผ่านการทดลองจริง</h2><p>เดโมที่เปิดทดลองได้ในเบราว์เซอร์ · ใช้ข้อมูลสมมติโดยไม่ต้องลงทะเบียน</p></div><a class="ghost" href="#/catalog?status=trial">ดูโปรแกรมทดลอง →</a></div><div class="card-grid">${modules.filter(m=>m.demo).map(m=>productCard(m)).join('')}</div></div></section>
-  <section class="section"><div class="container"><div class="section-head"><div><div class="eyebrow">A simple start</div><h2>เริ่มต้นใช้งาน ในแบบของโรงเรียนคุณ</h2></div></div><div class="steps">${[['01','เลือกโปรแกรมที่ตอบโจทย์','สำรวจรายละเอียด คุณสมบัติ และสถานะความพร้อมของแต่ละโปรแกรม'],['02','พูดคุยและขอใบเสนอราคา','เลือกโปรแกรมที่สนใจ พร้อมบอกความต้องการให้ทีมงานประเมิน'],['03','เตรียมพื้นที่โรงเรียนของคุณ','กำหนดสิทธิ์ผู้ใช้งาน และเริ่มใช้งานเมื่อโปรแกรมพร้อมเปิดบริการ']].map(([n,t,d])=>`<div><span class="step-num">${n}</span><h3>${t}</h3><p>${d}</p></div>`).join('')}</div></div></section>
-  <section class="section"><div class="container cta-panel"><div><h2>เริ่มออกแบบระบบที่เหมาะกับโรงเรียนคุณ</h2><p>บอกโจทย์ของคุณ ให้ทีม พ.สมนึก 2&3 ช่วยดูแลขั้นตอนถัดไป</p></div><a class="button" href="#/quote">ขอใบเสนอราคา →</a></div></section>`;
+  const trials = modules.filter(module => module.demo);
+  return `
+  <section class="campus-hero">
+    <div class="container campus-grid">
+      <div class="campus-copy">
+        <p class="eyebrow">ซอฟต์แวร์สำหรับสถานศึกษา</p>
+        <h1>งานโรงเรียนที่ง่ายขึ้น<br><span>เริ่มที่ซอฟต์แวร์ที่ใช่</span></h1>
+        <p class="campus-lead">เลือกเครื่องมือให้ตรงกับงาน ทดลองด้วยข้อมูลตัวอย่าง แล้วเตรียมคำขอใบเสนอราคาสำหรับโรงเรียนของคุณ</p>
+        <div class="hero-actions">
+          <a class="button" href="#/catalog">เปิดแคตตาล็อก</a>
+          <a class="button secondary" href="#/workspace">เข้าพื้นที่โรงเรียน</a>
+        </div>
+        <dl class="campus-totals">
+          <div><dt>โปรแกรมในแคตตาล็อก</dt><dd>${modules.length}</dd></div>
+          <div><dt>หมวดงานโรงเรียน</dt><dd>${categories.length}</dd></div>
+          <div><dt>เดโมใน Education 2570</dt><dd>${trials.length}</dd></div>
+        </dl>
+      </div>
+      <figure class="campus-figure">
+        <div class="campus-frame">
+          <div class="campus-toolbar"><span aria-hidden="true">● ● ●</span><strong>MET School Pro</strong></div>
+          <a href="https://store.chaylueklab.com/demo/met-school-pro" aria-label="เปิดเดโมเว็บไซต์โรงเรียน MET School Pro">
+            <img src="/assets/school-portal-preview.png" width="1440" height="1677" alt="หน้าเว็บโรงเรียนตัวอย่างในเดโม MET School Pro" fetchpriority="high">
+          </a>
+        </div>
+        <figcaption>ภาพจากเดโมเว็บไซต์โรงเรียน · CHAYLUEKLAB</figcaption>
+      </figure>
+    </div>
+  </section>
+  <section class="section container campus-links" aria-label="ทางลัดสำหรับโรงเรียน">
+    <a href="#/quote"><strong>เตรียมคำขอใบเสนอราคา</strong><span>เลือกโปรแกรมและสรุปโจทย์ของโรงเรียน</span></a>
+    <a href="https://store.chaylueklab.com/demo/met-attendance"><strong>ทดลองเช็กชื่อ</strong><span>เช็กชื่อรายคาบ ดูรายการติดตาม และส่งออก CSV</span></a>
+    <a href="https://store.chaylueklab.com/school-systems#procurement"><strong>เอกสารจัดซื้อและโดเมน</strong><span>ดูขั้นตอนขอเอกสารและแบบฟอร์มจด .ac.th</span></a>
+  </section>
+  <section class="section soft"><div class="container">
+    <div class="section-head"><div><h2>ลองใช้ก่อนเลือกโปรแกรม</h2><p>สร้างข้อสอบ ทดลองตรวจคะแนน และพิมพ์เกียรติบัตรด้วยข้อมูลสมมติ</p></div><a class="ghost" href="#/catalog?status=trial">ดูเดโมทั้งหมด</a></div>
+    <div class="card-grid">${trials.map(module => productCard(module)).join('')}</div>
+  </div></section>
+  <section class="section"><div class="container">
+    <div class="section-head"><div><h2>สำรวจตามหมวดงาน</h2><p>เริ่มจากงานที่อยากลดขั้นตอนในภาคเรียนถัดไป</p></div><a class="ghost" href="#/catalog">ดูโปรแกรมทั้งหมด</a></div>
+    <div class="category-grid">${categories.map((category, index) => `<a class="category" href="#/catalog?category=${category.slug}"><span class="symbol" aria-hidden="true">${icons[index]}</span><span>${esc(category.name)}</span></a>`).join('')}</div>
+  </div></section>
+  <section class="section"><div class="container cta-panel"><div><h2>เริ่มวางระบบสำหรับโรงเรียนของคุณ</h2><p>แจ้งประเภทสถานศึกษา จำนวนผู้ใช้ และงานที่อยากเริ่มให้ทีม พ.สมนึก 2&3 ประเมิน</p></div><a class="button" href="#/quote">เตรียมคำขอใบเสนอราคา</a></div></section>`;
 }
 export function catalog(query, selected) {
   const category = query.get('category') ?? '';
