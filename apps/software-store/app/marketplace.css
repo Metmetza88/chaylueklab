@@ -500,3 +500,26 @@
     display: none !important;
   }
 }
+
+@media (min-width: 366px) and (max-width: 520px) {
+  .storefront .header-inner {
+    gap: 6px;
+  }
+  .storefront .header-inner > .brand {
+    font-size: 12px;
+  }
+  .storefront .header-actions {
+    flex-wrap: nowrap;
+    gap: 3px;
+  }
+  .storefront .header-actions:has(.cart-link) {
+    flex-wrap: wrap;
+  }
+  .market-header-actions {
+    gap: 3px;
+  }
+  .market-header-actions > button,
+  .market-header-actions > a {
+    min-width: 39px;
+  }
+}
