@@ -44,4 +44,18 @@ export const productDemos = [
     previewAlt:
       "หน้าจอ MET Attendance แสดงตัวกรอง สรุปการมาเรียน และรายชื่อนักเรียนสมมติ",
   },
+  {
+    slug: "met-sport",
+    name: "MET Sport",
+    category: "งานกีฬาสี",
+    stage: "interactive_demo",
+    description: "จัดตารางแข่งขัน บันทึกผล และดูคะแนนสะสมของทีมสี",
+    highlights: [
+      "เลือกคู่แข่งขันจากตาราง",
+      "บันทึกและแก้ไขผลการแข่งขัน",
+      "ดูตารางคะแนนที่อัปเดตทันที",
+    ],
+    preview: "/screenshots/demos/met-sport.webp",
+    previewAlt: "หน้าจอ MET Sport แสดงตารางแข่งขันและคะแนนทีมสีด้วยข้อมูลสมมติ",
+  },
 ];

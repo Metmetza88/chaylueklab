@@ -54,16 +54,14 @@ test("product quote keeps the product context and opens the existing LINE channe
   await expect(
     dialog.getByText("เอกสารประกอบการเบิกงบโครงการกีฬาสี"),
   ).toBeVisible();
-  await expect(
-    dialog.getByText("ราคาเป้าหมาย · ยังไม่เปิดจำหน่าย"),
-  ).toBeVisible();
+  await expect(dialog.getByText("ประเมินตามขอบเขตงาน")).toBeVisible();
   await dialog.getByRole("link", { name: "ขอใบเสนอราคา", exact: true }).click();
   await expect(page).toHaveURL(/\/contact\?product=met-sport#quotation$/);
   await expect(page.getByLabel("ข้อความสำหรับส่งทาง LINE")).toHaveValue(
     /MET Sport/,
   );
   await expect(
-    page.getByRole("link", { name: "เปิด LINE Official Account" }),
+    page.getByRole("link", { name: "เปิด LINE OA @125cbuuu" }),
   ).toHaveAttribute("href", "https://lin.ee/Vgg2m3N");
 });
 
@@ -75,10 +73,13 @@ test("shop chat answers prices and procurement and fixed navigation reaches the 
   if (page.viewportSize()!.width > 720) {
     await expect(nav).toBeHidden();
   } else {
-    await expect(nav.getByRole("link")).toHaveCount(5);
-    await nav.getByRole("link", { name: "เอกสารเบิกงบ" }).click();
-    await expect(page).toHaveURL(/\/school-systems#procurement$/);
-    await expect(page.locator("#procurement")).toBeInViewport();
+    await expect(nav.getByRole("link")).toHaveCount(3);
+    await expect(nav.getByRole("button")).toHaveCount(2);
+    await nav.getByRole("button", { name: "เอกสารเบิกงบ" }).click();
+    await expect(
+      page.getByRole("dialog", { name: "เอกสารเบิกงบ" }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
     await nav.getByRole("link", { name: "ขอใบเสนอราคา" }).click();
     await expect(page).toHaveURL(/\/contact#quotation$/);
   }
@@ -92,13 +93,93 @@ test("shop chat answers prices and procurement and fixed navigation reaches the 
   const question = dialog.getByRole("textbox", { name: "พิมพ์คำถาม" });
   await question.fill("MET Sport ราคาเท่าไหร่");
   await question.press("Enter");
-  await expect(dialog.getByRole("log")).toContainText("MET Sport ราคาเป้าหมาย");
-  await expect(dialog.getByRole("log")).toContainText("990");
-  await dialog.getByRole("button", { name: "เอกสารเบิกงบ" }).click();
+  await expect(dialog.getByRole("log")).toContainText(
+    "MET Sport เปิดรับออเดอร์",
+  );
+  await dialog
+    .getByRole("button", { name: "เอกสารเบิกงบ", exact: true })
+    .first()
+    .click();
   await expect(dialog.getByRole("log")).toContainText(
     "การอนุมัติเป็นขั้นตอนของโรงเรียน",
   );
   await expect(
     dialog.getByRole("link", { name: "ขอใบเสนอราคา" }),
   ).toHaveAttribute("href", "/contact?product=met-sport#quotation");
+});
+
+test("a school can combine three programs and send one prepared LINE request", async ({
+  page,
+}) => {
+  await page.goto("/products");
+  const products = ["met-sport", "met-certificate", "met-attendance"];
+  for (const slug of products) {
+    await page
+      .locator(`[data-product-slug="${slug}"]`)
+      .getByRole("button", { name: "เพิ่มลงใบเสนอราคา" })
+      .click();
+  }
+  await page.getByRole("link", { name: "ตะกร้าใบเสนอราคา 3 รายการ" }).click();
+  await expect(page).toHaveURL(/\/contact#quotation$/);
+  await page.reload();
+  const quote = page.getByRole("region", { name: "ตะกร้าใบเสนอราคา (3)" });
+  await expect(
+    quote.getByText("MET Certificate", { exact: true }),
+  ).toBeVisible();
+  await quote.getByLabel("แพ็กเกจ").first().selectOption("service");
+  await expect(quote.locator(".quote-estimate")).toContainText("–");
+  await quote.getByLabel("ชื่อโรงเรียน").fill("โรงเรียนตัวอย่าง");
+  await quote.getByLabel("เบอร์โทร").fill("0840000000");
+  await quote.getByRole("button", { name: "เตรียมคำขอใบเสนอราคารวม" }).click();
+  const message = quote.getByLabel("ข้อความสำหรับส่งทาง LINE");
+  await expect(message).toHaveValue(/โรงเรียนตัวอย่าง/);
+  for (const name of ["MET Sport", "MET Certificate", "MET Attendance"]) {
+    await expect(message).toHaveValue(new RegExp(name));
+  }
+  const link = await quote
+    .getByRole("link", { name: /เปิด LINE เพื่อส่งคำขอรวม/ })
+    .getAttribute("href");
+  expect(decodeURIComponent(link ?? "")).toContain(
+    "/oaMessage/@125cbuuu/?ขอใบเสนอราคารวม",
+  );
+});
+
+test("all procurement samples download and the sports demo updates scores", async ({
+  page,
+  request,
+}) => {
+  await page.goto("/products");
+  await page
+    .locator(".market-procurement-banner")
+    .getByRole("button", { name: "เอกสารเบิกงบ" })
+    .click();
+  const docs = page.getByRole("dialog", { name: "เอกสารเบิกงบ" });
+  const links = await docs
+    .locator("a[download]")
+    .evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute("href") ?? ""),
+    );
+  expect(links).toHaveLength(6);
+  for (const link of links) {
+    const response = await request.get(link);
+    expect(response.ok()).toBeTruthy();
+    const body = await response.body();
+    expect(body.subarray(0, 4).toString()).toBe(
+      link.endsWith(".pdf") ? "%PDF" : "PK\x03\x04",
+    );
+  }
+  await page.keyboard.press("Escape");
+  await page
+    .locator('[data-product-slug="met-sport"]')
+    .getByRole("link", { name: "ทดลองดูตัวอย่าง (Demo)" })
+    .click();
+  await page.getByLabel("คะแนนสีฟ้า").fill("2");
+  await page.getByRole("button", { name: "บันทึกผลตัวอย่าง" }).click();
+  await expect(page.locator(".sport-rankings")).toContainText("28 คะแนน");
+  await page.getByLabel("คะแนนสีทอง").fill("3");
+  await page.getByRole("button", { name: "บันทึกผลตัวอย่าง" }).click();
+  await expect(page.locator(".sport-rankings")).toContainText("23 คะแนน");
+  await expect(page.locator(".sport-rankings")).toContainText("25 คะแนน");
+  await page.getByRole("button", { name: "ล้างผลตัวอย่าง" }).click();
+  await expect(page.getByLabel("คะแนนสีทอง")).toHaveValue("0");
 });

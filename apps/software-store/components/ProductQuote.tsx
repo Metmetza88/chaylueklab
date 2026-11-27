@@ -1,9 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useRef } from "react";
-import { procurementHref, quoteHref } from "@/lib/marketplace";
-import { DialogTitle } from "./MarketplaceControls";
+import { useId, useRef, useState } from "react";
+import { quoteHref } from "@/lib/marketplace";
+import type { storeOffer } from "@/lib/store-offers";
+import { DialogTitle, StoreDialogButton } from "./StoreDialogs";
+import {
+  AddToQuote,
+  PackageChoice,
+  PackageDetails,
+  QuoteCartLink,
+  useQuoteSelection,
+} from "./QuoteSelection";
+import {
+  distributor,
+  lineId,
+  shopLocation,
+  shopPhone,
+} from "@/lib/procurement";
+import type { QuotePlan } from "@/lib/quote";
 
 export default function ProductQuote({
   slug,
@@ -12,7 +27,7 @@ export default function ProductQuote({
   description,
   features,
   price,
-  ready,
+  offer,
   sport,
 }: {
   slug: string;
@@ -21,18 +36,23 @@ export default function ProductQuote({
   description: string;
   features: string[];
   price: string;
-  ready: boolean;
+  offer: ReturnType<typeof storeOffer>;
   sport: boolean;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const title = useId();
+  const selected = useQuoteSelection();
+  const [plan, setPlan] = useState<QuotePlan>("files");
   return (
     <>
       <button
         className="market-primary market-card-cta"
         type="button"
         aria-haspopup="dialog"
-        onClick={() => dialog.current?.showModal()}
+        onClick={() => {
+          setPlan(selected[slug] ?? "files");
+          dialog.current?.showModal();
+        }}
       >
         ดูรายละเอียด / ขอใบเสนอราคา
       </button>
@@ -53,16 +73,29 @@ export default function ProductQuote({
               : "เอกสารประกอบการเบิกงบโครงการ"}
           </strong>
           <p className="market-quote-price">
-            <strong>{price}</strong>
-            <span>
-              {ready ? "ราคาตามแคตตาล็อก" : "ราคาเป้าหมาย · ยังไม่เปิดจำหน่าย"}
-            </span>
+            <strong>{offer.kind === "order" ? offer.label : price}</strong>
+            <span>{offer.priceLabel}</span>
           </p>
           <p>
             แจ้งขอบเขตงาน จำนวนผู้ใช้ และรายการเอกสารที่โรงเรียนต้องการ
             ทีมงานจะยืนยันราคาและขอบเขตก่อนส่งใบเสนอราคา
           </p>
         </div>
+        <div className="market-budget">
+          <PackageChoice value={plan} onChange={setPlan} filesPrice={price} />
+          <PackageDetails plan={plan} />
+          <div className="market-links">
+            <AddToQuote slug={slug} plan={plan} />
+            <QuoteCartLink />
+          </div>
+        </div>
+        <p>
+          ออกเอกสารในนาม {distributor} · {shopLocation} ·{" "}
+          <a href={shopPhone.href}>โทร {shopPhone.label}</a> · LINE OA {lineId}
+        </p>
+        <p className="muted">
+          รองรับการจัดซื้อวิธีเฉพาะเจาะจงตามระเบียบและเงื่อนไขที่สถานศึกษากำหนด
+        </p>
         <div className="market-links">
           <Link
             className="market-primary"
@@ -71,9 +104,12 @@ export default function ProductQuote({
           >
             ขอใบเสนอราคา
           </Link>
-          <Link href={procurementHref} onClick={() => dialog.current?.close()}>
+          <StoreDialogButton
+            name="procurement"
+            beforeOpen={() => dialog.current?.close()}
+          >
             ดูเอกสารเบิกงบ
-          </Link>
+          </StoreDialogButton>
           <Link
             href={`/products/${slug}`}
             onClick={() => dialog.current?.close()}
@@ -85,7 +121,7 @@ export default function ProductQuote({
               href={`/demo/${slug}`}
               onClick={() => dialog.current?.close()}
             >
-              ทดลองระบบ
+              ทดลองดูตัวอย่าง (Demo)
             </Link>
           )}
         </div>

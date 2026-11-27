@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ProcurementDocuments from "@/components/ProcurementDocuments";
 import {
   ArrowRight,
   ClipboardCheck,
@@ -185,6 +186,11 @@ export default function SchoolSystems() {
             </p>
           </article>
         </div>
+      </section>
+
+      <section className={styles.section} id="procurement-samples">
+        <h2>เอกสารเบิกงบ</h2>
+        <ProcurementDocuments />
       </section>
 
       <section className={styles.section}>

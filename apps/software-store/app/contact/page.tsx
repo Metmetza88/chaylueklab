@@ -1,6 +1,9 @@
 import Link from "next/link";
+import QuoteCart from "@/components/QuoteCart";
 import QuoteMessage from "@/components/QuoteMessage";
-import { lineContact, procurementHref } from "@/lib/marketplace";
+import { lineContact } from "@/lib/marketplace";
+import { lineId, localService, shopPhone } from "@/lib/procurement";
+import { StoreDialogButton } from "@/components/StoreDialogs";
 import { getProducts } from "@/lib/shop";
 import { configured } from "@/lib/env";
 
@@ -13,9 +16,10 @@ export default async function Page({
   }>;
 }) {
   const { product, program } = await searchParams;
+  const { products } = await getProducts();
   const selected =
     typeof product === "string"
-      ? (await getProducts()).products.find((item) => item.slug === product)
+      ? products.find((item) => item.slug === product)
       : undefined;
   const programName =
     selected?.name ??
@@ -32,6 +36,9 @@ export default async function Page({
         แจ้งชื่อโปรแกรมที่สนใจ จำนวนผู้ใช้งานโดยประมาณ
         และงานที่ต้องการให้ระบบช่วย
       </p>
+      <p>
+        {localService} · <a href={shopPhone.href}>โทร {shopPhone.label}</a>
+      </p>
       <div className="panel stack market-quotation" id="quotation">
         <h2>ขอใบเสนอราคา</h2>
         {programName && (
@@ -42,22 +49,27 @@ export default async function Page({
         <p>
           ระบุข้อมูลของโรงเรียน คัดลอกข้อความ แล้วเปิด LINE เพื่อส่งให้ทางร้าน
         </p>
-        <QuoteMessage product={programName || undefined} />
-        <Link href={procurementHref}>ดูเอกสารเบิกงบ →</Link>
+        <QuoteCart
+          catalog={products.map(({ slug, name, price_cents }) => ({
+            slug,
+            name,
+            price_cents,
+          }))}
+        />
+        <details open={programName ? true : undefined}>
+          <summary>ขอใบเสนอราคาระบบเดียว</summary>
+          <QuoteMessage product={programName || undefined} />
+        </details>
+        <StoreDialogButton name="procurement" className="btn ghost">
+          เอกสารเบิกงบ
+        </StoreDialogButton>
         <a
           className="btn"
           href={lineContact}
           target="_blank"
           rel="noopener noreferrer"
         >
-          เปิด LINE Official Account ↗
-        </a>
-        <a
-          href="https://chaylueklab.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          เว็บไซต์หลัก CHAYLUEKLAB ↗
+          เปิด LINE OA {lineId}
         </a>
         {configured() && <Link href="/support">ส่งคำขอช่วยเหลือในระบบ</Link>}
       </div>

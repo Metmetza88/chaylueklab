@@ -12,18 +12,19 @@ import {
   Mail,
   MessageCircle,
   Search,
-  X,
 } from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
 import {
   lineContact,
   matchesProduct,
-  procurementHref,
   quoteHref,
   sportSlug,
   sportTitle,
   type MarketplaceProduct,
 } from "@/lib/marketplace";
+
+import { DialogTitle, StoreDialogButton } from "./StoreDialogs";
+import { storeOffer } from "@/lib/store-offers";
 
 const quote = quoteHref();
 
@@ -64,9 +65,9 @@ export function MarketplaceHeader({
       >
         <Bell size={19} />
       </button>
-      <Link href="/contact" aria-label="ติดต่อเรา">
+      <StoreDialogButton name="contact" label="ติดต่อเรา">
         <Mail size={19} />
-      </Link>
+      </StoreDialogButton>
       <dialog
         ref={search}
         className="market-dialog"
@@ -133,24 +134,14 @@ export function MarketplaceHeader({
           <Link href="/products?q=กีฬาสี" onClick={() => news.current?.close()}>
             ดูระบบกีฬาสี
           </Link>
-          <Link href={procurementHref} onClick={() => news.current?.close()}>
-            อ่านคู่มือเบิกงบ
-          </Link>
+          <StoreDialogButton
+            name="procurement"
+            beforeOpen={() => news.current?.close()}
+          >
+            เอกสารเบิกงบ
+          </StoreDialogButton>
         </div>
       </dialog>
-    </div>
-  );
-}
-
-export function DialogTitle({ id, title }: { id: string; title: string }) {
-  return (
-    <div className="market-dialog-title">
-      <h2 id={id}>{title}</h2>
-      <form method="dialog">
-        <button className="market-close" aria-label="ปิดหน้าต่าง">
-          <X size={20} />
-        </button>
-      </form>
     </div>
   );
 }
@@ -204,8 +195,6 @@ export default function MarketplaceDock({
     { href: "/", label: "หน้าแรก", icon: Home },
     { href: "/products", label: "ระบบทั้งหมด", icon: Grid2X2 },
     { href: quote, label: "ขอใบเสนอราคา", icon: ClipboardList },
-    { href: procurementHref, label: "เอกสารเบิกงบ", icon: FileText },
-    { href: "/contact", label: "ติดต่อเรา", icon: Mail },
   ];
   function ask(question: string) {
     if (!question) return;
@@ -221,11 +210,12 @@ export default function MarketplaceDock({
     const pricing = /ราคา|เท่าไหร่|เท่าไร|กี่บาท|ค่าใช้จ่าย/u.test(
       text.replaceAll("ใบเสนอราคา", ""),
     );
+    const offer = product && storeOffer(product.slug, product.status);
     const priceReply =
       product &&
       (pricing ||
         (named && !/เอกสาร|เบิก|จัดซื้อ|ใบเสนอราคา|เดโม|ทดลอง/u.test(text)))
-        ? `${product.name} ${product.status === "ready" ? "ราคา" : "ราคาเป้าหมาย"} ${product.price}${product.status === "ready" ? "" : " ขณะนี้ยังไม่เปิดจำหน่าย"}`
+        ? `${product.name} ${offer?.kind === "order" ? "เปิดรับออเดอร์ ขอใบเสนอราคาตามขอบเขตงานได้ครับ" : `${offer?.priceLabel} ${product.price}`}`
         : "";
     const reply =
       replies.find(([pattern]) => pattern.test(question))?.[1] ??
@@ -276,8 +266,7 @@ export default function MarketplaceDock({
             className={href === quote ? "market-dock-quote" : undefined}
             aria-current={
               path === href ||
-              (href === "/products" && path.startsWith("/products/")) ||
-              (href === procurementHref && path === "/school-systems")
+              (href === "/products" && path.startsWith("/products/"))
                 ? "page"
                 : undefined
             }
@@ -288,6 +277,18 @@ export default function MarketplaceDock({
             <small>{label}</small>
           </Link>
         ))}
+        <StoreDialogButton name="procurement">
+          <span>
+            <FileText size={19} aria-hidden="true" />
+          </span>
+          <small>เอกสารเบิกงบ</small>
+        </StoreDialogButton>
+        <StoreDialogButton name="contact">
+          <span>
+            <Mail size={19} aria-hidden="true" />
+          </span>
+          <small>ติดต่อเรา</small>
+        </StoreDialogButton>
       </nav>
       <dialog
         ref={help}
@@ -345,9 +346,12 @@ export default function MarketplaceDock({
           >
             ขอใบเสนอราคา
           </Link>
-          <Link href={procurementHref} onClick={() => help.current?.close()}>
+          <StoreDialogButton
+            name="procurement"
+            beforeOpen={() => help.current?.close()}
+          >
             เอกสารเบิกงบ
-          </Link>
+          </StoreDialogButton>
           <a href={lineContact} target="_blank" rel="noopener noreferrer">
             คุยกับทีมงานทาง LINE
           </a>

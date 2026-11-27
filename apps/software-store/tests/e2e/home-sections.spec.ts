@@ -32,7 +32,7 @@ test("home counters start on view and respect reduced motion", async ({
   const values = stats.locator('dd > span[aria-hidden="true"]');
   const totals = await values.allTextContents();
   expect(Number(totals[0].replaceAll(",", ""))).toBeGreaterThan(0);
-  expect(totals.slice(1)).toEqual(["3", "2"]);
+  expect(totals.slice(1)).toEqual(["4", "2"]);
 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.reload();
@@ -88,25 +88,21 @@ test("feature tabs change screenshots without navigating and work with a keyboar
 test("FAQ answers open and close with touch and keyboard", async ({ page }) => {
   await page.goto("/");
   const faq = page.getByRole("region", { name: "คำถามที่พบบ่อย" });
-  const smallSchool = faq
-    .locator("details")
-    .filter({
-      has: page
-        .locator("summary")
-        .filter({ hasText: "โรงเรียนขนาดเล็กใช้งานได้ไหม" }),
-    });
+  const smallSchool = faq.locator("details").filter({
+    has: page
+      .locator("summary")
+      .filter({ hasText: "โรงเรียนขนาดเล็กใช้งานได้ไหม" }),
+  });
   await expect(smallSchool.locator("p")).not.toBeVisible();
   await smallSchool.locator("summary").click();
   await expect(smallSchool.locator("p")).toBeVisible();
   await smallSchool.locator("summary").click();
   await expect(smallSchool.locator("p")).not.toBeVisible();
-  const training = faq
-    .locator("details")
-    .filter({
-      has: page
-        .locator("summary")
-        .filter({ hasText: "มีทีมงานอบรมการใช้งานให้หรือไม่" }),
-    });
+  const training = faq.locator("details").filter({
+    has: page
+      .locator("summary")
+      .filter({ hasText: "มีทีมงานอบรมการใช้งานให้หรือไม่" }),
+  });
   await training.locator("summary").focus();
   await page.keyboard.press("Enter");
   await expect(training.locator("p")).toBeVisible();

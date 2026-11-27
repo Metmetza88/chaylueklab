@@ -1,19 +1,28 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { Copy } from "lucide-react";
 
-export default function QuoteMessage({ product }: { product?: string }) {
+export default function QuoteMessage({
+  product,
+  prepared,
+}: {
+  product?: string;
+  prepared?: string;
+}) {
+  const id = useId();
   const field = useRef<HTMLTextAreaElement>(null);
   const [status, setStatus] = useState("");
-  const message = [
-    "ขอใบเสนอราคาสำหรับโรงเรียน",
-    `ระบบที่สนใจ: ${product ?? ""}`,
-    "ชื่อสถานศึกษา:",
-    "ขอบเขตงาน / จำนวนผู้ใช้:",
-    "ช่วงที่ต้องการใช้งาน:",
-    "เอกสารที่ต้องใช้ / อีเมลหน่วยงาน:",
-  ].join("\n");
+  const message =
+    prepared ??
+    [
+      "ขอใบเสนอราคาสำหรับโรงเรียน",
+      `ระบบที่สนใจ: ${product ?? ""}`,
+      "ชื่อสถานศึกษา:",
+      "ขอบเขตงาน / จำนวนผู้ใช้:",
+      "ช่วงที่ต้องการใช้งาน:",
+      "เอกสารที่ต้องใช้ / อีเมลหน่วยงาน:",
+    ].join("\n");
 
   async function copyMessage() {
     try {
@@ -28,12 +37,13 @@ export default function QuoteMessage({ product }: { product?: string }) {
 
   return (
     <div className="market-quote-message">
-      <label htmlFor="school-quote-message">ข้อความสำหรับส่งทาง LINE</label>
+      <label htmlFor={id}>ข้อความสำหรับส่งทาง LINE</label>
       <textarea
-        key={product}
-        id="school-quote-message"
+        key={message}
+        id={id}
         ref={field}
         defaultValue={message}
+        readOnly={Boolean(prepared)}
         rows={6}
         maxLength={1500}
       />

@@ -20,6 +20,15 @@ import { sportFirst } from "@/lib/marketplace";
 import CartLink from "@/components/CartLink";
 import DisplayControls from "@/components/DisplayControls";
 import ViewportControls from "@/components/ViewportControls";
+import StoreDialogs, { StoreDialogButton } from "@/components/StoreDialogs";
+import { lineContact } from "@/lib/marketplace";
+import {
+  distributor,
+  lineId,
+  localService,
+  shopPhone,
+  shopLocation,
+} from "@/lib/procurement";
 export const metadata: Metadata = {
   title: {
     default: "CHAYLUEKLAB SOFTWARE STORE | WORAMET AI LAB",
@@ -114,164 +123,201 @@ export default async function Layout({
     <html lang="th">
       <body className="storefront">
         <CartProvider>
-          <a className="skip-link" href="#main">
-            ข้ามไปเนื้อหา
-          </a>
-          <div className="top-bar">
-            <a
-              className="school-home-link"
-              href="https://education.chaylueklab.com/"
-            >
-              หน้ารวมระบบโรงเรียน
+          <StoreDialogs>
+            <a className="skip-link" href="#main">
+              ข้ามไปเนื้อหา
             </a>
-            <Link href="/guide">
-              คู่มือเริ่มต้นใช้งาน <ArrowUpRight size={12} />
-            </Link>
-          </div>
-          <header className="site-header">
-            <div className="container header-inner">
-              <Link href="/" className="brand">
-                <span className="brand-icon">
-                  <Command size={24} />
-                </span>
-                <span>
-                  CHAYLUEKLAB
-                  <small>
-                    SOFTWARE STORE <i>BY WORAMET AI LAB</i>
-                  </small>
-                </span>
+            <div className="top-bar">
+              <a
+                className="school-home-link"
+                href="https://education.chaylueklab.com/"
+              >
+                หน้ารวมระบบโรงเรียน
+              </a>
+              <Link href="/guide">
+                คู่มือเริ่มต้นใช้งาน <ArrowUpRight size={12} />
               </Link>
-              <nav className="desktop-nav" aria-label="เมนูหลัก">
-                {links.map(([h, l]) => (
-                  <Link key={h} href={h}>
-                    {l}
-                  </Link>
-                ))}
-              </nav>
-              <div className="header-actions">
-                <MarketplaceHeader
-                  products={marketplaceProducts}
-                  source={source}
-                />
-                <DisplayControls />
-                {accountsEnabled && (
-                  <>
-                    <CartLink />
-                    <Link
-                      href={user ? "/orders" : "/login"}
-                      className="login-link"
-                      aria-label={user ? "บัญชีของฉัน" : "เข้าสู่ระบบ"}
-                    >
-                      <span className="account-label">
-                        {user ? "บัญชีของฉัน" : "เข้าสู่ระบบ"}
-                      </span>
-                      <UserRound size={18} />
-                    </Link>
-                  </>
-                )}
-                <details className="mobile-menu">
-                  <summary aria-label="เปิดเมนู">
-                    <Menu size={23} />
-                  </summary>
-                  <nav>
-                    {links.map(([h, l]) => (
-                      <Link key={h} href={h}>
-                        {l}
-                      </Link>
-                    ))}
-                    {accountsEnabled && (
-                      <>
-                        <Link href="/orders">คำสั่งซื้อ</Link>
-                        <Link href="/downloads">ดาวน์โหลด</Link>
-                        <Link href="/support">แจ้งปัญหา</Link>
-                        {isAdmin && <Link href="/admin">Admin</Link>}
-                      </>
-                    )}
-                  </nav>
-                </details>
-              </div>
             </div>
-          </header>
-          <main id="main" className="container main-content">
-            {paymentMode() === "sandbox" && (
-              <p className="demo-bar">
-                SANDBOX — ใช้ทดสอบระบบเท่านั้น ห้ามโอนเงินจริง
-              </p>
-            )}
-            {children}
-          </main>
-          <section className="footer-cta container">
-            <div>
-              <span className="eyebrow">LET’S BUILD A BETTER SCHOOL</span>
-              <h2>
-                เลือกเครื่องมือที่ใช่
-                <br />
-                ให้โรงเรียนของคุณ
-              </h2>
-            </div>
-            <Link className="btn" href="/contact">
-              คุยกับ WORAMET AI LAB <ArrowUpRight size={18} />
-            </Link>
-          </section>
-          <footer className="site-footer">
-            <div className="container footer-grid">
-              <div>
+            <header className="site-header">
+              <div className="container header-inner">
                 <Link href="/" className="brand">
-                  <Command size={28} />
+                  <span className="brand-icon">
+                    <Command size={24} />
+                  </span>
                   <span>
-                    CHAYLUEKLAB<small>SOFTWARE STORE</small>
+                    CHAYLUEKLAB
+                    <small>
+                      SOFTWARE STORE <i>BY WORAMET AI LAB</i>
+                    </small>
                   </span>
                 </Link>
-                <p className="muted">
-                  ซอฟต์แวร์ที่ออกแบบมาเพื่อโรงเรียนไทย
-                  <br />
-                  พัฒนาโดย WORAMET AI LAB
+                <nav className="desktop-nav" aria-label="เมนูหลัก">
+                  {links.map(([h, l]) => (
+                    <Link key={h} href={h}>
+                      {l}
+                    </Link>
+                  ))}
+                </nav>
+                <div className="header-actions">
+                  <MarketplaceHeader
+                    products={marketplaceProducts}
+                    source={source}
+                  />
+                  <DisplayControls />
+                  {accountsEnabled && (
+                    <>
+                      <CartLink />
+                      <Link
+                        href={user ? "/orders" : "/login"}
+                        className="login-link"
+                        aria-label={user ? "บัญชีของฉัน" : "เข้าสู่ระบบ"}
+                      >
+                        <span className="account-label">
+                          {user ? "บัญชีของฉัน" : "เข้าสู่ระบบ"}
+                        </span>
+                        <UserRound size={18} />
+                      </Link>
+                    </>
+                  )}
+                  <details className="mobile-menu">
+                    <summary aria-label="เปิดเมนู">
+                      <Menu size={23} />
+                    </summary>
+                    <nav>
+                      {links.map(([h, l]) => (
+                        <Link key={h} href={h}>
+                          {l}
+                        </Link>
+                      ))}
+                      {accountsEnabled && (
+                        <>
+                          <Link href="/orders">คำสั่งซื้อ</Link>
+                          <Link href="/downloads">ดาวน์โหลด</Link>
+                          <Link href="/support">แจ้งปัญหา</Link>
+                          {isAdmin && <Link href="/admin">Admin</Link>}
+                        </>
+                      )}
+                    </nav>
+                  </details>
+                </div>
+              </div>
+            </header>
+            <main id="main" className="container main-content">
+              {paymentMode() === "sandbox" && (
+                <p className="demo-bar">
+                  SANDBOX — ใช้ทดสอบระบบเท่านั้น ห้ามโอนเงินจริง
                 </p>
-                {accountsEnabled && (
-                  <span className="trust">
-                    <ShieldCheck size={16} />{" "}
-                    ไฟล์โปรแกรมจัดส่งผ่านสิทธิ์ดาวน์โหลดส่วนตัว
-                  </span>
-                )}
-              </div>
+              )}
+              <aside
+                className="market-procurement-banner"
+                aria-label="ข้อมูลผู้จำหน่ายและจัดซื้อ"
+              >
+                <ShieldCheck size={23} aria-hidden="true" />
+                <div>
+                  <strong>
+                    จัดจำหน่ายและออกเอกสารจัดซื้อจัดจ้างในนาม {distributor}
+                  </strong>
+                  <p>
+                    พัฒนาโดย WORAMET AI LAB ·
+                    รองรับการจัดซื้อวิธีเฉพาะเจาะจงตามระเบียบและเงื่อนไขที่สถานศึกษากำหนด
+                  </p>
+                </div>
+                <StoreDialogButton name="procurement" className="btn ghost">
+                  เอกสารเบิกงบ
+                </StoreDialogButton>
+              </aside>
+              {children}
+            </main>
+            <section className="footer-cta container">
               <div>
-                <h3>เลือกโปรแกรม</h3>
-                <Link href="/products">โปรแกรมทั้งหมด</Link>
-                <Link href="/categories">หมวดหมู่โปรแกรม</Link>
-                <Link href="/demo">ทดลองใช้งาน</Link>
-                {accountsEnabled && <Link href="/membership">สมาชิก VIP</Link>}
+                <span className="eyebrow">LET’S BUILD A BETTER SCHOOL</span>
+                <h2>
+                  เลือกเครื่องมือที่ใช่
+                  <br />
+                  ให้โรงเรียนของคุณ
+                </h2>
               </div>
-              <div>
-                <h3>ความช่วยเหลือ</h3>
-                {accountsEnabled && (
-                  <>
-                    <Link href="/orders">คำสั่งซื้อของฉัน</Link>
-                    <Link href="/downloads">ดาวน์โหลดโปรแกรม</Link>
-                    <Link href="/support">แจ้งปัญหา</Link>
-                  </>
-                )}
-                <Link href="/guide">คู่มือการใช้งาน</Link>
-                <Link href="/school-systems">วางระบบสำหรับสถานศึกษา</Link>
-                <Link href="/contact">ติดต่อเรา</Link>
-                {isAdmin && <Link href="/admin">Admin Dashboard</Link>}
-                {user && (
-                  <form method="post" action="/auth/signout">
-                    <button className="text-button">ออกจากระบบ</button>
-                  </form>
-                )}
+              <Link className="btn" href="/contact">
+                คุยกับ WORAMET AI LAB <ArrowUpRight size={18} />
+              </Link>
+            </section>
+            <footer className="site-footer">
+              <div className="container footer-grid">
+                <div>
+                  <Link href="/" className="brand">
+                    <Command size={28} />
+                    <span>
+                      CHAYLUEKLAB<small>SOFTWARE STORE</small>
+                    </span>
+                  </Link>
+                  <p className="muted">
+                    ซอฟต์แวร์ที่ออกแบบมาเพื่อโรงเรียนไทย
+                    <br />
+                    พัฒนาโดย WORAMET AI LAB
+                    <br />
+                    จัดจำหน่ายโดย {distributor}
+                    <br />
+                    {shopLocation}
+                  </p>
+                  <a
+                    href={lineContact}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    LINE OA {lineId}
+                  </a>
+                  <a href={shopPhone.href}>โทร {shopPhone.label}</a>
+                  <p className="muted">{localService}</p>
+                  {accountsEnabled && (
+                    <span className="trust">
+                      <ShieldCheck size={16} />{" "}
+                      ไฟล์โปรแกรมจัดส่งผ่านสิทธิ์ดาวน์โหลดส่วนตัว
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <h3>เลือกโปรแกรม</h3>
+                  <Link href="/products">โปรแกรมทั้งหมด</Link>
+                  <Link href="/categories">หมวดหมู่โปรแกรม</Link>
+                  <Link href="/demo">ทดลองใช้งาน</Link>
+                  {accountsEnabled && (
+                    <Link href="/membership">สมาชิก VIP</Link>
+                  )}
+                </div>
+                <div>
+                  <h3>ความช่วยเหลือ</h3>
+                  {accountsEnabled && (
+                    <>
+                      <Link href="/orders">คำสั่งซื้อของฉัน</Link>
+                      <Link href="/downloads">ดาวน์โหลดโปรแกรม</Link>
+                      <Link href="/support">แจ้งปัญหา</Link>
+                    </>
+                  )}
+                  <Link href="/guide">คู่มือการใช้งาน</Link>
+                  <Link href="/school-systems">วางระบบสำหรับสถานศึกษา</Link>
+                  <Link href="/contact">ติดต่อเรา</Link>
+                  {isAdmin && <Link href="/admin">Admin Dashboard</Link>}
+                  {user && (
+                    <form method="post" action="/auth/signout">
+                      <button className="text-button">ออกจากระบบ</button>
+                    </form>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="container footer-bottom">
-              <span>© {new Date().getUTCFullYear()} WORAMET AI LAB</span>
-              <div>
-                <Link href="/privacy">ความเป็นส่วนตัว</Link>
-                <Link href="/terms">เงื่อนไขและการคืนเงิน</Link>
-                <a href="https://chaylueklab.com">เว็บไซต์หลัก ↗</a>
+              <div className="container footer-bottom">
+                <span>© {new Date().getUTCFullYear()} WORAMET AI LAB</span>
+                <div>
+                  <Link href="/privacy">ความเป็นส่วนตัว</Link>
+                  <Link href="/terms">เงื่อนไขและการคืนเงิน</Link>
+                  <a href="https://education.chaylueklab.com/">
+                    Education 2570
+                  </a>
+                </div>
               </div>
-            </div>
-          </footer>
-          <ViewportControls />
-          <MarketplaceDock products={marketplaceProducts} />
+            </footer>
+            <ViewportControls />
+            <MarketplaceDock products={marketplaceProducts} />
+          </StoreDialogs>
         </CartProvider>
       </body>
     </html>
