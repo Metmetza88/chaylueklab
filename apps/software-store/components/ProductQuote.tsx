@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useId, useRef } from "react";
-import { procurementHref, quoteHref } from "@/lib/marketplace";
+import { type productOffer, quoteHref } from "@/lib/marketplace";
+import { StoreDialog } from "./StoreDialogs";
 import { DialogTitle } from "./MarketplaceControls";
 
 export default function ProductQuote({
@@ -12,7 +13,7 @@ export default function ProductQuote({
   description,
   features,
   price,
-  ready,
+  offer,
   sport,
 }: {
   slug: string;
@@ -21,7 +22,7 @@ export default function ProductQuote({
   description: string;
   features: string[];
   price: string;
-  ready: boolean;
+  offer: ReturnType<typeof productOffer>;
   sport: boolean;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
@@ -55,7 +56,11 @@ export default function ProductQuote({
           <p className="market-quote-price">
             <strong>{price}</strong>
             <span>
-              {ready ? "ราคาตามแคตตาล็อก" : "ราคาเป้าหมาย · ยังไม่เปิดจำหน่าย"}
+              {offer === "ready"
+                ? "ราคาตามแคตตาล็อก"
+                : offer === "school-order"
+                  ? "ราคาเป้าหมาย · ยืนยันตามขอบเขตงาน"
+                  : "ราคาเป้าหมาย · ยังไม่เปิดจำหน่าย"}
             </span>
           </p>
           <p>
@@ -71,9 +76,7 @@ export default function ProductQuote({
           >
             ขอใบเสนอราคา
           </Link>
-          <Link href={procurementHref} onClick={() => dialog.current?.close()}>
-            ดูเอกสารเบิกงบ
-          </Link>
+          <StoreDialog kind="procurement" />
           <Link
             href={`/products/${slug}`}
             onClick={() => dialog.current?.close()}

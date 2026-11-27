@@ -18,12 +18,15 @@ import { useRef, useState, type FormEvent } from "react";
 import {
   lineContact,
   matchesProduct,
+  productOffer,
   procurementHref,
   quoteHref,
   sportSlug,
   sportTitle,
   type MarketplaceProduct,
 } from "@/lib/marketplace";
+
+import { ContactDialogIcon, StoreDialog } from "./StoreDialogs";
 
 const quote = quoteHref();
 
@@ -41,7 +44,7 @@ export function MarketplaceHeader({
     ? products.filter((product) => matchesProduct(product, query))
     : [];
   const readyCount = products.filter(
-    (product) => product.status === "ready",
+    (product) => productOffer(product) !== "roadmap",
   ).length;
   return (
     <div className="market-header-actions">
@@ -64,9 +67,7 @@ export function MarketplaceHeader({
       >
         <Bell size={19} />
       </button>
-      <Link href="/contact" aria-label="ติดต่อเรา">
-        <Mail size={19} />
-      </Link>
+      <ContactDialogIcon />
       <dialog
         ref={search}
         className="market-dialog"
@@ -126,7 +127,7 @@ export function MarketplaceHeader({
           {source === "error"
             ? "ไม่สามารถโหลดสถานะแคตตาล็อกได้ในขณะนี้"
             : readyCount
-              ? `มี ${readyCount} โปรแกรมพร้อมจำหน่าย ดูสถานะล่าสุดได้จากรายการระบบ`
+              ? `มี ${readyCount} โปรแกรมที่ติดต่อขอใบเสนอราคาได้ ดูรายละเอียดจากรายการระบบ`
               : "โปรแกรมอยู่ระหว่างพัฒนา ดูสถานะและราคาเป้าหมายได้จากแคตตาล็อก"}
         </p>
         <div className="market-links">
@@ -166,7 +167,7 @@ const replies = [
   ],
   [
     /ราคา|งบ|บาท|กีฬาสี/,
-    "ราคาเป้าหมายบนการ์ดเป็นข้อมูลวางแผนสำหรับโปรแกรมที่ยังไม่เปิดขาย ราคาของงานกีฬาสีให้ทีมประเมินจากจำนวนทีม รายการแข่ง และงานที่ต้องการครับ",
+    "ราคาเป้าหมายใช้ประกอบการวางแผนงบ ทีมงานประเมินงานกีฬาสีจากจำนวนทีม รายการแข่งขัน และขอบเขตที่โรงเรียนต้องการครับ",
   ],
   [
     /เดโม|ทดลอง/,
@@ -221,11 +222,12 @@ export default function MarketplaceDock({
     const pricing = /ราคา|เท่าไหร่|เท่าไร|กี่บาท|ค่าใช้จ่าย/u.test(
       text.replaceAll("ใบเสนอราคา", ""),
     );
+    const offer = product && productOffer(product);
     const priceReply =
       product &&
       (pricing ||
         (named && !/เอกสาร|เบิก|จัดซื้อ|ใบเสนอราคา|เดโม|ทดลอง/u.test(text)))
-        ? `${product.name} ${product.status === "ready" ? "ราคา" : "ราคาเป้าหมาย"} ${product.price}${product.status === "ready" ? "" : " ขณะนี้ยังไม่เปิดจำหน่าย"}`
+        ? `${product.name} ${offer === "ready" ? "ราคา" : "ราคาเป้าหมาย"} ${product.price}${offer === "school-order" ? " เปิดรับออเดอร์ตามขอบเขตงาน" : offer === "roadmap" ? " ขณะนี้ยังไม่เปิดจำหน่าย" : ""}`
         : "";
     const reply =
       replies.find(([pattern]) => pattern.test(question))?.[1] ??
@@ -269,25 +271,41 @@ export default function MarketplaceDock({
         <small aria-hidden="true">LINE</small>
       </a>
       <nav className="market-dock" aria-label="เมนูลัดบนมือถือ">
-        {shortcuts.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className={href === quote ? "market-dock-quote" : undefined}
-            aria-current={
-              path === href ||
-              (href === "/products" && path.startsWith("/products/")) ||
-              (href === procurementHref && path === "/school-systems")
-                ? "page"
-                : undefined
-            }
-          >
-            <span>
-              <Icon size={19} aria-hidden="true" />
-            </span>
-            <small>{label}</small>
-          </Link>
-        ))}
+        {shortcuts.map(({ href, label, icon: Icon }) => {
+          const contents = (
+            <>
+              <span>
+                <Icon size={19} aria-hidden="true" />
+              </span>
+              <small>{label}</small>
+            </>
+          );
+          if (href === procurementHref || href === "/contact") {
+            return (
+              <StoreDialog
+                key={href}
+                kind={href === procurementHref ? "procurement" : "contact"}
+              >
+                {contents}
+              </StoreDialog>
+            );
+          }
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={href === quote ? "market-dock-quote" : undefined}
+              aria-current={
+                path === href ||
+                (href === "/products" && path.startsWith("/products/"))
+                  ? "page"
+                  : undefined
+              }
+            >
+              {contents}
+            </Link>
+          );
+        })}
       </nav>
       <dialog
         ref={help}
@@ -345,9 +363,7 @@ export default function MarketplaceDock({
           >
             ขอใบเสนอราคา
           </Link>
-          <Link href={procurementHref} onClick={() => help.current?.close()}>
-            เอกสารเบิกงบ
-          </Link>
+          <StoreDialog kind="procurement" className="store-chat-documents" />
           <a href={lineContact} target="_blank" rel="noopener noreferrer">
             คุยกับทีมงานทาง LINE
           </a>

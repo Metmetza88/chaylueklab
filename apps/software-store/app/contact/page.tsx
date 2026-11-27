@@ -1,6 +1,7 @@
 import Link from "next/link";
 import QuoteMessage from "@/components/QuoteMessage";
-import { lineContact, procurementHref } from "@/lib/marketplace";
+import { ContactDetails, StoreDialog } from "@/components/StoreDialogs";
+import { lineContact, lineId } from "@/lib/marketplace";
 import { getProducts } from "@/lib/shop";
 import { configured } from "@/lib/env";
 
@@ -32,6 +33,7 @@ export default async function Page({
         แจ้งชื่อโปรแกรมที่สนใจ จำนวนผู้ใช้งานโดยประมาณ
         และงานที่ต้องการให้ระบบช่วย
       </p>
+      <ContactDetails />
       <div className="panel stack market-quotation" id="quotation">
         <h2>ขอใบเสนอราคา</h2>
         {programName && (
@@ -43,14 +45,14 @@ export default async function Page({
           ระบุข้อมูลของโรงเรียน คัดลอกข้อความ แล้วเปิด LINE เพื่อส่งให้ทางร้าน
         </p>
         <QuoteMessage product={programName || undefined} />
-        <Link href={procurementHref}>ดูเอกสารเบิกงบ →</Link>
+        <StoreDialog kind="procurement" className="btn ghost" />
         <a
           className="btn"
           href={lineContact}
           target="_blank"
           rel="noopener noreferrer"
         >
-          เปิด LINE Official Account ↗
+          เปิด LINE OA {lineId} ↗
         </a>
         <a
           href="https://chaylueklab.com"

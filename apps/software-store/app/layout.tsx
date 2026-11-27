@@ -4,6 +4,11 @@ import "./marketplace.css";
 import MarketplaceDock, {
   MarketplaceHeader,
 } from "@/components/MarketplaceControls";
+import {
+  ContactDetails,
+  ProcurementBanner,
+  StoreDialog,
+} from "@/components/StoreDialogs";
 import { configured, paymentMode } from "@/lib/env";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -192,6 +197,7 @@ export default async function Layout({
               </div>
             </div>
           </header>
+          <ProcurementBanner />
           <main id="main" className="container main-content">
             {paymentMode() === "sandbox" && (
               <p className="demo-bar">
@@ -225,7 +231,7 @@ export default async function Layout({
                 <p className="muted">
                   ซอฟต์แวร์ที่ออกแบบมาเพื่อโรงเรียนไทย
                   <br />
-                  พัฒนาโดย WORAMET AI LAB
+                  ร้าน พ.สมนึก 2&3 · พัฒนาโดย WORAMET AI LAB
                 </p>
                 {accountsEnabled && (
                   <span className="trust">
@@ -253,6 +259,8 @@ export default async function Layout({
                 <Link href="/guide">คู่มือการใช้งาน</Link>
                 <Link href="/school-systems">วางระบบสำหรับสถานศึกษา</Link>
                 <Link href="/contact">ติดต่อเรา</Link>
+                <StoreDialog kind="procurement" className="text-button" />
+                <ContactDetails />
                 {isAdmin && <Link href="/admin">Admin Dashboard</Link>}
                 {user && (
                   <form method="post" action="/auth/signout">

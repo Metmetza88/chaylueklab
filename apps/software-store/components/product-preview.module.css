@@ -1,0 +1,51 @@
+.screen {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  background: #f3f7fc;
+  color: #172845;
+  font-size: clamp(0.69rem, 1.5vw, 0.83rem);
+}
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 0.5rem;
+  padding: 0.55rem 0.75rem;
+  background: #1b3159;
+  color: #fff;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(5rem, 31%) minmax(0, 1fr);
+}
+.workspace aside {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  padding: 0.7rem 0.5rem;
+  background: #e2eafa;
+}
+.workspace aside span {
+  display: block;
+}
+.content {
+  padding: 0.7rem;
+  overflow-wrap: anywhere;
+}
+.content ul {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0.45rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.content li {
+  padding: 0.23rem 0.45rem;
+  border: 1px solid #d6e1f1;
+  border-inline-start: 0.2rem solid #4c72ae;
+  border-radius: 0.35rem;
+  background: #fff;
+}

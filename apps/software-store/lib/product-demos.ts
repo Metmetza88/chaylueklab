@@ -1,5 +1,15 @@
 export const productDemos = [
   {
+    slug: "met-sport",
+    name: "MET Sport",
+    category: "งานกิจกรรมโรงเรียน",
+    stage: "interactive_demo",
+    description: "บันทึกผลการแข่งขันและสรุปคะแนนทีมสี",
+    highlights: ["เลือกรายการแข่งขัน", "เพิ่มคะแนนทีมสี", "ดูคะแนนรวม"],
+    preview: "/screenshots/demos/met-sport.png",
+    previewAlt: "หน้าจอเดโม MET Sport แสดงผลการแข่งขันและคะแนนทีมสีสมมติ",
+  },
+  {
     slug: "met-school-pro",
     name: "MET School Pro",
     category: "งานเว็บไซต์โรงเรียน",
