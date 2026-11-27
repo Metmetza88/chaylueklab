@@ -90,3 +90,35 @@
   .campus-featured a { flex: 1 1 165px; }
   .campus-hero { padding-top: 24px; }
 }
+
+.campus-sr { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+.campus-stats { background:#10224d; color:#eef4ff; padding-block:24px; border-bottom:3px solid #d69b35; }
+.campus-stats-layout { display:grid; grid-template-columns:minmax(10rem,.8fr) minmax(0,2.2fr); gap:20px; align-items:center; }
+.campus-stats h2 { color:#fff; font-size:1.15rem; margin:0; }
+.campus-stats dl { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin:0; gap:12px; }
+.campus-stats dl div { min-width:0; display:flex; flex-direction:column-reverse; padding:4px 12px; border-inline-start:1px solid #ffffff49; }
+.campus-stats dt { font-size:.875rem; overflow-wrap:anywhere; }
+.campus-stats dd { color:#ffd16b; margin:0; font-size:clamp(1.8rem,4vw,2.5rem); font-weight:700; line-height:1.12; font-variant-numeric:tabular-nums; }
+.campus-features > .eyebrow,.campus-faq > .eyebrow { margin-bottom:7px; }
+.campus-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+.campus-tabs button[role="tab"] { border-color:#c8d7ec; padding:8px 16px; background:#fff; color:#153460; font-weight:700; }
+.campus-tabs button[role="tab"]:hover { background:#edf4ff; }
+.campus-tabs button[aria-selected="true"] { background:#152e69; color:#fff; border-color:#152e69; }
+.campus-feature-panel { display:grid; grid-template-columns:minmax(0,1.12fr) minmax(0,1fr); align-items:center; gap:clamp(16px,4vw,36px); padding:clamp(15px,3vw,28px); border:1px solid #c8d7ec; border-radius:16px; background:#fff; }
+.campus-feature-panel figure { margin:0; min-width:0; }
+.campus-feature-panel img { display:block; width:100%; height:auto; border-radius:10px; }
+.campus-feature-panel figcaption { margin-top:7px; color:var(--muted); font-size:.875rem; }
+.campus-feature-panel h3 { margin:8px 0; }
+.campus-feature-panel p { color:var(--muted); }
+.campus-feature-panel a { display:inline-flex; align-items:center; min-height:44px; text-underline-offset:3px; }
+.campus-feature-status { display:inline-block; border-radius:7px; padding:4px 8px; background:#fff2d8; color:#664007; font-size:.875rem; font-weight:700; }
+.campus-faq details { border:1px solid #c8d7ec; border-radius:12px; padding:0 16px; margin-top:10px; background:#fff; }
+.campus-faq summary { padding:13px 0; color:#173b70; min-height:46px; }
+.campus-faq details[open] { border-color:#89a4cc; }
+.campus-faq details p { margin:0 0 16px; color:var(--muted); max-width:76ch; }
+@media(max-width: 760px) {
+ .campus-stats-layout,.campus-feature-panel { grid-template-columns:1fr; }
+ .campus-stats dl { gap:5px; }
+ .campus-stats dl div { padding-inline:7px 3px; }
+ .campus-tabs button[role="tab"] { flex:1 1 auto; padding-inline:10px; }
+}

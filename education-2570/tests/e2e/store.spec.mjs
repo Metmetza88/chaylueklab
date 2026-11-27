@@ -8,7 +8,7 @@ test('homepage, illustrations and mobile layout',async({page},info)=>{
  await expect(page.getByRole('navigation',{name:'เลือกงานที่ต้องการ'}).getByRole('link')).toHaveCount(4);
  await page.evaluate(()=>document.fonts.ready);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
- for(const img of await page.locator('img').all()){await img.scrollIntoViewIfNeeded();await expect.poll(()=>img.evaluate(i=>i.complete&&i.naturalWidth>0)).toBe(true);}
+ for(const img of await page.locator('img:visible').all()){await img.scrollIntoViewIfNeeded();await expect.poll(()=>img.evaluate(i=>i.complete&&i.naturalWidth>0)).toBe(true);}
  await page.evaluate(()=>window.scrollTo(0,0));
  await page.screenshot({path:`evidence/home-${info.project.name.replaceAll(' ','-')}.png`,fullPage:true});
  expect(errors).toEqual([]);
@@ -45,6 +45,44 @@ test('home highlights the two synthetic teacher demos without sign-in',async({pa
  await page.goBack();
  await page.getByRole('link',{name:'เตรียมคำขอใบเสนอราคา',exact:true}).click();
  await expect(page.getByRole('heading',{level:1})).toHaveText('ขอใบเสนอราคา');
+});
+test('catalog counters begin when scrolled into view, with a reduced-motion fallback',async({page})=>{
+ await page.setViewportSize({width:390,height:480});
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ await page.goto('/');
+ const stats=page.getByRole('region',{name:'Education 2570 ในตัวเลข'});
+ await expect(stats).toHaveAttribute('data-counter-state','waiting');
+ await stats.scrollIntoViewIfNeeded();
+ await expect(stats).toHaveAttribute('data-counter-state','done');
+ await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','6']);
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.reload();
+ await stats.scrollIntoViewIfNeeded();
+ await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','6']);
+ expect(await stats.getAttribute('data-counter-state')).toBeNull();
+});
+test('home tabs swap the sample screen in place and FAQ answers toggle',async({page})=>{
+ await page.goto('/');
+ const tabs=page.getByRole('tablist',{name:'หมวดฟีเจอร์'});
+ const previousUrl=page.url();
+ const finance=tabs.getByRole('tab',{name:'งานการเงิน'});
+ await finance.click();
+ await expect(finance).toHaveAttribute('aria-selected','true');
+ const panel=page.getByRole('tabpanel',{name:'งานการเงิน'});
+ await expect(panel.getByRole('img')).toHaveAttribute('src','/assets/finance.svg');
+ await expect.poll(()=>panel.getByRole('img').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
+ await expect(panel.getByText(/วางระบบบันทึกรายรับรายจ่าย/)).toBeVisible();
+ await finance.press('ArrowRight');
+ await expect(tabs.getByRole('tab',{name:'งานกิจกรรม'})).toBeFocused();
+ await expect(page.getByRole('tabpanel',{name:'งานกิจกรรม'}).getByRole('img')).toHaveAttribute('src','/assets/activities.svg');
+ expect(page.url()).toBe(previousUrl);
+ const answer=page.getByText(/เดโมใช้ข้อมูลสมมติ ไม่ควรกรอกข้อมูลนักเรียนจริง/);
+ await expect(answer).toBeHidden();
+ const question=page.getByText('ข้อมูลนักเรียนปลอดภัยแค่ไหน',{exact:true});
+ await question.click();
+ await expect(answer).toBeVisible();
+ await question.click();
+ await expect(answer).toBeHidden();
 });
 test('catalog search, availability filter, empty state and real demos only',async({page})=>{
  await page.goto('/#/catalog');await expect(page.locator('.product-card')).toHaveCount(17);

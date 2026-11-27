@@ -31,9 +31,51 @@ function renderError(error) {
  const login=error.status===401;
  return view.workspaceShell(`<div class="panel"><h2>${login?'กรุณาเข้าสู่ระบบ':'ยังไม่สามารถเปิดพื้นที่ทำงานได้'}</h2><div class="notice ${login?'':'error'}" role="alert">${view.esc(error.message)}</div><div class="stack-actions">${login?'<a class="button" href="#/login">เข้าสู่ระบบ</a>':'<button class="button" data-retry>ลองอีกครั้ง</button>'}<a class="button secondary" href="#/catalog">สำรวจโปรแกรม</a></div></div>`,user);
 }
+let statsObserver;
+function animateHomeStats() {
+ const stats=main.querySelector('[data-campus-stats]');
+ if(!stats||!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ stats.dataset.counterState='waiting';
+ statsObserver=new IntersectionObserver(([entry],observer)=>{
+  if(!entry.isIntersecting)return;
+  observer.disconnect();
+  stats.dataset.counterState='running';
+  const counters=[...stats.querySelectorAll('[data-count-to]')].map(el=>[el,Number(el.dataset.countTo)]);
+  counters.forEach(([el])=>{el.textContent='0';});
+  const start=performance.now();
+  function tick(now) {
+   if(!stats.isConnected)return;
+   const progress=Math.min(1,(now-start)/750);
+   const motion=1-Math.pow(1-progress,3);
+   counters.forEach(([el,target])=>{el.textContent=String(Math.round(motion*target));});
+   if(progress<1)requestAnimationFrame(tick);
+   else stats.dataset.counterState='done';
+  }
+  requestAnimationFrame(tick);
+ },{threshold:.15});
+ statsObserver.observe(stats);
+}
+function selectCampusTab(tab) {
+ const tabs=[...tab.parentElement.querySelectorAll('[role="tab"]')];
+ tabs.forEach(item=>{
+  const active=item===tab;
+  item.setAttribute('aria-selected',String(active));
+  item.tabIndex=active?0:-1;
+  document.getElementById(item.getAttribute('aria-controls')).hidden=!active;
+ });
+}
+main.addEventListener('keydown',event=>{
+ const tab=event.target.closest('[data-campus-tabs] [role="tab"]');
+ if(!tab)return;
+ const tabs=[...tab.parentElement.querySelectorAll('[role="tab"]')], index=tabs.indexOf(tab);
+ const next={ArrowLeft:tabs[(index+tabs.length-1)%tabs.length],ArrowRight:tabs[(index+1)%tabs.length],Home:tabs[0],End:tabs.at(-1)}[event.key];
+ if(!next)return;
+ event.preventDefault();selectCampusTab(next);next.focus();
+});
 /** Router แยกหน้าร้านสาธารณะจาก Workspace ที่ต้องยืนยันตัวตน */
 async function renderRoute() {
  const version=++routeVersion;
+ statsObserver?.disconnect();
  const {path,query}=routeInfo();
  const isCurrent=()=>version===routeVersion;
  document.getElementById('navigation').classList.remove('open');
@@ -70,6 +112,7 @@ async function renderRoute() {
   } else html=view.head('ไม่พบหน้า')+`<section class="section container">${view.empty('ไม่พบหน้าที่ร้องขอ','กลับไปสำรวจโปรแกรมที่มีในแพลตฟอร์ม')}</section>`;
   if(!isCurrent())return;
   main.innerHTML=html;
+  if(path==='/')animateHomeStats();
   document.title=`${main.querySelector('h1')?.textContent??'Education 2570'} | Education 2570 — พ.สมนึก 2&3`;
   setCompare();
   // การ์ดหน้าหลักใช้ข้อมูลการเลือกปัจจุบันหลัง render
@@ -132,6 +175,7 @@ main.addEventListener('change',event=>{
 });
 main.addEventListener('click',async event=>{
  const target=event.target.closest('button');if(!target)return;
+ if(target.matches('[data-campus-tabs] [role="tab"]')){selectCampusTab(target);return;}
  if(target.hasAttribute('data-retry'))void renderRoute();
  if(target.dataset.removeCompare){compare=compare.filter(s=>s!==target.dataset.removeCompare);setCompare();void renderRoute();}
  if(target.hasAttribute('data-print'))window.print();

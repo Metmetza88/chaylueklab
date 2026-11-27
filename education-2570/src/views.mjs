@@ -17,6 +17,16 @@ const storeDemos = [
   ['รับสมัครนักเรียน', 'MET Admission', 'ส่งใบสมัคร ตรวจ และประกาศผล', 'met-admission'],
   ['เช็กชื่อ', 'MET Attendance', 'เช็กชื่อรายคาบและดาวน์โหลด CSV', 'met-attendance']
 ];
+const homeFeatures = [
+  ['students','งานทะเบียน','วางขั้นตอนตั้งแต่รับสมัคร จัดห้องเรียน ไปจนถึงดูประวัตินักเรียน'],
+  ['finance','งานการเงิน','วางระบบบันทึกรายรับรายจ่าย ค่าธรรมเนียม และรายงานงบประมาณ'],
+  ['activities','งานกิจกรรม','วางขั้นตอนลงทะเบียน บันทึกผู้เข้าร่วม และตรวจสอบเกียรติบัตร']
+];
+const homeQuestions = [
+  ['โรงเรียนขนาดเล็กใช้งานได้ไหม','ทดลองเดโมได้โดยไม่ต้องมีบัญชี และเลือกเฉพาะโปรแกรมที่จำเป็นได้ ก่อนเริ่มใช้งานจริง ทีมงานจะตรวจความเหมาะสมกับจำนวนผู้ใช้และงานของโรงเรียน'],
+  ['มีทีมงานอบรมการใช้งานให้หรือไม่','ระบุได้ในคำขอใบเสนอราคาว่าต้องการอบรมให้ใคร กี่คน และอยากอบรมแบบไหน ทีมงานจะยืนยันรูปแบบ ขอบเขต และค่าใช้จ่ายก่อนเริ่มงาน'],
+  ['ข้อมูลนักเรียนปลอดภัยแค่ไหน','เดโมใช้ข้อมูลสมมติ ไม่ควรกรอกข้อมูลนักเรียนจริง พื้นที่โรงเรียนตรวจบัญชีและสิทธิ์ตามโรงเรียน ก่อนนำข้อมูลจริงเข้าใช้ควรยืนยันสิทธิ์ผู้ใช้และแนวทางจัดเก็บข้อมูลร่วมกัน']
+];
 /** Escape ข้อมูลก่อนประกอบ HTML เพื่อไม่ให้ข้อความกลายเป็นสคริปต์ */
 export const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 export const badge = module => `<span class="badge ${esc(module.status)}">${esc(statusLabels[module.status])}</span>`;
@@ -58,6 +68,28 @@ export function home() {
       </figure>
     </div>
   </section>
+  <section class="campus-stats" aria-labelledby="campus-stats-title" data-campus-stats>
+    <div class="container campus-stats-layout">
+      <h2 id="campus-stats-title">Education 2570 ในตัวเลข</h2>
+      <dl>
+        ${[[modules.length,'โปรแกรมในแคตตาล็อก'],[categories.length,'หมวดงานโรงเรียน'],[modules.filter(m=>m.demo).length + storeDemos.length,'เดโมที่เปิดให้ทดลอง']].map(([value,label])=>`<div><dt>${label}</dt><dd><span class="campus-sr">${value}</span><span aria-hidden="true" data-count-to="${value}">${value}</span></dd></div>`).join('')}
+      </dl>
+    </div>
+  </section>
+  <section class="container campus-next campus-features" aria-labelledby="campus-features-title">
+    <p class="eyebrow">เลือกระบบตามงานของคุณ</p>
+    <h2 id="campus-features-title">สำรวจฟีเจอร์ระบบโรงเรียน</h2>
+    <div class="campus-tabs" role="tablist" aria-label="หมวดฟีเจอร์" data-campus-tabs>
+      ${homeFeatures.map(([slug,label],i)=>`<button type="button" role="tab" id="campus-tab-${slug}" aria-selected="${i===0}" aria-controls="campus-panel-${slug}" tabindex="${i===0?0:-1}">${label}</button>`).join('')}
+    </div>
+    ${homeFeatures.map(([slug,label,description],i)=>{
+      const module=modules.find(m=>m.slug===slug);
+      return `<section class="campus-feature-panel" role="tabpanel" id="campus-panel-${slug}" aria-labelledby="campus-tab-${slug}" tabindex="0" ${i?'hidden':''}>
+        <figure><img src="${module.image}" width="640" height="360" alt="ภาพตัวอย่างหน้าจอแนวคิด${label}" loading="lazy"><figcaption>ภาพแนวคิด ไม่ใช่หน้าจอระบบจริง</figcaption></figure>
+        <div><span class="campus-feature-status">${esc(statusLabels[module.status])}</span><h3>${label}</h3><p>${description}</p><ul>${module.features.slice(0,3).map(item=>`<li>${esc(item)}</li>`).join('')}</ul><a href="#/product/${slug}">ดูรายละเอียด${label}</a></div>
+      </section>`;
+    }).join('')}
+  </section>
   <section class="container campus-next" aria-labelledby="campus-next-title">
     <div class="campus-next-heading"><p class="eyebrow">สำหรับครูและฝ่ายจัดซื้อ</p><h2 id="campus-next-title">จากทดลองใช้ ถึงเตรียมขอราคา</h2></div>
     <ol class="campus-steps">
@@ -65,6 +97,11 @@ export function home() {
       <li><strong>เลือกเฉพาะโปรแกรมที่ต้องใช้</strong><p>ค้นตามหมวดหรือเปรียบเทียบก่อนจัดชุดให้โรงเรียน</p><a href="#/catalog">สำรวจแคตตาล็อก</a></li>
       <li><strong>เตรียมสรุปให้ฝ่ายจัดซื้อ</strong><p>เลือกโปรแกรมและสร้างสรุปคำขอไว้ตรวจทานก่อนส่ง</p><a href="#/quote">เตรียมคำขอใบเสนอราคา</a></li>
     </ol>
+  </section>
+  <section class="container campus-next campus-faq" aria-labelledby="campus-faq-title">
+    <p class="eyebrow">ก่อนเริ่มใช้งาน</p>
+    <h2 id="campus-faq-title">คำถามที่พบบ่อย</h2>
+    ${homeQuestions.map(([question,answer])=>`<details><summary>${question}</summary><p>${answer}</p></details>`).join('')}
   </section>
   `;
 }
