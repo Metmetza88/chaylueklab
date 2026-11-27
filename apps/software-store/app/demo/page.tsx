@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ProductArt } from "@/components/ProductCard";
+import { productDemos } from "@/lib/product-demos";
 export default function Page() {
   return (
     <section className="section">
@@ -9,20 +10,13 @@ export default function Page() {
         สำรวจขั้นตอนใช้งานด้วยข้อมูลสมมติ ไม่มีการรับข้อมูลเด็กจริงในระบบทดลอง
       </p>
       <div className="info-grid">
-        {[
-          [
-            "met-school-pro",
-            "MET School Pro",
-            "เว็บไซต์ ข่าวสาร และตั้งค่าโรงเรียน",
-          ],
-          ["met-admission", "MET Admission", "รับสมัคร ตรวจเอกสาร และติดตามผล"],
-        ].map(([slug, name, desc]) => (
+        {productDemos.map(({ slug, name, description }) => (
           <article className="product-card" key={slug}>
             <ProductArt slug={slug} />
             <div className="product-content stack">
               <span className="status">Interactive Demo · ข้อมูลสมมติ</span>
               <h2>{name}</h2>
-              <p>{desc}</p>
+              <p>{description}</p>
               <Link className="btn" href={`/demo/${slug}`}>
                 เปิดระบบทดลอง →
               </Link>
@@ -32,9 +26,8 @@ export default function Page() {
         ))}
       </div>
       <p className="notice">
-        Demo แสดงการทำงานฝั่งเบราว์เซอร์โดยไม่บันทึกข้อมูลส่วนบุคคล
-        ระบบติดตั้งจริงใช้ Supabase และการตรวจสิทธิ์บน Server สินค้ายัง Coming
-        Soon จนผ่านการตรวจรับการติดตั้งและ Workflow ทั้งหมด
+        เดโมใช้ข้อมูลสมมติในเบราว์เซอร์
+        สถานะการเปิดบริการของแต่ละระบบดูได้จากหน้ารายละเอียดโปรแกรม
       </p>
     </section>
   );

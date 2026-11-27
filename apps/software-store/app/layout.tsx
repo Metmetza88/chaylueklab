@@ -202,6 +202,7 @@ export default async function Layout({
                   </>
                 )}
                 <Link href="/guide">คู่มือการใช้งาน</Link>
+                <Link href="/school-systems">วางระบบสำหรับสถานศึกษา</Link>
                 <Link href="/contact">ติดต่อเรา</Link>
                 {isAdmin && <Link href="/admin">Admin Dashboard</Link>}
                 {user && (

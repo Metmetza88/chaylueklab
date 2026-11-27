@@ -57,6 +57,11 @@ export default async function Home() {
               <Check size={15} /> ใช้งานผ่านมือถือ
             </span>
           </div>
+          <p>
+            <Link className="subtle-link" href="/school-systems">
+              วางระบบสำหรับโรงเรียนและขอเอกสารจัดซื้อ <ArrowUpRight size={15} />
+            </Link>
+          </p>
         </div>
         <div className="hero-visual">
           <div className="visual-glow" />

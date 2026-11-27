@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Check, ArrowUpRight } from "lucide-react";
@@ -6,6 +5,20 @@ import AddToCart from "@/components/AddToCart";
 import { ProductArt } from "@/components/ProductCard";
 import { getProducts, baht } from "@/lib/shop";
 import { paymentMode } from "@/lib/env";
+import ProductGallery from "@/components/ProductGallery";
+import { productDemos } from "@/lib/product-demos";
+
+const screenshots: Record<string, { file: string; label: string }[]> = {
+  "met-school-pro": [
+    { file: "met-school-pro-site.png", label: "เว็บไซต์โรงเรียนตัวอย่าง" },
+    { file: "met-school-pro-actual-site-local.png", label: "เว็บไซต์บนมือถือ" },
+  ],
+  "met-admission": [
+    { file: "met-admission-dashboard.png", label: "ภาพรวมงานรับสมัคร" },
+    { file: "met-admission-iphone-layout.png", label: "รับสมัครบนมือถือ" },
+    { file: "met-admission-pdf.png", label: "ใบสมัคร PDF ตัวอย่าง" },
+  ],
+};
 export default async function Product({
   params,
 }: {
@@ -15,7 +28,8 @@ export default async function Product({
   const { products } = await getProducts();
   const p = products.find((x) => x.slug === slug);
   if (!p) notFound();
-  const hasDemo = ["met-school-pro", "met-admission"].includes(slug);
+  const hasDemo = productDemos.some((demo) => demo.slug === slug);
+  const images = screenshots[slug];
   return (
     <section className="section">
       <div className="breadcrumbs">
@@ -23,17 +37,10 @@ export default async function Product({
       </div>
       <div className="product-detail">
         <div>
-          <ProductArt slug={slug} large />
-          <div className="notice">
-            ภาพกราฟิกประกอบสินค้า ·{" "}
-            {hasDemo
-              ? "ชมภาพจากระบบจริงในหน้าทดลองใช้งาน"
-              : "ระบบอยู่ระหว่างแผนพัฒนา"}
-          </div>
-          {hasDemo && (
-            <Link className="btn ghost" href={`/demo/${slug}`}>
-              เปิดระบบทดลอง <ArrowUpRight size={18} />
-            </Link>
+          {images ? (
+            <ProductGallery images={images} />
+          ) : (
+            <ProductArt slug={slug} large />
           )}
         </div>
         <div className="stack">
@@ -67,29 +74,14 @@ export default async function Product({
               </li>
             ))}
           </ul>
+          {hasDemo && (
+            <Link className="btn ghost" href={`/demo/${slug}`}>
+              เปิดระบบทดลอง <ArrowUpRight size={18} />
+            </Link>
+          )}
           <Link href="/contact">สอบถามเกี่ยวกับโปรแกรมนี้ →</Link>
         </div>
       </div>
-      {hasDemo && (
-        <section className="section">
-          <h2>ภาพจากระบบทดลองจริง</h2>
-          <p className="muted">
-            ถ่ายจากระบบที่พัฒนาใน Repository นี้ โดยใช้ข้อมูลสมมติเท่านั้น
-          </p>
-          <Image
-            src={`/screenshots/${slug === "met-admission" ? "met-admission-dashboard" : "met-school-pro-site"}.png`}
-            alt={`หน้าจอจริงของ ${p.name} ในโหมดทดลองข้อมูลสมมติ`}
-            width={1440}
-            height={1800}
-            style={{
-              width: "100%",
-              height: "auto",
-              borderRadius: 12,
-              border: "1px solid #30384f",
-            }}
-          />
-        </section>
-      )}
       <div className="info-grid">
         <section className="panel">
           <h2>สิ่งที่ได้รับเมื่อเปิดจำหน่าย</h2>

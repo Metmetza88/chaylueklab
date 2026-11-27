@@ -1,0 +1,130 @@
+.page {
+  padding-block: 32px 14px;
+}
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 26px;
+  align-items: center;
+  padding: clamp(20px, 5vw, 52px);
+  border: 1px solid #354b63;
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse at top right, #214844, transparent 62%), #141d2e;
+}
+.hero h1 {
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.2;
+}
+.hero p {
+  font-size: 1rem;
+  max-width: 44ch;
+}
+.hero :global(.eyebrow) {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.hero p,
+.section > p,
+.section article p,
+.contact p {
+  color: #bfcadf;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.signals {
+  padding: 19px;
+  background: #12232b;
+  border: 1px solid #375854;
+  border-radius: 16px;
+}
+.signals h2 {
+  font-size: 1.25rem;
+}
+.signals ul {
+  margin-bottom: 0;
+  padding-inline-start: 20px;
+}
+.signals li {
+  padding-block: 4px;
+}
+.section {
+  padding-top: 32px;
+  scroll-margin-top: 84px;
+}
+.cards,
+.procurement {
+  display: grid;
+  gap: 12px;
+  margin-block: 12px 0;
+}
+.cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.procurement {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.section article,
+.faq details {
+  padding: 15px;
+  background: #121c2c;
+  border: 1px solid #293950;
+  border-radius: 14px;
+}
+.section article h3 {
+  font-size: 1.03rem;
+}
+.section article > svg {
+  color: var(--cyan);
+  margin-bottom: 8px;
+}
+.section article a:not(:global(.btn)) {
+  color: #9be5dc;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.faq {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+.faq summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.faq details p {
+  margin-bottom: 0;
+}
+.contact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 22px;
+  margin-top: 26px;
+  border-radius: 16px;
+  background: #132934;
+}
+.contact p {
+  margin-bottom: 0;
+}
+@media (max-width: 830px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  .cards,
+  .procurement {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .cards,
+  .procurement {
+    grid-template-columns: 1fr;
+  }
+}

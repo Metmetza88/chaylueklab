@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { test, expect } from "@playwright/test";
 const pages = [
   "/",
@@ -6,6 +7,7 @@ const pages = [
   "/demo",
   "/demo/met-school-pro",
   "/demo/met-admission",
+  "/demo/met-attendance",
   "/cart",
   "/checkout",
   "/login",
@@ -14,6 +16,7 @@ const pages = [
   "/support",
   "/contact",
   "/guide",
+  "/school-systems",
   "/privacy",
   "/terms",
 ];
@@ -41,8 +44,44 @@ test("catalog filters and product details work", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "MET Admission", exact: true }),
   ).toBeVisible();
+  await page.getByRole("button", { name: "ใบสมัคร PDF ตัวอย่าง" }).click();
+  await expect(
+    page.getByRole("img", { name: "ใบสมัคร PDF ตัวอย่าง" }),
+  ).toBeVisible();
   await page.getByRole("link", { name: /เปิดระบบทดลอง/ }).click();
   await expect(page.locator("div.demo-bar")).toContainText("ข้อมูลสมมติ");
+});
+test("school services links to the demo and attendance keeps school and lesson records separate", async ({
+  page,
+}) => {
+  await page.goto("/school-systems");
+  await expect(
+    page.getByRole("link", { name: /แบบฟอร์ม THNIC/ }),
+  ).toHaveAttribute(
+    "href",
+    "https://www.thnic.co.th/doc/doc.ac/2018/doc-ac-th.pdf",
+  );
+  await page.getByRole("link", { name: /เปิดเดโม เช็กชื่อ/ }).click();
+  const status = page.getByLabel("สถานะของ ธารา");
+  await status.selectOption("absent");
+  await expect(page.getByRole("status")).toContainText("ขาด");
+  await page.getByRole("button", { name: /08:40.*คณิตศาสตร์/ }).click();
+  await expect(status).toHaveValue("");
+  await status.selectOption("present");
+  await page.getByLabel("โรงเรียนและห้อง").selectOption("hilltop");
+  await expect(page.getByLabel("สถานะของ สายรุ้ง")).toHaveValue("");
+  await page.getByLabel("โรงเรียนและห้อง").selectOption("riverside");
+  await expect(status).toHaveValue("present");
+  await page.getByLabel("รอบเช็กชื่อ").selectOption("daily");
+  await expect(status).toHaveValue("absent");
+  await expect(page.getByText("ขาด 3 · สาย 0")).toBeVisible();
+  const [download] = await Promise.all([
+    page.waitForEvent("download"),
+    page.getByRole("button", { name: "ดาวน์โหลด CSV" }).click(),
+  ]);
+  const csv = await readFile((await download.path())!, "utf8");
+  expect(csv).toContain('"รายวัน","01","ธารา","ขาด"');
+  expect(csv).not.toContain("สายรุ้ง");
 });
 test("demo completes admission review and result announcement without submitting private data", async ({
   page,

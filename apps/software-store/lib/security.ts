@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
+export { csvCell } from "./csv";
 export const uuid = z.uuid();
 export function verifySignature(
   raw: string,
@@ -22,14 +23,6 @@ export function verifySignature(
     .digest();
   const actual = Buffer.from(signature.slice(7), "hex");
   return actual.length === expected.length && timingSafeEqual(actual, expected);
-}
-export function csvCell(v: unknown) {
-  const text = String(v ?? "");
-  return (
-    '"' +
-    (/^[\s]*[=+\-@\t\r]/.test(text) ? "'" + text : text).replaceAll('"', '""') +
-    '"'
-  );
 }
 export function sameOrigin(request: Request) {
   const origin = request.headers.get("origin");
