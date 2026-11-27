@@ -1,6 +1,26 @@
 import type { Product } from "@/lib/shop";
 
-export const lineContact = "https://lin.ee/Vgg2m3N";
+export const lineId = "@125cbuuu";
+export const lineContact = `https://line.me/R/ti/p/${encodeURIComponent(lineId)}`;
+export const schoolDemoArea =
+  "พร้อมเข้าสาธิตระบบถึงโรงเรียนในพื้นที่ อ.สตึก และ จ.บุรีรัมย์";
+
+const schoolOrderSlugs = new Set([
+  "met-sport",
+  "met-attendance",
+  "met-admission",
+  "met-school-pro",
+]);
+
+export function productOffer({
+  slug,
+  status,
+}: Pick<Product, "slug" | "status">) {
+  if (status === "ready") return "ready";
+  if (status === "coming_soon" && schoolOrderSlugs.has(slug))
+    return "school-order";
+  return "roadmap";
+}
 export const procurementHref = "/school-systems#procurement";
 export const sportSlug = "met-sport";
 export const sportTitle = "ระบบบริหารจัดการแข่งขันกีฬาสีภายในโรงเรียน";

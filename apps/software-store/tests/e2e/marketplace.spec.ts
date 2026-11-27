@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 
+const line = "https://line.me/R/ti/p/%40125cbuuu";
 const sport = "ระบบบริหารจัดการแข่งขันกีฬาสีภายในโรงเรียน";
 
 test("sport leads the storefront and catalog, and header search uses the catalog", async ({
@@ -55,7 +56,7 @@ test("product quote keeps the product context and opens the existing LINE channe
     dialog.getByText("เอกสารประกอบการเบิกงบโครงการกีฬาสี"),
   ).toBeVisible();
   await expect(
-    dialog.getByText("ราคาเป้าหมาย · ยังไม่เปิดจำหน่าย"),
+    dialog.getByText("ราคาเป้าหมาย · ยืนยันตามขอบเขตงาน"),
   ).toBeVisible();
   await dialog.getByRole("link", { name: "ขอใบเสนอราคา", exact: true }).click();
   await expect(page).toHaveURL(/\/contact\?product=met-sport#quotation$/);
@@ -63,8 +64,8 @@ test("product quote keeps the product context and opens the existing LINE channe
     /MET Sport/,
   );
   await expect(
-    page.getByRole("link", { name: "เปิด LINE Official Account" }),
-  ).toHaveAttribute("href", "https://lin.ee/Vgg2m3N");
+    page.getByRole("link", { name: "เปิด LINE OA @125cbuuu" }),
+  ).toHaveAttribute("href", line);
 });
 
 test("shop chat answers prices and procurement and fixed navigation reaches the relevant pages", async ({
@@ -75,17 +76,28 @@ test("shop chat answers prices and procurement and fixed navigation reaches the 
   if (page.viewportSize()!.width > 720) {
     await expect(nav).toBeHidden();
   } else {
-    await expect(nav.getByRole("link")).toHaveCount(5);
-    await nav.getByRole("link", { name: "เอกสารเบิกงบ" }).click();
-    await expect(page).toHaveURL(/\/school-systems#procurement$/);
-    await expect(page.locator("#procurement")).toBeInViewport();
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            document.documentElement.scrollWidth -
+            document.documentElement.clientWidth,
+        ),
+      )
+      .toBe(0);
+    await expect(nav.getByRole("link")).toHaveCount(3);
+    await nav.getByRole("button", { name: "เอกสารเบิกงบ" }).click();
+    await expect(
+      page.getByRole("dialog", { name: "เอกสารเบิกงบ" }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
     await nav.getByRole("link", { name: "ขอใบเสนอราคา" }).click();
     await expect(page).toHaveURL(/\/contact#quotation$/);
   }
 
   await expect(page.getByRole("link", { name: "แชท LINE" })).toHaveAttribute(
     "href",
-    "https://lin.ee/Vgg2m3N",
+    line,
   );
   await page.getByRole("button", { name: "🤖 ถามได้เลย!" }).click();
   const dialog = page.getByRole("dialog", { name: "ถามเรื่องราคาและเบิกงบ" });
@@ -94,11 +106,103 @@ test("shop chat answers prices and procurement and fixed navigation reaches the 
   await question.press("Enter");
   await expect(dialog.getByRole("log")).toContainText("MET Sport ราคาเป้าหมาย");
   await expect(dialog.getByRole("log")).toContainText("990");
-  await dialog.getByRole("button", { name: "เอกสารเบิกงบ" }).click();
+  await dialog
+    .locator(".market-links")
+    .first()
+    .getByRole("button", { name: "เอกสารเบิกงบ" })
+    .click();
   await expect(dialog.getByRole("log")).toContainText(
     "การอนุมัติเป็นขั้นตอนของโรงเรียน",
   );
   await expect(
     dialog.getByRole("link", { name: "ขอใบเสนอราคา" }),
   ).toHaveAttribute("href", "/contact?product=met-sport#quotation");
+});
+
+test("school ordering, procurement downloads and local contact are discoverable", async ({
+  page,
+  request,
+}) => {
+  await page.goto("/products");
+  const cards = page.locator(".product-card");
+  await expect(cards).toHaveCount(15);
+  await expect(cards.filter({ hasText: "เปิดรับออเดอร์" })).toHaveCount(4);
+  await expect(cards.filter({ hasText: "แผนพัฒนา" })).toHaveCount(11);
+  await expect(cards.filter({ hasText: "ภาพจำลองแนวคิด" })).toHaveCount(11);
+  await expect(
+    page.getByText("จัดจำหน่ายและออกเอกสารในนาม ร้าน พ.สมนึก 2&3"),
+  ).toBeVisible();
+
+  await page
+    .getByRole("complementary", { name: "เอกสารจัดซื้อสำหรับโรงเรียน" })
+    .getByRole("button", { name: "เอกสารเบิกงบ" })
+    .click();
+  const procurement = page.getByRole("dialog", { name: "เอกสารเบิกงบ" });
+  await expect(procurement.getByText("ใบส่งมอบงาน")).toBeVisible();
+  await expect(procurement.getByText("ใบเสร็จรับเงิน")).toBeVisible();
+  await expect(
+    procurement.getByRole("link", {
+      name: "ขอรับไฟล์ตัวอย่างทาง LINE @125cbuuu",
+    }),
+  ).toHaveAttribute("href", line);
+  const downloads = procurement.getByRole("link", { name: /^ดาวน์โหลด/ });
+  await expect(downloads).toHaveCount(6);
+  for (const download of await downloads.all()) {
+    const href = await download.getAttribute("href");
+    expect(href).toMatch(/^\/procurement\//);
+    const response = await request.get(href!);
+    expect(response.ok()).toBeTruthy();
+    const bytes = await response.body();
+    expect(bytes.subarray(0, 4).toString()).toBe(
+      href!.endsWith(".pdf") ? "%PDF" : "PK\u0003\u0004",
+    );
+  }
+  await page.keyboard.press("Escape");
+
+  await page
+    .locator(".market-header-actions")
+    .getByRole("button", { name: "ติดต่อเรา" })
+    .click();
+  const contact = page.getByRole("dialog", { name: "ติดต่อเรา" });
+  await expect(
+    contact.getByText(
+      "พร้อมเข้าสาธิตระบบถึงโรงเรียนในพื้นที่ อ.สตึก และ จ.บุรีรัมย์",
+    ),
+  ).toBeVisible();
+  await expect(
+    contact.getByRole("link", { name: "LINE OA @125cbuuu" }),
+  ).toHaveAttribute("href", line);
+  await page.keyboard.press("Escape");
+
+  await page
+    .getByRole("link", {
+      name: "อุปกรณ์การเรียน & พัสดุสำนักงาน (ร้าน พ.สมนึก 2&3)",
+    })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "อุปกรณ์กีฬาสี" }),
+  ).toBeVisible();
+  await page
+    .getByRole("article")
+    .filter({ hasText: "อุปกรณ์กีฬาสี" })
+    .getByRole("link", { name: "ขอใบเสนอราคา" })
+    .click();
+  await expect(page.getByLabel("ข้อความสำหรับส่งทาง LINE")).toHaveValue(
+    /อุปกรณ์กีฬาสี/,
+  );
+});
+
+test("MET Sport demo adds and resets sample scores", async ({ page }) => {
+  await page.goto("/products");
+  const card = page.locator('[data-product-slug="met-sport"]');
+  await card.getByRole("link", { name: "ทดลองดูตัวอย่าง (Demo)" }).click();
+  await expect(
+    page.getByRole("heading", { name: "ทดลองบันทึกคะแนนกีฬาสี" }),
+  ).toBeVisible();
+  const blue = page.locator("dl > div").filter({ hasText: "ทีมสีฟ้า" });
+  await expect(blue).toContainText("22 คะแนนรวม");
+  await page.getByRole("button", { name: "เพิ่ม 1 คะแนน" }).click();
+  await expect(blue).toContainText("23 คะแนนรวม");
+  await page.getByRole("button", { name: "คืนคะแนนตัวอย่าง" }).click();
+  await expect(blue).toContainText("22 คะแนนรวม");
 });

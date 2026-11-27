@@ -94,7 +94,7 @@ export default function HomeFeatures() {
             </Link>
             <p className={styles.availability}>
               {feature.stage === "release_candidate"
-                ? "Source Code รุ่นทดสอบ · ยังไม่เปิดจำหน่าย"
+                ? "Source Code รุ่นทดสอบ · เปิดรับประเมินงานตามสเปกโรงเรียน"
                 : "Interactive Demo · ระบบผลิตภัณฑ์ยังอยู่ในแผนพัฒนา"}
             </p>
           </div>
