@@ -1,4 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
+import { School } from "lucide-react";
+import { productTitle, SPORTS_SLUG } from "@/lib/marketplace";
+import { ProductQuote } from "./MarketDialogs";
 import {
   ArrowUpRight,
   GraduationCap,
@@ -39,36 +43,36 @@ export function ProductArt({
     </div>
   );
 }
+const images: Record<string,string> = {
+  [SPORTS_SLUG]:"/art/met-sport-market.svg",
+  "met-admission":"/screenshots/met-admission-dashboard.png",
+  "met-school-pro":"/screenshots/met-school-pro-site.png",
+};
+const publicDemos=new Set(["met-admission","met-school-pro","met-attendance"]);
 export default function ProductCard({ p }: { p: Product }) {
+  const featured=p.slug===SPORTS_SLUG;
+  const title=productTitle(p.slug,p.name);
+  const price=baht(p.price_cents);
+  const ready=p.status==="ready";
+  const image=Object.hasOwn(images,p.slug)?images[p.slug]:undefined;
   return (
-    <article className="product-card" data-product-state={p.status}>
-      <Link href={`/products/${p.slug}`} aria-label={`รายละเอียด ${p.name}`}>
-        <ProductArt slug={p.slug} />
+    <article className="product-card market-card" data-product-state={p.status} data-market-slug={p.slug}>
+      <Link className="market-preview" href={`/products/${p.slug}`} aria-label={`รายละเอียด ${p.name}`}>
+        {image?<Image src={image} alt={featured?"ภาพแนวคิดแดชบอร์ด MET Sport":`หน้าจอตัวอย่าง ${title}`} fill sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 400px" unoptimized/>:
+          <div className="market-concept" aria-hidden="true"><div className="market-concept-bar">● ● ● <b>{p.name}</b></div><div className="market-concept-body"><div className="market-concept-rail">▣<br/>☰<br/>▤</div><div className="market-concept-main"><strong>{p.category}</strong><div>{p.features.slice(0,3).map((feature)=><span key={feature}>{feature}</span>)}</div><i/><i/><i/></div></div></div>}
+        <span className="market-ribbon">{featured?"ไฮไลต์ · กีฬาสี":ready?"พร้อมจำหน่าย":"แผนพัฒนา"}</span>
+        <span className="market-preview-note">{image&&!featured?"หน้าจอตัวอย่าง":"ภาพแนวคิด"}</span>
       </Link>
       <div className="product-content">
-        <div className="row spaced">
-          <span className="category-label">{p.category}</span>
-          <span className={`status ${p.status === "ready" ? "ready" : ""}`}>
-            {p.status === "ready" ? "พร้อมจำหน่าย" : "Coming Soon"}
-          </span>
-        </div>
-        <h3>
-          <Link href={`/products/${p.slug}`}>{p.name}</Link>
-        </h3>
+        <div className="row spaced"><span className="category-label">{p.category}</span><span className={`status ${ready?"ready":""}`}>{ready?"พร้อมจำหน่าย":"Coming Soon"}</span></div>
+        <h3><Link href={`/products/${p.slug}`}>{title}</Link></h3>
         <p>{p.tagline}</p>
+        <div className="market-card-meta"><span><School size={16}/> ยังไม่เผยแพร่ยอดโรงเรียน</span><span>{publicDemos.has(p.slug)?"Cloud Web App · เดโม":ready?"ซอฟต์แวร์โรงเรียน":"ต้นแบบซอฟต์แวร์"}</span></div>
         <div className="product-bottom">
-          <span>
-            <small>ราคา{p.status === "ready" ? "" : "เป้าหมาย"}</small>
-            <strong>{baht(p.price_cents)}</strong>
-          </span>
-          <Link
-            className="icon-button"
-            href={`/products/${p.slug}`}
-            aria-label={`ดู ${p.name}`}
-          >
-            <ArrowUpRight size={21} />
-          </Link>
+          <span><small>{ready?"ราคา":"ราคาเป้าหมาย"}</small><strong>{price}</strong></span>
+          <Link className="icon-button" href={`/products/${p.slug}`} aria-label={`ดู ${p.name}`}><ArrowUpRight size={21}/></Link>
         </div>
+        <ProductQuote slug={p.slug} name={title} description={p.description} features={p.features} price={price} ready={ready}/>
       </div>
     </article>
   );

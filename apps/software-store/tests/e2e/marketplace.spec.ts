@@ -1,0 +1,68 @@
+import { expect,test } from "@playwright/test";
+
+test("featured sports first; header search filters existing catalog data",async({page})=>{
+  await page.goto("/");
+  await expect(page.locator(".product-card").first()).toHaveAttribute("data-market-slug","met-sport");
+  await page.getByRole("button",{name:"ค้นหาโปรแกรม",exact:true}).click();
+  const field=page.getByRole("searchbox",{name:"ค้นหาใน Software Store"});
+  await field.fill("กีฬาสี");
+  await expect(page).toHaveURL(/\/products\?q=/);
+  await expect(page.locator(".product-card")).toHaveCount(1);
+  await expect(page.locator(".product-card").first()).toHaveAttribute("data-market-slug","met-sport");
+  await field.fill("MET Admission");
+  await expect(page.locator(".product-card")).toHaveCount(1);
+  await expect(page.locator(".product-card").first()).toHaveAttribute("data-market-slug","met-admission");
+  await field.press("Escape");
+  await expect(field).toBeHidden();
+  await page.goto("/products?sort=desc");
+  await expect(page.locator(".product-card").first()).toHaveAttribute("data-market-slug","met-sport");
+});
+test("sports popup gives accurate target price, procurement and local quote draft",async({page})=>{
+  await page.goto("/products");
+  const card=page.locator(".product-card").first();
+  await expect(card.getByRole("heading")).toHaveText("ระบบบริหารจัดการแข่งขันกีฬาสีภายในโรงเรียน");
+  await expect(card.getByRole("img")).toHaveAttribute("src","/art/met-sport-market.svg");
+  await expect(card).toContainText("ราคาเป้าหมาย");
+  const button=card.getByRole("button",{name:"ดูรายละเอียด / ขอใบเสนอราคา"});
+  await button.click();
+  const dialog=page.getByRole("dialog");
+  await expect(dialog).toHaveAccessibleName("ระบบบริหารจัดการแข่งขันกีฬาสีภายในโรงเรียน");
+  await expect(dialog).toContainText("การเบิกงบโครงการ");
+  await expect(dialog.getByRole("link",{name:"ดูเอกสารจัดซื้อและแบบฟอร์ม"})).toHaveAttribute("href","/school-systems#procurement");
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+  await expect(button).toBeFocused();
+  await button.click();
+  await dialog.getByRole("link",{name:"เตรียมคำขอใบเสนอราคา"}).click();
+  await expect(page.getByLabel("โปรแกรมที่สนใจ")).toHaveValue(/จัดการแข่งขันกีฬาสี/);
+  await page.getByLabel("ชื่อโรงเรียน / หน่วยงาน").fill("โรงเรียนทดสอบ");
+  await page.getByLabel("โครงการและเอกสารที่ต้องใช้").fill("กีฬาสี 4 ทีม");
+  await page.getByRole("button",{name:"สร้างร่างคำขอ"}).click();
+  await expect(page.getByLabel("ร่างคำขอ")).toHaveValue(/โรงเรียนทดสอบ/);
+  await expect(page.getByText("ร่างคำขอ · ยังไม่ได้ส่ง")).toBeVisible();
+  await expect(page.getByRole("link",{name:"เปิด LINE เพื่อส่งร่าง"})).toHaveAttribute("href","https://lin.ee/Vgg2m3N");
+});
+test("chat, notification and fixed mobile paths reflect existing contact and procurement",async({page})=>{
+  await page.goto("/");
+  await expect(page.getByRole("link",{name:"แชท LINE CHAYLUEKLAB"})).toHaveAttribute("href","https://lin.ee/Vgg2m3N");
+  await page.getByRole("button",{name:/ถามได้เลย/}).click();
+  const dialog=page.getByRole("dialog");
+  await dialog.getByRole("button",{name:"ราคา",exact:true}).click();
+  await expect(dialog.getByRole("log")).toContainText("ราคาเป้าหมาย");
+  await dialog.getByRole("textbox",{name:"พิมพ์คำถาม"}).fill("เบิกงบได้ไหม");
+  await dialog.getByRole("button",{name:"ถาม",exact:true}).click();
+  await expect(dialog.getByRole("log")).toContainText("งบที่ได้รับอนุมัติ");
+  await dialog.getByRole("button",{name:"ปิดหน้าต่าง"}).click();
+  await page.getByRole("button",{name:"แจ้งเตือน",exact:true}).click();
+  await expect(dialog.getByRole("link",{name:"ดูสถานะโปรแกรม"})).toHaveAttribute("href","/products");
+  await dialog.getByRole("button",{name:"ปิดหน้าต่าง"}).click();
+  const nav=page.getByRole("navigation",{name:"ทางลัดบนมือถือ"});
+  if(page.viewportSize()!.width<=600) {
+    await expect(nav.getByRole("link")).toHaveCount(5);
+    await expect(nav.getByRole("link",{name:"เอกสารเบิกงบ"})).toHaveAttribute("href","/school-systems#procurement");
+    const line=await page.getByRole("link",{name:"แชท LINE CHAYLUEKLAB"}).boundingBox(), bottom=await nav.boundingBox();
+    expect(line!.y+line!.height).toBeLessThan(bottom!.y);
+    await nav.getByRole("link",{name:"ขอใบเสนอราคา"}).click();
+    await expect(page.getByRole("heading",{name:"เตรียมคำขอใบเสนอราคา"})).toBeVisible();
+  } else await expect(nav).toBeHidden();
+});

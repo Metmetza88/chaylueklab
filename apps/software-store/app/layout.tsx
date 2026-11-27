@@ -1,13 +1,20 @@
 import "./globals.css";
 import "./premium.css";
+import "@fontsource/prompt/thai-600.css";
+import "@fontsource/prompt/thai-700.css";
+import "@fontsource/prompt/latin-600.css";
+import "@fontsource/prompt/latin-700.css";
+import "./marketplace.css";
 import { configured, paymentMode } from "@/lib/env";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
-import { Command, ArrowUpRight, ShieldCheck, Menu, UserRound } from "lucide-react";
+import { Command, ArrowUpRight, ShieldCheck, Menu, UserRound, MessageCircle } from "lucide-react";
 import { CartProvider } from "@/lib/cart";
 import { getViewer } from "@/lib/shop";
 import CartLink from "@/components/CartLink";
 import DisplayControls from "@/components/DisplayControls";
+import { MarketMobileAndFloat, MarketSearch } from "@/components/MarketNavigation";
+import { StoreAlerts } from "@/components/MarketDialogs";
 export const metadata: Metadata = {
   title: {
     default: "CHAYLUEKLAB SOFTWARE STORE | WORAMET AI LAB",
@@ -20,6 +27,7 @@ export const metadata: Metadata = {
   description:
     "โปรแกรมสำหรับโรงเรียน โดย WORAMET AI LAB ทดลองระบบ ดูรายละเอียด และจัดการซอฟต์แวร์ของคุณ",
 };
+export const viewport: Viewport = { width:"device-width", initialScale:1, viewportFit:"cover" };
 export const dynamic = "force-dynamic";
 const publicLinks = [
   ["/products", "โปรแกรมทั้งหมด"],
@@ -82,7 +90,7 @@ export default async function Layout({
     : publicLinks;
   return (
     <html lang="th">
-      <body>
+      <body className="market-store">
         <CartProvider>
           <a className="skip-link" href="#main">
             ข้ามไปเนื้อหา
@@ -98,7 +106,7 @@ export default async function Layout({
               คู่มือเริ่มต้นใช้งาน <ArrowUpRight size={12} />
             </Link>
           </div>
-          <header className="site-header">
+          <header className="site-header market-header">
             <div className="container header-inner">
               <Link href="/" className="brand">
                 <span className="brand-icon">
@@ -119,6 +127,7 @@ export default async function Layout({
                 ))}
               </nav>
               <div className="header-actions">
+                <div className="market-quick"><MarketSearch/><StoreAlerts accountsEnabled={accountsEnabled}/><Link href="/contact" className="market-tool market-header-contact" aria-label="ติดต่อเรา"><MessageCircle size={20}/><span>ติดต่อเรา</span></Link></div>
                 <DisplayControls />
                 {accountsEnabled && (
                   <>
@@ -230,6 +239,7 @@ export default async function Layout({
               </div>
             </div>
           </footer>
+          <MarketMobileAndFloat/>
         </CartProvider>
       </body>
     </html>

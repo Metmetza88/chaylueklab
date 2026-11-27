@@ -48,7 +48,7 @@ test("device reduced-motion preference disables animation and back-to-top works"
   await expect(top).toBeVisible();
   const box = await top.boundingBox();
   const viewport = page.viewportSize()!;
-  expect(box!.y).toBeGreaterThan(viewport.height - 100);
+  expect(box!.y).toBeGreaterThan(viewport.height - (viewport.width <= 600 ? 190 : 140));
   expect(box!.x).toBeGreaterThan(viewport.width - 100);
   await top.click();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(5);

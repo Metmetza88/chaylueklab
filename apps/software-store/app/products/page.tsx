@@ -1,3 +1,4 @@
+import { pinSports, productTitle } from "@/lib/marketplace";
 import ProductCard from "@/components/ProductCard";
 import { getProducts } from "@/lib/shop";
 export default async function Products({
@@ -15,7 +16,7 @@ export default async function Products({
   let products = all.filter(
     (p) =>
       (!q ||
-        `${p.name} ${p.tagline} ${p.description}`
+        `${p.name} ${productTitle(p.slug,p.name)} ${p.tagline} ${p.description} ${p.features.join(" ")}`
           .toLocaleLowerCase("th")
           .includes(q)) &&
       (!category || p.category === category),
@@ -25,6 +26,7 @@ export default async function Products({
       (a, b) => (a.price_cents - b.price_cents) * (sort === "desc" ? -1 : 1),
     );
   else products.sort((a, b) => a.name.localeCompare(b.name, "th"));
+  products.sort(pinSports);
   return (
     <section className="section">
       <div className="page-heading">
