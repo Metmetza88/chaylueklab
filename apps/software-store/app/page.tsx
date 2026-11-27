@@ -13,6 +13,7 @@ import ProductCard from "@/components/ProductCard";
 import HomeStats from "@/components/HomeStats";
 import HomeFeatures from "@/components/HomeFeatures";
 import HomeFAQ from "@/components/HomeFAQ";
+import { sportFirst, sportSlug } from "@/lib/marketplace";
 import { productDemos } from "@/lib/product-demos";
 export default async function Home() {
   if (process.env.APP_VARIANT === "school")
@@ -24,10 +25,14 @@ export default async function Home() {
   const featured = [...products]
     .sort(
       (a, b) =>
-        ["met-admission", "met-school-pro", "met-sport"].indexOf(b.slug) -
-        ["met-admission", "met-school-pro", "met-sport"].indexOf(a.slug),
+        sportFirst(a, b) ||
+        ["met-admission", "met-school-pro"].indexOf(b.slug) -
+          ["met-admission", "met-school-pro"].indexOf(a.slug),
     )
-    .slice(0, 3);
+    .slice(
+      0,
+      3 + Number(products.some((product) => product.slug === sportSlug)),
+    );
   return (
     <>
       <section className="hero hero-premium">
@@ -147,6 +152,32 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      <section className="section">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">CURATED FOR YOUR SCHOOL</span>
+            <h2>เครื่องมือดี ๆ เริ่มต้นที่นี่</h2>
+            <p className="muted">
+              เลือกดูระบบที่เหมาะกับงานของคุณ ทดลองก่อนตัดสินใจ
+            </p>
+          </div>
+          <Link className="subtle-link" href="/products">
+            ดูโปรแกรมทั้งหมด <ArrowUpRight size={17} />
+          </Link>
+        </div>
+        {source !== "database" && (
+          <p className="notice">
+            {source === "roadmap"
+              ? "แคตตาล็อกแผนพัฒนา · ยังไม่เปิดจำหน่ายหรือรับชำระเงิน"
+              : "ไม่สามารถโหลดแคตตาล็อกจากฐานข้อมูลได้ในขณะนี้"}
+          </p>
+        )}
+        <div className="product-grid featured-collection">
+          {featured.map((p) => (
+            <ProductCard key={p.id} p={p} />
+          ))}
+        </div>
+      </section>
       <HomeStats
         stats={[
           {
@@ -180,32 +211,6 @@ export default async function Home() {
           <ShieldCheck size={20} /> สิทธิ์เข้าถึงข้อมูลตามหน้าที่
         </div>
       </div>
-      <section className="section">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">CURATED FOR YOUR SCHOOL</span>
-            <h2>เครื่องมือดี ๆ เริ่มต้นที่นี่</h2>
-            <p className="muted">
-              เลือกดูระบบที่เหมาะกับงานของคุณ ทดลองก่อนตัดสินใจ
-            </p>
-          </div>
-          <Link className="subtle-link" href="/products">
-            ดูโปรแกรมทั้งหมด <ArrowUpRight size={17} />
-          </Link>
-        </div>
-        {source !== "database" && (
-          <p className="notice">
-            {source === "roadmap"
-              ? "แคตตาล็อกแผนพัฒนา · ยังไม่เปิดจำหน่ายหรือรับชำระเงิน"
-              : "ไม่สามารถโหลดแคตตาล็อกจากฐานข้อมูลได้ในขณะนี้"}
-          </p>
-        )}
-        <div className="product-grid featured-collection">
-          {featured.map((p) => (
-            <ProductCard key={p.id} p={p} />
-          ))}
-        </div>
-      </section>
       <HomeFeatures />
       <section className="section">
         <div className="section-heading">

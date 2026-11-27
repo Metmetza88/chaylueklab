@@ -32,7 +32,7 @@
 }
 
 .storefront {
-  font-family: Prompt, "Noto Sans Thai", system-ui, sans-serif;
+  font-family: Prompt, NotoThai, system-ui, sans-serif;
 }
 .storefront :is(input, button, select, textarea) {
   font-family: inherit;
@@ -222,12 +222,6 @@
 .market-card .market-card-cta {
   width: 100%;
   margin-top: 12px;
-}
-.market-card .market-sport-label {
-  color: var(--muted);
-  font-size: 14px;
-  min-height: 0;
-  margin-top: 0;
 }
 .market-card-meta {
   display: flex;
@@ -475,10 +469,24 @@
     padding-bottom: calc(105px + env(safe-area-inset-bottom));
   }
   .market-preview {
-    height: clamp(175px, 54vw, 260px);
+    height: clamp(160px, 44vw, 210px);
   }
   .market-card .product-content {
-    padding: 18px;
+    padding: 15px;
+  }
+  .market-card .product-content > p {
+    min-height: 0;
+    margin-bottom: 8px;
+  }
+  .market-card .product-bottom {
+    padding-top: 8px;
+  }
+  .market-card .market-card-cta {
+    margin-top: 8px;
+  }
+  .market-chat {
+    margin-bottom: calc(138px + env(safe-area-inset-bottom));
+    max-height: calc(100dvh - 150px - env(safe-area-inset-bottom));
   }
   .market-card .product-content h3 {
     font-size: 20px;
@@ -521,5 +529,88 @@
   .market-header-actions > button,
   .market-header-actions > a {
     min-width: 39px;
+  }
+}
+
+.market-search-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.market-search-results a {
+  display: grid;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.market-search-results a:hover {
+  background: var(--surface2);
+}
+.market-search-results small,
+.market-quote-price span {
+  display: block;
+  color: var(--muted);
+}
+.market-quote-price strong {
+  font-size: 23px;
+  color: var(--accent);
+}
+.market-card .market-dialog p {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 8px 0;
+}
+.market-dialog :is(input, textarea) {
+  font-size: 16px;
+}
+.market-dialog {
+  overscroll-behavior: contain;
+}
+html:has(.market-dialog[open]) {
+  overflow: hidden;
+}
+.market-quotation,
+#procurement {
+  scroll-margin-top: 150px;
+}
+.market-quotation h2 {
+  margin-top: 0;
+}
+.market-quote-message {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+.market-quote-message textarea {
+  width: 100%;
+  resize: vertical;
+  font-size: 16px;
+}
+.market-quotation .market-quote-message p {
+  margin: 0;
+}
+.market-chat-links {
+  margin-top: 10px;
+}
+.market-messages p {
+  white-space: pre-wrap;
+}
+
+@media (min-width: 851px) {
+  .featured-collection .market-featured {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: 1.1fr minmax(0, 1fr);
+  }
+  .featured-collection .market-featured .market-preview {
+    height: 100%;
+    padding: 36px 20px;
+    border-bottom: 0;
+    border-inline-end: 1px solid var(--line);
+  }
+  .featured-collection .market-featured .market-mock {
+    width: min(95%, 470px);
+  }
+  .featured-collection .market-featured h3 {
+    font-size: clamp(21px, 2.6vw, 32px);
   }
 }

@@ -1,4 +1,5 @@
 import ProductCard from "@/components/ProductCard";
+import { matchesProduct, sportFirst } from "@/lib/marketplace";
 import { getProducts } from "@/lib/shop";
 export default async function Products({
   searchParams,
@@ -8,25 +9,20 @@ export default async function Products({
   const sp = await searchParams;
   const { products: all, source } = await getProducts();
   const query = typeof sp.q === "string" ? sp.q.trim().slice(0, 100) : "";
-  const q = query.toLocaleLowerCase("th");
   const category = typeof sp.category === "string" ? sp.category : "";
   const sort = typeof sp.sort === "string" ? sp.sort : "";
   const cats = [...new Set(all.map((p) => p.category))];
-  const products = all.filter(
-    (p) =>
-      (!q ||
-        `${p.name} ${p.tagline} ${p.description}`
-          .toLocaleLowerCase("th")
-          .includes(q)) &&
-      (!category || p.category === category),
-  );
-  if (sort === "asc" || sort === "desc")
-    products.sort(
-      (a, b) => (a.price_cents - b.price_cents) * (sort === "desc" ? -1 : 1),
+  const products = all
+    .filter(
+      (p) => matchesProduct(p, query) && (!category || p.category === category),
+    )
+    .sort(
+      (a, b) =>
+        sportFirst(a, b) ||
+        (sort === "asc" || sort === "desc"
+          ? (a.price_cents - b.price_cents) * (sort === "desc" ? -1 : 1)
+          : a.name.localeCompare(b.name, "th")),
     );
-  else products.sort((a, b) => a.name.localeCompare(b.name, "th"));
-  const sport = products.findIndex((product) => product.slug === "met-sport");
-  if (sport > 0) products.unshift(...products.splice(sport, 1));
   return (
     <section className="section">
       <div className="page-heading">
@@ -57,7 +53,7 @@ export default async function Products({
         <label>
           เรียงลำดับ
           <select name="sort" defaultValue={sort}>
-            <option value="">ตามชื่อ</option>
+            <option value="">แนะนำก่อน · ตามชื่อ</option>
             <option value="asc">ราคาน้อยไปมาก</option>
             <option value="desc">ราคามากไปน้อย</option>
           </select>

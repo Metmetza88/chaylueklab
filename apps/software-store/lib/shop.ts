@@ -42,21 +42,23 @@ export const getViewer = cache(async () => {
     isAdmin: p?.is_admin === true,
   };
 });
-export async function getProducts(): Promise<{
-  products: Product[];
-  source: "database" | "roadmap" | "error";
-}> {
-  if (!configured())
-    return { products: drafts as Product[], source: "roadmap" };
-  const db = await createClient();
-  const { data, error } = await db
-    .from("store_products")
-    .select("*")
-    .neq("status", "archived")
-    .order("slug");
-  if (error) return { products: [], source: "error" };
-  return { products: (data ?? []) as Product[], source: "database" };
-}
+export const getProducts = cache(
+  async (): Promise<{
+    products: Product[];
+    source: "database" | "roadmap" | "error";
+  }> => {
+    if (!configured())
+      return { products: drafts as Product[], source: "roadmap" };
+    const db = await createClient();
+    const { data, error } = await db
+      .from("store_products")
+      .select("*")
+      .neq("status", "archived")
+      .order("slug");
+    if (error) return { products: [], source: "error" };
+    return { products: (data ?? []) as Product[], source: "database" };
+  },
+);
 export async function requireUser() {
   const v = await getViewer();
   if (!v.user) throw new Error("UNAUTHENTICATED");

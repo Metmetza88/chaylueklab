@@ -15,19 +15,40 @@ import {
   X,
 } from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
+import {
+  lineContact,
+  matchesProduct,
+  procurementHref,
+  quoteHref,
+  sportSlug,
+  sportTitle,
+  type MarketplaceProduct,
+} from "@/lib/marketplace";
 
-const procurement = "/school-systems#procurement";
-const quote = "/contact#quotation";
-const line = "https://lin.ee/Vgg2m3N";
+const quote = quoteHref();
 
-export function MarketplaceHeader() {
+export function MarketplaceHeader({
+  products,
+  source,
+}: {
+  products: MarketplaceProduct[];
+  source: "database" | "roadmap" | "error";
+}) {
   const search = useRef<HTMLDialogElement>(null);
   const news = useRef<HTMLDialogElement>(null);
+  const [query, setQuery] = useState("");
+  const matches = query.trim()
+    ? products.filter((product) => matchesProduct(product, query))
+    : [];
+  const readyCount = products.filter(
+    (product) => product.status === "ready",
+  ).length;
   return (
     <div className="market-header-actions">
       <button
         type="button"
         aria-label="ค้นหาโปรแกรม"
+        aria-haspopup="dialog"
         onClick={() => {
           search.current?.showModal();
           search.current?.querySelector("input")?.focus();
@@ -38,6 +59,7 @@ export function MarketplaceHeader() {
       <button
         type="button"
         aria-label="แจ้งเตือน"
+        aria-haspopup="dialog"
         onClick={() => news.current?.showModal()}
       >
         <Bell size={19} />
@@ -59,14 +81,40 @@ export function MarketplaceHeader() {
           <input
             type="search"
             name="q"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
             maxLength={100}
             aria-label="ชื่อโปรแกรมหรืองานที่ต้องการ"
             placeholder="เช่น กีฬาสี หรือ รับสมัคร"
           />
           <button className="market-primary" type="submit">
-            ค้นหา
+            ดูผลในรายการระบบ
           </button>
         </form>
+        {query.trim() && (
+          <>
+            <p role="status">
+              {matches.length
+                ? `พบ ${matches.length} โปรแกรม`
+                : "ไม่พบโปรแกรมที่ตรงกับการค้นหา"}
+            </p>
+            <ul className="market-search-results">
+              {matches.slice(0, 5).map((product) => (
+                <li key={product.slug}>
+                  <Link
+                    href={`/products/${product.slug}`}
+                    onClick={() => search.current?.close()}
+                  >
+                    <strong>
+                      {product.slug === sportSlug ? sportTitle : product.name}
+                    </strong>
+                    <small>{product.tagline}</small>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </dialog>
       <dialog
         ref={news}
@@ -74,12 +122,18 @@ export function MarketplaceHeader() {
         aria-labelledby="market-news-title"
       >
         <DialogTitle id="market-news-title" title="ข่าวสารร้านซอฟต์แวร์" />
-        <p>ดูโปรแกรมสำหรับกิจกรรมกีฬาสีและเอกสารประกอบการจัดซื้อ</p>
+        <p>
+          {source === "error"
+            ? "ไม่สามารถโหลดสถานะแคตตาล็อกได้ในขณะนี้"
+            : readyCount
+              ? `มี ${readyCount} โปรแกรมพร้อมจำหน่าย ดูสถานะล่าสุดได้จากรายการระบบ`
+              : "โปรแกรมอยู่ระหว่างพัฒนา ดูสถานะและราคาเป้าหมายได้จากแคตตาล็อก"}
+        </p>
         <div className="market-links">
           <Link href="/products?q=กีฬาสี" onClick={() => news.current?.close()}>
             ดูระบบกีฬาสี
           </Link>
-          <Link href={procurement} onClick={() => news.current?.close()}>
+          <Link href={procurementHref} onClick={() => news.current?.close()}>
             อ่านคู่มือเบิกงบ
           </Link>
         </div>
@@ -120,9 +174,14 @@ const replies = [
   ],
 ] as const;
 
-export default function MarketplaceDock() {
+export default function MarketplaceDock({
+  products,
+}: {
+  products: MarketplaceProduct[];
+}) {
   const path = usePathname();
   const help = useRef<HTMLDialogElement>(null);
+  const [selectedSlug, setSelectedSlug] = useState<string>();
   const [conversation, setConversation] = useState<
     { question: string; reply: string }[]
   >([]);
@@ -132,6 +191,7 @@ export default function MarketplaceDock() {
       "/products",
       "/categories",
       "/demo",
+      "/guide",
       "/school-systems",
       "/contact",
     ].includes(path) &&
@@ -144,15 +204,40 @@ export default function MarketplaceDock() {
     { href: "/", label: "หน้าแรก", icon: Home },
     { href: "/products", label: "ระบบทั้งหมด", icon: Grid2X2 },
     { href: quote, label: "ขอใบเสนอราคา", icon: ClipboardList },
-    { href: procurement, label: "เอกสารเบิกงบ", icon: FileText },
+    { href: procurementHref, label: "เอกสารเบิกงบ", icon: FileText },
     { href: "/contact", label: "ติดต่อเรา", icon: Mail },
   ];
   function ask(question: string) {
     if (!question) return;
+    const text = question.toLocaleLowerCase("th");
+    const named = products.find(
+      (p) =>
+        text.includes(p.name.toLocaleLowerCase("th")) ||
+        text.includes(p.slug) ||
+        text.includes(p.tagline.toLocaleLowerCase("th")) ||
+        (p.slug === sportSlug && text.includes("กีฬาสี")),
+    );
+    const product = named ?? products.find((p) => p.slug === selectedSlug);
+    const pricing = /ราคา|เท่าไหร่|เท่าไร|กี่บาท|ค่าใช้จ่าย/u.test(
+      text.replaceAll("ใบเสนอราคา", ""),
+    );
+    const priceReply =
+      product &&
+      (pricing ||
+        (named && !/เอกสาร|เบิก|จัดซื้อ|ใบเสนอราคา|เดโม|ทดลอง/u.test(text)))
+        ? `${product.name} ${product.status === "ready" ? "ราคา" : "ราคาเป้าหมาย"} ${product.price}${product.status === "ready" ? "" : " ขณะนี้ยังไม่เปิดจำหน่าย"}`
+        : "";
     const reply =
       replies.find(([pattern]) => pattern.test(question))?.[1] ??
       "ผมช่วยตอบเรื่องราคา เอกสารเบิกงบ และเดโมได้ครับ ถ้าเป็นคำถามเฉพาะโครงการ กดคุยกับทีมงานทาง LINE ได้เลย";
-    setConversation((messages) => [...messages.slice(-9), { question, reply }]);
+    if (named) setSelectedSlug(named.slug);
+    setConversation((messages) => [
+      ...messages.slice(-9),
+      {
+        question,
+        reply: [priceReply, reply].filter(Boolean).join("\n\n"),
+      },
+    ]);
   }
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -165,16 +250,17 @@ export default function MarketplaceDock() {
       <button
         className="market-help"
         type="button"
+        aria-haspopup="dialog"
         onClick={() => help.current?.showModal()}
       >
         <span className="market-robot">
           <Bot size={23} aria-hidden="true" />
         </span>
-        <span>ถามได้เลย!</span>
+        <span>🤖 ถามได้เลย!</span>
       </button>
       <a
         className="market-line"
-        href={line}
+        href={lineContact}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="แชท LINE"
@@ -188,7 +274,13 @@ export default function MarketplaceDock() {
             key={href}
             href={href}
             className={href === quote ? "market-dock-quote" : undefined}
-            aria-current={path === href ? "page" : undefined}
+            aria-current={
+              path === href ||
+              (href === "/products" && path.startsWith("/products/")) ||
+              (href === procurementHref && path === "/school-systems")
+                ? "page"
+                : undefined
+            }
           >
             <span>
               <Icon size={19} aria-hidden="true" />
@@ -211,7 +303,14 @@ export default function MarketplaceDock() {
             </button>
           ))}
         </div>
-        <div role="log" aria-label="ข้อความแชท" className="market-messages">
+        <div
+          role="log"
+          aria-label="ข้อความแชท"
+          className="market-messages"
+          ref={(log) => {
+            if (log) log.scrollTop = log.scrollHeight;
+          }}
+        >
           {!conversation.length && (
             <p>ลองพิมพ์คำถามเรื่องราคา เอกสารจัดซื้อ หรือการทดลองใช้งาน</p>
           )}
@@ -239,11 +338,20 @@ export default function MarketplaceDock() {
             ถาม
           </button>
         </form>
-        <p>
-          <a href={line} target="_blank" rel="noopener noreferrer">
+        <div className="market-links market-chat-links">
+          <Link
+            href={quoteHref(selectedSlug)}
+            onClick={() => help.current?.close()}
+          >
+            ขอใบเสนอราคา
+          </Link>
+          <Link href={procurementHref} onClick={() => help.current?.close()}>
+            เอกสารเบิกงบ
+          </Link>
+          <a href={lineContact} target="_blank" rel="noopener noreferrer">
             คุยกับทีมงานทาง LINE
           </a>
-        </p>
+        </div>
       </dialog>
     </div>
   );

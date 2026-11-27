@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import ProductQuote from "./ProductQuote";
+import { sportSlug, sportTitle } from "@/lib/marketplace";
 import { productDemos } from "@/lib/product-demos";
 import {
   ArrowUpRight,
@@ -27,7 +28,6 @@ export function ProductArt({
     ClipboardList,
     BookOpen,
     Layers3,
-    School,
   ];
   const n = [...slug].reduce((a, c) => a + c.charCodeAt(0), 0) % 6;
   const Icon = Icons[n];
@@ -48,7 +48,8 @@ export function ProductArt({
 }
 export default function ProductCard({ p }: { p: Product }) {
   const preview = productDemos.find((demo) => demo.slug === p.slug);
-  const sport = p.slug === "met-sport";
+  const sport = p.slug === sportSlug;
+  const title = sport ? sportTitle : p.name;
   const ready = p.status === "ready";
   const price = baht(p.price_cents);
   return (
@@ -64,8 +65,7 @@ export default function ProductCard({ p }: { p: Product }) {
               src={preview.preview}
               alt={preview.previewAlt}
               fill
-              unoptimized
-              sizes="(max-width: 600px) 100vw, (max-width: 950px) 50vw, 33vw"
+              sizes="(max-width: 600px) 90vw, (max-width: 950px) 46vw, 400px"
             />
           ) : (
             <div className="market-mock" aria-hidden="true">
@@ -112,23 +112,18 @@ export default function ProductCard({ p }: { p: Product }) {
           </span>
         </div>
         <h3>
-          <Link href={`/products/${p.slug}`}>{p.name}</Link>
+          <Link href={`/products/${p.slug}`}>{title}</Link>
         </h3>
-        <p>{p.tagline}</p>
-        {sport && (
-          <p className="market-sport-label">
-            ระบบบริหารจัดการแข่งขันกีฬาสีภายในโรงเรียน
-          </p>
-        )}
+        <p>{sport ? `${p.name} · ${p.tagline}` : p.tagline}</p>
         <div className="market-card-meta">
           <span title="ยังไม่มีจำนวนโรงเรียนที่ยืนยัน">
-            <School size={15} aria-hidden="true" /> — โรงเรียน
+            <School size={15} aria-hidden="true" /> โรงเรียนที่ใช้ · ยังไม่ระบุ
           </span>
-          <small>{preview ? "Web App" : "ซอฟต์แวร์โรงเรียน"}</small>
+          <small>{preview ? "Cloud Web App" : "Web App · แผนพัฒนา"}</small>
         </div>
         <div className="product-bottom">
           <span>
-            <small>ราคา{p.status === "ready" ? "" : "เป้าหมาย"}</small>
+            <small>{ready ? "ราคาเริ่มต้น" : "ราคาเป้าหมาย"}</small>
             <strong>{price}</strong>
           </span>
           <Link
@@ -140,7 +135,9 @@ export default function ProductCard({ p }: { p: Product }) {
           </Link>
         </div>
         <ProductQuote
-          name={p.name}
+          slug={p.slug}
+          name={title}
+          hasDemo={Boolean(preview)}
           description={p.description}
           features={p.features}
           price={price}

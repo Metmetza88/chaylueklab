@@ -1,14 +1,25 @@
 import Link from "next/link";
+import QuoteMessage from "@/components/QuoteMessage";
+import { lineContact, procurementHref } from "@/lib/marketplace";
+import { getProducts } from "@/lib/shop";
 import { configured } from "@/lib/env";
 
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ program?: string | string[] }>;
+  searchParams: Promise<{
+    product?: string | string[];
+    program?: string | string[];
+  }>;
 }) {
-  const { program } = await searchParams;
+  const { product, program } = await searchParams;
+  const selected =
+    typeof product === "string"
+      ? (await getProducts()).products.find((item) => item.slug === product)
+      : undefined;
   const programName =
-    typeof program === "string" ? program.trim().slice(0, 120) : "";
+    selected?.name ??
+    (typeof program === "string" ? program.trim().slice(0, 120) : "");
   return (
     <section className="prose">
       <span className="eyebrow">WORAMET AI LAB</span>
@@ -21,7 +32,7 @@ export default async function Page({
         แจ้งชื่อโปรแกรมที่สนใจ จำนวนผู้ใช้งานโดยประมาณ
         และงานที่ต้องการให้ระบบช่วย
       </p>
-      <div className="panel stack" id="quotation">
+      <div className="panel stack market-quotation" id="quotation">
         <h2>ขอใบเสนอราคา</h2>
         {programName && (
           <p>
@@ -29,12 +40,13 @@ export default async function Page({
           </p>
         )}
         <p>
-          แจ้งชื่อโรงเรียน จำนวนผู้ใช้ ขอบเขตโครงการ และเอกสารที่ต้องการผ่าน
-          LINE
+          ระบุข้อมูลของโรงเรียน คัดลอกข้อความ แล้วเปิด LINE เพื่อส่งให้ทางร้าน
         </p>
+        <QuoteMessage product={programName || undefined} />
+        <Link href={procurementHref}>ดูเอกสารเบิกงบ →</Link>
         <a
           className="btn"
-          href="https://lin.ee/Vgg2m3N"
+          href={lineContact}
           target="_blank"
           rel="noopener noreferrer"
         >

@@ -15,7 +15,8 @@ import {
   UserRound,
 } from "lucide-react";
 import { CartProvider } from "@/lib/cart";
-import { getViewer } from "@/lib/shop";
+import { baht, getProducts, getViewer } from "@/lib/shop";
+import { sportFirst } from "@/lib/marketplace";
 import CartLink from "@/components/CartLink";
 import DisplayControls from "@/components/DisplayControls";
 import ViewportControls from "@/components/ViewportControls";
@@ -95,6 +96,17 @@ export default async function Layout({
     );
   }
   const accountsEnabled = configured();
+  const { products, source } = await getProducts();
+  const marketplaceProducts = [...products].sort(sportFirst).map((product) => ({
+    slug: product.slug,
+    name: product.name,
+    tagline: product.tagline,
+    description: product.description,
+    category: product.category,
+    features: product.features,
+    status: product.status,
+    price: baht(product.price_cents),
+  }));
   const links = accountsEnabled
     ? [...publicLinks, ["/membership", "สมาชิก VIP"]]
     : publicLinks;
@@ -137,7 +149,10 @@ export default async function Layout({
                 ))}
               </nav>
               <div className="header-actions">
-                <MarketplaceHeader />
+                <MarketplaceHeader
+                  products={marketplaceProducts}
+                  source={source}
+                />
                 <DisplayControls />
                 {accountsEnabled && (
                   <>
@@ -256,7 +271,7 @@ export default async function Layout({
             </div>
           </footer>
           <ViewportControls />
-          <MarketplaceDock />
+          <MarketplaceDock products={marketplaceProducts} />
         </CartProvider>
       </body>
     </html>

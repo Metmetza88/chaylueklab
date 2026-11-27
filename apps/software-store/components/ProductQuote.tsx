@@ -2,17 +2,22 @@
 
 import Link from "next/link";
 import { useId, useRef } from "react";
+import { procurementHref, quoteHref } from "@/lib/marketplace";
 import { DialogTitle } from "./MarketplaceControls";
 
 export default function ProductQuote({
+  slug,
   name,
+  hasDemo,
   description,
   features,
   price,
   ready,
   sport,
 }: {
+  slug: string;
   name: string;
+  hasDemo: boolean;
   description: string;
   features: string[];
   price: string;
@@ -26,6 +31,7 @@ export default function ProductQuote({
       <button
         className="market-primary market-card-cta"
         type="button"
+        aria-haspopup="dialog"
         onClick={() => dialog.current?.showModal()}
       >
         ดูรายละเอียด / ขอใบเสนอราคา
@@ -42,11 +48,15 @@ export default function ProductQuote({
         )}
         <div className="market-budget">
           <strong>
-            {sport ? "งบโครงการกีฬาสี" : "เอกสารประกอบการจัดซื้อ"}
+            {sport
+              ? "เอกสารประกอบการเบิกงบโครงการกีฬาสี"
+              : "เอกสารประกอบการเบิกงบโครงการ"}
           </strong>
-          <p>
-            {ready ? "ราคาตามแคตตาล็อก" : "ราคาเป้าหมาย · ยังไม่เปิดจำหน่าย"}{" "}
-            {price}
+          <p className="market-quote-price">
+            <strong>{price}</strong>
+            <span>
+              {ready ? "ราคาตามแคตตาล็อก" : "ราคาเป้าหมาย · ยังไม่เปิดจำหน่าย"}
+            </span>
           </p>
           <p>
             แจ้งขอบเขตงาน จำนวนผู้ใช้ และรายการเอกสารที่โรงเรียนต้องการ
@@ -56,17 +66,28 @@ export default function ProductQuote({
         <div className="market-links">
           <Link
             className="market-primary"
-            href={"/contact?program=" + encodeURIComponent(name) + "#quotation"}
+            href={quoteHref(slug)}
             onClick={() => dialog.current?.close()}
           >
             ขอใบเสนอราคา
           </Link>
-          <Link
-            href="/school-systems#procurement"
-            onClick={() => dialog.current?.close()}
-          >
+          <Link href={procurementHref} onClick={() => dialog.current?.close()}>
             ดูเอกสารเบิกงบ
           </Link>
+          <Link
+            href={`/products/${slug}`}
+            onClick={() => dialog.current?.close()}
+          >
+            ดูข้อมูลระบบฉบับเต็ม
+          </Link>
+          {hasDemo && (
+            <Link
+              href={`/demo/${slug}`}
+              onClick={() => dialog.current?.close()}
+            >
+              ทดลองระบบ
+            </Link>
+          )}
         </div>
       </dialog>
     </>
