@@ -15,6 +15,7 @@ export default async function Home() {
   if (process.env.APP_VARIANT === "school")
     redirect(`/schools/${process.env.SCHOOL_SLUG ?? "my-school"}`);
   const { products, source } = await getProducts();
+  const readyCount = products.filter((product) => product.status === "ready").length;
   const featured = [...products]
     .sort(
       (a, b) =>
@@ -24,18 +25,20 @@ export default async function Home() {
     .slice(0, 3);
   return (
     <>
-      <section className="hero">
+      <section className="hero hero-premium">
+        <div className="hero-artwork" aria-hidden="true" />
+        <div className="hero-coordinate" aria-hidden="true">CHAYLUEKLAB / DIGITAL COLLECTION</div>
         <div className="hero-copy">
           <span className="pill">
             <span className="dot" /> WORAMET AI LAB · BUILT FOR EDUCATION
           </span>
           <h1>
-            ให้โรงเรียนก้าวไกล
+            ออกแบบเวลาใหม่
             <br />
-            ด้วย<span className="gradient-text">ซอฟต์แวร์ที่ใช่</span>
+            ให้<span className="gradient-text">โรงเรียนของคุณ</span>
           </h1>
           <p>
-            ลดงานซ้ำ เพิ่มเวลาให้การเรียนรู้
+            พื้นที่ของเครื่องมือที่คิดมาเพื่องานโรงเรียน
             <br className="desktop-only" />
             รวมโปรแกรมสำหรับโรงเรียนไทย ตั้งแต่รับสมัคร
             <br className="desktop-only" />
@@ -49,9 +52,10 @@ export default async function Home() {
               ทดลองใช้งาน <ArrowUpRight size={18} />
             </Link>
           </div>
+          <p className="hero-status">{readyCount === 0 ? "อยู่ระหว่างพัฒนา · ทดลองด้วยข้อมูลสมมติก่อนเปิดจำหน่าย" : "ดูสถานะพร้อมจำหน่ายและรายละเอียดของแต่ละโปรแกรม"}</p>
           <div className="hero-proof">
             <span>
-              <Check size={15} /> Source Code พร้อมคู่มือ
+              <Check size={15} /> รายละเอียด Source Code และคู่มือ
             </span>
             <span>
               <Check size={15} /> ใช้งานผ่านมือถือ
@@ -164,7 +168,7 @@ export default async function Home() {
               : "ไม่สามารถโหลดแคตตาล็อกจากฐานข้อมูลได้ในขณะนี้"}
           </p>
         )}
-        <div className="product-grid">
+        <div className="product-grid featured-collection">
           {featured.map((p) => (
             <ProductCard key={p.id} p={p} />
           ))}

@@ -30,6 +30,7 @@ export function ProductArt({
     <div className={`product-art art-${n} ${large ? "large" : ""}`}>
       <div className="art-orbit" />
       <div className="art-orbit two" />
+      <span className="art-product-name" aria-hidden="true">{slug.replace(/^met-/, "").replaceAll("-", " ")}</span>
       <div className="art-symbol">
         <Icon size={large ? 64 : 40} strokeWidth={1.3} />
       </div>
@@ -40,7 +41,7 @@ export function ProductArt({
 }
 export default function ProductCard({ p }: { p: Product }) {
   return (
-    <article className="product-card">
+    <article className="product-card" data-product-state={p.status}>
       <Link href={`/products/${p.slug}`} aria-label={`รายละเอียด ${p.name}`}>
         <ProductArt slug={p.slug} />
       </Link>

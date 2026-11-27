@@ -3,6 +3,10 @@ import { spawnSync } from "node:child_process";
 import { writeFileSync, readFileSync } from "node:fs";
 import { createHmac, randomBytes } from "node:crypto";
 const storageEnabled = process.env.TEST_STORAGE_API === "true";
+const appUrl = process.env.TEST_APP_URL || "http://127.0.0.1:3000";
+if (!/^http:\/\/(?:127\.0\.0\.1|localhost):\d{2,5}$/.test(appUrl)) {
+  throw Error("TEST_APP_URL must be a loopback HTTP origin with an explicit port");
+}
 const run = (args, input) => {
   const r = spawnSync("docker", args, {
     input,
@@ -112,11 +116,11 @@ const anonKey = jwt("anon");
 const serviceKey = jwt("service_role");
 writeFileSync(
   ".env.test",
-  `NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:55431\nNEXT_PUBLIC_SUPABASE_ANON_KEY=${anonKey}\nSUPABASE_SERVICE_ROLE_KEY=${serviceKey}\nAPP_URL=http://127.0.0.1:3000\nPAYMENT_MODE=sandbox\nPAYMENT_WEBHOOK_ENABLED=true\nPAYMENT_WEBHOOK_SECRET=${randomBytes(40).toString("hex")}\nPAYMENT_RECIPIENT_ID=local-sandbox-recipient\nTEST_DATABASE_URL=postgres://postgres:local-test-only@127.0.0.1:55432/postgres\nTEST_STORAGE_API=${storageEnabled}\n`,
+  `NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:55431\nNEXT_PUBLIC_SUPABASE_ANON_KEY=${anonKey}\nSUPABASE_SERVICE_ROLE_KEY=${serviceKey}\nAPP_URL=${appUrl}\nPAYMENT_MODE=sandbox\nPAYMENT_WEBHOOK_ENABLED=true\nPAYMENT_WEBHOOK_SECRET=${randomBytes(40).toString("hex")}\nPAYMENT_RECIPIENT_ID=local-sandbox-recipient\nTEST_DATABASE_URL=postgres://postgres:local-test-only@127.0.0.1:55432/postgres\nTEST_STORAGE_API=${storageEnabled}\n`,
 );
 writeFileSync(
   "tests/local/auth.env",
-  `GOTRUE_JWT_SECRET=${secret}\nGOTRUE_DB_DRIVER=postgres\nGOTRUE_DB_DATABASE_URL=postgres://supabase_auth_admin:local-test-only@woramet-store-test-db:5432/postgres\nGOTRUE_API_HOST=0.0.0.0\nGOTRUE_API_PORT=9999\nAPI_EXTERNAL_URL=http://127.0.0.1:55431/auth/v1\nGOTRUE_SITE_URL=http://127.0.0.1:3000\nGOTRUE_JWT_AUD=authenticated\nGOTRUE_JWT_DEFAULT_GROUP_NAME=authenticated\nGOTRUE_JWT_ADMIN_ROLES=service_role\nGOTRUE_EXTERNAL_EMAIL_ENABLED=true\nGOTRUE_MAILER_AUTOCONFIRM=true\nGOTRUE_LOG_LEVEL=warn\n`,
+  `GOTRUE_JWT_SECRET=${secret}\nGOTRUE_DB_DRIVER=postgres\nGOTRUE_DB_DATABASE_URL=postgres://supabase_auth_admin:local-test-only@woramet-store-test-db:5432/postgres\nGOTRUE_API_HOST=0.0.0.0\nGOTRUE_API_PORT=9999\nAPI_EXTERNAL_URL=http://127.0.0.1:55431/auth/v1\nGOTRUE_SITE_URL=${appUrl}\nGOTRUE_JWT_AUD=authenticated\nGOTRUE_JWT_DEFAULT_GROUP_NAME=authenticated\nGOTRUE_JWT_ADMIN_ROLES=service_role\nGOTRUE_EXTERNAL_EMAIL_ENABLED=true\nGOTRUE_MAILER_AUTOCONFIRM=true\nGOTRUE_LOG_LEVEL=warn\n`,
 );
 writeFileSync(
   "tests/local/rest.env",

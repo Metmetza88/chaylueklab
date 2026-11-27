@@ -1,16 +1,22 @@
 import "./globals.css";
+import "./premium.css";
 import { configured, paymentMode } from "@/lib/env";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Command, ArrowUpRight, ShieldCheck, Menu } from "lucide-react";
+import { Command, ArrowUpRight, ShieldCheck, Menu, UserRound } from "lucide-react";
 import { CartProvider } from "@/lib/cart";
 import { getViewer } from "@/lib/shop";
 import CartLink from "@/components/CartLink";
+import DisplayControls from "@/components/DisplayControls";
 export const metadata: Metadata = {
   title: {
     default: "CHAYLUEKLAB SOFTWARE STORE | WORAMET AI LAB",
     template: "%s | CHAYLUEKLAB STORE",
   },
+  metadataBase: new URL("https://store.chaylueklab.com"),
+  applicationName: "CHAYLUEKLAB Software Store",
+  robots: { index: true, follow: true },
+  openGraph: { type: "website", locale: "th_TH", siteName: "CHAYLUEKLAB Software Store", title: "CHAYLUEKLAB SOFTWARE STORE | WORAMET AI LAB", description: "สำรวจโปรแกรมสำหรับโรงเรียนไทย ทดลองด้วยข้อมูลสมมติ และดูสถานะการพัฒนาอย่างชัดเจน" },
   description:
     "โปรแกรมสำหรับโรงเรียน โดย WORAMET AI LAB ทดลองระบบ ดูรายละเอียด และจัดการซอฟต์แวร์ของคุณ",
 };
@@ -113,15 +119,13 @@ export default async function Layout({
                 ))}
               </nav>
               <div className="header-actions">
+                <DisplayControls />
                 {accountsEnabled && (
                   <>
                     <CartLink />
-                    <Link
-                      href={user ? "/orders" : "/login"}
-                      className="login-link"
-                    >
-                      {user ? "บัญชีของฉัน" : "เข้าสู่ระบบ"}{" "}
-                      <ArrowUpRight size={15} />
+                    <Link href={user ? "/orders" : "/login"} className="login-link" aria-label={user ? "บัญชีของฉัน" : "เข้าสู่ระบบ"}>
+                      <span className="account-label">{user ? "บัญชีของฉัน" : "เข้าสู่ระบบ"}</span>
+                      <UserRound size={18} />
                     </Link>
                   </>
                 )}

@@ -29,12 +29,15 @@ export function sameOrigin(request: Request) {
   return origin !== null && origin === new URL(request.url).origin;
 }
 export function safeNext(value: unknown) {
-  return typeof value === "string" &&
-    value.startsWith("/") &&
-    !value.startsWith("//") &&
-    !value.includes("\\")
-    ? value
-    : "/orders";
+  if (typeof value !== "string" || value.length > 4096 ||
+      !value.startsWith("/") || value.startsWith("//") ||
+      /[\u0000-\u0020\u007f\\]/u.test(value)) return "/orders";
+  // URL parsing strips tabs/newlines, so validate the raw input first and
+  // independently verify its resolved origin before returning a relative path.
+  try {
+    return new URL(value, "https://store.invalid").origin === "https://store.invalid"
+      ? value : "/orders";
+  } catch { return "/orders"; }
 }
 export const paymentEvent = z
   .object({
