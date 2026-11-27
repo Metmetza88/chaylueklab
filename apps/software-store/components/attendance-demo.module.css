@@ -107,6 +107,10 @@
   border-top: 1px solid var(--attendance-line);
   padding: 9px 0;
 }
+.roster select {
+  width: min(11.5rem, 48%);
+  flex: 0 0 auto;
+}
 .student {
   display: inline-flex;
   gap: 11px;
