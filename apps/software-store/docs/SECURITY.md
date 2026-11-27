@@ -1,4 +1,4 @@
-# Security Report — 2026-11-24
+# Security Report — 2026-11-26 / RC.3
 
 ขอบเขต: `apps/software-store` และ schema ที่เพิ่มใหม่ ไม่ใช่ใบรับรองความปลอดภัยของ LIFE OS, ร้านเสื้อผ้า, LINE OA หรือระบบเดิมทั้งหมด
 
@@ -26,7 +26,7 @@
 
 ## ข้อจำกัดที่ยังต้องตรวจรับ
 
-1. Supabase Storage API จริงยังไม่ทดสอบ upload / Signed URL / expiry ครบ Local ใช้ storage schema fixture เท่านั้น
+1. CIทดสอบStorage API1.98.6จริงผ่าน12กรณีแล้ว เป็นfile backend/origin ยังต้องตรวจHosted Supabase/Smart CDN/expiryจริง Localเครื่องนี้ยังใช้schema fixtureเพราะพื้นที่ไม่พอ
 2. ยังไม่มี provider adapter ที่ได้รับอนุญาตตรวจธนาคาร/สลิปจริง HMAC trusted bridge ไม่ได้ตรวจภาพสลิปเอง รูปที่แก้ไขแล้วอาจมี hash ต่าง จึงต้องตรวจ transaction reference ที่ธนาคาร
 3. ไม่มี malware scanner สำหรับ ZIP Source Code ผู้ดูแลต้องตรวจ source, dependency, licenses และ SHA ของ release ตรง CI ก่อน attestation การติ๊ก UI ไม่แทน automated test execution
 4. ยังต้องทดสอบอีเมล SMTP จริง, password recovery link delivery, owner MFA และกำหนดรอบ backup/restore
@@ -35,7 +35,7 @@
 7. คิวแจ้งเตือนไม่ส่งหากยังไม่มี endpoint/secret และ scheduler ที่ได้รับอนุญาต ต้องให้ receiver deduplicate event_id
 8. ต้องตรวจ account/project/region จริงก่อนใช้ migration และรัน Supabase Security Advisors หลังติดตั้ง ไม่ยืนยันความปลอดภัยบน project ที่ยังไม่ได้ติดตั้ง
 9. Responsive tests เป็น Chromium viewport simulation ยังต้องตรวจ Safari/Android และอุปกรณ์จริง
-10. รายงานยอด admin คำนวณจาก DB ทั้งหมด รายการหน้าจอล่าสุดมี limit100 และ CSV limit10000 ต่อครั้ง ต้องเพิ่ม pagination หากเกินขนาดนี้
+10. รายงานยอด admin คำนวณจาก DB ทั้งหมด หน้าคิวใบสมัครโรงเรียนเพิ่ม cursor pagination แล้ว ใช้ timestamp+UUID เพื่อไม่ข้ามรายการที่มีเวลาเท่ากัน ส่วนรายการ Admin ร้านค้ายังแสดง100ล่าสุดและ CSV ไม่เกิน10000ต่อครั้ง
 
 ไม่เปิดรับเงินจริง ไม่เปลี่ยน DNS และไม่ประกาศสินค้าพร้อมขายจนตรวจครบและเจ้าของอนุมัติ
 
@@ -45,4 +45,14 @@ Repository ที่เจ้าของระบุเป็น **public** แ
 
 ## CI/Deploy isolation (2026-11-26)
 
-ใช้ action SHA/CLI version ที่ pin และ token เริ่มต้น contents:read ตรวจ protected environment ว่ามี owner เป็น reviewer เพียงคนเดียวและอนุญาต branch ชื่อที่กำหนด ก่อนนำ Vercel credential มาใช้ ตรวจ Team/Project/GitHub link/Root Directory/ทุกโดเมน บังคับ payment disabled ตรวจ deployment commit/READY และ smoke test ก่อน manual promotion แยกจาก staging --skip-domain ไม่มี token ใน command arguments หรือบันทึกลง Git รายละเอียดใน CI-DEPLOY-TH.md ทั้งหมดยังไม่ใช่ผลทดสอบ Deploy จริง เพราะสิทธิ์บริการคืน403
+ใช้ action SHA/CLI version ที่ pin และ token เริ่มต้น contents:read ตรวจ protected environment ว่ามี owner เป็น reviewer เพียงคนเดียวและอนุญาต branch ชื่อที่กำหนด ก่อนนำ Vercel credential มาใช้ ตรวจ Team/Project/GitHub link/Root Directory/ทุกโดเมน บังคับ payment disabled ตรวจ deployment commit/READY และ smoke test ก่อน manual promotion แยกจาก staging --skip-domain ไม่มี token ใน command arguments หรือบันทึกลง Git รายละเอียดใน CI-DEPLOY-TH.md Workflow deploy ยังไม่รันเพราะยังตั้ง GitHub environments ไม่ได้ ส่วน Preview ผ่าน Vercel connector สำเร็จแล้ว โดยคง SSO และไม่เปลี่ยน Production/DNS
+
+## RC3: ZIP, private cache และการกู้ข้อมูลฟอร์ม
+
+ZIP validatorปฏิเสธ.env.local/.env.productionและ.env variantsยกเว้นtemplateที่ระบุ, *.env, .git/.vercel/private key names, absolute/traversal/symlink entries และbounded entry count/size ไม่แทนsource/secret/malware reviewที่ownerต้องทำก่อนrelease Source packagerไม่ตามsymlinkหรือรวมnode_modules/build directories
+
+ตั้งcacheControl=0ทุกprivate uploadและตรวจpersisted metadataผ่านAPI/DBจริงแล้ว ไม่มีการรับรองCDNexpiryจากผลLocal Signed URLเป็นbearer capabilityช่วงอายุของมัน และไม่เรียกคืนไฟล์ที่ดาวน์โหลดไปแล้ว
+
+ActionFormรักษาข้อมูลเมื่อvalidationไม่ผ่าน เพื่อลดข้อผิดพลาดการกรอกยอดหรือรายละเอียดใหม่ ล้างเมื่อสำเร็จ ตรวจผ่านUIจริงทั้งerror/retryและsuccess ไม่เปลี่ยนserver-side auth/RLS/origin validation
+
+ผลรับสมัครและหมายเหตุการคัดเลือกไม่ออกทาง Data API ก่อนประกาศผล: migration เพิ่ม column grants และ service-only RPC ที่ผูก applicant ID จาก Auth ฝั่ง Server ทดสอบก่อน/หลังประกาศผลและข้ามโรงเรียนผ่าน CI จริง ดู INTEGRATION-RESULTS.json

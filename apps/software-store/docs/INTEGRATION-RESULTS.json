@@ -1,10 +1,10 @@
 {
-  "date": "2026-11-26T15:04:02.633Z",
-  "source_commit": null,
-  "head_commit": null,
+  "date": "2026-11-26T19:16:03.724Z",
+  "source_commit": "10b998ad1bc4831a578c6121cbfe7ee28f19d0a9",
+  "head_commit": "630909534cddee87c1f472f228681cc2fed298fa",
   "status": "completed",
-  "environment": "Local PostgreSQL 17 + real GoTrue + real PostgREST. Storage schema fixture only; Storage API not running.",
-  "passed": 23,
+  "environment": "Disposable PostgreSQL 17 + real GoTrue + real PostgREST + real Storage API v1.98.6 (file backend).",
+  "passed": 24,
   "failed": 0,
   "tests": [
     {
@@ -65,6 +65,10 @@
     },
     {
       "name": "cross-school review and client status manipulation are denied",
+      "passed": true
+    },
+    {
+      "name": "applicant receives the decision and note only after publication",
       "passed": true
     },
     {

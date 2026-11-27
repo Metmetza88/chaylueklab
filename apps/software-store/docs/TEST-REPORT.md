@@ -1,82 +1,64 @@
-# รายงานผลทดสอบจริง — 2026-11-26
+# ผลทดสอบจริง — 0.2.0-rc.3 / 2026-11-26
 
-| รายการ | ผล |
+[GitHub Actions run45882142018](https://github.com/Metmetza88/chaylueklab/actions/runs/45882142018) ของ PR head `630909534cddee87c1f472f228681cc2fed298fa` ผ่านครบ บน Node22.23.5 GitHubทดสอบ checkoutแบบ PR merge commit จึงเก็บทั้ง `source_commit`/`checkout_commit` และ `head_commit` ไว้ในหลักฐาน ไม่ถือว่าเป็นการ mergeเข้าmain
+
+| รายการ | ผลจริง |
 |---|---|
-| TypeScript | ผ่าน `next typegen && tsc --noEmit` รวมตรวจจาก ZIP ที่แตกแยกทั้งสองแพ็กเกจ |
-| ESLint | ผ่าน |
-| Production Build | ผ่าน Next.js15.5.29 หลังแก้ dependency และ transactional release/support |
-| Unit / Security | **53/53 ผ่าน** |
-| Integration / DB Security | **23/23 ผ่าน** บน PostgreSQL17 + GoTrue + PostgREST จริง |
-| Playwright Production | **80 passed, 12 skipped, 0 failed** CIล่าสุด42.4วินาที; Localรอบก่อนประมาณ3.8นาที |
-| Responsive | 16หน้าสาธารณะ × 4viewport, ไม่มี horizontal overflow; Desktop/iPhone/Android/Tablet ใช้ Chromium ทั้งหมด |
-| Standalone school variant | root redirect, real DB site, school header และ390px layout ผ่าน |
-| Dependency Audit | 0 critical/high/moderate/low ตาม registry ณ เวลาตรวจ ดู DEPENDENCY-AUDIT.json |
-| Source ZIP | สร้างสองแพ็กเกจ ตรวจ CRC/สิ่งส่งมอบ/การไม่รวม secrets และ TypeScript จาก source ที่แตกแยกแล้ว (ใช้ dependencies ที่ติดตั้งตรวจแล้วร่วมกัน) |
+| TypeScript / ESLint / actionlint | ผ่าน |
+| Dependency install / audit | npm ciผ่าน; auditพบ0ช่องโหว่ตามregistry ณเวลาตรวจ |
+| Next.js production build | ผ่าน 15.5.29 |
+| Unit / Security | **59 passed** |
+| Integration / RLS / transactions | **24 passed** บน PostgreSQL17 + GoTrue + PostgREST และ Storage APIจริง |
+| Private Storage API1.98.6 | **12 passed** ใช้ file backendจริง ไม่ใช่ schema fixture |
+| Playwright production | **87 passed, 21 skipped, 0 failed**; browserประมาณ1นาที |
+| Responsive | public16หน้าและauthenticated Owner Admin ครบ Desktop/iPhone layout/Android/Tablet บนChromium ไม่มีpage overflow |
+| Thai PDF | ตัวอักษรไทย/อังกฤษ/เลขใบสมัคร/ปี/ยอดเงินผ่าน text extraction และตรวจภาพ render; browserดาวน์โหลดPDFผ่าน |
+| Source packages | สองแพ็กเกจผ่านCRC/SHA/secret exclusions และTypeScriptจากsourceที่แตกแยก ใช้installed dependenciesร่วมกัน; manifest/ผลตรวจอยู่ในRepository |
 
-หลักฐานแบบโครงสร้าง: `INTEGRATION-RESULTS.json`, `E2E-RESULTS.json`, `DEPENDENCY-AUDIT.json`
+หลักฐานดาวน์โหลดจาก CI artifactจริง ตรวจ SHA-256ตรงกับGitHub `ab8b256bb092090b3f08f1a94e203283ed23a381aff7d4578a3352e05b562ae7` แล้วคัดรายงานสามไฟล์เข้าdocs: INTEGRATION-RESULTS.json, STORAGE-RESULTS.json, E2E-RESULTS.json สรุปใน CI-RESULTS-20261126.json ไม่มีcredentials/signed URLs/raw browser stateในartifact
 
-12 skipped คือ authenticated workflows เดียวกันที่กำหนดให้รัน Desktop ครั้งเดียว ไม่รันซ้ำในอีก3viewport ส่วน responsive และ interaction tests รันทุกviewport ไม่ใช่การข้ามข้อทดสอบที่ล้มเหลว
+21 skipped คือ7 workflowที่เปลี่ยนข้อมูลรันเฉพาะDesktop ไม่รันซ้ำอีก3viewport ส่วนresponsive/authenticated admin layoutและpublic interactionsรันครบ4viewport ไม่ใช่ข้ามtestsที่ล้มเหลว
 
-ชุดแรกพบ timeout จากการกวาด16หน้าต่อหนึ่ง test ใน Dev Build จึงแบ่งเป็นรายหน้าและรันกับ Production Build ต่อมาพบ selector ของป้าย Demo ซ้ำกับป้าย Sandbox แก้ให้เจาะจงป้าย Demo แล้วรันใหม่ทั้งหมดจนได้ผลข้างต้น
+ก่อนรวมโค้ด MET Attendance demo มี CI เพิ่มจาก source3f3dd39 สำเร็จแล้ว กำลังรวบรวมผลของ commit ส่งมอบล่าสุด ไม่อ้างผล6309095ว่าเป็นผลของ commit ใหม่โดยอัตโนมัติ
 
-## Workflow ที่ตรวจแล้ว
+## Workflow ที่ตรวจได้จริง
 
-- สมัครสมาชิกและ session ด้วย GoTrue จริงใน Local (email auto-confirm เฉพาะ Local)
-- Login, server-side prices, cart, atomic order, signed Sandbox bridge webhook, wrong amount, forged signature, retry, entitlement และ order receipt PDF
-- Coming Soon/missing product/duplicate cart/idempotency conflict, coupon race, canonical slip hash duplicate, order/VIP manipulation และ refund revocation
-- สมัครเรียนจริงลง Local DB, Thai PDF, เจ้าหน้าที่ตรวจใบสมัคร, CSV export และ cross-school admin/export/PDF denial
-- role isolation: owner/officer/editor/executive/parent, round/grade/school validation, distributed rate limits
-- private bucket policy fence ไม่กระทบ legacy bucket, outbox leases/daily idempotency, support transaction และ release replacement attestation
-- Demo ไม่ส่งใบสมัครส่วนบุคคลขึ้น Server; public pages และปุ่มเลือก/กรอง/ทดลองใช้งานทำงาน
+- Signup/login/sessionกับGoTrueจริง (auto-confirmเฉพาะtest stack), checkoutราคาServer, atomic order, forged/wrong amount/duplicate signed Sandbox event, grant และ receipt PDF
+- Download ZIPจากprivate Storageจริงหลังชำระเงิน ตรวจbytes/hashตรงmetadata ไม่มีgrant/ถูกrevokeต้อง403 และอีกผู้ใช้ดาวน์โหลดไม่ได้
+- อัปโหลดสลิปสมมติจริงผ่านหน้าorders ปฏิเสธรูปซ้ำและลบไฟล์ของรายการที่ถูกปฏิเสธ ผู้ซื้อเข้าAdmin slip endpointไม่ได้
+- เจ้าของเปิดดูสลิปprivate ยืนยันยอดผิดแล้วไม่เกิดgrant แก้ยอดใหม่ผ่านหน้าAdminแล้วได้grantในSandbox ไม่ใช่การตรวจธนาคาร/สลิปด้วยAPIภายนอก
+- สมัครเรียน/อัปโหลดเอกสารสมมติ/private document URL/PDF/เจ้าหน้าที่ตรวจ/CSV จริง และปฏิเสธ SchoolAdmin/export/PDF/documentข้ามโรงเรียน
+- AdminอัปโหลดZIPที่มี.env.localถูกปฏิเสธ ZIPถูกต้องถูกเก็บจริงแต่ยังไม่activate replacementที่ไม่ตรวจรับ
+- anonและauthenticatedที่ไม่มีสิทธิ์อ่าน/เขียน/list/sign private objectsไม่ได้ แม้มีlegacy permissive policy; bucket legacyยังทำงาน
+- Signed URLตรวจsignature/bytes/หมดอายุที่origin ลบobjectแล้วURLเข้าถึงไม่ได้ ตรวจMIME/ขนาดไฟล์และcache metadataจากการupload
+- Coupon race, bank reference/slip deduplication, role/VIP escalation denial, refund/revoke, rate limits, audit/outbox leases/daily idempotency และrelease attestation
 
-## สิ่งที่ยังไม่ผ่านการตรวจรับ
+## สิ่งที่พบและแก้ระหว่างทดสอบ
 
-- **Supabase Storage API จริง:** Local มีเพียง schema fixture ทดสอบ policy ได้ แต่ยังไม่ทดสอบ upload/private file/signed URL expiry กับ Storage service จริง เพราะ Docker image ติดพื้นที่ไม่พอ
-- **Payment provider Sandbox จริง:** ทดสอบ trusted bridge protocol แล้ว ยังไม่มีผู้ให้บริการตรวจเงิน/สลิปและ adapter ที่ได้รับอนุญาต
-- **SMTP delivery/recovery จริง:** Local Auth เปิด auto-confirm สำหรับ test เท่านั้น
-- **Physical devices:** Chromium viewport ไม่ยืนยัน Safari หรืออุปกรณ์จริง
-- **Vercel Preview:** create_project คืน403 forbidden ไม่มี Preview/Production URL และไม่มี Build/Runtime Logs ของ Vercel ให้ตรวจ
-- **Hosted DB advisors/backup restore:** ยังไม่ติดตั้งบน project ของเจ้าของ ไม่ได้ตรวจรับ production migration/restore
+StorageAPIใหม่ปฏิเสธการลบmetadataด้วยSQL จึงปรับfixtureให้upload/removeผ่านAPI ไม่ปิดprotect_delete เติมschema/table privilegesของservice_roleในtest bootstrapให้ครบ จากนั้นfull integration23และStorage12ผ่าน
 
-## รันทดสอบซ้ำ
+เมื่อServerคืนvalidation error Reactฟอร์มเดิมล้างข้อมูลที่กรอก ตรวจซ้ำด้วยbrowserได้version/changelogว่างจริง แก้ActionFormให้รักษาค่าเมื่อerrorและresetเมื่อsuccess Local reproductionและCI admin ZIP/manual paymentยืนยันผ่าน ดู FORM-RETENTION-20261126.json
 
-```sh
-npm ci --ignore-scripts
-npm run typecheck
-npm run lint
-npm test
-npm run build
-node tests/local/start.mjs
-# อีก terminal:
-node tests/local/gateway.mjs
-npm run test:integration
-node --env-file=.env.test node_modules/next/dist/bin/next start --hostname 0.0.0.0
-# อีก terminal:
-node --env-file=.env.test node_modules/@playwright/test/cli.js test
-```
+ตรวจ ZIP guardเพิ่มให้ปฏิเสธ.env.local/.env.production, credential/Git/Vercel state รวมWindows absolute path และยังรับ.env.exampleสำหรับติดตั้งได้ Package scriptไม่ตามsymlinkหรือรวมdependency/build directories
 
-Local stack ใช้เฉพาะ container woramet-store-test-* และ port55431/55432/55499/55430 integration script มี destructive reset เฉพาะฐาน Local ที่ guard URL แล้ว ห้ามชี้ Production ข้อมูลบัญชี/ใบสมัครสมมติ `.env.test`, test accounts, cookies และ traces ไม่ commit
+## ขอบเขตที่ยังไม่ผ่านการตรวจรับ
 
-Playwright ใช้ `/usr/bin/chromium` หรือกำหนด `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` ให้ตรง environment CI ของ commit c7b1ecb ผ่านทั้ง Store/Quality/CodeQL แล้ว ส่วน Workflow Node22 และ RC2 ที่เพิ่มล่าสุดกำลังรอตรวจบน GitHub Actions อีกครั้ง ไม่ใช่หลักฐาน Deploy Vercel
+- Hosted Supabase/Smart CDN: CIเป็นorigin/file backend ไม่ใช่Cloud CDN การอัปโหลดตั้งcacheControl=0และตรวจmetadataแล้ว signed responseของlocal serviceไม่มีCache-Control header จึงต้องตรวจHosted/CDNจริงแยก
+- Vercel Preview สร้างสำเร็จ READY แล้ว ตรวจ39 HTTP routes และ Runtime error/fatal logs ในช่วงทดสอบไม่พบรายการที่ตรงเกณฑ์ ดู VERCEL-PREVIEW-20261127.json พบ store.chaylueklab.com ถูกเชื่อมอยู่แล้วโดยการเปลี่ยนแปลงภายนอกงานนี้ ตรวจอ่านโดยไม่เปลี่ยน DNS หรือ promote Production แต่ฐานข้อมูลบน Hosted ยังไม่ตั้งค่า
+- SMTP/recovery delivery, hosted backup/restore/advisors, Safari/iPhone/Android/Windowsอุปกรณ์จริง
+- PromptPaymerchant config/การตรวจธนาคารจริง/owner acceptance ยังไม่เปิดเงินจริง Provider APIเป็นทางเลือกเมื่อได้รับสิทธิ์ ไม่อ้างว่าtrusted bridgeตรวจภาพสลิปเอง
+- Sourceแรกสองระบบเป็นRC อีก13ระบบยังComing Soon ไม่มีimplementationพร้อมขาย
 
-จนกว่าจะครบ external tests และ owner acceptance สินค้าทั้งหมดจึงยัง Coming Soon แม้ผล Local ผ่านแล้ว
+## รันทดสอบ
 
-## ตรวจเพิ่ม 26 พฤศจิกายน 2026
+ดู REAL-STORAGE-TESTS-TH.md สำหรับfull service และคำสั่ง Local/CI เครื่องนี้พื้นที่ไม่พอสำหรับStorage imageจึงใช้CIสำหรับfull API; reduced mode `TEST_STORAGE_API=false` เป็นschema fixtureเท่านั้น ห้ามนับว่าได้ทดสอบStorage API
 
-- RC2: TypeScript, ESLint, Production Build และ53 Unit/Security tests ผ่าน Local หลังแก้ PDF และเพิ่ม deploy guards
-- ตรวจ PDF ที่ render เป็นภาพจริง: เปลี่ยน PDF font เป็น Noto Sans/Noto Sans Thai แบบ static แก้ตัวอักษรอังกฤษและตัวเลขหาย ตรวจเลขใบสมัคร ปีการศึกษา ชื่อไทย จำนวนเงินและแบรนด์แล้ว ดู `public/screenshots/met-admission-pdf.png`
-- actionlint1.7.12 (ตรวจ checksum) ผ่านทั้ง reusable verification และ CI/Deploy workflows
-- ตรวจ VercelCLI67.0.0 help สำหรับ deploy --skip-domain และ promote --yes แล้ว ยังไม่ใช้ credential deploy จริง
-- CI deploy ยังปิดไว้และยังไม่ผ่าน external acceptance; ไม่มี Preview/Production URL เกิดจากผลทดสอบ Local
+บนLocalยังตรวจหลังแก้ฟอร์มได้59unit/23integrationแบบreduced,4authenticated workflows และ4Owner layoutsจริง ผลCIข้างต้นเป็นfull serviceที่ผ่านแยกแล้ว ข้อมูลทุกชุดเป็นสมมติ ไม่ได้แก้DBของเจ้าของหรือส่งข้อมูลเด็กจริง
 
-## GitHub Actions / Node 22 — ตรวจจริงวันที่ 2026-11-26
+## การตรวจเว็บสาธารณะ 2026-11-27
 
-[Software store checks run 45783357503](https://github.com/Metmetza88/chaylueklab/actions/runs/45783357503) ของ commit `681e291541e4aa0263cdcbf536421bb2a41c3860` ผ่านทั้งหมดบน Node22.23.5: actionlint, npm ci, TypeScript, ESLint, Unit53, audit0ช่องโหว่, production build, integration/security23 และ Playwright80passed/12plannedskips/0failed รวมเวลา browser42.4วินาที CI ใช้ disposable services จริงและ Storage schema fixture ตามข้อจำกัดเดิม
+Playwright บน https://store.chaylueklab.com ผ่าน **88/88, 0 skipped, 0 failed** บน Desktop/iPhone layout/Android/Tablet ด้วย Chromium เวลาประมาณ2.2นาที บน deployment source3f3dd39 ดู LIVE-PUBLIC-TESTS-20261127.json รวม18หน้า, gallery/filter, Admission Demo/PDF, Attendance Demo แยกโรงเรียน/วัน/คาบ/CSV และ unauthorized APIs
 
-Quality checks และ CodeQL ของ commitเดียวกันผ่านด้วย หลักฐานสรุปที่ไม่รวม secret อยู่ใน `CI-RESULTS-20261126.json` ส่วน `E2E-RESULTS.json`/`INTEGRATION-RESULTS.json` เป็นรายละเอียดรายข้อจากรอบ Local ที่ระบุวันที่อยู่ในไฟล์ ไม่ได้เปลี่ยนวันที่เพื่ออ้างว่าเป็นไฟล์ผล CI
+รอบแรกผ่าน68/76 อีก8กรณีเป็น ECONNREFUSED เพราะ APIRequestContext ไม่ใช้ network proxy ของเครื่อง เพิ่ม PLAYWRIGHT_PROXY_SERVER แบบ opt-in แล้วกรณี PDF/API denial ผ่าน2/2 และรันทดสอบครบชุดใหม่ผ่าน88/88 ไม่มีการผ่อน RLS/auth หรือแก้ assertions ให้ข้ามข้อผิดพลาด
 
-Workflow Deploy ใหม่ผ่าน actionlint และ guard tests แต่ยังไม่เคย Deploy Vercel จริง และยังไม่อยู่บนmain จึงยังเลือก workflow_dispatch จาก default branchไม่ได้ การเปิด Preview/Production ยังต้องตั้งสิทธิ์และ Project ตาม `CI-DEPLOY-TH.md`
-
-## ตรวจ PDF หลังแก้ฟอนต์
-
-พบว่า variable Latin font เดิมทำให้ตัวอักษรอังกฤษ/ตัวเลขใน PDFบางส่วนหาย แม้ PDFเปิดได้ จึงเปลี่ยนเฉพาะฟอนต์ PDF เป็น static Regular แล้วสร้าง/แปลง PDF เป็นภาพตรวจภาษาไทย พร้อมใช้ pdftotext ตรวจ DEMO, WORAMET AI LAB, เลขที่ใบสมัคร, ปีการศึกษาและยอดเงินผ่านทั้งหมด ดู `PDF-VALIDATION-20261126.json` และภาพ `public/screenshots/met-admission-pdf.png` ยังไม่ได้ทดสอบเครื่องพิมพ์จริง
+ชุดนี้ยืนยันหน้าร้านสาธารณะเท่านั้น health ยังระบุ database_configured=false/payment_mode=disabled ไม่มี Hosted auth/checkout/student workflow หรือเงินจริงถูกทดสอบ ไม่ใช่อุปกรณ์ Safari/iPhoneจริง

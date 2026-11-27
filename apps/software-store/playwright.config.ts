@@ -8,6 +8,9 @@ export default defineConfig({
   reporter: [["list"], ["json", { outputFile: "test-results/results.json" }]],
   use: {
     baseURL: process.env.BASE_URL ?? "http://127.0.0.1:3000",
+    ...(process.env.PLAYWRIGHT_PROXY_SERVER
+      ? { proxy: { server: process.env.PLAYWRIGHT_PROXY_SERVER } }
+      : {}),
     trace: "off",
     screenshot: "only-on-failure",
   },

@@ -101,6 +101,9 @@ const optionalFiles = [
   "docs/STORAGE-RESULTS.json",
   "docs/AUTHENTICATED-SCREENSHOTS-20261126.json",
   "docs/FORM-RETENTION-20261126.json",
+  "docs/PAYMENTS-MANUAL-TH.md",
+  "docs/VERCEL-PREVIEW-20261127.json",
+  "docs/LIVE-PUBLIC-TESTS-20261127.json",
   "docs/LICENSE.md",
   "docs/E2E-RESULTS.json",
   "docs/INTEGRATION-RESULTS.json",
@@ -133,7 +136,7 @@ for (const slug of ["met-school-pro", "met-admission"]) {
     archive.file(source, { name: `${base}/${dest}` });
   archive.append(readme, { name: `${base}/README.md` });
   archive.append(
-    `# ${slug} — ${version}\n\nRelease Candidate; ready_for_sale=false.\n\nSource/database/manuals/tests/screenshots included. Actual test counts, environments, source commits and limits are recorded in docs/TEST-REPORT.md and the included JSON evidence. A test script or successful CI check does not mean that Vercel/hosted services are deployed or accepted.\n\nHosted Supabase/Storage CDN, authorized payment provider, SMTP, physical devices and owner acceptance remain pending. See docs/SECURITY.md, docs/OWNER-ACTIONS.md and release.json.\n\nRepository: https://github.com/Metmetza88/chaylueklab/tree/feature/woramet-school-store-20261124 (public).\n`,
+    `# ${slug} — ${version}\n\nRelease Candidate; ready_for_sale=false.\n\nSource/database/manuals/tests/screenshots included. Actual test counts, environments, source commits and limits are recorded in docs/TEST-REPORT.md and the included JSON evidence. A test script or successful CI check does not mean that Vercel/hosted services are deployed or accepted.\n\nHosted Supabase/Storage CDN, SMTP, physical devices and school-owner acceptance remain pending. Store deployment and real-payment approval are separate; a provider adapter is optional. See docs/SECURITY.md, docs/OWNER-ACTIONS.md, docs/PAYMENTS-MANUAL-TH.md and release.json.\n\nRepository: https://github.com/Metmetza88/chaylueklab/tree/feature/woramet-school-store-20261124 (public).\n`,
     { name: `${base}/PROJECT-STATUS.md` },
   );
   archive.append(exampleEnv, { name: `${base}/.env.example` });

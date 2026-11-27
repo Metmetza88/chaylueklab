@@ -4,7 +4,7 @@
 
 ใช้ Repository `Metmetza88/chaylueklab` Branch `feature/woramet-school-store-20261124` และ Root Directory `apps/software-store` ไม่แก้ Root Vercel ของเว็บไซต์หลัก ไม่สร้าง Repository ใหม่
 
-Source สองผลิตภัณฑ์เป็น release candidate; สินค้า 15 ระบบยัง Coming Soon และปิดรับเงินจริง ต้องตรวจรับบริการ Supabase Storage, ผู้ให้บริการตรวจเงิน Sandbox และอุปกรณ์จริงก่อนขาย
+Source สองผลิตภัณฑ์เป็น release candidate; สินค้า 15 ระบบยัง Coming Soon และปิดรับเงินจริง ต้องตรวจรับ Hosted Supabase/Storage, การตรวจเงินแบบ manual Sandbox และอุปกรณ์จริงก่อนขาย API ตรวจสลิปเป็นทางเลือกเมื่อได้รับสิทธิ์ ดู docs/PAYMENTS-MANUAL-TH.md
 
 ## 1. ก่อนแตะฐานข้อมูลจริง
 
@@ -74,9 +74,9 @@ node --env-file=.env.local scripts/bootstrap-owner.mjs school <owner-user-uuid> 
 
 ## 5. Preview บน Vercel
 
-ตรวจ team/project/account และ GitHub Integration จริงก่อน ใช้ Project ร้านค้าแยก Root Directory `apps/software-store` Framework Next.js, Node 24, install `npm ci --ignore-scripts` และ build `npm run build` ตั้ง Preview env แยกจาก Production
+ตรวจ team/project/account และ GitHub Integration จริงก่อน ใช้ Project ร้านค้าแยก Root Directory `apps/software-store` Framework Next.js, Node 22.x, install `npm ci --ignore-scripts` และ build `npm run build` ตั้ง Preview env แยกจาก Production
 
-Deploy Branch นี้เป็น Preview ตรวจ Build Logs, Runtime Error Logs, `/api/health` และทุกหน้าก่อน การมี URL ไม่ถือว่าฐานข้อมูล/อีเมล/ชำระเงินจริงทำงานครบ
+Deploy Branch นี้เป็น Preview ตรวจ Build Logs, Runtime Error Logs, `/api/health` และทุกหน้าก่อน การมี URL ไม่ถือว่าฐานข้อมูล/อีเมล/ชำระเงินจริงทำงานครบ หลักฐาน Preview ที่สร้างผ่าน Vercel connector อยู่ใน docs/VERCEL-PREVIEW-20261127.json คง SSO ไว้และไม่ผูกโดเมน Production
 
 ## 6. Sandbox และ Release gate
 
@@ -105,7 +105,7 @@ Webhook ในโค้ดเป็น **trusted bridge protocol** ต้อง�
 
 ## Workflow CI/Deploy ที่เพิ่ม 2026-11-26
 
-ดู [CI-DEPLOY-TH.md](docs/CI-DEPLOY-TH.md) สำหรับ main/manual dispatch, Node22, protected environments, Secrets และ staged production ที่ยังไม่ assign โดเมน ไม่ใช้ Environment เดิมของเว็บไซต์หลัก ค่าสิทธิ์ปัจจุบันยังไม่พอสร้าง Project/ตั้ง GitHub environments จึงต้องให้เจ้าของตั้งค่าตามคู่มือก่อน
+ดู [CI-DEPLOY-TH.md](docs/CI-DEPLOY-TH.md) สำหรับ main/manual dispatch, Node22, protected environments, Secrets และ staged production ที่ยังไม่ assign โดเมน ไม่ใช้ Environment เดิมของเว็บไซต์หลัก Preview สร้างผ่าน connector แล้ว แต่ยังตั้ง GitHub environments/Secrets ไม่ได้ เจ้าของต้องตั้งตามคู่มือก่อนเปิด Workflow deploy
 
 ### เมื่อติดตั้งจาก ZIP ผลิตภัณฑ์โรงเรียนแยก
 

@@ -16,3 +16,5 @@
 อ้างอิงที่ตรวจอ่าน: [Vercel pricing](https://vercel.com/pricing), [Vercel Hobby](https://vercel.com/docs/plans/hobby), [Supabase pricing](https://supabase.com/pricing). ไม่แปลงเป็นเงินบาทเพราะไม่มีอัตราแลกเปลี่ยน/ค่าธรรมเนียมที่ยืนยันสำหรับใบเรียกเก็บจริง
 
 ตั้ง spend alerts และเพดาน usage ในบัญชีของเจ้าของก่อนเปิดรับเงินจริง
+
+ตรวจ Vercel context วันที่2026-11-27: พบ Project ร้านค้า chaylueklab-software-store ใน Teamเดิม plan Hobby และสร้าง Preview ได้แล้ว ไม่ได้อัปเกรดหรือซื้อแผน งบ Pro ด้านบนเป็นตัวอย่างสำหรับ commercial launch ที่ต้องให้เจ้าของเลือกและอนุมัติ ค่า API ตรวจสลิปเป็นทางเลือกหากเริ่มด้วยเจ้าของตรวจธนาคารด้วยตนเอง

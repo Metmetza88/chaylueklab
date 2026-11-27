@@ -1,5 +1,8 @@
 {
-  "checked_at": "2026-11-24T03:23:24.842Z",
+  "checked_at": "2026-11-26T15:10:52Z",
+  "source_commit": "cec8ca66c074f0e1f5e7cb0cdf6d26000400023a",
+  "ci_url": "https://github.com/Metmetza88/chaylueklab/actions/runs/45846383151",
+  "package_lock_sha256": "cc5a94161ce93d462864d333641426a32a66737c887a0a0da16b163e37f29623",
   "all_dependencies": {
     "info": 0,
     "low": 0,
@@ -10,6 +13,6 @@
   },
   "notes": [
     "Pinned versions and lockfile",
-    "postcss and readdir-glob/minimatch overrides verified by build, unit and package tests"
+    "npm audit --audit-level=moderate passed in the referenced CI run; this is registry evidence at that time, not a complete security guarantee."
   ]
 }

@@ -19,7 +19,9 @@
 
 ## สถานะจริง
 
-โค้ดผ่าน actionlint และทดสอบ guard logic แล้ว **ยังไม่ใช่ผล Deploy สำเร็จ** บัญชี Vercel ที่เชื่อมอยู่ไม่มีสิทธิ์สร้าง Project (403) และ GitHub integration ปัจจุบันไม่มีสิทธิ์แก้ Environments หรืออ่าน Variables (403) จึงยังตั้ง Secrets/Project binding ให้ไม่ได้
+โค้ดผ่าน actionlint และทดสอบ guard logic แล้ว วันที่27พฤศจิกายนพบ Project ร้านค้าที่เชื่อมอยู่และสร้าง Preview ผ่าน Vercel connector สำเร็จ แยกจาก Workflow นี้ ดู VERCEL-PREVIEW-20261127.json ผล403ของการสร้าง Project ก่อนหน้านั้นเป็นประวัติ ไม่ใช่อุปสรรคของ Preview ปัจจุบัน
+
+GitHub integration ยังไม่มีสิทธิ์แก้ Environments หรืออ่าน Variables (403) จึงยังตั้ง Secrets/Project binding ให้ไม่ได้ และยังไม่รัน Workflow deploy จาก main ไม่ถือว่า Preview ที่สร้างผ่าน connector พิสูจน์เส้นทาง deploy ใน GitHub Actions แล้ว
 
 มี environment เดิม `github-pages`, `Preview`, `Production` แต่ไม่ย้ายหรือแก้ค่าเหล่านั้น เพราะอาจเป็นระบบเดิมของเจ้าของ
 

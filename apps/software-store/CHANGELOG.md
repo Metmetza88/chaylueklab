@@ -27,3 +27,7 @@
 - ยังเป็น Release Candidate, Coming Soon และปิดรับเงินจริง ผล Storage/Browser ใหม่ต้องอ้าง run ที่ผ่านจริง
 
 - แก้ฟอร์มให้รักษาข้อมูลที่กรอกเมื่อ validation ไม่ผ่าน และ reset หลังบันทึกสำเร็จ ทดสอบ regression ผ่าน signup/checkout/admission/review/cross-school ใน Local แล้ว
+
+- รวมการแก้ผลรับสมัคร: ซ่อนสถานะ/หมายเหตุการคัดเลือกจาก Data API จนประกาศผล และเพิ่มคิวใบสมัครแบบ cursor pagination สำหรับรายการเกิน100
+- ป้องกันการเปลี่ยนข้อมูลระหว่าง Server Action ด้วย fieldset pending และปรับหน้าร้านที่ยังไม่ตั้งฐานข้อมูลให้ติดต่อ/ดูแคตตาล็อกได้ชัดเจน
+- Pin Node.js22.x ใน package/lock ให้ตรง CI และ Vercel แทนช่วง >=22 ที่อาจเปลี่ยน major โดยอัตโนมัติ
