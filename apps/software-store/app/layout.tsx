@@ -1,6 +1,8 @@
 import "./globals.css";
 import "./premium.css";
 import "./marketplace.css";
+import "./procurement.css";
+import { DirectContact, ProcurementBanner } from "@/components/Procurement";
 import MarketplaceDock, {
   MarketplaceHeader,
 } from "@/components/MarketplaceControls";
@@ -177,6 +179,7 @@ export default async function Layout({
               </div>
             </div>
           </header>
+          <ProcurementBanner />
           <main id="main" className="container main-content">
             {paymentMode() === "sandbox" && (
               <p className="demo-bar">
@@ -238,6 +241,7 @@ export default async function Layout({
                 <Link href="/guide">คู่มือการใช้งาน</Link>
                 <Link href="/school-systems">วางระบบสำหรับสถานศึกษา</Link>
                 <Link href="/contact">ติดต่อเรา</Link>
+                <DirectContact />
                 {isAdmin && <Link href="/admin">Admin Dashboard</Link>}
                 {user && (
                   <form method="post" action="/auth/signout">

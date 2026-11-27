@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { SuppliesPanel } from "@/components/Procurement";
 import ProductCard from "@/components/ProductCard";
 import { getProducts } from "@/lib/shop";
 export default async function Products({
@@ -11,6 +13,7 @@ export default async function Products({
   const q = query.toLocaleLowerCase("th");
   const category = typeof sp.category === "string" ? sp.category : "";
   const sort = typeof sp.sort === "string" ? sp.sort : "";
+  const supplies = sp.collection === "supplies";
   const cats = [...new Set(all.map((p) => p.category))];
   const products = all.filter(
     (p) =>
@@ -34,53 +37,70 @@ export default async function Products({
         <h1>โปรแกรมทั้งหมด</h1>
         <p className="muted">เลือกเครื่องมือที่เหมาะกับโรงเรียนของคุณ</p>
       </div>
-      <form className="filters">
-        <label className="search-field">
-          ค้นหาโปรแกรม
-          <input
-            type="search"
-            name="q"
-            defaultValue={query}
-            placeholder="ค้นหาชื่อโปรแกรม หรืองานที่ต้องการ…"
-            maxLength={100}
-          />
-        </label>
-        <label>
-          หมวดหมู่
-          <select name="category" defaultValue={category}>
-            <option value="">ทุกหมวดหมู่</option>
-            {cats.map((c) => (
-              <option key={c}>{c}</option>
+      <nav aria-label="กลุ่มสินค้า" className="store-catalog-tabs">
+        <Link href="/products" aria-current={!supplies ? "page" : undefined}>
+          ซอฟต์แวร์โรงเรียน
+        </Link>
+        <Link
+          href="/products?collection=supplies"
+          aria-current={supplies ? "page" : undefined}
+        >
+          อุปกรณ์การเรียน &amp; พัสดุสำนักงาน
+        </Link>
+      </nav>
+      {supplies ? (
+        <SuppliesPanel />
+      ) : (
+        <>
+          <form className="filters">
+            <label className="search-field">
+              ค้นหาโปรแกรม
+              <input
+                type="search"
+                name="q"
+                defaultValue={query}
+                placeholder="ค้นหาชื่อโปรแกรม หรืองานที่ต้องการ…"
+                maxLength={100}
+              />
+            </label>
+            <label>
+              หมวดหมู่
+              <select name="category" defaultValue={category}>
+                <option value="">ทุกหมวดหมู่</option>
+                {cats.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              เรียงลำดับ
+              <select name="sort" defaultValue={sort}>
+                <option value="">ตามชื่อ</option>
+                <option value="asc">ราคาน้อยไปมาก</option>
+                <option value="desc">ราคามากไปน้อย</option>
+              </select>
+            </label>
+            <button className="btn">ค้นหา</button>
+          </form>
+          <div className="row spaced results">
+            <p>{products.length} โปรแกรม</p>
+            <span className="muted">
+              {source === "database"
+                ? "แคตตาล็อกจากฐานข้อมูล"
+                : source === "roadmap"
+                  ? "ดูสถานะและเดโมแยกตามโปรแกรม"
+                  : "โหลดข้อมูลไม่สำเร็จ"}
+            </span>
+          </div>
+          <div className="product-grid">
+            {products.map((p) => (
+              <ProductCard key={p.id} p={p} />
             ))}
-          </select>
-        </label>
-        <label>
-          เรียงลำดับ
-          <select name="sort" defaultValue={sort}>
-            <option value="">ตามชื่อ</option>
-            <option value="asc">ราคาน้อยไปมาก</option>
-            <option value="desc">ราคามากไปน้อย</option>
-          </select>
-        </label>
-        <button className="btn">ค้นหา</button>
-      </form>
-      <div className="row spaced results">
-        <p>{products.length} โปรแกรม</p>
-        <span className="muted">
-          {source === "database"
-            ? "แคตตาล็อกจากฐานข้อมูล"
-            : source === "roadmap"
-              ? "แผนพัฒนา · ยังไม่เปิดจำหน่าย"
-              : "โหลดข้อมูลไม่สำเร็จ"}
-        </span>
-      </div>
-      <div className="product-grid">
-        {products.map((p) => (
-          <ProductCard key={p.id} p={p} />
-        ))}
-      </div>
-      {products.length === 0 && (
-        <p className="panel">ไม่พบโปรแกรมที่ตรงกับการค้นหา</p>
+          </div>
+          {products.length === 0 && (
+            <p className="panel">ไม่พบโปรแกรมที่ตรงกับการค้นหา</p>
+          )}
+        </>
       )}
     </section>
   );

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { productConcept, productDisplay } from "@/lib/product-display";
 import ProductQuote from "./ProductQuote";
 import { productDemos } from "@/lib/product-demos";
 import {
@@ -48,6 +49,8 @@ export function ProductArt({
 }
 export default function ProductCard({ p }: { p: Product }) {
   const preview = productDemos.find((demo) => demo.slug === p.slug);
+  const concept = productConcept(p.slug);
+  const status = productDisplay(p.slug, p.status);
   const sport = p.slug === "met-sport";
   const ready = p.status === "ready";
   const price = baht(p.price_cents);
@@ -63,6 +66,14 @@ export default function ProductCard({ p }: { p: Product }) {
             <Image
               src={preview.preview}
               alt={preview.previewAlt}
+              fill
+              unoptimized
+              sizes="(max-width: 600px) 100vw, (max-width: 950px) 50vw, 33vw"
+            />
+          ) : concept ? (
+            <Image
+              src={concept}
+              alt={`ภาพแนวคิดหน้าจอ ${p.name} ไม่ใช่หน้าจอระบบจริง`}
               fill
               unoptimized
               sizes="(max-width: 600px) 100vw, (max-width: 950px) 50vw, 33vw"
@@ -96,7 +107,7 @@ export default function ProductCard({ p }: { p: Product }) {
           )}
           <span className="market-ribbon">
             {sport
-              ? "แนะนำสำหรับงบโครงการ"
+              ? "ภาพแนวคิด · กีฬาสี"
               : preview
                 ? "มีหน้าจอเดโม"
                 : "หน้าจอจำลอง"}
@@ -107,9 +118,7 @@ export default function ProductCard({ p }: { p: Product }) {
       <div className="product-content">
         <div className="row spaced">
           <span className="category-label">{p.category}</span>
-          <span className={`status ${p.status === "ready" ? "ready" : ""}`}>
-            {p.status === "ready" ? "พร้อมจำหน่าย" : "Coming Soon"}
-          </span>
+          <span className={`status ${status.tone}`}>{status.label}</span>
         </div>
         <h3>
           <Link href={`/products/${p.slug}`}>{p.name}</Link>
@@ -147,6 +156,18 @@ export default function ProductCard({ p }: { p: Product }) {
           ready={ready}
           sport={sport}
         />
+        {preview ? (
+          <Link className="btn ghost market-demo-cta" href={`/demo/${p.slug}`}>
+            ทดลองดูตัวอย่าง (Demo)
+          </Link>
+        ) : sport && concept ? (
+          <Link
+            className="btn ghost market-demo-cta"
+            href="/products/met-sport#concept"
+          >
+            ดูตัวอย่างหน้าจอ
+          </Link>
+        ) : null}
       </div>
     </article>
   );

@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import { productConcept, productDisplay } from "@/lib/product-display";
 import { Check, ArrowUpRight } from "lucide-react";
 import AddToCart from "@/components/AddToCart";
 import { ProductArt } from "@/components/ProductCard";
@@ -28,7 +30,9 @@ export default async function Product({
   const { products } = await getProducts();
   const p = products.find((x) => x.slug === slug);
   if (!p) notFound();
-  const hasDemo = productDemos.some((demo) => demo.slug === slug);
+  const demo = productDemos.find((entry) => entry.slug === slug);
+  const concept = productConcept(slug);
+  const status = productDisplay(slug, p.status);
   const images = screenshots[slug];
   return (
     <section className="section">
@@ -39,6 +43,32 @@ export default async function Product({
         <div>
           {images ? (
             <ProductGallery images={images} />
+          ) : concept ? (
+            <figure className="market-concept-figure" id="concept">
+              <Image
+                src={concept}
+                alt={`ภาพแนวคิด ${p.name}`}
+                width={960}
+                height={540}
+                unoptimized
+              />
+              <figcaption className="muted">
+                ภาพแนวคิดหน้าจอ · ไม่ใช่หน้าจอระบบจริง
+              </figcaption>
+            </figure>
+          ) : demo ? (
+            <figure className="market-concept-figure">
+              <Image
+                src={demo.preview}
+                alt={demo.previewAlt}
+                width={960}
+                height={540}
+                unoptimized
+              />
+              <figcaption className="muted">
+                หน้าจอตัวอย่าง · ใช้ข้อมูลสมมติ
+              </figcaption>
+            </figure>
           ) : (
             <ProductArt slug={slug} large />
           )}
@@ -48,11 +78,7 @@ export default async function Product({
           <h1>{p.name}</h1>
           <h2>{p.tagline}</h2>
           <p className="muted">{p.description}</p>
-          <span className="status">
-            {p.status === "ready"
-              ? "พร้อมจำหน่าย"
-              : "Coming Soon · ยังไม่เปิดจำหน่าย"}
-          </span>
+          <span className={`status ${status.tone}`}>{status.label}</span>
           <div className="detail-price">
             {baht(p.price_cents)}
             <small>
@@ -74,12 +100,17 @@ export default async function Product({
               </li>
             ))}
           </ul>
-          {hasDemo && (
+          {demo && (
             <Link className="btn ghost" href={`/demo/${slug}`}>
-              เปิดระบบทดลอง <ArrowUpRight size={18} />
+              ทดลองดูตัวอย่าง (Demo) <ArrowUpRight size={18} />
             </Link>
           )}
-          <Link href="/contact">สอบถามเกี่ยวกับโปรแกรมนี้ →</Link>
+          <Link
+            className="btn"
+            href={`/contact?program=${encodeURIComponent(p.name)}#quotation`}
+          >
+            ขอใบเสนอราคา / ประเมินงาน →
+          </Link>
         </div>
       </div>
       <div className="info-grid">

@@ -1,0 +1,139 @@
+.procurement-banner {
+  background: #edf4ff;
+  border-bottom: 1px solid #d7e6ff;
+  color: #18366a;
+}
+.procurement-banner-inner {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding-block: 0.8rem;
+}
+.procurement-banner-inner > svg {
+  flex: 0 0 auto;
+  color: #2258b7;
+}
+.procurement-banner-inner p {
+  margin: 0.12rem 0 0;
+  font-size: 0.86rem;
+}
+.procurement-banner-inner > a {
+  margin-inline-start: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 700;
+  color: #153d85;
+}
+.procurement-documents p {
+  margin: 0.65rem 0;
+}
+.procurement-documents > a {
+  margin-block: 0.4rem;
+}
+.procurement-downloads {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.procurement-downloads li {
+  border: 1px solid #d7e6ff;
+  border-radius: 0.65rem;
+  padding: 0.55rem 0.7rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+}
+.procurement-downloads span,
+.procurement-downloads li div,
+.store-catalog-tabs {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+.procurement-downloads svg {
+  flex: 0 0 auto;
+}
+.procurement-downloads a {
+  min-width: 3.2rem;
+  min-height: 2.75rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 0.45rem;
+  background: #edf4ff;
+  color: #153d85;
+  font-weight: 700;
+}
+.procurement-contact p {
+  margin: 0.35rem 0;
+}
+.store-catalog-tabs {
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+.store-catalog-tabs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.55rem;
+  border: 1px solid #bad2ff;
+}
+.store-catalog-tabs a[aria-current] {
+  background: #173d89;
+  color: white;
+}
+.market-demo-cta {
+  margin-top: 0.45rem;
+  width: 100%;
+}
+.status.demo {
+  background: #fff0c9;
+  color: #694400;
+  border-color: #f2cf72;
+}
+.market-concept-figure {
+  margin: 0;
+}
+.market-concept-figure img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  display: block;
+}
+.market-concept-figure figcaption {
+  margin: 0.5rem 0;
+}
+.market-dock .market-dock-button {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  font: inherit;
+  cursor: pointer;
+  padding: 0.1rem 0;
+  min-height: 45px;
+  gap: 3px;
+  line-height: 1.25;
+}
+@media (max-width: 550px) {
+  .procurement-banner-inner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.35rem 0.65rem;
+  }
+  .procurement-banner-inner > a {
+    grid-column: 2;
+    margin: 0;
+    min-height: 2.1rem;
+  }
+}

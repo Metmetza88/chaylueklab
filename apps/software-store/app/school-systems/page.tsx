@@ -8,6 +8,7 @@ import {
   Globe2,
   School,
 } from "lucide-react";
+import { ProcurementDocuments } from "@/components/Procurement";
 import styles from "./school-systems.module.css";
 
 export const metadata: Metadata = {
@@ -135,6 +136,9 @@ export default function SchoolSystems() {
 
       <section className={styles.section} id="procurement">
         <h2>ราคา เอกสารจัดซื้อ และโดเมนโรงเรียน</h2>
+        <div className="panel">
+          <ProcurementDocuments />
+        </div>
         <div className={styles.procurement}>
           <article>
             <FileText size={23} />

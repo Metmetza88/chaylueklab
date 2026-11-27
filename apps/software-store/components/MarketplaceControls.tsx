@@ -16,9 +16,12 @@ import {
 } from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
 
-const procurement = "/school-systems#procurement";
+import { DirectContact, ProcurementDocuments } from "./Procurement";
+import {
+  lineContact as line,
+  procurementPath as procurement,
+} from "@/lib/procurement";
 const quote = "/contact#quotation";
-const line = "https://lin.ee/Vgg2m3N";
 
 export function MarketplaceHeader() {
   const search = useRef<HTMLDialogElement>(null);
@@ -123,6 +126,8 @@ const replies = [
 export default function MarketplaceDock() {
   const path = usePathname();
   const help = useRef<HTMLDialogElement>(null);
+  const docs = useRef<HTMLDialogElement>(null);
+  const contact = useRef<HTMLDialogElement>(null);
   const [conversation, setConversation] = useState<
     { question: string; reply: string }[]
   >([]);
@@ -183,20 +188,69 @@ export default function MarketplaceDock() {
         <small aria-hidden="true">LINE</small>
       </a>
       <nav className="market-dock" aria-label="เมนูลัดบนมือถือ">
-        {shortcuts.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className={href === quote ? "market-dock-quote" : undefined}
-            aria-current={path === href ? "page" : undefined}
-          >
-            <span>
-              <Icon size={19} aria-hidden="true" />
-            </span>
-            <small>{label}</small>
-          </Link>
-        ))}
+        {shortcuts.map(({ href, label, icon: Icon }) =>
+          href === procurement || href === "/contact" ? (
+            <button
+              key={href}
+              className="market-dock-button"
+              type="button"
+              onClick={() =>
+                (href === procurement ? docs : contact).current?.showModal()
+              }
+            >
+              <span>
+                <Icon size={19} aria-hidden="true" />
+              </span>
+              <small>{label}</small>
+            </button>
+          ) : (
+            <Link
+              key={href}
+              href={href}
+              className={href === quote ? "market-dock-quote" : undefined}
+              aria-current={path === href ? "page" : undefined}
+            >
+              <span>
+                <Icon size={19} aria-hidden="true" />
+              </span>
+              <small>{label}</small>
+            </Link>
+          ),
+        )}
       </nav>
+      <dialog
+        ref={docs}
+        className="market-dialog"
+        aria-labelledby="market-procurement-title"
+      >
+        <DialogTitle
+          id="market-procurement-title"
+          title="เอกสารเบิกงบและจัดซื้อ"
+        />
+        <ProcurementDocuments />
+        <p>
+          <Link href={procurement} onClick={() => docs.current?.close()}>
+            อ่านรายละเอียดสำหรับฝ่ายพัสดุ
+          </Link>
+        </p>
+      </dialog>
+      <dialog
+        ref={contact}
+        className="market-dialog"
+        aria-labelledby="market-contact-title"
+      >
+        <DialogTitle id="market-contact-title" title="ติดต่อเรา" />
+        <DirectContact />
+        <p>
+          <Link
+            href="/contact"
+            className="market-primary"
+            onClick={() => contact.current?.close()}
+          >
+            ไปหน้าติดต่อและขอใบเสนอราคา
+          </Link>
+        </p>
+      </dialog>
       <dialog
         ref={help}
         className="market-dialog market-chat"

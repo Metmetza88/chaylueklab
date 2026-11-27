@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { DirectContact } from "@/components/Procurement";
+import { lineContact, lineId, quoteDraft } from "@/lib/procurement";
 import { configured } from "@/lib/env";
 
 export default async function Page({
@@ -13,6 +15,7 @@ export default async function Page({
     <section className="prose">
       <span className="eyebrow">WORAMET AI LAB</span>
       <h1>ติดต่อเรา</h1>
+      <DirectContact />
       <p>
         ขอประเมินงาน ติดตั้งระบบ หรือสอบถามโปรแกรมโรงเรียนผ่าน LINE ของ
         CHAYLUEKLAB
@@ -34,12 +37,19 @@ export default async function Page({
         </p>
         <a
           className="btn"
-          href="https://lin.ee/Vgg2m3N"
+          href={programName ? quoteDraft(programName) : lineContact}
           target="_blank"
           rel="noopener noreferrer"
         >
-          เปิด LINE Official Account ↗
+          {programName
+            ? "เปิดร่างข้อความขอราคาทาง LINE ↗"
+            : `เปิด LINE OA ${lineId} ↗`}
         </a>
+        {programName && (
+          <a href={lineContact} target="_blank" rel="noopener noreferrer">
+            เปิดแชต LINE แบบไม่ใส่ข้อความ
+          </a>
+        )}
         <a
           href="https://chaylueklab.com"
           target="_blank"
