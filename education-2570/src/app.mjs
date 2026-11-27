@@ -45,6 +45,7 @@ async function renderRoute() {
   else if(path.startsWith('/product/')) html=view.product(modules.find(m=>m.slug===path.split('/')[2]));
   else if(path==='/compare') html=view.comparison(compare);
   else if(path==='/quote') html=view.quotePage(query,compare);
+  else if(path==='/demos') html=view.demos(compare);
   else if(path.startsWith('/demo/')) html=demoPage(path.split('/')[2]);
   else if(path==='/help') html=view.help();
   else if(path==='/manual') html=view.manual();

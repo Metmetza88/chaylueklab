@@ -5,8 +5,7 @@ test('homepage, illustrations and mobile layout',async({page},info)=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('/');
  await expect(page.getByRole('heading',{level:1})).toContainText('งานโรงเรียนที่ง่ายขึ้น');
- await expect(page.locator('.category')).toHaveCount(14);
- await expect(page.locator('.product-card')).toHaveCount(3);
+ await expect(page.getByRole('navigation',{name:'เลือกงานที่ต้องการ'}).getByRole('link')).toHaveCount(4);
  await page.evaluate(()=>document.fonts.ready);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
  for(const img of await page.locator('img').all()){await img.scrollIntoViewIfNeeded();await expect.poll(()=>img.evaluate(i=>i.complete&&i.naturalWidth>0)).toBe(true);}
@@ -15,6 +14,23 @@ test('homepage, illustrations and mobile layout',async({page},info)=>{
  expect(errors).toEqual([]);
  await page.locator('.skip').focus();await page.keyboard.press('Enter');
  await expect(page.locator('main')).toBeFocused();await expect(page.getByRole('heading',{level:1})).toContainText('งานโรงเรียนที่ง่ายขึ้น');
+});
+test('the shared homepage goes to catalog, demos, procurement and the school workspace',async({page})=>{
+ const entry=page.getByRole('navigation',{name:'เลือกงานที่ต้องการ'});
+ await page.goto('/');
+ await entry.getByRole('link',{name:/^ดูโปรแกรม/}).click();
+ await expect(page.getByRole('link',{name:'เปิดแคตตาล็อก MET'})).toHaveAttribute('href','https://store.chaylueklab.com/products');
+ await page.getByRole('link',{name:'หน้าหลัก',exact:true}).click();
+ await entry.getByRole('link',{name:/^ทดลองระบบ/}).click();
+ await expect(page.getByRole('heading',{level:1})).toHaveText('ทดลองระบบโรงเรียน');
+ await expect(page.getByRole('link',{name:'ทดลองเช็กชื่อ'})).toHaveAttribute('href','https://store.chaylueklab.com/demo/met-attendance');
+ await expect(page.locator('.product-card')).toHaveCount(3);
+ await page.getByRole('link',{name:'หน้าหลัก',exact:true}).click();
+ await entry.getByRole('link',{name:/^ราคาและเอกสารจัดซื้อ/}).click();
+ await expect(page.getByRole('link',{name:'ดูเอกสารจัดซื้อและแบบฟอร์ม .ac.th'})).toHaveAttribute('href','https://store.chaylueklab.com/school-systems#procurement');
+ await page.getByRole('link',{name:'หน้าหลัก',exact:true}).click();
+ await entry.getByRole('link',{name:/^เข้าพื้นที่โรงเรียน/}).click();
+ await expect(page.getByRole('heading',{level:1})).toHaveText('พื้นที่ทำงานโรงเรียน');
 });
 test('catalog search, availability filter, empty state and real demos only',async({page})=>{
  await page.goto('/#/catalog');await expect(page.locator('.product-card')).toHaveCount(17);

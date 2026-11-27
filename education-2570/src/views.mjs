@@ -1,5 +1,16 @@
 import { categories, modules, statusLabels } from './catalog.mjs';
-const icons = ['▥','▤','♙','▧','฿','▦','≡','▱','♡','♧','▣','⌂','☆','✧'];
+const store = 'https://store.chaylueklab.com';
+const entryLinks = [
+  ['▤', 'ดูโปรแกรม', 'ค้นหา เปรียบเทียบ และดูรายละเอียด', '#/catalog'],
+  ['▷', 'ทดลองระบบ', 'รับสมัคร เช็กชื่อ ข้อสอบ และเกียรติบัตร', '#/demos'],
+  ['≡', 'ราคาและเอกสารจัดซื้อ', 'เตรียมคำขอใบเสนอราคาและดูแบบฟอร์ม', '#/quote'],
+  ['⌂', 'เข้าพื้นที่โรงเรียน', 'เข้าสู่ระบบด้วยบัญชีครูหรือผู้ดูแล', '#/workspace']
+];
+const storeDemos = [
+  ['เว็บไซต์โรงเรียน', 'MET School Pro', 'จัดหน้าโรงเรียนและประกาศข่าว', 'met-school-pro'],
+  ['รับสมัครนักเรียน', 'MET Admission', 'ส่งใบสมัคร ตรวจ และประกาศผล', 'met-admission'],
+  ['เช็กชื่อ', 'MET Attendance', 'เช็กชื่อรายคาบและดาวน์โหลด CSV', 'met-attendance']
+];
 /** Escape ข้อมูลก่อนประกอบ HTML เพื่อไม่ให้ข้อความกลายเป็นสคริปต์ */
 export const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 export const badge = module => `<span class="badge ${esc(module.status)}">${esc(statusLabels[module.status])}</span>`;
@@ -14,28 +25,21 @@ export function productCard(module, selected = []) {
   return `<article class="product-card"><a class="product-image" href="#/product/${module.slug}" aria-label="รายละเอียด ${esc(module.name)}"><img src="${module.image}" width="640" height="360" loading="lazy" alt="ภาพแนวคิด ${esc(module.name)}">${badge(module)}</a><div class="product-body"><div class="product-category">${esc(categoryName(module.category))}</div><h3><a href="#/product/${module.slug}">${esc(module.name)}</a></h3><p>${esc(module.tagline)}</p><div class="product-bottom"><strong>ขอใบเสนอราคา</strong><a href="#/product/${module.slug}">ดูรายละเอียด →</a></div><div class="card-actions">${module.demo ? `<a class="button secondary small" href="${module.demo}">ทดลองใช้งาน →</a>` : ''}<label class="check-label"><input type="checkbox" data-compare="${module.slug}" ${selected.includes(module.slug)?'checked':''}> เปรียบเทียบ</label></div></div></article>`;
 }
 export function home() {
-  const trials = modules.filter(module => module.demo);
   return `
   <section class="campus-hero">
     <div class="container campus-grid">
       <div class="campus-copy">
-        <p class="eyebrow">ซอฟต์แวร์สำหรับสถานศึกษา</p>
-        <h1>งานโรงเรียนที่ง่ายขึ้น<br><span>เริ่มที่ซอฟต์แวร์ที่ใช่</span></h1>
-        <p class="campus-lead">เลือกเครื่องมือให้ตรงกับงาน ทดลองด้วยข้อมูลตัวอย่าง แล้วเตรียมคำขอใบเสนอราคาสำหรับโรงเรียนของคุณ</p>
-        <div class="hero-actions">
-          <a class="button" href="#/catalog">เปิดแคตตาล็อก</a>
-          <a class="button secondary" href="#/workspace">เข้าพื้นที่โรงเรียน</a>
-        </div>
-        <dl class="campus-totals">
-          <div><dt>โปรแกรมในแคตตาล็อก</dt><dd>${modules.length}</dd></div>
-          <div><dt>หมวดงานโรงเรียน</dt><dd>${categories.length}</dd></div>
-          <div><dt>เดโมใน Education 2570</dt><dd>${trials.length}</dd></div>
-        </dl>
+        <p class="eyebrow">CHAYLUEKLAB · พ.สมนึก 2&amp;3</p>
+        <h1>งานโรงเรียนที่ง่ายขึ้น<br><span>ทุกระบบเริ่มที่นี่</span></h1>
+        <p class="campus-lead">เลือกงานที่ต้องการ แล้วไปต่อยังระบบที่เกี่ยวข้อง</p>
+        <nav class="campus-entry" aria-label="เลือกงานที่ต้องการ">
+          ${entryLinks.map(([icon, title, description, href]) => `<a href="${href}"><span class="campus-entry-icon" aria-hidden="true">${icon}</span><strong>${title}</strong><span class="campus-entry-description">${description}</span></a>`).join('')}
+        </nav>
       </div>
       <figure class="campus-figure">
         <div class="campus-frame">
           <div class="campus-toolbar"><span aria-hidden="true">● ● ●</span><strong>MET School Pro</strong></div>
-          <a href="https://store.chaylueklab.com/demo/met-school-pro" aria-label="เปิดเดโมเว็บไซต์โรงเรียน MET School Pro">
+          <a href="#/demos" aria-label="ดูเดโมระบบโรงเรียน">
             <img src="/assets/school-portal-preview.png" width="1440" height="1677" alt="หน้าเว็บโรงเรียนตัวอย่างในเดโม MET School Pro" fetchpriority="high">
           </a>
         </div>
@@ -43,24 +47,19 @@ export function home() {
       </figure>
     </div>
   </section>
-  <section class="section container campus-links" aria-label="ทางลัดสำหรับโรงเรียน">
-    <a href="#/quote"><strong>เตรียมคำขอใบเสนอราคา</strong><span>เลือกโปรแกรมและสรุปโจทย์ของโรงเรียน</span></a>
-    <a href="https://store.chaylueklab.com/demo/met-attendance"><strong>ทดลองเช็กชื่อ</strong><span>เช็กชื่อรายคาบ ดูรายการติดตาม และส่งออก CSV</span></a>
-    <a href="https://store.chaylueklab.com/school-systems#procurement"><strong>เอกสารจัดซื้อและโดเมน</strong><span>ดูขั้นตอนขอเอกสารและแบบฟอร์มจด .ac.th</span></a>
-  </section>
-  <section class="section soft"><div class="container">
-    <div class="section-head"><div><h2>ลองใช้ก่อนเลือกโปรแกรม</h2><p>สร้างข้อสอบ ทดลองตรวจคะแนน และพิมพ์เกียรติบัตรด้วยข้อมูลสมมติ</p></div><a class="ghost" href="#/catalog?status=trial">ดูเดโมทั้งหมด</a></div>
-    <div class="card-grid">${trials.map(module => productCard(module)).join('')}</div>
-  </div></section>
-  <section class="section"><div class="container">
-    <div class="section-head"><div><h2>สำรวจตามหมวดงาน</h2><p>เริ่มจากงานที่อยากลดขั้นตอนในภาคเรียนถัดไป</p></div><a class="ghost" href="#/catalog">ดูโปรแกรมทั้งหมด</a></div>
-    <div class="category-grid">${categories.map((category, index) => `<a class="category" href="#/catalog?category=${category.slug}"><span class="symbol" aria-hidden="true">${icons[index]}</span><span>${esc(category.name)}</span></a>`).join('')}</div>
-  </div></section>
-  <section class="section"><div class="container cta-panel"><div><h2>เริ่มวางระบบสำหรับโรงเรียนของคุณ</h2><p>แจ้งประเภทสถานศึกษา จำนวนผู้ใช้ และงานที่อยากเริ่มให้ทีม พ.สมนึก 2&3 ประเมิน</p></div><a class="button" href="#/quote">เตรียมคำขอใบเสนอราคา</a></div></section>`;
+  `;
+}
+export function demos(selected) {
+  return head('ทดลองระบบโรงเรียน','เลือกเดโมตามงานที่ต้องการลอง ทุกเดโมใช้ข้อมูลสมมติ') + `<section class="section container">
+    <h2>เว็บไซต์ รับสมัคร และเช็กชื่อ</h2>
+    <div class="card-grid campus-demo-grid">${storeDemos.map(([title, product, description, slug]) => `<article class="panel"><h3>${title}</h3><p class="muted">${product} · ${description}</p><a class="button secondary" href="${store}/demo/${slug}">ทดลอง${title}</a></article>`).join('')}</div>
+    <h2>ข้อสอบและเกียรติบัตร</h2>
+    <div class="card-grid">${modules.filter(module => module.demo).map(module => productCard(module, selected)).join('')}</div>
+  </section>`;
 }
 export function catalog(query, selected) {
   const category = query.get('category') ?? '';
-  return head('แคตตาล็อกซอฟต์แวร์','เลือกโปรแกรมตามหมวดงาน ดูความพร้อมจริง และทดลองใช้เมื่อมี Demo') + `<section class="section"><div class="container catalog-layout"><aside class="filter-sidebar"><h2>หมวดซอฟต์แวร์</h2><div><a href="#/catalog" class="${!category?'active':''}">ทั้งหมด (${modules.length})</a>${categories.map(c=>`<a class="${category===c.slug?'active':''}" href="#/catalog?category=${c.slug}">${esc(c.name)}</a>`).join('')}</div></aside><div class="catalog-results"><div class="toolbar"><input id="search" type="search" aria-label="ค้นหาโปรแกรม" placeholder="ค้นหาโปรแกรมหรือคุณสมบัติ…"><select id="status-filter" aria-label="สถานะโปรแกรม"><option value="">ทุกสถานะ</option>${Object.entries(statusLabels).map(([key,name])=>`<option value="${key}" ${query.get('status')===key?'selected':''}>${name}</option>`).join('')}</select></div><div id="catalog-list">${catalogList({category,status:query.get('status')??''},selected)}</div></div></div></section>`;
+  return head('แคตตาล็อกซอฟต์แวร์','เลือกโปรแกรมตามหมวดงานและดูสถานะความพร้อม') + `<section class="section"><div class="container"><p class="catalog-collection">กำลังมองหาระบบ MET สำหรับเว็บไซต์โรงเรียน รับสมัคร หรือเช็กชื่อ <a class="button secondary small" href="${store}/products">เปิดแคตตาล็อก MET</a></p></div><div class="container catalog-layout"><aside class="filter-sidebar"><h2>หมวดซอฟต์แวร์</h2><div><a href="#/catalog" class="${!category?'active':''}">ทั้งหมด (${modules.length})</a>${categories.map(c=>`<a class="${category===c.slug?'active':''}" href="#/catalog?category=${c.slug}">${esc(c.name)}</a>`).join('')}</div></aside><div class="catalog-results"><div class="toolbar"><input id="search" type="search" aria-label="ค้นหาโปรแกรม" placeholder="ค้นหาโปรแกรมหรือคุณสมบัติ…"><select id="status-filter" aria-label="สถานะโปรแกรม"><option value="">ทุกสถานะ</option>${Object.entries(statusLabels).map(([key,name])=>`<option value="${key}" ${query.get('status')===key?'selected':''}>${name}</option>`).join('')}</select></div><div id="catalog-list">${catalogList({category,status:query.get('status')??''},selected)}</div></div></div></section>`;
 }
 export function catalogList({category='',status='',search=''}, selected=[]) {
   const results=modules.filter(m=>(!category||m.category===category)&&(!status||m.status===status)&&[m.name,m.tagline,...m.features].join(' ').toLowerCase().includes(search.toLowerCase().trim()));
@@ -76,7 +75,7 @@ export function comparison(selected) {
 }
 export function quotePage(query, selected) {
   const initial=query.get('module')?[query.get('module')]:selected;
-  return head('ขอใบเสนอราคา','แจ้งความต้องการเพื่อให้ทีมงานประเมิน ไม่มีการคิดราคาขายโดยอัตโนมัติ')+`<section class="section container two-col"><form id="quote-form" class="panel"><h2>โปรแกรมที่โรงเรียนสนใจ</h2><div class="quote-options">${modules.map(m=>`<label><input type="checkbox" name="module" value="${m.slug}" ${initial.includes(m.slug)?'checked':''}> ${esc(m.name)}</label>`).join('')}</div><label class="field">ชื่อโรงเรียน / หน่วยงาน<input name="school_name" maxlength="200" required autocomplete="organization"></label><label class="field">รายละเอียดความต้องการ<textarea name="note" maxlength="2000" placeholder="เช่น จำนวนผู้ใช้งาน งานที่ต้องการปรับปรุง (ไม่ต้องใส่ข้อมูลนักเรียน)"></textarea></label><div class="stack-actions"><button type="submit">สร้างสรุปคำขอ</button></div><div id="quote-result" role="status"></div></form><aside><div class="panel"><h2>ขั้นตอนถัดไป</h2><ol><li>เลือกโปรแกรมและระบุความต้องการ</li><li>ตรวจสรุปคำขอ หรือพิมพ์เก็บไว้</li><li>เข้าสู่ระบบเพื่อส่งคำขอให้ทีมงาน</li></ol><p class="item-meta">คำขอเป็นข้อมูลประกอบการประเมิน ยังไม่ใช่ใบเสนอราคาหรือสัญญาซื้อขาย</p><a href="#/login" class="button secondary">เข้าสู่ระบบลูกค้า</a></div><div class="notice">สถานะโปรแกรมตามแคตตาล็อก โปรแกรมที่ยังพัฒนาไม่สามารถเปิดใช้จริงได้ทันที</div></aside></section>`;
+  return head('ขอใบเสนอราคา','แจ้งความต้องการเพื่อให้ทีมงานประเมิน ไม่มีการคิดราคาขายโดยอัตโนมัติ')+`<section class="section container two-col"><form id="quote-form" class="panel"><h2>โปรแกรมที่โรงเรียนสนใจ</h2><div class="quote-options">${modules.map(m=>`<label><input type="checkbox" name="module" value="${m.slug}" ${initial.includes(m.slug)?'checked':''}> ${esc(m.name)}</label>`).join('')}</div><label class="field">ชื่อโรงเรียน / หน่วยงาน<input name="school_name" maxlength="200" required autocomplete="organization"></label><label class="field">รายละเอียดความต้องการ<textarea name="note" maxlength="2000" placeholder="เช่น จำนวนผู้ใช้งาน งานที่ต้องการปรับปรุง (ไม่ต้องใส่ข้อมูลนักเรียน)"></textarea></label><div class="stack-actions"><button type="submit">สร้างสรุปคำขอ</button></div><div id="quote-result" role="status"></div></form><aside><div class="panel"><h2>เอกสารจัดซื้อและโดเมน</h2><p class="muted">ดูช่องทางขอใบเสนอราคา ใบส่งของ และเอกสารบริษัท พร้อมแบบฟอร์มจด .ac.th</p><a class="button secondary" href="${store}/school-systems#procurement">ดูเอกสารจัดซื้อและแบบฟอร์ม .ac.th</a></div><div class="panel"><h2>ขั้นตอนถัดไป</h2><ol><li>เลือกโปรแกรมและระบุความต้องการ</li><li>ตรวจสรุปคำขอ หรือพิมพ์เก็บไว้</li><li>ส่งสรุปทาง LINE หรือเข้าสู่ระบบเพื่อบันทึกคำขอ</li></ol><p class="item-meta">คำขอเป็นข้อมูลประกอบการประเมิน ยังไม่ใช่ใบเสนอราคาหรือสัญญาซื้อขาย</p><a href="#/login" class="button secondary">เข้าสู่ระบบลูกค้า</a></div><div class="notice">สถานะโปรแกรมตามแคตตาล็อก โปรแกรมที่ยังพัฒนาไม่สามารถเปิดใช้จริงได้ทันที</div></aside></section>`;
 }
 export function login(config) {
   return head('เข้าสู่ระบบ','บัญชีสำหรับลูกค้า โรงเรียน และผู้ดูแลแพลตฟอร์ม')+`<div class="container narrow"><form id="login-form" class="panel"><h2>ยินดีต้อนรับกลับ</h2><p class="muted">ใช้บัญชีที่ผู้ดูแลจัดเตรียมให้โรงเรียนของคุณ</p>${!config.authConfigured?'<div class="notice">ระบบบัญชียังไม่เชื่อมต่อ คุณสามารถทดลองโปรแกรมผ่านหน้าสาธิตได้</div>':`<label class="field">อีเมล<input name="email" type="email" required autocomplete="username" maxlength="254"></label><label class="field">รหัสผ่าน<input name="password" type="password" required autocomplete="current-password" maxlength="256"></label><button type="submit">เข้าสู่ระบบ →</button>`}<div id="form-status" role="status"></div><a class="ghost" href="#/demo/exam-studio">ไปหน้าทดลองใช้งาน</a></form></div>`;
