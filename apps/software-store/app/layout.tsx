@@ -82,7 +82,12 @@ export default async function Layout({
             ข้ามไปเนื้อหา
           </a>
           <div className="top-bar">
-            <a href="https://education.chaylueklab.com/">หน้ารวมระบบโรงเรียน</a>
+            <a
+              className="school-home-link"
+              href="https://education.chaylueklab.com/"
+            >
+              หน้ารวมระบบโรงเรียน
+            </a>
             <Link href="/guide">
               คู่มือเริ่มต้นใช้งาน <ArrowUpRight size={12} />
             </Link>

@@ -1456,12 +1456,14 @@ code {
     width: calc(100% - 36px);
   }
   .top-bar {
-    font-size: 6px;
-    letter-spacing: 0.11em;
-    height: 27px;
+    height: 36px;
   }
-  .top-bar a {
+  .top-bar a:not(.school-home-link) {
     display: none;
+  }
+  .top-bar .school-home-link {
+    align-self: stretch;
+    font-size: 12px;
   }
   .header-inner {
     height: 72px;
