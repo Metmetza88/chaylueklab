@@ -124,3 +124,14 @@ h1,h2,h3,.site-header .brand{font-family:var(--market-title)}
  .market-float-chat span{padding-inline:8px}
 }
 @media print{.market-bottom,.market-float,.market-dialog{display:none!important} body{padding-bottom:0}}
+
+.edu-seller { display: grid; gap: 4px; padding-block: 12px 22px; font-style: normal; }
+.edu-sport-preview { display: grid; align-content: center; gap: .45rem; min-height: 100%; padding: 2.4rem .75rem 1.5rem; background: #11233c; color: #e8f0ff; font-size: .85rem; }
+.edu-sport-preview header { color: #f2d28e; font-weight: 700; }
+.edu-sport-preview div { display: flex; gap: .35rem; }
+.edu-sport-preview div span { flex: 1; padding: .3rem; background: #223d60; border-radius: .35rem; }
+.edu-sport-preview b { display: block; color: #a8d8ff; }
+.edu-sport-preview span:nth-child(2) b { color: #f2d28e; }
+.edu-sport-preview span:nth-child(3) b { color: #91debd; }
+.edu-sport-preview p { margin: 0; }
+#compare-picker { align-items: end; justify-content: start; }

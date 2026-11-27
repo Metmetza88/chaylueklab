@@ -1,6 +1,8 @@
 import { categories, modules, statusLabels } from './catalog.mjs';
 import { marketIcon, procurementDocs, sports } from './marketplace.mjs';
 const store = 'https://store.chaylueklab.com';
+const trialLine = 'https://line.me/R/ti/p/@125cbuuu';
+const sportDemo = store + '/demo/met-sport';
 const schoolSupplies = 'https://psomnuek.chaylueklab.com/work?view=shop';
 const starterDemos = [
   ['exam-studio', 'ลองสร้างข้อสอบ'],
@@ -16,7 +18,8 @@ const entryLinks = [
 const storeDemos = [
   ['เว็บไซต์โรงเรียน', 'MET School Pro', 'จัดหน้าโรงเรียนและประกาศข่าว', 'met-school-pro'],
   ['รับสมัครนักเรียน', 'MET Admission', 'ส่งใบสมัคร ตรวจ และประกาศผล', 'met-admission'],
-  ['เช็กชื่อ', 'MET Attendance', 'เช็กชื่อรายคาบและดาวน์โหลด CSV', 'met-attendance']
+  ['เช็กชื่อ', 'MET Attendance', 'เช็กชื่อรายคาบและดาวน์โหลด CSV', 'met-attendance'],
+  ['จัดการแข่งขันกีฬาสี', 'MET Sport', 'บันทึกคะแนนและสรุปอันดับคณะสี', 'met-sport']
 ];
 const homeFeatures = [
   ['students','งานทะเบียน','วางขั้นตอนตั้งแต่รับสมัคร จัดห้องเรียน ไปจนถึงดูประวัตินักเรียน'],
@@ -44,12 +47,12 @@ export function productCard(module, selected = []) {
   const price = featured ? `<span>ราคาเป้าหมาย</span> <strong>${sports.price}</strong><small>ยังไม่เปิดขาย · ราคาอาจเปลี่ยน</small>` : '<strong>ขอราคาเบื้องต้น</strong><small>ประเมินตามขอบเขตงาน</small>';
   const tech = module.demo ? 'เว็บแอป · เดโม' : 'โครงการพัฒนา';
   return `<article class="product-card${featured?' featured-product':''}" data-market-card="${module.slug}">
-    <a class="product-image" href="${detail}" aria-label="รายละเอียด ${esc(module.name)}"><img src="${module.image}" width="640" height="360" loading="lazy" alt="ภาพแนวคิด ${esc(module.name)}"><span class="product-ribbon">${featured?'ไฮไลต์ · กีฬาสี':esc(statusLabels[module.status])}</span><span class="product-concept">ภาพแนวคิด</span></a>
+    <a class="product-image" href="${detail}" aria-label="รายละเอียด ${esc(module.name)}">${featured ? '<div class="edu-sport-preview"><header>MET Sport · ข้อมูลสมมติ</header><div><span>สีฟ้า <b>86</b></span><span>สีทอง <b>75</b></span><span>สีเขียว <b>62</b></span></div><p>09:00 · วิ่ง 100 ม. · ลู่วิ่ง<br>10:30 · วอลเลย์บอล · สนาม 2</p></div>' : `<img src="${module.image}" width="640" height="360" loading="lazy" alt="ภาพแนวคิด ${esc(module.name)}">`}<span class="product-ribbon">${featured?'ไฮไลต์ · กีฬาสี':esc(statusLabels[module.status])}</span><span class="product-concept">ภาพแนวคิด</span></a>
     <div class="product-body"><div class="product-category">${esc(categoryName(module.category))}</div><h3><a href="${detail}">${esc(module.name)}</a></h3><p>${esc(module.tagline)}</p>
       <div class="market-card-meta"><span>${marketIcon('school')} <span>ยังไม่เผยแพร่ยอดโรงเรียน</span></span><span class="market-tech">${tech}</span></div>
       <div class="market-price">${price}</div>
       <button class="market-product-cta" type="button" data-market-product="${module.slug}" aria-haspopup="dialog">ดูรายละเอียด / ขอใบเสนอราคา ${marketIcon('arrow')}</button>
-      <div class="card-actions">${module.demo ? `<a class="button secondary small" href="${module.demo}">ทดลองใช้งาน →</a>` : ''}${featured ? `<a href="${sports.detail}">เปิดรายละเอียดใน MET Store →</a>` : `<label class="check-label"><input type="checkbox" data-compare="${module.slug}" ${selected.includes(module.slug)?'checked':''}> เปรียบเทียบ</label>`}</div>
+      <div class="card-actions">${module.demo ? `<a class="button secondary small" href="${module.demo}">ทดลองใช้งาน →</a>` : ''}${featured ? `<a class="button secondary small" href="${sportDemo}">ทดลองเล่น Demo</a><a href="${sports.detail}">เปิดรายละเอียดใน MET Store →</a>` : ''}<label class="check-label"><input type="checkbox" data-compare="${module.slug}" ${selected.includes(module.slug)?'checked':''}> เปรียบเทียบ</label></div>
     </div></article>`;
 }
 export function marketProductDetail(module) {
@@ -130,7 +133,8 @@ export function home() {
 }
 export function demos(selected) {
   return head('ทดลองระบบโรงเรียน','เลือกเดโมตามงานที่ต้องการลอง ทุกเดโมใช้ข้อมูลสมมติ') + `<section class="section container">
-    <h2>เว็บไซต์ รับสมัคร และเช็กชื่อ</h2>
+    <h2>เดโมจากร้านซอฟต์แวร์ MET</h2>
+    <p><a class="button secondary" href="${trialLine}">ขอรหัสทดลองใช้ทาง LINE OA @125cbuuu ↗</a></p>
     <div class="card-grid campus-demo-grid">${storeDemos.map(([title, product, description, slug]) => `<article class="panel"><h3>${title}</h3><p class="muted">${product} · ${description}</p><a class="button secondary" href="${store}/demo/${slug}">ทดลอง${title}</a></article>`).join('')}</div>
     <h2>ข้อสอบและเกียรติบัตร</h2>
     <div class="card-grid">${modules.filter(module => module.demo).map(module => productCard(module, selected)).join('')}</div>
@@ -164,13 +168,16 @@ export function product(module) {
   return head(module.name,categoryName(module.category))+`<section class="section container product-detail"><div class="two-col"><div><div class="eyebrow">${esc(categoryName(module.category))}</div><h2 class="product-title">${esc(module.name)}</h2>${badge(module)}<p style="margin-top:20px">${esc(module.description)}</p><div class="notice">${esc(module.limitations)}</div><div class="detail-section"><h2>คุณสมบัติ${module.demo?'ในรุ่นสาธิต':'ที่วางแผนพัฒนา'}</h2><ul class="feature-list">${module.features.map(f=>`<li>${esc(f)}</li>`).join('')}</ul></div><div class="detail-section"><h2>ประโยชน์ที่ออกแบบไว้</h2><ul class="feature-list">${module.benefits.map(f=>`<li>${esc(f)}</li>`).join('')}</ul></div><div class="detail-section"><h2>วิธี${module.demo?'ทดลองใช้งาน':'เริ่มต้น'}</h2><ol>${module.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol></div></div><aside><img class="product-hero" src="${module.image}" width="640" height="360" alt="ภาพแนวคิด ${esc(module.name)}"><div class="panel"><h2>ให้เราช่วยประเมินความต้องการ</h2><p class="muted">ราคาจะระบุในใบเสนอราคาที่ได้รับอนุมัติจากเจ้าของเท่านั้น</p><div class="stack-actions"><a class="button" href="#/quote?module=${module.slug}">ขอใบเสนอราคา</a>${module.demo?`<a class="button secondary" href="${module.demo}">ทดลองใช้งาน →</a>`:''}</div><p class="item-meta" style="margin-top:15px">ภาษาไทย · ขอใบเสนอราคาเป็นเงินบาท</p></div></aside></div></section>`;
 }
 export function comparison(selected) {
-  const products=modules.filter(m=>selected.includes(m.slug));
-  return head('เปรียบเทียบโปรแกรม','เลือกได้สูงสุด 3 โปรแกรม เพื่อดูความเหมาะสมกับงานของคุณ')+`<section class="section container">${!products.length?empty('ยังไม่ได้เลือกโปรแกรม','เลือก “เปรียบเทียบ” บนการ์ดโปรแกรมที่สนใจ'): `<div class="compare-wrap"><table class="compare-table"><thead><tr><th scope="col">รายการ</th>${products.map(m=>`<th scope="col">${esc(m.name)}<br><button class="ghost small" data-remove-compare="${m.slug}">นำออก</button></th>`).join('')}</tr></thead><tbody>${[['หมวดงาน',m=>esc(categoryName(m.category))],['สถานะ',badge],['คุณสมบัติ',m=>`<ul>${m.features.map(f=>`<li>${esc(f)}</li>`).join('')}</ul>`],['ข้อจำกัด',m=>esc(m.limitations)],['ราคา',()=>'ขอใบเสนอราคา'],['ทดลองใช้',m=>m.demo?`<a href="${m.demo}">เปิดหน้าสาธิต →</a>`:'ยังไม่มี Demo']].map(([label,fn])=>`<tr><th scope="row">${label}</th>${products.map(m=>`<td>${fn(m)}</td>`).join('')}</tr>`).join('')}</tbody></table></div><div class="hero-actions"><a class="button" href="#/quote">ขอใบเสนอราคา</a><a class="button secondary" href="#/catalog">เลือกโปรแกรมเพิ่ม</a></div>`}</section>`;
+  const choices=[sports,...modules];
+  const products=selected.flatMap(slug=>choices.filter(m=>m.slug===slug));
+  const remaining=choices.filter(m=>!selected.includes(m.slug));
+  const picker=`<form id="compare-picker" class="toolbar"><label class="field">เลือกโปรแกรม<select name="module" ${products.length>=3?'disabled':''}><option value="">เลือกจากแคตตาล็อก</option>${remaining.map(m=>`<option value="${esc(m.slug)}">${esc(m.name)}</option>`).join('')}</select></label><button type="submit" ${products.length>=3?'disabled':''}>เพิ่มเพื่อเปรียบเทียบ</button></form><p role="status">${products.length} / 3 โปรแกรม</p>`;
+  return head('เปรียบเทียบโปรแกรม','เลือกได้สูงสุด 3 โปรแกรม เพื่อดูความเหมาะสมกับงานของคุณ')+`<section class="section container">${picker}${!products.length?empty('ยังไม่ได้เลือกโปรแกรม','เลือก “เปรียบเทียบ” บนการ์ดโปรแกรมที่สนใจ'): `<div class="compare-wrap"><table class="compare-table"><thead><tr><th scope="col">รายการ</th>${products.map(m=>`<th scope="col">${esc(m.name)}<br><button class="ghost small" data-remove-compare="${m.slug}">นำออก</button></th>`).join('')}</tr></thead><tbody>${[['หมวดงาน',m=>esc(categoryName(m.category))],['สถานะ',badge],['คุณสมบัติ',m=>`<ul>${m.features.map(f=>`<li>${esc(f)}</li>`).join('')}</ul>`],['ข้อจำกัด',m=>esc(m.limitations??'เดโมใช้ข้อมูลสมมติ')],['ราคา',m=>m===sports?`ราคาเป้าหมาย ${sports.price}`:'ขอใบเสนอราคา'],['หมวดงานสำหรับพิจารณางบ',m=>esc(categoryName(m.category))],['ทดลองใช้',m=>m===sports?`<a href="${sportDemo}">ทดลองเล่น Demo →</a>`:m.demo?`<a href="${m.demo}">เปิดหน้าสาธิต →</a>`:'ยังไม่มี Demo']].map(([label,fn])=>`<tr><th scope="row">${label}</th>${products.map(m=>`<td>${fn(m)}</td>`).join('')}</tr>`).join('')}</tbody></table></div><div class="hero-actions"><a class="button" href="#/quote">ขอใบเสนอราคา</a><a class="button secondary" href="#/catalog">เลือกโปรแกรมเพิ่ม</a></div>`}</section>`;
 }
 export function quotePage(query, selected) {
   const requested = query.getAll('module').filter(Boolean);
   const initial = requested.length ? requested : selected;
-  const note = query.get('interest')===sports.slug ? sports.quoteNote : '';
+  const note = query.get('interest')===sports.slug || selected.includes(sports.slug) ? sports.quoteNote : '';
   return head('ขอใบเสนอราคา','แจ้งความต้องการเพื่อให้ทีมงานประเมิน ไม่มีการคิดราคาขายโดยอัตโนมัติ')+`<section class="section container two-col"><form id="quote-form" class="panel"><h2>โปรแกรมที่โรงเรียนสนใจ</h2><div class="quote-options">${modules.map(m=>`<label><input type="checkbox" name="module" value="${m.slug}" ${initial.includes(m.slug)?'checked':''}> ${esc(m.name)}</label>`).join('')}</div><label class="field">ชื่อโรงเรียน / หน่วยงาน<input name="school_name" maxlength="200" required autocomplete="organization"></label><label class="field">รายละเอียดความต้องการ<textarea name="note" maxlength="2000" placeholder="เช่น จำนวนผู้ใช้งาน งานที่ต้องการปรับปรุง (ไม่ต้องใส่ข้อมูลนักเรียน)">${esc(note)}</textarea></label><div class="stack-actions"><button type="submit">สร้างสรุปคำขอ</button></div><div id="quote-result" role="status"></div></form><aside><div class="panel"><h2>เอกสารจัดซื้อและโดเมน</h2><p class="muted">ดูช่องทางขอใบเสนอราคา ใบส่งของ และเอกสารบริษัท พร้อมแบบฟอร์มจด .ac.th</p><a class="button secondary" href="${store}/school-systems#procurement">ดูเอกสารจัดซื้อและแบบฟอร์ม .ac.th</a></div><div class="panel"><h2>ขั้นตอนถัดไป</h2><ol><li>เลือกโปรแกรมและระบุความต้องการ</li><li>ตรวจสรุปคำขอ หรือพิมพ์เก็บไว้</li><li>ส่งสรุปทาง LINE หรือเข้าสู่ระบบเพื่อบันทึกคำขอ</li></ol><p class="item-meta">คำขอเป็นข้อมูลประกอบการประเมิน ยังไม่ใช่ใบเสนอราคาหรือสัญญาซื้อขาย</p><a href="#/login" class="button secondary">เข้าสู่ระบบลูกค้า</a></div><div class="notice">สถานะโปรแกรมตามแคตตาล็อก โปรแกรมที่ยังพัฒนาไม่สามารถเปิดใช้จริงได้ทันที</div></aside></section>`;
 }
 export function login(config) {

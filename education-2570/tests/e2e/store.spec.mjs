@@ -54,11 +54,11 @@ test('catalog counters begin when scrolled into view, with a reduced-motion fall
  await expect(stats).toHaveAttribute('data-counter-state','waiting');
  await stats.scrollIntoViewIfNeeded();
  await expect(stats).toHaveAttribute('data-counter-state','done');
- await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','6']);
+ await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','7']);
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.reload();
  await stats.scrollIntoViewIfNeeded();
- await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','6']);
+ await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','7']);
  expect(await stats.getAttribute('data-counter-state')).toBeNull();
 });
 test('home tabs swap the sample screen in place and FAQ answers toggle',async({page})=>{
@@ -230,7 +230,8 @@ test('marketplace details link to procurement and prefill the existing sports qu
  await expect(sport).toContainText('ราคาเป้าหมาย');
  await expect(sport).toContainText('฿990');
  await expect(sport).toContainText('ยังไม่เปิดขาย');
- await expect(sport.getByRole('img')).toHaveAttribute('src','/assets/met-sport.svg');
+ await expect(sport.locator('.edu-sport-preview')).toContainText('ข้อมูลสมมติ');
+ await expect(sport.getByRole('link',{name:'ทดลองเล่น Demo'})).toHaveAttribute('href','https://store.chaylueklab.com/demo/met-sport');
  const cta=sport.getByRole('button',{name:'ดูรายละเอียด / ขอใบเสนอราคา'});
  await cta.click();
  const dialog=page.getByRole('dialog');
@@ -284,4 +285,21 @@ test('marketplace quick questions, notifications, LINE and five mobile shortcuts
    await page.locator('.market-header-actions').getByRole('button',{name:'ติดต่อเรา'}).click();
    await expect(dialog.getByRole('link',{name:'เปิด LINE พ.สมนึก 2&3'})).toBeVisible();
  }
+});
+
+test('choose from the comparison page and cap the list at three',async({page})=>{
+ await page.goto('/#/compare');
+ const picker=page.getByLabel('เลือกโปรแกรม');
+ for(const slug of ['met-sport','exam-studio','smart-certificate']){
+  await picker.selectOption(slug);
+  await page.getByRole('button',{name:'เพิ่มเพื่อเปรียบเทียบ'}).click();
+ }
+ await expect(picker).toBeDisabled();
+ await expect(page.getByRole('table').getByRole('columnheader')).toHaveCount(4);
+ await expect(page.getByRole('rowheader',{name:'หมวดงานสำหรับพิจารณางบ'})).toBeVisible();
+ await page.getByRole('button',{name:'นำออก',exact:true}).first().click();
+ await expect(picker).toBeEnabled();
+ await page.goto('/#/demos');
+ await expect(page.getByRole('link',{name:'ทดลองจัดการแข่งขันกีฬาสี'})).toHaveAttribute('href','https://store.chaylueklab.com/demo/met-sport');
+ await expect(page.getByRole('link',{name:/ขอรหัสทดลองใช้ทาง LINE OA/})).toHaveAttribute('href','https://line.me/R/ti/p/@125cbuuu');
 });

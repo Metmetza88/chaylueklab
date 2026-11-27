@@ -565,4 +565,4 @@ export const modules = [
     "limitations": "เดโมในเบราว์เซอร์เท่านั้น • ไม่บันทึกผลเข้าสู่ระบบโรงเรียน • ไม่ได้เชื่อม AI • ยังไม่มีระบบตรวจสอบใบประกาศจริง"
   }
 ];
-export const statusLabels = { ready: "พร้อมใช้งาน", trial: "ทดลองใช้", development: "กำลังพัฒนา", unavailable: "ยังไม่เปิดให้บริการ" };
+export const statusLabels = { ready: "พร้อมติดตั้งใช้งาน", trial: "ทดลองใช้", development: "กำลังพัฒนา", unavailable: "ขอประเมินการติดตั้ง" };

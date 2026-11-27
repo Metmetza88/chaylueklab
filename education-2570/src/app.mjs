@@ -1,11 +1,12 @@
 import { modules } from './catalog.mjs';
+import { sports } from './marketplace.mjs';
 import * as view from './views.mjs';
 import { isMarketplaceSearching, syncMarketplace } from './marketplace-ui.mjs';
 import { demoPage,generateQuestions,questionList,scoreAnswers,updateCertificate,quoteDraft } from '../modules/demos.mjs';
 import { api,downloadCsv } from './api-client.mjs';
 const main=document.getElementById('main');
 let compare=[];
-try { compare=JSON.parse(localStorage.getItem('edu_compare')??'[]').filter(s=>modules.some(m=>m.slug===s)).slice(0,3); } catch { compare=[]; }
+try { compare=JSON.parse(localStorage.getItem('edu_compare')??'[]').filter(s=>[sports,...modules].some(m=>m.slug===s)).slice(0,3); } catch { compare=[]; }
 let user=null, schoolId='', draft=null, routeVersion=0, reportRows=[];
 let config={authConfigured:false,platformEnabled:false};
 let toastTimer;
@@ -132,6 +133,13 @@ async function submitTask(form,task) {
 }
 main.addEventListener('submit',async event=>{
  const form=event.target;event.preventDefault();
+ if(form.id==='compare-picker'){
+  const slug=new FormData(form).get('module');
+  if(compare.length===3||compare.includes(slug)||![sports,...modules].some(m=>m.slug===slug))return;
+  compare=[...compare,slug];setCompare();await renderRoute();
+  document.querySelector('#compare-picker select:not(:disabled), [data-remove-compare]')?.focus();
+  return;
+ }
  if(form.id==='exam-form') {generateQuestions(new FormData(form).get('count'));document.getElementById('questions').innerHTML=questionList();toast('สร้างข้อสอบแล้ว');}
  if(form.id==='quiz-form') {
   const fields=new FormData(form),answers=Array.from(form.querySelectorAll('input')).map(input=>fields.get(input.name));
