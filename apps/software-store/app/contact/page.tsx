@@ -1,7 +1,14 @@
 import Link from "next/link";
 import { configured } from "@/lib/env";
 
-export default function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ program?: string | string[] }>;
+}) {
+  const { program } = await searchParams;
+  const programName =
+    typeof program === "string" ? program.trim().slice(0, 120) : "";
   return (
     <section className="prose">
       <span className="eyebrow">WORAMET AI LAB</span>
@@ -14,7 +21,17 @@ export default function Page() {
         แจ้งชื่อโปรแกรมที่สนใจ จำนวนผู้ใช้งานโดยประมาณ
         และงานที่ต้องการให้ระบบช่วย
       </p>
-      <div className="panel stack">
+      <div className="panel stack" id="quotation">
+        <h2>ขอใบเสนอราคา</h2>
+        {programName && (
+          <p>
+            โปรแกรมที่สนใจ <strong>{programName}</strong>
+          </p>
+        )}
+        <p>
+          แจ้งชื่อโรงเรียน จำนวนผู้ใช้ ขอบเขตโครงการ และเอกสารที่ต้องการผ่าน
+          LINE
+        </p>
         <a
           className="btn"
           href="https://lin.ee/Vgg2m3N"

@@ -1,5 +1,9 @@
 import "./globals.css";
 import "./premium.css";
+import "./marketplace.css";
+import MarketplaceDock, {
+  MarketplaceHeader,
+} from "@/components/MarketplaceControls";
 import { configured, paymentMode } from "@/lib/env";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -96,7 +100,7 @@ export default async function Layout({
     : publicLinks;
   return (
     <html lang="th">
-      <body>
+      <body className="storefront">
         <CartProvider>
           <a className="skip-link" href="#main">
             ข้ามไปเนื้อหา
@@ -133,6 +137,7 @@ export default async function Layout({
                 ))}
               </nav>
               <div className="header-actions">
+                <MarketplaceHeader />
                 <DisplayControls />
                 {accountsEnabled && (
                   <>
@@ -251,6 +256,7 @@ export default async function Layout({
             </div>
           </footer>
           <ViewportControls />
+          <MarketplaceDock />
         </CartProvider>
       </body>
     </html>

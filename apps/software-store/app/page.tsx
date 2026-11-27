@@ -24,8 +24,8 @@ export default async function Home() {
   const featured = [...products]
     .sort(
       (a, b) =>
-        ["met-admission", "met-school-pro"].indexOf(b.slug) -
-        ["met-admission", "met-school-pro"].indexOf(a.slug),
+        ["met-admission", "met-school-pro", "met-sport"].indexOf(b.slug) -
+        ["met-admission", "met-school-pro", "met-sport"].indexOf(a.slug),
     )
     .slice(0, 3);
   return (

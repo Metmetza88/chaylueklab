@@ -12,7 +12,7 @@ export default async function Products({
   const category = typeof sp.category === "string" ? sp.category : "";
   const sort = typeof sp.sort === "string" ? sp.sort : "";
   const cats = [...new Set(all.map((p) => p.category))];
-  let products = all.filter(
+  const products = all.filter(
     (p) =>
       (!q ||
         `${p.name} ${p.tagline} ${p.description}`
@@ -21,10 +21,12 @@ export default async function Products({
       (!category || p.category === category),
   );
   if (sort === "asc" || sort === "desc")
-    products = products.sort(
+    products.sort(
       (a, b) => (a.price_cents - b.price_cents) * (sort === "desc" ? -1 : 1),
     );
   else products.sort((a, b) => a.name.localeCompare(b.name, "th"));
+  const sport = products.findIndex((product) => product.slug === "met-sport");
+  if (sport > 0) products.unshift(...products.splice(sport, 1));
   return (
     <section className="section">
       <div className="page-heading">
