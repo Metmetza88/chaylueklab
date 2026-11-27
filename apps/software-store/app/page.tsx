@@ -14,6 +14,7 @@ import HomeStats from "@/components/HomeStats";
 import HomeFeatures from "@/components/HomeFeatures";
 import HomeFAQ from "@/components/HomeFAQ";
 import { sportFirst, sportSlug } from "@/lib/marketplace";
+import { linkedDemos } from "@/lib/procurement";
 import { productDemos } from "@/lib/product-demos";
 export default async function Home() {
   if (process.env.APP_VARIANT === "school")
@@ -186,7 +187,10 @@ export default async function Home() {
             detail: "ดูสถานะและแผนพัฒนาในหน้าสินค้า",
           },
           {
-            value: productDemos.length,
+            value:
+              productDemos.length +
+              linkedDemos.filter((demo) => demo.href.startsWith("/demo/"))
+                .length,
             label: "ระบบที่เปิดทดลองได้",
             detail: "ใช้ข้อมูลสมมติในเบราว์เซอร์",
           },

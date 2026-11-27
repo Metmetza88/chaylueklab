@@ -32,7 +32,7 @@ test("home counters start on view and respect reduced motion", async ({
   const values = stats.locator('dd > span[aria-hidden="true"]');
   const totals = await values.allTextContents();
   expect(Number(totals[0].replaceAll(",", ""))).toBeGreaterThan(0);
-  expect(totals.slice(1)).toEqual(["3", "2"]);
+  expect(totals.slice(1)).toEqual(["4", "2"]);
 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.reload();
