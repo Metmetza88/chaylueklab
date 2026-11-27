@@ -249,7 +249,7 @@ test('marketplace details link to procurement and prefill the existing sports qu
  await expect(page.locator('#quote-result')).toContainText('MET Sport');
  await expect(page.locator('#quote-result')).toContainText('ยังไม่ได้ส่งให้ทีมงาน');
 });
-test('marketplace quick questions, notifications, LINE and five mobile shortcuts work',async({page},info)=>{
+test('marketplace quick questions, notifications, LINE and five mobile shortcuts work',async({page})=>{
  await page.goto('/');
  const line=page.getByRole('link',{name:'แชท LINE พ.สมนึก 2&3'});
  await expect(line).toHaveAttribute('href','https://lin.ee/8qkUbdt');
@@ -265,7 +265,7 @@ test('marketplace quick questions, notifications, LINE and five mobile shortcuts
  await expect(dialog.getByRole('link',{name:'เปิดบัญชีลูกค้าและแจ้งเตือน'})).toHaveAttribute('href','#/account');
  await dialog.getByRole('button',{name:'ปิดแจ้งเตือน'}).click();
  const nav=page.getByRole('navigation',{name:'ทางลัดบนมือถือ'});
- if(info.project.name==='iPhone WebKit'){
+ if(await page.evaluate(()=>matchMedia('(max-width: 760px)').matches)){
    await expect(nav.getByRole('link')).toHaveCount(4);await expect(nav.getByRole('button')).toHaveCount(1);
    await expect(nav.getByRole('link',{name:'หน้าแรก'})).toHaveAttribute('aria-current','page');
    await expect(nav.getByRole('link',{name:'เอกสารเบิกงบ'})).toHaveAttribute('href','https://store.chaylueklab.com/school-systems#procurement');
