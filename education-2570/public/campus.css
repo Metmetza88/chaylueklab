@@ -46,6 +46,11 @@
 .campus-frame img { display: block; width: 100%; height: auto; aspect-ratio: 1.32; object-fit: cover; object-position: top; }
 .campus-figure figcaption { margin-top: 12px; color: var(--muted); font-size: 13px; text-align: center; }
 .campus-demo-grid { margin-bottom: 34px; }
+.catalog-starter {
+  border-color: #bfdbe5;
+  background: linear-gradient(125deg, #eef9fc, #f8fcfc 75%);
+}
+.catalog-starter .stack-actions { margin-top: 16px; }
 .catalog-collection { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--sky); }
 .workspace-layout { align-items: start; }
 .workspace-nav { background: var(--navy); border-color: var(--navy); padding: 18px 14px; }

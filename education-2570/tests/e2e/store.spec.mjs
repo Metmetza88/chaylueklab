@@ -39,6 +39,27 @@ test('catalog search, availability filter, empty state and real demos only',asyn
  await page.getByRole('searchbox').fill('');await page.getByLabel('สถานะโปรแกรม').selectOption('trial');await expect(page.locator('.product-card')).toHaveCount(3);
  await page.getByLabel('สถานะโปรแกรม').selectOption('development');await expect(page.locator('.card-actions a')).toHaveCount(0);
 });
+test('the catalog starter bundle opens each demo and preselects all three quotation items',async({page})=>{
+ await page.goto('/#/catalog');
+ const bundle=page.getByRole('region',{name:'ชุดข้อสอบและเกียรติบัตร'});
+ for(const [label,title] of [
+  ['ลองสร้างข้อสอบ','Exam Studio'],
+  ['ลองสอบออนไลน์','Smart Exam'],
+  ['ลองทำเกียรติบัตร','Smart Certificate']
+ ]){
+  await bundle.getByRole('link',{name:label}).click();
+  await expect(page.getByRole('heading',{level:1})).toHaveText(title);
+  await page.goBack();
+ }
+ await expect(page.getByRole('link',{name:'ติดต่อร้าน พ.สมนึก 2&3'})).toHaveAttribute('href','https://psomnuek.chaylueklab.com/work?view=shop');
+ await bundle.getByRole('link',{name:'ขอราคาทั้งชุด'}).click();
+ const selected=await page.locator('#quote-form input[name="module"]:checked').evaluateAll(inputs=>inputs.map(input=>input.value));
+ expect(selected).toEqual(['exam-studio','smart-exam','smart-certificate']);
+ await page.getByLabel('ชื่อโรงเรียน / หน่วยงาน').fill('โรงเรียนทดสอบ');
+ await page.getByRole('button',{name:'สร้างสรุปคำขอ'}).click();
+ await expect(page.locator('#quote-result li')).toHaveCount(3);
+ await expect(page.locator('#quote-result')).toContainText('ยังไม่ได้ส่งให้ทีมงาน');
+});
 test('product details contain features, limitations and quotation without invented price',async({page})=>{
  await page.goto('/#/product/procurement');
  await expect(page.getByRole('heading',{level:1,name:'งานจัดซื้อจัดจ้าง'})).toBeVisible();

@@ -1,5 +1,11 @@
 import { categories, modules, statusLabels } from './catalog.mjs';
 const store = 'https://store.chaylueklab.com';
+const schoolSupplies = 'https://psomnuek.chaylueklab.com/work?view=shop';
+const starterDemos = [
+  ['exam-studio', 'ลองสร้างข้อสอบ'],
+  ['smart-exam', 'ลองสอบออนไลน์'],
+  ['smart-certificate', 'ลองทำเกียรติบัตร']
+];
 const entryLinks = [
   ['▤', 'ดูโปรแกรม', 'ค้นหา เปรียบเทียบ และดูรายละเอียด', '#/catalog'],
   ['▷', 'ทดลองระบบ', 'รับสมัคร เช็กชื่อ ข้อสอบ และเกียรติบัตร', '#/demos'],
@@ -59,7 +65,22 @@ export function demos(selected) {
 }
 export function catalog(query, selected) {
   const category = query.get('category') ?? '';
-  return head('แคตตาล็อกซอฟต์แวร์','เลือกโปรแกรมตามหมวดงานและดูสถานะความพร้อม') + `<section class="section"><div class="container"><p class="catalog-collection">กำลังมองหาระบบ MET สำหรับเว็บไซต์โรงเรียน รับสมัคร หรือเช็กชื่อ <a class="button secondary small" href="${store}/products">เปิดแคตตาล็อก MET</a></p></div><div class="container catalog-layout"><aside class="filter-sidebar"><h2>หมวดซอฟต์แวร์</h2><div><a href="#/catalog" class="${!category?'active':''}">ทั้งหมด (${modules.length})</a>${categories.map(c=>`<a class="${category===c.slug?'active':''}" href="#/catalog?category=${c.slug}">${esc(c.name)}</a>`).join('')}</div></aside><div class="catalog-results"><div class="toolbar"><input id="search" type="search" aria-label="ค้นหาโปรแกรม" placeholder="ค้นหาโปรแกรมหรือคุณสมบัติ…"><select id="status-filter" aria-label="สถานะโปรแกรม"><option value="">ทุกสถานะ</option>${Object.entries(statusLabels).map(([key,name])=>`<option value="${key}" ${query.get('status')===key?'selected':''}>${name}</option>`).join('')}</select></div><div id="catalog-list">${catalogList({category,status:query.get('status')??''},selected)}</div></div></div></section>`;
+  const starterQuote = new URLSearchParams(starterDemos.map(([slug]) => ['module', slug]));
+  return head('แคตตาล็อกซอฟต์แวร์','เลือกโปรแกรมตามหมวดงานและดูสถานะความพร้อม') + `<section class="section">
+    <div class="container">
+      <section class="panel catalog-starter" aria-labelledby="starter-title">
+        <h2 id="starter-title">ชุดข้อสอบและเกียรติบัตร</h2>
+        <p class="muted">ลองทำตั้งแต่เตรียมข้อสอบ จัดสอบ ไปจนถึงทำเกียรติบัตรด้วยข้อมูลสมมติ</p>
+        <div class="stack-actions">
+          <a class="button" href="#/quote?${esc(starterQuote)}">ขอราคาทั้งชุด</a>
+          ${starterDemos.map(([slug, label]) => `<a class="button secondary" href="#/demo/${slug}">${label}</a>`).join('')}
+        </div>
+      </section>
+      <p class="catalog-collection">ระบบ MET สำหรับเว็บไซต์โรงเรียน รับสมัคร และเช็กชื่อ <a class="button secondary small" href="${store}/products">เปิดแคตตาล็อก MET</a></p>
+      <p class="catalog-collection">สอบถามกระดาษ วัสดุสำนักงาน และอุปกรณ์สำหรับโรงเรียน <a class="button secondary small" href="${schoolSupplies}">ติดต่อร้าน พ.สมนึก 2&amp;3</a></p>
+    </div>
+    <div class="container catalog-layout"><aside class="filter-sidebar"><h2>หมวดซอฟต์แวร์</h2><div><a href="#/catalog" class="${!category?'active':''}">ทั้งหมด (${modules.length})</a>${categories.map(c=>`<a class="${category===c.slug?'active':''}" href="#/catalog?category=${c.slug}">${esc(c.name)}</a>`).join('')}</div></aside><div class="catalog-results"><div class="toolbar"><input id="search" type="search" aria-label="ค้นหาโปรแกรม" placeholder="ค้นหาโปรแกรมหรือคุณสมบัติ…"><select id="status-filter" aria-label="สถานะโปรแกรม"><option value="">ทุกสถานะ</option>${Object.entries(statusLabels).map(([key,name])=>`<option value="${key}" ${query.get('status')===key?'selected':''}>${name}</option>`).join('')}</select></div><div id="catalog-list">${catalogList({category,status:query.get('status')??''},selected)}</div></div></div>
+  </section>`;
 }
 export function catalogList({category='',status='',search=''}, selected=[]) {
   const results=modules.filter(m=>(!category||m.category===category)&&(!status||m.status===status)&&[m.name,m.tagline,...m.features].join(' ').toLowerCase().includes(search.toLowerCase().trim()));
@@ -74,7 +95,8 @@ export function comparison(selected) {
   return head('เปรียบเทียบโปรแกรม','เลือกได้สูงสุด 3 โปรแกรม เพื่อดูความเหมาะสมกับงานของคุณ')+`<section class="section container">${!products.length?empty('ยังไม่ได้เลือกโปรแกรม','เลือก “เปรียบเทียบ” บนการ์ดโปรแกรมที่สนใจ'): `<div class="compare-wrap"><table class="compare-table"><thead><tr><th scope="col">รายการ</th>${products.map(m=>`<th scope="col">${esc(m.name)}<br><button class="ghost small" data-remove-compare="${m.slug}">นำออก</button></th>`).join('')}</tr></thead><tbody>${[['หมวดงาน',m=>esc(categoryName(m.category))],['สถานะ',badge],['คุณสมบัติ',m=>`<ul>${m.features.map(f=>`<li>${esc(f)}</li>`).join('')}</ul>`],['ข้อจำกัด',m=>esc(m.limitations)],['ราคา',()=>'ขอใบเสนอราคา'],['ทดลองใช้',m=>m.demo?`<a href="${m.demo}">เปิดหน้าสาธิต →</a>`:'ยังไม่มี Demo']].map(([label,fn])=>`<tr><th scope="row">${label}</th>${products.map(m=>`<td>${fn(m)}</td>`).join('')}</tr>`).join('')}</tbody></table></div><div class="hero-actions"><a class="button" href="#/quote">ขอใบเสนอราคา</a><a class="button secondary" href="#/catalog">เลือกโปรแกรมเพิ่ม</a></div>`}</section>`;
 }
 export function quotePage(query, selected) {
-  const initial=query.get('module')?[query.get('module')]:selected;
+  const requested = query.getAll('module').filter(Boolean);
+  const initial = requested.length ? requested : selected;
   return head('ขอใบเสนอราคา','แจ้งความต้องการเพื่อให้ทีมงานประเมิน ไม่มีการคิดราคาขายโดยอัตโนมัติ')+`<section class="section container two-col"><form id="quote-form" class="panel"><h2>โปรแกรมที่โรงเรียนสนใจ</h2><div class="quote-options">${modules.map(m=>`<label><input type="checkbox" name="module" value="${m.slug}" ${initial.includes(m.slug)?'checked':''}> ${esc(m.name)}</label>`).join('')}</div><label class="field">ชื่อโรงเรียน / หน่วยงาน<input name="school_name" maxlength="200" required autocomplete="organization"></label><label class="field">รายละเอียดความต้องการ<textarea name="note" maxlength="2000" placeholder="เช่น จำนวนผู้ใช้งาน งานที่ต้องการปรับปรุง (ไม่ต้องใส่ข้อมูลนักเรียน)"></textarea></label><div class="stack-actions"><button type="submit">สร้างสรุปคำขอ</button></div><div id="quote-result" role="status"></div></form><aside><div class="panel"><h2>เอกสารจัดซื้อและโดเมน</h2><p class="muted">ดูช่องทางขอใบเสนอราคา ใบส่งของ และเอกสารบริษัท พร้อมแบบฟอร์มจด .ac.th</p><a class="button secondary" href="${store}/school-systems#procurement">ดูเอกสารจัดซื้อและแบบฟอร์ม .ac.th</a></div><div class="panel"><h2>ขั้นตอนถัดไป</h2><ol><li>เลือกโปรแกรมและระบุความต้องการ</li><li>ตรวจสรุปคำขอ หรือพิมพ์เก็บไว้</li><li>ส่งสรุปทาง LINE หรือเข้าสู่ระบบเพื่อบันทึกคำขอ</li></ol><p class="item-meta">คำขอเป็นข้อมูลประกอบการประเมิน ยังไม่ใช่ใบเสนอราคาหรือสัญญาซื้อขาย</p><a href="#/login" class="button secondary">เข้าสู่ระบบลูกค้า</a></div><div class="notice">สถานะโปรแกรมตามแคตตาล็อก โปรแกรมที่ยังพัฒนาไม่สามารถเปิดใช้จริงได้ทันที</div></aside></section>`;
 }
 export function login(config) {
