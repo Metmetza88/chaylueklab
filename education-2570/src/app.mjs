@@ -8,6 +8,7 @@ const main=document.getElementById('main');
 let compare=[];
 try { compare=JSON.parse(localStorage.getItem('edu_compare')??'[]').filter(s=>[sports,...modules].some(m=>m.slug===s)).slice(0,3); } catch { compare=[]; }
 let user=null, schoolId='', draft=null, routeVersion=0, reportRows=[];
+const workspacePaths = new Set(['/workspace','/account','/admin','/reports']);
 let config={authConfigured:false,platformEnabled:false};
 let toastTimer;
 /** แสดงข้อความสถานะที่อ่านได้ด้วย Screen Reader */
@@ -29,10 +30,16 @@ async function loadUser() {
  if(!user.members.some(m=>m.school_id===schoolId)) schoolId=user.members[0]?.school_id??'';
  return user;
 }
-function renderError(error) {
+function renderError(error, path) {
  const login=error.status===401;
- return view.workspaceShell(`<div class="panel"><h2>${login?'กรุณาเข้าสู่ระบบ':'ยังไม่สามารถเปิดพื้นที่ทำงานได้'}</h2><div class="notice ${login?'':'error'}" role="alert">${view.esc(error.message)}</div><div class="stack-actions">${login?'<a class="button" href="#/login">เข้าสู่ระบบ</a>':'<button class="button" data-retry>ลองอีกครั้ง</button>'}<a class="button secondary" href="#/catalog">สำรวจโปรแกรม</a></div></div>`,user);
+ const next=workspacePaths.has(path) ? path : '/workspace';
+ if (login) user=null;
+ const content=login
+  ? view.workspaceSignIn(`#/login?next=${encodeURIComponent(next)}`)
+  : `<section class="panel workspace-status"><h2>ยังไม่สามารถเปิดพื้นที่ทำงานได้</h2><p class="notice error" role="alert">${view.esc(error.message)}</p><div class="stack-actions"><button class="button" type="button" data-retry>ลองอีกครั้ง</button><a class="button secondary" href="#/catalog">สำรวจโปรแกรม</a></div></section>`;
+ return view.workspaceShell(content,user);
 }
+
 let statsObserver;
 function animateHomeStats() {
  const stats=main.querySelector('[data-campus-stats]');
@@ -79,6 +86,8 @@ async function renderRoute() {
  const version=++routeVersion;
  statsObserver?.disconnect();
  const {path,query}=routeInfo();
+ document.body.toggleAttribute('data-workspace-route', workspacePaths.has(path) || path==='/login');
+ syncMarketplace(path);
  const isCurrent=()=>version===routeVersion;
  document.getElementById('navigation').classList.remove('open');
  document.querySelector('.mobile-menu').setAttribute('aria-expanded','false');
@@ -95,7 +104,7 @@ async function renderRoute() {
   else if(path==='/manual') html=view.manual();
   else if(path==='/login') {
    main.innerHTML=view.loading();config=await api('config');html=view.login(config);
-  } else if(['/workspace','/account','/admin','/reports'].includes(path)) {
+  } else if(workspacePaths.has(path)) {
    main.innerHTML=view.loading();
    await loadUser();
    if(!isCurrent())return;
@@ -120,7 +129,12 @@ async function renderRoute() {
   syncMarketplace(path);
   // การ์ดหน้าหลักใช้ข้อมูลการเลือกปัจจุบันหลัง render
   document.querySelectorAll('[data-compare]').forEach(input=>{input.checked=compare.includes(input.dataset.compare);});
- } catch(error) {if(isCurrent())main.innerHTML=renderError(error);}
+ } catch(error) {
+  if(!isCurrent())return;
+  main.innerHTML=renderError(error,path);
+  document.title='พื้นที่ทำงานโรงเรียน | Education 2570 — พ.สมนึก 2&3';
+  syncMarketplace(path);
+ }
 }
 /** ป้องกันการส่งซ้ำระหว่างรอ API และแสดง error ให้ผู้ใช้แก้ไขต่อได้ */
 async function submitTask(form,task) {
@@ -147,7 +161,12 @@ main.addEventListener('submit',async event=>{
  }
  if(form.id==='certificate-form') {updateCertificate(form);toast('สร้างเกียรติบัตรตัวอย่างแล้ว');}
  if(form.id==='login-form') await submitTask(form,async()=>{
-  const fields=new FormData(form);await api('login',{body:{email:fields.get('email'),password:fields.get('password')}});form.reset();location.hash='/workspace';
+  const fields=new FormData(form);await api('login',{body:{email:fields.get('email'),password:fields.get('password')}});
+  const {path,query}=routeInfo();
+  if(path!=='/login')return;
+  const next=query.get('next');
+  form.reset();
+  location.hash=workspacePaths.has(next)?next:'/workspace';
  });
  if(form.id==='quote-form') {
   const fields=new FormData(form),slugs=fields.getAll('module');

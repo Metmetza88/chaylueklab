@@ -135,3 +135,37 @@ h1,h2,h3,.site-header .brand{font-family:var(--market-title)}
 .edu-sport-preview span:nth-child(3) b { color: #91debd; }
 .edu-sport-preview p { margin: 0; }
 #compare-picker { align-items: end; justify-content: start; }
+
+/* Keep the workspace controls clear of form actions in compact in-app browsers. */
+.workspace-layout { grid-template-columns: 238px minmax(0, 1fr); grid-template-areas: "navigation content"; align-items: start; }
+.workspace-nav { grid-area: navigation; padding: 18px; }
+.workspace-content { grid-area: content; min-width: 0; }
+.workspace-nav h2 { margin: 0 0 12px; padding: 0; font: 600 1.06rem/1.5 var(--market-title); }
+.workspace-nav-links { display: grid; gap: 4px; }
+.workspace-nav-links a { display: flex; align-items: center; min-height: 44px; gap: 8px; }
+.workspace-nav-links a span:first-child { flex: 0 0 20px; color: #a5c6fa; text-align: center; }
+.workspace-nav-links a[aria-current="page"] { background: #ffffff1b; box-shadow: inset 0 0 0 1px #a5c6fa65; color: white; font-weight: 700; }
+.workspace-status { margin: 0; }
+.workspace-signin { position: relative; border-top: 4px solid var(--market-royal); background: linear-gradient(150deg, #f2f6ff, white 56%); }
+.workspace-kicker { display: inline-block; margin-bottom: 8px; color: #1b3f9a; font-size: .83rem; font-weight: 700; }
+.workspace-signin h2 { margin: 0 0 8px; font-family: var(--market-title); }
+.workspace-signin p { margin: 0 0 16px; color: #445774; }
+.workspace-login-links { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.workspace-login-links .button { min-height: 44px; }
+.workspace-browse { display: inline-block; margin-top: 12px; }
+.workspace-login { padding-bottom: 26px; }
+@media (max-width: 900px) {
+ .workspace-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "navigation" "content"; gap: 16px; padding-top: 20px; padding-bottom: 24px; }
+ .workspace-guest { grid-template-areas: "content" "navigation"; }
+ .workspace-nav { display: block; padding: 14px; }
+ .workspace-nav-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+ .workspace-nav-links a { padding: 6px 8px; font-size: .8rem; }
+ .workspace-nav button { min-height: 44px; margin-top: 10px; }
+}
+@media (max-width: 760px) {
+ body[data-workspace-route] .page-head { padding-block: 24px; }
+ body[data-workspace-route] .page-head h1 { font-size: clamp(1.6rem, 6.5vw, 2.15rem); }
+ body[data-workspace-route] .market-float { position: static; width: min(100% - 28px, 680px); margin: 14px auto 8px; }
+ body[data-workspace-route] { padding-bottom: calc(var(--market-bottom-height) + 18px + env(safe-area-inset-bottom)); }
+ html:has(body[data-workspace-route]) { scroll-padding-bottom: calc(var(--market-bottom-height) + 18px + env(safe-area-inset-bottom)); }
+}

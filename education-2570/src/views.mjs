@@ -181,10 +181,36 @@ export function quotePage(query, selected) {
   return head('ขอใบเสนอราคา','แจ้งความต้องการเพื่อให้ทีมงานประเมิน ไม่มีการคิดราคาขายโดยอัตโนมัติ')+`<section class="section container two-col"><form id="quote-form" class="panel"><h2>โปรแกรมที่โรงเรียนสนใจ</h2><div class="quote-options">${modules.map(m=>`<label><input type="checkbox" name="module" value="${m.slug}" ${initial.includes(m.slug)?'checked':''}> ${esc(m.name)}</label>`).join('')}</div><label class="field">ชื่อโรงเรียน / หน่วยงาน<input name="school_name" maxlength="200" required autocomplete="organization"></label><label class="field">รายละเอียดความต้องการ<textarea name="note" maxlength="2000" placeholder="เช่น จำนวนผู้ใช้งาน งานที่ต้องการปรับปรุง (ไม่ต้องใส่ข้อมูลนักเรียน)">${esc(note)}</textarea></label><div class="stack-actions"><button type="submit">สร้างสรุปคำขอ</button></div><div id="quote-result" role="status"></div></form><aside><div class="panel"><h2>เอกสารจัดซื้อและโดเมน</h2><p class="muted">ดูช่องทางขอใบเสนอราคา ใบส่งของ และเอกสารบริษัท พร้อมแบบฟอร์มจด .ac.th</p><a class="button secondary" href="${store}/school-systems#procurement">ดูเอกสารจัดซื้อและแบบฟอร์ม .ac.th</a></div><div class="panel"><h2>ขั้นตอนถัดไป</h2><ol><li>เลือกโปรแกรมและระบุความต้องการ</li><li>ตรวจสรุปคำขอ หรือพิมพ์เก็บไว้</li><li>ส่งสรุปทาง LINE หรือเข้าสู่ระบบเพื่อบันทึกคำขอ</li></ol><p class="item-meta">คำขอเป็นข้อมูลประกอบการประเมิน ยังไม่ใช่ใบเสนอราคาหรือสัญญาซื้อขาย</p><a href="#/login" class="button secondary">เข้าสู่ระบบลูกค้า</a></div><div class="notice">สถานะโปรแกรมตามแคตตาล็อก โปรแกรมที่ยังพัฒนาไม่สามารถเปิดใช้จริงได้ทันที</div></aside></section>`;
 }
 export function login(config) {
-  return head('เข้าสู่ระบบ','บัญชีสำหรับลูกค้า โรงเรียน และผู้ดูแลแพลตฟอร์ม')+`<div class="container narrow"><form id="login-form" class="panel"><h2>ยินดีต้อนรับกลับ</h2><p class="muted">ใช้บัญชีที่ผู้ดูแลจัดเตรียมให้โรงเรียนของคุณ</p>${!config.authConfigured?'<div class="notice">ระบบบัญชียังไม่เชื่อมต่อ คุณสามารถทดลองโปรแกรมผ่านหน้าสาธิตได้</div>':`<label class="field">อีเมล<input name="email" type="email" required autocomplete="username" maxlength="254"></label><label class="field">รหัสผ่าน<input name="password" type="password" required autocomplete="current-password" maxlength="256"></label><button type="submit">เข้าสู่ระบบ →</button>`}<div id="form-status" role="status"></div><a class="ghost" href="#/demo/exam-studio">ไปหน้าทดลองใช้งาน</a></form></div>`;
+  return head('เข้าสู่ระบบ','บัญชีสำหรับลูกค้า โรงเรียน และผู้ดูแลแพลตฟอร์ม')+`<div class="container narrow workspace-login"><form id="login-form" class="panel"><h2>ยินดีต้อนรับกลับ</h2><p class="muted">ใช้บัญชีที่ผู้ดูแลจัดเตรียมให้โรงเรียนของคุณ</p>${!config.authConfigured?'<div class="notice">ระบบบัญชียังไม่เชื่อมต่อ คุณสามารถทดลองโปรแกรมผ่านหน้าสาธิตได้</div>':`<label class="field">อีเมล<input name="email" type="email" required autocomplete="username" maxlength="254"></label><label class="field">รหัสผ่าน<input name="password" type="password" required autocomplete="current-password" maxlength="256"></label><button type="submit">เข้าสู่ระบบ →</button>`}<div id="form-status" role="status"></div><div class="workspace-login-links"><a href="#/demo/exam-studio">ไปหน้าทดลองใช้งาน</a><a href="${trialLine}">ขอความช่วยเหลือทาง LINE</a></div></form></div>`;
 }
+export function workspaceSignIn(loginHref) {
+ return `<section class="panel workspace-status workspace-signin" aria-labelledby="workspace-signin-title">
+  <span class="workspace-kicker">สำหรับบัญชีโรงเรียน</span>
+  <h2 id="workspace-signin-title">กรุณาเข้าสู่ระบบ</h2>
+  <p role="alert">ใช้บัญชีที่ผู้ดูแลโรงเรียนจัดเตรียมให้เพื่อเปิดข้อมูลตามสิทธิ์ของคุณ</p>
+  <div class="workspace-login-links"><a class="button" href="${esc(loginHref)}">เข้าสู่ระบบ</a><a class="button secondary" href="${trialLine}">ขอความช่วยเหลือทาง LINE</a></div>
+  <a class="workspace-browse" href="#/catalog">สำรวจโปรแกรม →</a>
+ </section>`;
+}
+const workspaceLinks = [
+ ['/workspace','▥','ภาพรวมโรงเรียน'],
+ ['/account','♙','บัญชีลูกค้า / แจ้งปัญหา'],
+ ['/quote','▤','ขอใบเสนอราคา'],
+ ['/reports','▧','รายงาน'],
+ ['/admin','⚙','ผู้ดูแลแพลตฟอร์ม'],
+ ['/manual','?','คู่มือการใช้งาน']
+];
 export function workspaceShell(content, user) {
- return head('พื้นที่ทำงานโรงเรียน','โปรแกรมและข้อมูลเฉพาะโรงเรียนที่คุณได้รับสิทธิ์')+`<div class="container workspace-layout"><aside class="workspace-nav"><h2>School Workspace</h2><a href="#/workspace">▥ ภาพรวมโรงเรียน</a><a href="#/account">♙ บัญชีลูกค้า / แจ้งปัญหา</a><a href="#/quote">▤ ขอใบเสนอราคา</a><a href="#/reports">▧ รายงาน</a><a href="#/admin">⚙ ผู้ดูแลแพลตฟอร์ม</a><a href="#/manual">? คู่มือการใช้งาน</a>${user?'<button data-logout>ออกจากระบบ</button>':''}</aside><div>${content}</div></div>`;
+ const navigation = `<aside class="workspace-nav" aria-labelledby="workspace-nav-title">
+  <h2 id="workspace-nav-title">เมนูพื้นที่โรงเรียน</h2>
+  <div class="workspace-nav-links" role="navigation" aria-labelledby="workspace-nav-title">
+   ${workspaceLinks.map(([path,icon,name])=>`<a href="#${path}"><span aria-hidden="true">${icon}</span><span>${name}</span></a>`).join('')}
+  </div>
+  ${user?'<button type="button" data-logout>ออกจากระบบ</button>':''}
+ </aside>`;
+ const body = `<div class="workspace-content">${content}</div>`;
+ return head('พื้นที่ทำงานโรงเรียน','โปรแกรมและข้อมูลเฉพาะโรงเรียนที่คุณได้รับสิทธิ์')+
+  `<div class="container workspace-layout${user?'':' workspace-guest'}">${user?navigation+body:body+navigation}</div>`;
 }
 export function schoolSelector(user, selected) {
  return `<label class="field">เลือกโรงเรียนที่ได้รับสิทธิ์<select id="school-select">${user.members.map((m,i)=>`<option value="${esc(m.school_id)}" ${m.school_id===selected?'selected':''}>${esc(m.schools?.name??`โรงเรียน ${i+1} · ${m.school_id.slice(0,8)}`)} · ${esc(workflowLabel(m.role))}</option>`).join('')}</select></label>`;

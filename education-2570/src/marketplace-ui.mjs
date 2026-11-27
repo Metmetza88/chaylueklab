@@ -105,7 +105,7 @@ document.addEventListener('click',event=>{
   }
 });
 export function syncMarketplace(path) {
-  for(const link of document.querySelectorAll('.market-bottom a[href^="#/"]')){
+  for(const link of document.querySelectorAll('.market-bottom a[href^="#/"], .workspace-nav-links a[href^="#/"], .workspace-link')){
     if(link.getAttribute('href')==='#'+path)link.setAttribute('aria-current','page');
     else link.removeAttribute('aria-current');
   }

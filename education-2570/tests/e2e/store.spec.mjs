@@ -303,3 +303,40 @@ test('choose from the comparison page and cap the list at three',async({page})=>
  await expect(page.getByRole('link',{name:'ทดลองจัดการแข่งขันกีฬาสี'})).toHaveAttribute('href','https://store.chaylueklab.com/demo/met-sport');
  await expect(page.getByRole('link',{name:/ขอรหัสทดลองใช้ทาง LINE OA/})).toHaveAttribute('href','https://line.me/R/ti/p/@125cbuuu');
 });
+
+test('workspace opened from a direct link clears the home highlight and keeps sign-in clear of floating controls', async ({page})=>{
+ await page.setViewportSize({width:390,height:570});
+ let signedIn=false;
+ await page.route('**/api/education?*', async route=>{
+  const action=new URL(route.request().url()).searchParams.get('action');
+  if(action==='login')signedIn=true;
+  const authorized=action==='config'||signedIn;
+  const data=action==='config'?{authConfigured:true,platformEnabled:true}:!signedIn?{error:'กรุณาเข้าสู่ระบบ'}
+   :action==='me'?{id:USER,email:'test@example.test',members:[],platformEnabled:true}
+   :action==='admin'?{schools:[],customers:[],licenses:[],entitlements:[],products:[],services:[],quotations:[],audit:[],page:1}
+   :{signedIn:true};
+  await route.fulfill({status:authorized?200:401,json:data});
+ });
+ await page.goto('/');
+ const mobileNav=page.getByRole('navigation',{name:'ทางลัดบนมือถือ'});
+ await expect(mobileNav.getByRole('link',{name:'หน้าแรก'})).toHaveAttribute('aria-current','page');
+ await page.getByRole('link',{name:/^เข้าพื้นที่โรงเรียน/}).click();
+ const workspace=page.getByRole('navigation',{name:'เมนูพื้นที่โรงเรียน'});
+ const signIn=page.getByRole('link',{name:'เข้าสู่ระบบ',exact:true});
+ await expect(signIn).toBeInViewport();
+ await expect(mobileNav.locator('[aria-current]')).toHaveCount(0);
+ await expect(workspace.getByRole('link',{name:'ภาพรวมโรงเรียน'})).toHaveAttribute('aria-current','page');
+ await expect(page.getByRole('link',{name:'ขอความช่วยเหลือทาง LINE'})).toHaveAttribute('href','https://line.me/R/ti/p/@125cbuuu');
+ expect(await page.locator('.market-float').evaluate(el=>getComputedStyle(el).position)).toBe('static');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+ await workspace.getByRole('link',{name:'ผู้ดูแลแพลตฟอร์ม'}).click();
+ await expect(signIn).toHaveAttribute('href','#/login?next=%2Fadmin');
+ await signIn.click();
+ await expect(page.getByRole('heading',{level:1})).toHaveText('เข้าสู่ระบบ');
+ await expect(page.getByRole('link',{name:'ขอความช่วยเหลือทาง LINE'})).toBeVisible();
+ await page.getByLabel('อีเมล',{exact:true}).fill('test@example.test');
+ await page.getByLabel('รหัสผ่าน',{exact:true}).fill('test-password');
+ await page.getByRole('button',{name:'เข้าสู่ระบบ →'}).click();
+ await expect(page.getByRole('heading',{name:'ทะเบียนโปรแกรม / Feature Flags'})).toBeVisible();
+ await expect(workspace.getByRole('link',{name:'ผู้ดูแลแพลตฟอร์ม'})).toHaveAttribute('aria-current','page');
+});
