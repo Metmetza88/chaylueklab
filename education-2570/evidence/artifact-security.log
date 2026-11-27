@@ -1,0 +1,5 @@
+
+> psomnuek-education-2570@0.2.0 check:security
+> node scripts/security-check.mjs
+
+PASS: no private files/known secret patterns in artifact; migrations scoped to education_2570. This is not a penetration test.

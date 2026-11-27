@@ -1,0 +1,134 @@
+name: Education 2570 - Quality and Safe Preview
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ['education-2570/**', '.github/workflows/education-2570.yml']
+  push:
+    branches: ['feature/education-2570']
+    paths: ['education-2570/**', '.github/workflows/education-2570.yml']
+  workflow_dispatch:
+    inputs:
+      production_review:
+        description: 'Request a readiness review only (does not deploy production)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: education-2570-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, Tests, Security, Build, E2E
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: local-test-only
+        ports: ['55470:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    defaults:
+      run:
+        working-directory: education-2570
+    steps:
+      - name: Checkout existing repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Node.js 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: education-2570/package-lock.json
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: ESLint
+        run: npm run lint
+      - name: Unit, API contract and security tests
+        run: npm test
+      - name: PostgreSQL migration and two-school RLS integration
+        run: npm run test:db
+      - name: Dependency security
+        run: npm audit --audit-level=high
+      - name: Build Education only
+        run: npm run build
+      - name: Artifact and migration security
+        run: npm run check:security
+      - name: Install test browsers
+        run: npx playwright install --with-deps chromium webkit
+      - name: Desktop and iPhone emulation E2E
+        run: npm run test:e2e
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: education-2570-evidence
+          path: |
+            education-2570/evidence/
+            education-2570/test-results/
+          retention-days: 7
+
+  security-analysis:
+    name: CodeQL shared security gate
+    uses: ./.github/workflows/codeql.yml
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+
+  preview:
+    name: Education Preview and Smoke Test
+    needs: [quality, security-analysis]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feature/education-2570' && vars.EDU_PREVIEW_ENABLED == 'true' && vars.EDU_COMMERCIAL_HOSTING_CONFIRMED == 'true'
+    runs-on: ubuntu-latest
+    environment: education-preview
+    env:
+      VERCEL_TOKEN: ${{ secrets.EDU_VERCEL_TOKEN }}
+      EDU_VERCEL_PROJECT_ID: ${{ vars.EDU_VERCEL_PROJECT_ID }}
+      EDU_PREVIEW_ENABLED: ${{ vars.EDU_PREVIEW_ENABLED }}
+      EDU_COMMERCIAL_HOSTING_CONFIRMED: ${{ vars.EDU_COMMERCIAL_HOSTING_CONFIRMED }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Install pinned Vercel CLI
+        run: npm install --global vercel@67.0.0 --ignore-scripts --no-audit --no-fund
+      - name: Inspect exact existing Education project (never auto-link)
+        run: vercel project inspect psomnuek-education-2570 --scope team_kA0EAug4JrrTT6ZIc54RXcmL --json --non-interactive > /tmp/education-project.json
+        working-directory: education-2570
+      - name: Deploy branch SHA using existing Git connection and verified root
+        id: deploy
+        run: |
+          set -euo pipefail
+          URL="$(node education-2570/scripts/preview-deploy.mjs)"
+          printf 'url=%s\n' "$URL" >> "$GITHUB_OUTPUT"
+      - name: Smoke test preview
+        env:
+          EDU_PREVIEW_URL: ${{ steps.deploy.outputs.url }}
+          EDU_VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.EDU_VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: node education-2570/scripts/smoke.mjs
+
+  production-approval:
+    name: Owner production readiness review (no deployment)
+    needs: [quality, security-analysis]
+    if: github.event_name == 'workflow_dispatch' && inputs.production_review
+    runs-on: ubuntu-latest
+    environment: education-production
+    steps:
+      - name: Review-only gate
+        run: |
+          echo 'This workflow does not deploy or promote production.'
+          echo 'Owner must review FINAL-STATUS.md, live RLS tests, hosting terms and Preview evidence before authorizing a separate release.'
