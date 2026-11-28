@@ -62,11 +62,11 @@ export function StoreDialog({
       <dialog ref={dialog} className="market-dialog" aria-labelledby={title}>
         <div className="market-dialog-title">
           <h2 id={title}>{label}</h2>
-          <form method="dialog">
-            <button className="market-close" aria-label="ปิดหน้าต่าง">
+          <div>
+            <button type="button" onClick={() => dialog.current?.close()} className="market-close" aria-label="ปิดหน้าต่าง">
               ×
             </button>
-          </form>
+          </div>
         </div>
         {procurement ? (
           <>
