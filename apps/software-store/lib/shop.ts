@@ -2,6 +2,8 @@ import "server-only";
 import { cache } from "react";
 import { createClient, createAdmin } from "@/lib/supabase/server";
 import { configured } from "@/lib/env";
+import { productOffer } from "@/lib/marketplace";
+import { getSchoolRate, schoolQuotePrice } from "@/lib/school-prices";
 import drafts from "@/lib/catalog.json";
 export type Product = {
   id: string;
@@ -24,6 +26,23 @@ export const baht = (cents: number) =>
     maximumFractionDigits: 2,
     minimumFractionDigits: 0,
   }).format(cents / 100);
+
+export function catalogPrice(product: Product) {
+  const offer = productOffer(product);
+  const rate = getSchoolRate(product.slug);
+  if (offer !== "ready" && (rate || offer === "school-order")) {
+    return {
+      label: offer === "school-order" ? "แพ็กเกจโรงเรียน" : "ราคาโครงการ",
+      value: schoolQuotePrice(product.slug),
+      cents: rate ? rate.min * 100 : null,
+    };
+  }
+  return {
+    label: offer === "ready" ? "ราคาสินค้า" : "ราคาเป้าหมาย",
+    value: baht(product.price_cents),
+    cents: product.price_cents,
+  };
+}
 export const getViewer = cache(async () => {
   if (!configured()) return { user: null, isVip: false, isAdmin: false };
   const db = await createClient();

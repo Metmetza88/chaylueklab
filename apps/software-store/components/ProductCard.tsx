@@ -5,7 +5,7 @@ import ProductQuote from "./ProductQuote";
 import { productOffer, sportSlug, sportTitle } from "@/lib/marketplace";
 import { productDemos } from "@/lib/product-demos";
 import { ArrowUpRight, School } from "lucide-react";
-import { type Product, baht } from "@/lib/shop";
+import { type Product, catalogPrice } from "@/lib/shop";
 
 export default function ProductCard({ p }: { p: Product }) {
   const preview = productDemos.find((demo) => demo.slug === p.slug);
@@ -13,7 +13,7 @@ export default function ProductCard({ p }: { p: Product }) {
   const title = sport ? sportTitle : p.name;
   const offer = productOffer(p);
   const ready = offer === "ready";
-  const price = baht(p.price_cents);
+  const price = catalogPrice(p);
   return (
     <article
       className={"product-card market-card" + (sport ? " market-featured" : "")}
@@ -67,8 +67,10 @@ export default function ProductCard({ p }: { p: Product }) {
         </div>
         <div className="product-bottom">
           <span>
-            <small>{ready ? "ราคาเริ่มต้น" : "ราคาเป้าหมาย"}</small>
-            <strong>{price}</strong>
+            <small>
+              {sport && !ready ? "กีฬาสี + เกียรติบัตรออนไลน์" : price.label}
+            </small>
+            <strong>{price.value}</strong>
           </span>
           <Link
             className="icon-button"
@@ -85,7 +87,7 @@ export default function ProductCard({ p }: { p: Product }) {
             hasDemo={Boolean(preview)}
             description={p.description}
             features={p.features}
-            price={price}
+            price={price.value}
             offer={offer}
             sport={sport}
           />

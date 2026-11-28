@@ -48,6 +48,9 @@ test("product quote keeps the product context and opens the existing LINE channe
 }) => {
   await page.goto("/products");
   const card = page.locator('[data-product-slug="met-sport"]');
+  await expect(card.locator(".product-bottom")).toContainText("3,900–6,500 บาท / งาน");
+  await expect(page.locator('[data-product-slug="met-attendance"] .product-bottom')).toContainText("4,900–9,900 บาท / ปี");
+  await expect(page.locator('[data-product-slug="met-admission"] .product-bottom')).toContainText("ขอประเมินราคา");
   await card
     .getByRole("button", { name: "ดูรายละเอียด / ขอใบเสนอราคา" })
     .click();
@@ -56,12 +59,12 @@ test("product quote keeps the product context and opens the existing LINE channe
     dialog.getByText("เอกสารประกอบการเบิกงบโครงการกีฬาสี"),
   ).toBeVisible();
   await expect(
-    dialog.getByText("ราคาเป้าหมาย · ยืนยันตามขอบเขตงาน"),
+    dialog.getByText("แพ็กเกจโรงเรียน · ยืนยันตามขอบเขตงาน"),
   ).toBeVisible();
   await dialog.getByRole("link", { name: "ขอใบเสนอราคา", exact: true }).click();
   await expect(page).toHaveURL(/\/contact\?product=met-sport#quotation$/);
   await expect(page.getByLabel("ข้อความสำหรับส่งทาง LINE")).toHaveValue(
-    /MET Sport/,
+    /MET Sport\nราคาแพ็กเกจ: 3,900–6,500 บาท \/ งาน/,
   );
   await expect(
     page.getByRole("link", { name: "เปิด LINE OA @125cbuuu" }),
@@ -104,8 +107,7 @@ test("shop chat answers prices and procurement and fixed navigation reaches the 
   const question = dialog.getByRole("textbox", { name: "พิมพ์คำถาม" });
   await question.fill("MET Sport ราคาเท่าไหร่");
   await question.press("Enter");
-  await expect(dialog.getByRole("log")).toContainText("MET Sport ราคาเป้าหมาย");
-  await expect(dialog.getByRole("log")).toContainText("990");
+  await expect(dialog.getByRole("log")).toContainText("MET Sport · 3,900–6,500 บาท / งาน");
   await dialog
     .locator(".market-links")
     .first()

@@ -20,7 +20,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { CartProvider } from "@/lib/cart";
-import { baht, getProducts, getViewer } from "@/lib/shop";
+import { catalogPrice, getProducts, getViewer } from "@/lib/shop";
 import { sportFirst } from "@/lib/marketplace";
 import CartLink from "@/components/CartLink";
 import DisplayControls from "@/components/DisplayControls";
@@ -110,7 +110,7 @@ export default async function Layout({
     category: product.category,
     features: product.features,
     status: product.status,
-    price: baht(product.price_cents),
+    price: catalogPrice(product).value,
   }));
   const links = accountsEnabled
     ? [...publicLinks, ["/membership", "สมาชิก VIP"]]

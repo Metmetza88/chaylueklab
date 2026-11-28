@@ -2,7 +2,7 @@ import Link from "next/link";
 import QuoteMessage from "@/components/QuoteMessage";
 import { ContactDetails, StoreDialog } from "@/components/StoreDialogs";
 import { lineContact, lineId } from "@/lib/marketplace";
-import { getProducts } from "@/lib/shop";
+import { catalogPrice, getProducts } from "@/lib/shop";
 import { configured } from "@/lib/env";
 
 export default async function Page({
@@ -44,7 +44,10 @@ export default async function Page({
         <p>
           ระบุข้อมูลของโรงเรียน คัดลอกข้อความ แล้วเปิด LINE เพื่อส่งให้ทางร้าน
         </p>
-        <QuoteMessage product={programName || undefined} />
+        <QuoteMessage
+          product={programName || undefined}
+          price={selected && catalogPrice(selected).value}
+        />
         <StoreDialog kind="procurement" className="btn ghost" />
         <a
           className="btn"

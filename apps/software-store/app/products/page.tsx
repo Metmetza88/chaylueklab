@@ -6,7 +6,7 @@ import {
   matchesProduct,
   sportFirst,
 } from "@/lib/marketplace";
-import { getProducts } from "@/lib/shop";
+import { catalogPrice, getProducts, type Product } from "@/lib/shop";
 const supplies = [
   [
     "ชุดอุปกรณ์การเรียน",
@@ -21,6 +21,14 @@ const supplies = [
     "แจ้งรายการและจำนวนที่ต้องการ หรือติดต่อขอใบเสนอราคารวมกับระบบ MET Sport",
   ],
 ];
+
+function comparePrices(a: Product, b: Product, sort: string) {
+  const first = catalogPrice(a).cents;
+  const second = catalogPrice(b).cents;
+  if (first === null) return second === null ? 0 : 1;
+  if (second === null) return -1;
+  return (first - second) * (sort === "desc" ? -1 : 1);
+}
 
 export default async function Products({
   searchParams,
@@ -42,7 +50,7 @@ export default async function Products({
       (a, b) =>
         sportFirst(a, b) ||
         (sort === "asc" || sort === "desc"
-          ? (a.price_cents - b.price_cents) * (sort === "desc" ? -1 : 1)
+          ? comparePrices(a, b, sort)
           : a.name.localeCompare(b.name, "th")),
     );
   return (

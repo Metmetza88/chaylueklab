@@ -5,7 +5,7 @@ import AddToCart from "@/components/AddToCart";
 import Image from "next/image";
 import ProductPreview from "@/components/ProductPreview";
 import { productOffer, quoteHref } from "@/lib/marketplace";
-import { getProducts, baht } from "@/lib/shop";
+import { getProducts, catalogPrice } from "@/lib/shop";
 import { paymentMode } from "@/lib/env";
 import ProductGallery from "@/components/ProductGallery";
 import { productDemos } from "@/lib/product-demos";
@@ -32,6 +32,7 @@ export default async function Product({
   if (!p) notFound();
   const demo = productDemos.find((item) => item.slug === slug);
   const offer = productOffer(p);
+  const price = catalogPrice(p);
   const images = screenshots[slug];
   return (
     <section className="section">
@@ -74,15 +75,18 @@ export default async function Product({
             </p>
           )}
           <div className="detail-price">
-            {baht(p.price_cents)}
+            {price.value}
             <small>
               {p.status === "ready"
                 ? "ราคาสินค้า"
                 : offer === "school-order"
-                  ? "ราคาเป้าหมาย · ยืนยันตามขอบเขตงาน"
-                  : "ราคาเป้าหมาย อาจเปลี่ยนแปลงก่อนเปิดขาย"}
+                  ? "แพ็กเกจโรงเรียน · ยืนยันตามขอบเขตงาน"
+                  : `${price.label} · ยืนยันก่อนเปิดขาย`}
             </small>
           </div>
+          {slug === "met-sport" && offer === "school-order" && (
+            <p>ระบบกีฬาสีพร้อมออกเกียรติบัตรออนไลน์</p>
+          )}
           {p.status === "ready" && paymentMode() !== "disabled" ? (
             <AddToCart id={p.id} />
           ) : (

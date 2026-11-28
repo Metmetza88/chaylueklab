@@ -3,12 +3,19 @@
 import { useRef, useState } from "react";
 import { Copy } from "lucide-react";
 
-export default function QuoteMessage({ product }: { product?: string }) {
+export default function QuoteMessage({
+  product,
+  price,
+}: {
+  product?: string;
+  price?: string;
+}) {
   const field = useRef<HTMLTextAreaElement>(null);
   const [status, setStatus] = useState("");
   const message = [
     "ขอใบเสนอราคาสำหรับโรงเรียน",
     `ระบบที่สนใจ: ${product ?? ""}`,
+    ...(price ? [`ราคาแพ็กเกจ: ${price}`] : []),
     "ชื่อสถานศึกษา:",
     "ขอบเขตงาน / จำนวนผู้ใช้:",
     "ช่วงที่ต้องการใช้งาน:",
