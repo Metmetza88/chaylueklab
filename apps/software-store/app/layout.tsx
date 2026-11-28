@@ -220,8 +220,13 @@ export default async function Layout({
               >
                 <ShieldCheck size={23} aria-hidden="true" />
                 <div>
-                  <strong>จัดจำหน่ายโดย {distributor}</strong>
-                  <p>พัฒนาโดย WORAMET AI LAB · ขอเอกสารจัดซื้อในนามร้าน</p>
+                  <strong>
+                    จัดจำหน่ายและออกเอกสารจัดซื้อในนาม {distributor}
+                  </strong>
+                  <p>
+                    {shopLocation} · พัฒนาโดย WORAMET AI LAB ·
+                    รองรับการจัดซื้อวิธีเฉพาะเจาะจงตามเงื่อนไขของโรงเรียน
+                  </p>
                 </div>
                 <StoreDialogButton name="procurement" className="btn ghost">
                   เอกสารเบิกงบ
