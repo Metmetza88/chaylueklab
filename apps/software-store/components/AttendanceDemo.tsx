@@ -61,6 +61,7 @@ export default function AttendanceDemo() {
   const [schoolId, setSchoolId] = useState<string>(schools[0].id);
   const [date, setDate] = useState(sampleDate);
   const [period, setPeriod] = useState("daily");
+  const [scanNotice, setScanNotice] = useState("");
   const [records, setRecords] = useState(initialRecords);
   const [feedback, setFeedback] = useState("");
   const school = schools.find((item) => item.id === schoolId) ?? schools[0];
@@ -224,6 +225,27 @@ export default function AttendanceDemo() {
         ))}
       </dl>
 
+      <section className="panel stack">
+        <h2>ทดลองสแกนบัตรนักเรียน QR Code</h2>
+        <p>เดโมใช้บัตรสมมติและแสดงตัวอย่างข้อความบนหน้านี้</p>
+        <button
+          type="button"
+          className="btn"
+          onClick={() => {
+            update(studentId(0), "present");
+            setScanNotice(
+              `LINE OA · แจ้งผู้ปกครองตัวอย่าง: ${school.students[0]} เช็กชื่อเข้าเรียนเวลา 07:42 น. · ${date}`,
+            );
+          }}
+        >
+          จำลองสแกนบัตรนักเรียน QR Code
+        </button>
+        {scanNotice && (
+          <p role="status" className="market-budget">
+            {scanNotice}
+          </p>
+        )}
+      </section>
       <div className={styles.workspace}>
         <section className={styles.panel}>
           <header className={styles.panelHead}>

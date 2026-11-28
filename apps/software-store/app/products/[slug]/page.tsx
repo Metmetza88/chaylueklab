@@ -1,14 +1,16 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Check, ArrowUpRight } from "lucide-react";
+import { Check } from "lucide-react";
 import AddToCart from "@/components/AddToCart";
 import ProductPreview from "@/components/ProductPreview";
 import { storeOffer } from "@/lib/store-offers";
 import { quoteHref } from "@/lib/marketplace";
-import { getProducts, baht } from "@/lib/shop";
+import { getProducts } from "@/lib/shop";
 import { paymentMode } from "@/lib/env";
+import { voteOffer } from "@/lib/school-offers";
+import LiveDemoTrigger from "@/components/LiveDemoTrigger";
+import SchoolPackage from "@/components/SchoolPackage";
 import ProductGallery from "@/components/ProductGallery";
-import { productDemos } from "@/lib/product-demos";
 
 const screenshots: Record<string, { file: string; label: string }[]> = {
   "met-school-pro": [
@@ -28,11 +30,12 @@ export default async function Product({
 }) {
   const { slug } = await params;
   const { products } = await getProducts();
-  const p = products.find((x) => x.slug === slug);
+  const p =
+    products.find((x) => x.slug === slug) ??
+    (slug === voteOffer.slug ? voteOffer : undefined);
   if (!p) notFound();
-  const hasDemo = productDemos.some((demo) => demo.slug === slug);
   const images = screenshots[slug];
-  const offer = storeOffer(p.slug, p.status);
+  const offer = storeOffer(p.status);
   return (
     <section className="section">
       <div className="breadcrumbs">
@@ -54,10 +57,7 @@ export default async function Product({
           <span className={`status market-offer-${offer.kind}`}>
             {offer.label}
           </span>
-          <div className="detail-price">
-            {offer.kind === "order" ? "ขอใบเสนอราคา" : baht(p.price_cents)}
-            <small>{offer.priceLabel}</small>
-          </div>
+          <SchoolPackage />
           {p.status === "ready" && paymentMode() !== "disabled" ? (
             <AddToCart id={p.id} />
           ) : (
@@ -76,11 +76,7 @@ export default async function Product({
             ))}
           </ul>
           <div className="market-links">
-            {hasDemo && (
-              <Link className="btn ghost" href={`/demo/${slug}`}>
-                ทดลองดูตัวอย่าง (Demo) <ArrowUpRight size={18} />
-              </Link>
-            )}
+            <LiveDemoTrigger slug={slug} name={p.name} tagline={p.tagline} />
             <Link className="btn" href={quoteHref(slug)}>
               ขอใบเสนอราคา
             </Link>

@@ -10,6 +10,9 @@ export const lineMessage = (message: string) =>
   encodeURIComponent(lineId) +
   "/?" +
   encodeURIComponent(message);
+export const greetingLine = lineMessage(
+  "สวัสดีครับ สนใจแพ็กเกจระบบโรงเรียน ขอรายละเอียดและนัดสาธิตครับ",
+);
 export const procurementLine = lineMessage(
   "สวัสดีครับ ขอรับไฟล์ตัวอย่างเอกสารเบิกงบสำหรับโรงเรียนครับ",
 );
@@ -18,4 +21,6 @@ export const procurementTemplates = [
   { slug: "quotation", name: "ตัวอย่างใบเสนอราคา" },
   { slug: "tor", name: "ตัวอย่างขอบเขตงาน (TOR) วิธีเฉพาะเจาะจง" },
   { slug: "approval-memo", name: "ตัวอย่างบันทึกข้อความขออนุมัติโครงการ" },
+  { slug: "delivery", name: "ตัวอย่างใบส่งมอบงาน" },
+  { slug: "receipt", name: "ตัวอย่างใบเสร็จรับเงิน" },
 ];

@@ -5,6 +5,9 @@ import { lineContact } from "@/lib/marketplace";
 import { lineId, localService, shopPhone } from "@/lib/procurement";
 import { StoreDialogButton } from "@/components/StoreDialogs";
 import { getProducts } from "@/lib/shop";
+import { voteOffer } from "@/lib/school-offers";
+import { lineMessage } from "@/lib/procurement";
+import SchoolPackage from "@/components/SchoolPackage";
 import { configured } from "@/lib/env";
 
 export default async function Page({
@@ -16,7 +19,10 @@ export default async function Page({
   }>;
 }) {
   const { product, program } = await searchParams;
-  const { products } = await getProducts();
+  const { products: catalog } = await getProducts();
+  const products = catalog.some(({ slug }) => slug === voteOffer.slug)
+    ? catalog
+    : [...catalog, voteOffer];
   const selected =
     typeof product === "string"
       ? products.find((item) => item.slug === product)
@@ -46,15 +52,11 @@ export default async function Page({
             โปรแกรมที่สนใจ <strong>{programName}</strong>
           </p>
         )}
-        <p>
-          ระบุข้อมูลของโรงเรียน คัดลอกข้อความ แล้วเปิด LINE เพื่อส่งให้ทางร้าน
-        </p>
+        <p>กรอกข้อมูลโรงเรียน แล้วกดเปิด LINE พร้อมรายการและยอดประเมิน</p>
+        <SchoolPackage />
         <QuoteCart
-          catalog={products.map(({ slug, name, price_cents }) => ({
-            slug,
-            name,
-            price_cents,
-          }))}
+          catalog={products.map(({ slug, name }) => ({ slug, name }))}
+          selectedSlug={selected?.slug}
         />
         <details open={programName ? true : undefined}>
           <summary>ขอใบเสนอราคาระบบเดียว</summary>
@@ -65,7 +67,13 @@ export default async function Page({
         </StoreDialogButton>
         <a
           className="btn"
-          href={lineContact}
+          href={
+            programName
+              ? lineMessage(
+                  `สวัสดีครับ ขอใบเสนอราคา ${programName} และเอกสารเบิกงบครับ`,
+                )
+              : lineContact
+          }
           target="_blank"
           rel="noopener noreferrer"
         >

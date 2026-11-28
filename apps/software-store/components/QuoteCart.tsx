@@ -3,50 +3,68 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { distributor, lineMessage, lineId, shopPhone } from "@/lib/procurement";
-import { formatBaht, packages, serviceRange } from "@/lib/quote";
-import {
-  PackageChoice,
-  updateQuoteSelection,
-  useQuoteSelection,
-} from "./QuoteSelection";
+import { formatBaht, schoolBudgetOptions, schoolPackage } from "@/lib/quote";
+import { updateQuoteSelection, useQuoteSelection } from "./QuoteSelection";
 import QuoteMessage from "./QuoteMessage";
 
-type QuoteProduct = { slug: string; name: string; price_cents: number };
+type QuoteProduct = { slug: string; name: string };
 
-export default function QuoteCart({ catalog }: { catalog: QuoteProduct[] }) {
+export default function QuoteCart({
+  catalog,
+  selectedSlug,
+}: {
+  catalog: QuoteProduct[];
+  selectedSlug?: string;
+}) {
   const selected = useQuoteSelection();
-  const [contact, setContact] = useState({ school: "", phone: "", note: "" });
-  const [review, setReview] = useState(false);
-  const entries = catalog.flatMap((product) => {
-    const plan = selected[product.slug];
-    return plan ? [{ ...product, plan }] : [];
-  });
-  const { min, max } = entries.reduce(
-    (totals, { plan, price_cents }) => ({
-      min: totals.min + (plan === "service" ? serviceRange.min : price_cents),
-      max: totals.max + (plan === "service" ? serviceRange.max : price_cents),
-    }),
-    { min: 0, max: 0 },
+  const [removed, setRemoved] = useState("");
+  const [prepared, setPrepared] = useState("");
+  const [copied, setCopied] = useState(false);
+  const entries = catalog.filter(
+    ({ slug }) => selected[slug] || (slug === selectedSlug && removed !== slug),
   );
-  const total =
-    min === max ? formatBaht(min) : `${formatBaht(min)}–${formatBaht(max)}`;
-  const message = [
-    "ขอใบเสนอราคารวมสำหรับโรงเรียน",
-    `ชื่อโรงเรียน: ${contact.school}`,
-    `เบอร์โทร: ${contact.phone}`,
-    ...entries.map(
-      ({ name, plan }, index) =>
-        `${index + 1}. ${name} · ${packages[plan].label}`,
-    ),
-    `ยอดประเมินเบื้องต้น: ${total}`,
-    contact.note && `รายละเอียด: ${contact.note}`,
-  ]
-    .filter(Boolean)
-    .join("\n");
+  const total = `${formatBaht(entries.length * schoolPackage.min)}–${formatBaht(entries.length * schoolPackage.max)}`;
 
-  function prepare(event: FormEvent<HTMLFormElement>) {
+  function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setReview(true);
+    if (!entries.length) return;
+    const data = new FormData(event.currentTarget);
+    const school = String(data.get("school") ?? "").trim();
+    const person = String(data.get("person") ?? "").trim();
+    if (!school || !person) {
+      const field = event.currentTarget.elements.namedItem(
+        !school ? "school" : "person",
+      );
+      if (field instanceof HTMLInputElement) {
+        field.setCustomValidity("กรุณากรอกข้อมูล");
+        field.reportValidity();
+      }
+      return;
+    }
+    const note = String(data.get("note") ?? "").trim();
+    const message = [
+      "ขอใบเสนอราคาแพ็กเกจสำหรับโรงเรียน",
+      `ชื่อโรงเรียน: ${school}`,
+      `ผู้ติดต่อ: ${person}`,
+      `เบอร์โทร: ${data.get("phone")}`,
+      `หมวดงบประมาณ: ${data.get("budget")}`,
+      ...entries.map(
+        ({ name }, index) => `${index + 1}. ${name} · ${schoolPackage.price}`,
+      ),
+      `ยอดประเมินรวม: ${total}`,
+      note && `รายละเอียด: ${note}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+    setPrepared(message);
+    setCopied(false);
+    if (navigator.clipboard?.writeText) {
+      void navigator.clipboard
+        .writeText(message)
+        .then(() => setCopied(true))
+        .catch(() => {});
+    }
+    window.open(lineMessage(message), "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -58,30 +76,26 @@ export default function QuoteCart({ catalog }: { catalog: QuoteProduct[] }) {
       {!entries.length ? (
         <p>
           เพิ่มโปรแกรมได้จาก <Link href="/products">รายการโปรแกรม</Link>{" "}
-          แล้วส่งขอใบเสนอราคารวมชุด
+          แล้วส่งคำขอรวมชุด
         </p>
       ) : (
         <>
+          <p>
+            {schoolPackage.label} · {schoolPackage.price} ต่อระบบ
+          </p>
           <ul className="quote-selection-list">
-            {entries.map(({ slug, name, price_cents, plan }) => (
+            {entries.map(({ slug, name }) => (
               <li key={slug}>
                 <strong>{name}</strong>
-                <PackageChoice
-                  value={plan}
-                  filesPrice={formatBaht(price_cents)}
-                  onChange={(next) => {
-                    updateQuoteSelection(slug, next);
-                    setReview(false);
-                  }}
-                />
                 <button
                   type="button"
                   className="btn ghost"
+                  aria-label={`นำ ${name} ออก`}
                   onClick={() => {
                     updateQuoteSelection(slug);
-                    setReview(false);
+                    setRemoved(slug);
+                    setPrepared("");
                   }}
-                  aria-label={`นำ ${name} ออก`}
                 >
                   นำออก
                 </button>
@@ -89,68 +103,75 @@ export default function QuoteCart({ catalog }: { catalog: QuoteProduct[] }) {
             ))}
           </ul>
           <p className="quote-estimate">
-            ยอดประเมินเบื้องต้น <strong>{total}</strong>
+            ยอดประเมินรวม <strong>{total}</strong>
           </p>
-          <p className="muted">
-            ร้านจะยืนยันราคาและขอบเขตในใบเสนอราคา
-            งานติดตั้งเพิ่มเติมประเมินได้ถึง 9,900 บาทตามขอบเขต
-          </p>
-          <form className="stack" onSubmit={prepare}>
+          <p className="muted">ทีมงานยืนยันราคาและขอบเขตส่งมอบในใบเสนอราคา</p>
+          <form
+            className="stack"
+            onSubmit={submit}
+            onChange={() => setPrepared("")}
+          >
             <label>
               ชื่อโรงเรียน
               <input
+                name="school"
                 required
                 maxLength={120}
                 autoComplete="organization"
-                value={contact.school}
-                onChange={(event) => {
-                  setContact({ ...contact, school: event.target.value });
-                  setReview(false);
-                }}
+                onInput={(event) => event.currentTarget.setCustomValidity("")}
+              />
+            </label>
+            <label>
+              ชื่อผู้ติดต่อ
+              <input
+                name="person"
+                required
+                maxLength={100}
+                autoComplete="name"
+                onInput={(event) => event.currentTarget.setCustomValidity("")}
               />
             </label>
             <label>
               เบอร์โทร
               <input
+                name="phone"
                 required
                 type="tel"
                 pattern={String.raw`\+?\d[\d .\-]{6,18}\d`}
                 maxLength={22}
                 autoComplete="tel-national"
-                value={contact.phone}
-                onChange={(event) => {
-                  setContact({ ...contact, phone: event.target.value });
-                  setReview(false);
-                }}
               />
             </label>
             <label>
-              รายละเอียดโครงการ (ถ้ามี)
-              <textarea
-                maxLength={350}
-                rows={3}
-                value={contact.note}
-                onChange={(event) => {
-                  setContact({ ...contact, note: event.target.value });
-                  setReview(false);
-                }}
-              />
+              หมวดงบประมาณ
+              <select name="budget" defaultValue={schoolBudgetOptions[0]}>
+                {schoolBudgetOptions.map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
             </label>
-            <button type="submit" className="market-primary">
-              เตรียมคำขอใบเสนอราคารวม
+            <label>
+              รายละเอียดโครงการ (ถ้ามี)
+              <textarea name="note" maxLength={250} rows={3} />
+            </label>
+            <button className="market-primary" type="submit">
+              เปิด LINE พร้อมคำขอใบเสนอราคา
             </button>
           </form>
-          {review && (
-            <div className="stack market-budget" role="status">
-              <p>ตรวจข้อความแล้วกดเปิด LINE เพื่อส่งให้ {distributor}</p>
-              <QuoteMessage prepared={message} />
+          {prepared && (
+            <div className="stack market-budget">
+              <p role="status">
+                {copied ? "คัดลอกข้อความแล้ว · " : ""}เปิดแชท {distributor}{" "}
+                แล้วกดส่งใน LINE
+              </p>
+              <QuoteMessage prepared={prepared} />
               <a
                 className="market-primary"
-                href={lineMessage(message)}
+                href={lineMessage(prepared)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                เปิด LINE เพื่อส่งคำขอรวม · {lineId}
+                เปิดคำขออีกครั้ง · {lineId}
               </a>
               <a href={shopPhone.href}>โทร {shopPhone.label}</a>
             </div>

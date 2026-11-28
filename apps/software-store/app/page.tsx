@@ -14,23 +14,14 @@ import ProductCard from "@/components/ProductCard";
 import HomeStats from "@/components/HomeStats";
 import HomeFeatures from "@/components/HomeFeatures";
 import HomeFAQ from "@/components/HomeFAQ";
-import { sportFirst, sportSlug } from "@/lib/marketplace";
+import { schoolOffers } from "@/lib/school-offers";
+import SchoolPackage from "@/components/SchoolPackage";
 import { productDemos } from "@/lib/product-demos";
 export default async function Home() {
   if (process.env.APP_VARIANT === "school")
     redirect(`/schools/${process.env.SCHOOL_SLUG ?? "my-school"}`);
-  const { products, source } = await getProducts();
-  const featured = [...products]
-    .sort(
-      (a, b) =>
-        sportFirst(a, b) ||
-        ["met-admission", "met-school-pro"].indexOf(b.slug) -
-          ["met-admission", "met-school-pro"].indexOf(a.slug),
-    )
-    .slice(
-      0,
-      3 + Number(products.some((product) => product.slug === sportSlug)),
-    );
+  const { products: catalog, source } = await getProducts();
+  const products = source === "error" ? [] : schoolOffers(catalog);
   return (
     <>
       <section
@@ -120,20 +111,21 @@ export default async function Home() {
           </p>
         )}
         <div className="product-grid featured-collection">
-          {featured.map((p) => (
+          {products.map((p) => (
             <ProductCard key={p.id} p={p} />
           ))}
         </div>
       </section>
+      <SchoolPackage />
       <HomeStats
         stats={[
           {
             value: products.length,
             label: "โปรแกรมในแคตตาล็อก",
-            detail: "ดูสถานะและแผนพัฒนาในหน้าสินค้า",
+            detail: "ขอราคาและนัดวางระบบได้จากหน้าสินค้า",
           },
           {
-            value: productDemos.length,
+            value: products.length,
             label: "ระบบที่เปิดทดลองได้",
             detail: "ใช้ข้อมูลสมมติในเบราว์เซอร์",
           },
@@ -176,12 +168,12 @@ export default async function Home() {
             [
               "02",
               "สั่งซื้ออย่างมั่นใจ",
-              "เมื่อเปิดจำหน่ายแล้ว ชำระตามยอดคำสั่งซื้อที่ระบบคำนวณ",
+              "รวมรายการ ส่งคำขอทาง LINE และยืนยันราคาในใบเสนอราคา",
             ],
             [
               "03",
               "ดาวน์โหลดและติดตั้ง",
-              "รับสิทธิ์ดาวน์โหลดหลังตรวจสอบการชำระ พร้อมคู่มือภาษาไทย",
+              "นัดติดตั้ง อบรม และรับเอกสารส่งมอบตามใบเสนอราคา",
             ],
           ].map(([n, h, t]) => (
             <div key={n}>

@@ -8,7 +8,8 @@ export default function ProcurementDocuments() {
       <p>รายการเอกสารให้ตกลงกับโรงเรียนก่อนเริ่มงาน</p>
       <ul className="procurement-issue-list">
         <li>ใบเสนอราคา</li>
-        <li>รายละเอียดและสเปกประกอบ TOR</li>
+        <li>รายละเอียดและสเปกประกอบ TOR วิธีเฉพาะเจาะจง</li>
+        <li>บันทึกข้อความขออนุมัติโครงการ</li>
         <li>ใบส่งมอบงาน</li>
         <li>ใบเสร็จรับเงิน</li>
       </ul>

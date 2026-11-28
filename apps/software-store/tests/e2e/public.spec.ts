@@ -85,7 +85,9 @@ test("catalog filters and product details work", async ({ page }) => {
   await expect(
     page.getByRole("img", { name: "ใบสมัคร PDF ตัวอย่าง" }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "ทดลองดูตัวอย่าง (Demo)" }).click();
+  await page
+    .getByRole("button", { name: "ทดลองใช้ตัวจริง (Live Demo)" })
+    .click();
   await expect(page.locator("div.demo-bar")).toContainText("ข้อมูลสมมติ");
 });
 test("school services links to the demo and attendance keeps school and lesson records separate", async ({

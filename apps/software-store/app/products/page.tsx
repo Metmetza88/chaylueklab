@@ -6,6 +6,9 @@ import { QuoteCartLink } from "@/components/QuoteSelection";
 import ProductCard from "@/components/ProductCard";
 import { matchesProduct, sportFirst } from "@/lib/marketplace";
 import { getProducts } from "@/lib/shop";
+import { schoolOffers } from "@/lib/school-offers";
+const finance = { category: "งานการเงิน", product: "met-school-shop" };
+
 const supplyGroups = [
   {
     name: "อุปกรณ์การเรียน",
@@ -24,6 +27,10 @@ const supplyGroups = [
   },
 ];
 
+function financialProduct(slug: string) {
+  return slug === finance.product;
+}
+
 export default async function Products({
   searchParams,
 }: {
@@ -31,27 +38,44 @@ export default async function Products({
 }) {
   const sp = await searchParams;
   const supplies = sp.section === "supplies";
-  const { products: all, source } = await getProducts();
+  const { products: catalog, source } = await getProducts();
+  const all = source === "error" ? [] : schoolOffers(catalog);
   const query = typeof sp.q === "string" ? sp.q.trim().slice(0, 100) : "";
   const category = typeof sp.category === "string" ? sp.category : "";
   const sort = typeof sp.sort === "string" ? sp.sort : "";
   const cats = [...new Set(all.map((p) => p.category))];
-  const products = all
+  if (
+    catalog.some((p) => financialProduct(p.slug)) &&
+    !cats.includes(finance.category)
+  ) {
+    cats.push(finance.category);
+  }
+  const products = (
+    category === finance.category
+      ? catalog.filter((p) => financialProduct(p.slug))
+      : all
+  )
     .filter(
-      (p) => matchesProduct(p, query) && (!category || p.category === category),
+      (p) =>
+        matchesProduct(p, query) &&
+        (!category ||
+          p.category === category ||
+          (category === finance.category && financialProduct(p.slug))),
     )
     .sort(
       (a, b) =>
         sportFirst(a, b) ||
         (sort === "asc" || sort === "desc"
-          ? (a.price_cents - b.price_cents) * (sort === "desc" ? -1 : 1)
+          ? a.name.localeCompare(b.name, "th") * (sort === "desc" ? -1 : 1)
           : a.name.localeCompare(b.name, "th")),
     );
   return (
     <section className="section market-catalog">
       <div className="page-heading">
         <span className="eyebrow">THE SCHOOL SOFTWARE COLLECTION</span>
-        <h1>โปรแกรมทั้งหมด</h1>
+        <h1>
+          {!supplies && cats.includes(category) ? category : "โปรแกรมทั้งหมด"}
+        </h1>
         <p className="muted">เลือกเครื่องมือที่เหมาะกับโรงเรียนของคุณ</p>
       </div>
       <QuoteCartLink />
@@ -127,8 +151,8 @@ export default async function Products({
               เรียงลำดับ
               <select name="sort" defaultValue={sort}>
                 <option value="">แนะนำก่อน · ตามชื่อ</option>
-                <option value="asc">ราคาน้อยไปมาก</option>
-                <option value="desc">ราคามากไปน้อย</option>
+                <option value="asc">ชื่อ ก–ฮ</option>
+                <option value="desc">ชื่อ ฮ–ก</option>
               </select>
             </label>
             <button className="btn">ค้นหา</button>

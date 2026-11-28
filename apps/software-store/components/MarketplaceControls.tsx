@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
 import {
-  lineContact,
   matchesProduct,
   quoteHref,
   sportSlug,
@@ -24,7 +23,8 @@ import {
 } from "@/lib/marketplace";
 
 import { DialogTitle, StoreDialogButton } from "./StoreDialogs";
-import { storeOffer } from "@/lib/store-offers";
+import { schoolPackage } from "@/lib/quote";
+import { greetingLine, lineId } from "@/lib/procurement";
 
 const quote = quoteHref();
 
@@ -128,7 +128,7 @@ export function MarketplaceHeader({
             ? "ไม่สามารถโหลดสถานะแคตตาล็อกได้ในขณะนี้"
             : readyCount
               ? `มี ${readyCount} โปรแกรมพร้อมจำหน่าย ดูสถานะล่าสุดได้จากรายการระบบ`
-              : "โปรแกรมอยู่ระหว่างพัฒนา ดูสถานะและราคาเป้าหมายได้จากแคตตาล็อก"}
+              : "เปิดรับออเดอร์ทุกโปรแกรม เลือกเดโมและขอใบเสนอราคาตามขอบเขตจากแคตตาล็อก"}
         </p>
         <div className="market-links">
           <Link href="/products?q=กีฬาสี" onClick={() => news.current?.close()}>
@@ -157,7 +157,7 @@ const replies = [
   ],
   [
     /ราคา|งบ|บาท|กีฬาสี/,
-    "ราคาเป้าหมายบนการ์ดเป็นข้อมูลวางแผนสำหรับโปรแกรมที่ยังไม่เปิดขาย ราคาของงานกีฬาสีให้ทีมประเมินจากจำนวนทีม รายการแข่ง และงานที่ต้องการครับ",
+    "ราคาโครงการประเมินจากขอบเขตและแพ็กเกจที่เลือกครับ งานกีฬาสีแจ้งจำนวนทีม รายการแข่งขัน และวันที่จัดงานเพื่อขอใบเสนอราคาได้เลย",
   ],
   [
     /เดโม|ทดลอง/,
@@ -210,12 +210,12 @@ export default function MarketplaceDock({
     const pricing = /ราคา|เท่าไหร่|เท่าไร|กี่บาท|ค่าใช้จ่าย/u.test(
       text.replaceAll("ใบเสนอราคา", ""),
     );
-    const offer = product && storeOffer(product.slug, product.status);
+
     const priceReply =
       product &&
       (pricing ||
         (named && !/เอกสาร|เบิก|จัดซื้อ|ใบเสนอราคา|เดโม|ทดลอง/u.test(text)))
-        ? `${product.name} ${offer?.kind === "order" ? "เปิดรับออเดอร์ ขอใบเสนอราคาตามขอบเขตงานได้ครับ" : `${offer?.priceLabel} ${product.price}`}`
+        ? `${product.name} เปิดรับออเดอร์ · ${schoolPackage.label} ${schoolPackage.price} ต่อระบบ ขอใบเสนอราคาตามขอบเขตงานได้ครับ`
         : "";
     const reply =
       replies.find(([pattern]) => pattern.test(question))?.[1] ??
@@ -250,7 +250,7 @@ export default function MarketplaceDock({
       </button>
       <a
         className="market-line"
-        href={lineContact}
+        href={greetingLine}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="แชท LINE"
@@ -352,8 +352,8 @@ export default function MarketplaceDock({
           >
             เอกสารเบิกงบ
           </StoreDialogButton>
-          <a href={lineContact} target="_blank" rel="noopener noreferrer">
-            คุยกับทีมงานทาง LINE
+          <a href={greetingLine} target="_blank" rel="noopener noreferrer">
+            คุยกับทีมงานทาง LINE {lineId}
           </a>
         </div>
       </dialog>

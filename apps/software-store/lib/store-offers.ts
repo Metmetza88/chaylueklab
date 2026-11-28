@@ -1,11 +1,4 @@
-const orderProducts = new Set([
-  "met-sport",
-  "met-attendance",
-  "met-admission",
-  "met-school-pro",
-]);
-
-export function storeOffer(slug: string, status: string) {
+export function storeOffer(status: string) {
   if (status === "ready") {
     return {
       kind: "ready",
@@ -13,16 +6,9 @@ export function storeOffer(slug: string, status: string) {
       priceLabel: "ราคาตามแคตตาล็อก",
     } as const;
   }
-  if (status === "coming_soon" && orderProducts.has(slug)) {
-    return {
-      kind: "order",
-      label: "เปิดรับออเดอร์",
-      priceLabel: "ประเมินตามขอบเขตงาน",
-    } as const;
-  }
   return {
-    kind: "planned",
-    label: "อยู่ในแผนพัฒนา",
-    priceLabel: "ราคาเป้าหมาย",
+    kind: "order",
+    label: "เปิดรับออเดอร์ · พร้อมวางระบบ",
+    priceLabel: "ประเมินตามขอบเขตงาน",
   } as const;
 }

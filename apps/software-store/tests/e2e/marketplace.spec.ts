@@ -62,7 +62,7 @@ test("product quote keeps the product context and opens the existing LINE channe
   );
   await expect(
     page.getByRole("link", { name: "เปิด LINE OA @125cbuuu" }),
-  ).toHaveAttribute("href", "https://lin.ee/Vgg2m3N");
+  ).toHaveAttribute("href", /^https:\/\/line\.me\/R\/oaMessage\/%40125cbuuu\//);
 });
 
 test("shop chat answers prices and procurement and fixed navigation reaches the relevant pages", async ({
@@ -86,7 +86,7 @@ test("shop chat answers prices and procurement and fixed navigation reaches the 
 
   await expect(page.getByRole("link", { name: "แชท LINE" })).toHaveAttribute(
     "href",
-    "https://lin.ee/Vgg2m3N",
+    /^https:\/\/line\.me\/R\/oaMessage\/%40125cbuuu\//,
   );
   await page.getByRole("button", { name: "🤖 ถามได้เลย!" }).click();
   const dialog = page.getByRole("dialog", { name: "ถามเรื่องราคาและเบิกงบ" });
@@ -112,7 +112,8 @@ test("a school can combine three programs and send one prepared LINE request", a
   page,
 }) => {
   await page.goto("/products");
-  const products = ["met-sport", "met-certificate", "met-attendance"];
+  const products = ["met-sport", "met-vote", "met-attendance"];
+  await expect(page.locator(".market-card")).toHaveCount(5);
   for (const slug of products) {
     await page
       .locator(`[data-product-slug="${slug}"]`)
@@ -123,25 +124,37 @@ test("a school can combine three programs and send one prepared LINE request", a
   await expect(page).toHaveURL(/\/contact#quotation$/);
   await page.reload();
   const quote = page.getByRole("region", { name: "ตะกร้าใบเสนอราคา (3)" });
-  await expect(
-    quote.getByText("MET Certificate", { exact: true }),
-  ).toBeVisible();
-  await quote.getByLabel("แพ็กเกจ").first().selectOption("service");
-  await expect(quote.locator(".quote-estimate")).toContainText("–");
+  await expect(quote.getByText("MET Vote", { exact: true })).toBeVisible();
+  await expect(quote.locator(".quote-estimate")).toContainText(
+    "฿10,500–฿26,700",
+  );
   await quote.getByLabel("ชื่อโรงเรียน").fill("โรงเรียนตัวอย่าง");
+  await quote.getByLabel("ชื่อผู้ติดต่อ").fill("ครูตัวอย่าง");
   await quote.getByLabel("เบอร์โทร").fill("0840000000");
-  await quote.getByRole("button", { name: "เตรียมคำขอใบเสนอราคารวม" }).click();
+  await quote.getByLabel("หมวดงบประมาณ").selectOption("เงินรายได้สถานศึกษา");
+  await page.evaluate(() => {
+    window.open = (url) => {
+      document.body.dataset.requestLine = String(url);
+      return null;
+    };
+  });
+  await quote
+    .getByRole("button", { name: "เปิด LINE พร้อมคำขอใบเสนอราคา" })
+    .click();
   const message = quote.getByLabel("ข้อความสำหรับส่งทาง LINE");
   await expect(message).toHaveValue(/โรงเรียนตัวอย่าง/);
-  for (const name of ["MET Sport", "MET Certificate", "MET Attendance"]) {
+  for (const name of ["MET Sport", "MET Vote", "MET Attendance"]) {
     await expect(message).toHaveValue(new RegExp(name));
   }
   const link = await quote
-    .getByRole("link", { name: /เปิด LINE เพื่อส่งคำขอรวม/ })
+    .getByRole("link", { name: /เปิดคำขออีกครั้ง/ })
     .getAttribute("href");
   expect(decodeURIComponent(link ?? "")).toContain(
-    "/oaMessage/@125cbuuu/?ขอใบเสนอราคารวม",
+    "/oaMessage/@125cbuuu/?ขอใบเสนอราคาแพ็กเกจสำหรับโรงเรียน",
   );
+  const actual = await page.locator("body").getAttribute("data-request-line");
+  expect(actual).toBe(link);
+  expect(decodeURIComponent(actual ?? "")).toContain("เงินรายได้สถานศึกษา");
 });
 
 test("all procurement samples download and the sports demo updates scores", async ({
@@ -159,7 +172,7 @@ test("all procurement samples download and the sports demo updates scores", asyn
     .evaluateAll((nodes) =>
       nodes.map((node) => node.getAttribute("href") ?? ""),
     );
-  expect(links).toHaveLength(6);
+  expect(links).toHaveLength(10);
   for (const link of links) {
     const response = await request.get(link);
     expect(response.ok()).toBeTruthy();
@@ -171,8 +184,16 @@ test("all procurement samples download and the sports demo updates scores", asyn
   await page.keyboard.press("Escape");
   await page
     .locator('[data-product-slug="met-sport"]')
-    .getByRole("link", { name: "ทดลองดูตัวอย่าง (Demo)" })
+    .getByRole("button", { name: "ทดลองใช้ตัวจริง (Live Demo)" })
     .click();
+  const demo = page.getByRole("dialog", { name: "ทดลองใช้ MET Sport" });
+  await expect(demo).toBeVisible();
+  const blue = demo.getByRole("article", { name: "สีฟ้า" });
+  await expect(blue.getByText("8 คะแนน")).toBeVisible();
+  await blue
+    .getByRole("button", { name: "เพิ่มเหรียญทอง สีฟ้า", exact: true })
+    .click();
+  await expect(blue.getByText("11 คะแนน")).toBeVisible();
   await page.getByLabel("คะแนนสีฟ้า").fill("2");
   await page.getByRole("button", { name: "บันทึกผลตัวอย่าง" }).click();
   await expect(page.locator(".sport-rankings")).toContainText("28 คะแนน");
@@ -182,4 +203,27 @@ test("all procurement samples download and the sports demo updates scores", asyn
   await expect(page.locator(".sport-rankings")).toContainText("25 คะแนน");
   await page.getByRole("button", { name: "ล้างผลตัวอย่าง" }).click();
   await expect(page.getByLabel("คะแนนสีทอง")).toHaveValue("0");
+});
+
+test("attendance and voting sandboxes operate without an account", async ({
+  page,
+}) => {
+  await page.goto("/demo/met-attendance");
+  await page
+    .getByRole("button", { name: "จำลองสแกนบัตรนักเรียน QR Code" })
+    .click();
+  await expect(
+    page
+      .getByRole("status")
+      .filter({ hasText: "LINE OA · แจ้งผู้ปกครองตัวอย่าง" }),
+  ).toContainText("07:42");
+  await page.goto("/demo/met-vote");
+  await page.getByRole("radio", { name: /เบอร์ 2/ }).check();
+  await page.getByRole("button", { name: "ลงคะแนนตัวอย่าง" }).click();
+  await expect(page.getByText("15 คะแนน", { exact: true })).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByRole("button", { name: "ลงคะแนนตัวอย่าง" }),
+  ).toBeDisabled();
+  await expect(page.getByText("15 คะแนน", { exact: true })).toBeVisible();
 });

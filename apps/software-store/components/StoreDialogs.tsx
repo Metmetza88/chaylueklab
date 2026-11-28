@@ -3,8 +3,15 @@
 import Link from "next/link";
 import { createContext, useContext, useRef, type ReactNode } from "react";
 import { X } from "lucide-react";
-import { lineContact, procurementHref } from "@/lib/marketplace";
-import { lineId, localService, shopPhone } from "@/lib/procurement";
+import { procurementHref } from "@/lib/marketplace";
+import {
+  distributor,
+  greetingLine,
+  lineId,
+  localService,
+  shopLocation,
+  shopPhone,
+} from "@/lib/procurement";
 import ProcurementDocuments from "./ProcurementDocuments";
 
 type DialogName = "procurement" | "contact";
@@ -89,11 +96,15 @@ export default function StoreDialogs({ children }: { children: ReactNode }) {
         aria-labelledby="store-contact-title"
       >
         <DialogTitle id="store-contact-title" title="ติดต่อเรา" />
-        <p>{localService}</p>
+        <p>
+          {distributor} · {shopLocation}
+          <br />
+          {localService}
+        </p>
         <div className="market-links">
           <a
             className="market-primary"
-            href={lineContact}
+            href={greetingLine}
             target="_blank"
             rel="noopener noreferrer"
           >

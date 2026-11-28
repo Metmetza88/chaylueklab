@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { CalendarDays, Flag, RotateCcw, Trophy } from "lucide-react";
 import Link from "next/link";
+import MedalDemo from "./MedalDemo";
 import { quoteHref, sportSlug } from "@/lib/marketplace";
 
 const teams = [
@@ -180,6 +181,7 @@ export default function SportDemo() {
           </Link>
         </div>
       </div>
+      <MedalDemo />
     </section>
   );
 }

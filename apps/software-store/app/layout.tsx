@@ -2,6 +2,8 @@ import "./globals.css";
 import "./premium.css";
 import "./marketplace.css";
 import "./school-store-visual.css";
+import "./dashboard-samples.css";
+import { schoolOffers } from "@/lib/school-offers";
 import MarketplaceDock, {
   MarketplaceHeader,
 } from "@/components/MarketplaceControls";
@@ -16,13 +18,14 @@ import {
   UserRound,
 } from "lucide-react";
 import { CartProvider } from "@/lib/cart";
-import { baht, getProducts, getViewer } from "@/lib/shop";
+import { getProducts, getViewer } from "@/lib/shop";
 import { sportFirst } from "@/lib/marketplace";
 import CartLink from "@/components/CartLink";
 import DisplayControls from "@/components/DisplayControls";
 import ViewportControls from "@/components/ViewportControls";
 import StoreDialogs, { StoreDialogButton } from "@/components/StoreDialogs";
 import { lineContact } from "@/lib/marketplace";
+import { schoolPackage } from "@/lib/quote";
 import {
   distributor,
   lineId,
@@ -107,16 +110,18 @@ export default async function Layout({
   }
   const accountsEnabled = configured();
   const { products, source } = await getProducts();
-  const marketplaceProducts = [...products].sort(sportFirst).map((product) => ({
-    slug: product.slug,
-    name: product.name,
-    tagline: product.tagline,
-    description: product.description,
-    category: product.category,
-    features: product.features,
-    status: product.status,
-    price: baht(product.price_cents),
-  }));
+  const marketplaceProducts = (source === "error" ? [] : schoolOffers(products))
+    .sort(sportFirst)
+    .map((product) => ({
+      slug: product.slug,
+      name: product.name,
+      tagline: product.tagline,
+      description: product.description,
+      category: product.category,
+      features: product.features,
+      status: product.status,
+      price: schoolPackage.price,
+    }));
   const links = accountsEnabled
     ? [...publicLinks, ["/membership", "สมาชิก VIP"]]
     : publicLinks;

@@ -3,17 +3,18 @@ import ProductPreview from "./ProductPreview";
 import { storeOffer } from "@/lib/store-offers";
 import { quoteHref } from "@/lib/marketplace";
 import ProductQuote from "./ProductQuote";
+import LiveDemoTrigger from "./LiveDemoTrigger";
+import { schoolPackage } from "@/lib/quote";
 import { AddToQuote } from "./QuoteSelection";
 import { sportSlug, sportTitle } from "@/lib/marketplace";
 import { productDemos } from "@/lib/product-demos";
 import { ArrowUpRight, Monitor } from "lucide-react";
-import { type Product, baht } from "@/lib/shop";
+import { type Product } from "@/lib/shop";
 export default function ProductCard({ p }: { p: Product }) {
   const preview = productDemos.find((demo) => demo.slug === p.slug);
   const sport = p.slug === sportSlug;
   const title = sport ? sportTitle : p.name;
-  const offer = storeOffer(p.slug, p.status);
-  const price = baht(p.price_cents);
+  const offer = storeOffer(p.status);
   return (
     <article
       className={"product-card market-card" + (sport ? " market-featured" : "")}
@@ -37,15 +38,14 @@ export default function ProductCard({ p }: { p: Product }) {
         <p>{sport ? `${p.name} · ${p.tagline}` : p.tagline}</p>
         <div className="market-card-meta">
           <span>
-            <Monitor size={15} aria-hidden="true" />{" "}
-            {preview ? "เดโมใช้ข้อมูลสมมติ" : "แสดงแนวทางการใช้งาน"}
+            <Monitor size={15} aria-hidden="true" /> ข้อมูลสมมติในเดโม
           </span>
-          <small>{preview ? "Cloud Web App" : "Web App · แผนพัฒนา"}</small>
+          <small>{preview ? "Cloud Web App" : "แดชบอร์ดทดลอง"}</small>
         </div>
         <div className="product-bottom">
           <span>
-            <small>{offer.priceLabel}</small>
-            <strong>{offer.kind === "order" ? "ขอใบเสนอราคา" : price}</strong>
+            <small>{schoolPackage.label}</small>
+            <strong>{schoolPackage.price}</strong>
           </span>
           <Link
             className="icon-button"
@@ -55,24 +55,18 @@ export default function ProductCard({ p }: { p: Product }) {
             <ArrowUpRight size={21} />
           </Link>
         </div>
-        {preview && (
-          <div className="market-links market-card-demo">
-            <Link className="btn ghost" href={`/demo/${p.slug}`}>
-              ทดลองดูตัวอย่าง (Demo)
-            </Link>
-            <Link className="btn ghost" href={quoteHref(p.slug)}>
-              ขอใบเสนอราคา
-            </Link>
-          </div>
-        )}
+        <div className="market-links market-card-demo">
+          <LiveDemoTrigger slug={p.slug} name={p.name} tagline={p.tagline} />
+          <Link className="market-primary" href={quoteHref(p.slug)}>
+            ขอใบเสนอราคา
+          </Link>
+        </div>
         <AddToQuote slug={p.slug} />
         <ProductQuote
           slug={p.slug}
           name={title}
-          hasDemo={Boolean(preview)}
           description={p.description}
           features={p.features}
-          price={price}
           offer={offer}
           sport={sport}
         />

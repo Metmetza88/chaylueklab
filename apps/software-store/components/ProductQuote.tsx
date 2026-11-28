@@ -1,58 +1,43 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useRef, useState } from "react";
+import { useId, useRef } from "react";
 import { quoteHref } from "@/lib/marketplace";
 import type { storeOffer } from "@/lib/store-offers";
 import { DialogTitle, StoreDialogButton } from "./StoreDialogs";
-import {
-  AddToQuote,
-  PackageChoice,
-  PackageDetails,
-  QuoteCartLink,
-  useQuoteSelection,
-} from "./QuoteSelection";
+import { AddToQuote, QuoteCartLink } from "./QuoteSelection";
 import {
   distributor,
   lineId,
   shopLocation,
   shopPhone,
 } from "@/lib/procurement";
-import type { QuotePlan } from "@/lib/quote";
+import SchoolPackage from "./SchoolPackage";
 
 export default function ProductQuote({
   slug,
   name,
-  hasDemo,
   description,
   features,
-  price,
   offer,
   sport,
 }: {
   slug: string;
   name: string;
-  hasDemo: boolean;
   description: string;
   features: string[];
-  price: string;
   offer: ReturnType<typeof storeOffer>;
   sport: boolean;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const title = useId();
-  const selected = useQuoteSelection();
-  const [plan, setPlan] = useState<QuotePlan>("files");
   return (
     <>
       <button
         className="market-primary market-card-cta"
         type="button"
         aria-haspopup="dialog"
-        onClick={() => {
-          setPlan(selected[slug] ?? "files");
-          dialog.current?.showModal();
-        }}
+        onClick={() => dialog.current?.showModal()}
       >
         ดูรายละเอียด / ขอใบเสนอราคา
       </button>
@@ -73,7 +58,7 @@ export default function ProductQuote({
               : "เอกสารประกอบการเบิกงบโครงการ"}
           </strong>
           <p className="market-quote-price">
-            <strong>{offer.kind === "order" ? offer.label : price}</strong>
+            <strong>{offer.label}</strong>
             <span>{offer.priceLabel}</span>
           </p>
           <p>
@@ -81,13 +66,10 @@ export default function ProductQuote({
             ทีมงานจะยืนยันราคาและขอบเขตก่อนส่งใบเสนอราคา
           </p>
         </div>
-        <div className="market-budget">
-          <PackageChoice value={plan} onChange={setPlan} filesPrice={price} />
-          <PackageDetails plan={plan} />
-          <div className="market-links">
-            <AddToQuote slug={slug} plan={plan} />
-            <QuoteCartLink />
-          </div>
+        <SchoolPackage />
+        <div className="market-links">
+          <AddToQuote slug={slug} />
+          <QuoteCartLink />
         </div>
         <p>
           ออกเอกสารในนาม {distributor} · {shopLocation} ·{" "}
@@ -116,14 +98,9 @@ export default function ProductQuote({
           >
             ดูข้อมูลระบบฉบับเต็ม
           </Link>
-          {hasDemo && (
-            <Link
-              href={`/demo/${slug}`}
-              onClick={() => dialog.current?.close()}
-            >
-              ทดลองดูตัวอย่าง (Demo)
-            </Link>
-          )}
+          <Link href={`/demo/${slug}`} onClick={() => dialog.current?.close()}>
+            เปิดเดโมเต็มหน้า
+          </Link>
         </div>
       </dialog>
     </>
