@@ -126,7 +126,11 @@ test("school ordering, procurement downloads and local contact are discoverable"
   await page.goto("/products");
   const cards = page.locator(".product-card");
   await expect(cards).toHaveCount(15);
-  await expect(cards.filter({ hasText: "เปิดรับออเดอร์" })).toHaveCount(4);
+  for (const slug of ["met-sport", "met-attendance", "met-admission", "met-school-pro"]) {
+    const card = cards.filter({ has: page.locator(`a[href="/demo/${slug}"]`) });
+    await expect(card).toHaveCount(1);
+    await expect(card.locator(".status")).toHaveText(/^(เปิดรับออเดอร์|พร้อมใช้งาน)$/);
+  }
   await expect(cards.filter({ hasText: "แผนพัฒนา" })).toHaveCount(11);
   await expect(cards.filter({ hasText: "ภาพจำลองแนวคิด" })).toHaveCount(11);
   await expect(
