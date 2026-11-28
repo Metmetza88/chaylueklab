@@ -8,6 +8,7 @@ const pages = [
   "/demo/met-school-pro",
   "/demo/met-admission",
   "/demo/met-attendance",
+  "/demo/met-sport",
   "/cart",
   "/checkout",
   "/login",
@@ -85,7 +86,7 @@ test("catalog filters and product details work", async ({ page }) => {
   await expect(
     page.getByRole("img", { name: "ใบสมัคร PDF ตัวอย่าง" }),
   ).toBeVisible();
-  await page.getByRole("link", { name: /เปิดระบบทดลอง/ }).click();
+  await page.getByRole("link", { name: /ทดลองดูตัวอย่าง/ }).click();
   await expect(page.locator("div.demo-bar")).toContainText("ข้อมูลสมมติ");
 });
 test("school services links to the demo and attendance keeps school and lesson records separate", async ({
