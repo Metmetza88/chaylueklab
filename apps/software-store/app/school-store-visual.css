@@ -34,7 +34,8 @@
 }
 .school-store-copy h1 {
   margin: 0.5rem 0;
-  font-size: clamp(27px, 4.4vw, 56px);
+  font-size: clamp(26px, 3.55vw, 49px);
+  text-wrap: wrap;
   line-height: 1.25;
   color: var(--ink);
   letter-spacing: -0.026em;
@@ -146,6 +147,9 @@
   color: #254d96;
   font-weight: 650;
 }
+.market-procurement-banner strong > span {
+  white-space: nowrap;
+}
 .market-preview-v2.market-preview-concept {
   background: #eaf1fb;
 }
@@ -182,7 +186,9 @@
     display: none;
   }
   .market-procurement-banner strong {
+    display: block;
     font-size: 0.78rem;
+    line-height: 1.4;
   }
   .market-procurement-banner p {
     font-size: 0.66rem;
@@ -203,7 +209,18 @@
     margin-block: 5px 7px;
   }
   .school-store-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     margin-top: 10px;
+  }
+  .school-store-actions .btn {
+    justify-content: center;
+    gap: 4px;
+    padding-inline: 5px;
+    font-size: 0.77rem;
+  }
+  .school-store-actions .btn svg {
+    flex: 0 0 14px;
   }
   .school-store-procurement {
     min-height: 30px;

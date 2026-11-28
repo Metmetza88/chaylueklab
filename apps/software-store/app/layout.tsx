@@ -222,8 +222,13 @@ export default async function Layout({
               >
                 <ShieldCheck size={23} aria-hidden="true" />
                 <div>
-                  <strong>จัดจำหน่ายและออกเอกสารในนาม {distributor}</strong>
-                  <p>{shopLocation} · พัฒนาโดย WORAMET AI LAB</p>
+                  <strong>
+                    จัดจำหน่ายโดย <span>{distributor}</span>
+                  </strong>
+                  <p>
+                    {shopLocation} · ออกเอกสารในนามร้าน · พัฒนาโดย WORAMET AI
+                    LAB
+                  </p>
                 </div>
                 <StoreDialogButton name="procurement" className="btn ghost">
                   เอกสารเบิกงบ

@@ -39,24 +39,21 @@ export default async function Home() {
             WORAMET AI LAB <span /> ซอฟต์แวร์เพื่อการศึกษา
           </span>
           <h1 id="school-store-title">
-            แพ็กเกจระบบโรงเรียน
+            แพ็กเกจโรงเรียน
             <br />
-            ทดลองก่อนวางระบบ
+            ลองก่อนติดตั้ง
           </h1>
-          <p>
-            กีฬาสี เช็กชื่อ รับสมัคร และเว็บไซต์โรงเรียน
-            ลองทำงานในเดโมด้วยข้อมูลสมมติ ก่อนขอให้ทีมงานประเมินการติดตั้ง
-          </p>
+          <p>ลองกีฬาสี เช็กชื่อ รับสมัคร และเว็บโรงเรียนด้วยข้อมูลสมมติ</p>
           <div className="school-package-hero-estimate">
             <strong>{schoolPackagePriceLabel}</strong>
             <span>งบประเมินต่อระบบ ยืนยันตามขอบเขตในใบเสนอราคา</span>
           </div>
           <div className="school-store-actions">
-            <Link className="btn" href={quoteHref()}>
-              ขอใบเสนอราคาติดตั้ง <ArrowRight size={17} />
-            </Link>
             <Link className="btn ghost" href="/demo">
-              ทดลองดูตัวอย่าง (Demo) <ArrowUpRight size={16} />
+              ทดลองเดโม <ArrowUpRight size={16} />
+            </Link>
+            <Link className="btn" href={quoteHref()}>
+              ขอใบเสนอราคา <ArrowRight size={17} />
             </Link>
           </div>
           <Link
