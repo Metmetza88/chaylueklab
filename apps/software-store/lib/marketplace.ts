@@ -1,6 +1,5 @@
 import type { Product } from "@/lib/shop";
 
-export const lineContact = "https://lin.ee/Vgg2m3N";
 export const procurementHref = "/school-systems#procurement";
 export const sportSlug = "met-sport";
 export const sportTitle = "ระบบบริหารจัดการแข่งขันกีฬาสีภายในโรงเรียน";

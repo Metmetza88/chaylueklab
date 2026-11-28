@@ -1,12 +1,16 @@
 import Link from "next/link";
 import QuoteCart from "@/components/QuoteCart";
 import QuoteMessage from "@/components/QuoteMessage";
-import { lineContact } from "@/lib/marketplace";
-import { lineId, localService, shopPhone } from "@/lib/procurement";
+import {
+  greetingLine,
+  lineId,
+  lineMessage,
+  localService,
+  shopPhone,
+} from "@/lib/procurement";
 import { StoreDialogButton } from "@/components/StoreDialogs";
 import { getProducts } from "@/lib/shop";
 import { voteOffer } from "@/lib/school-offers";
-import { lineMessage } from "@/lib/procurement";
 import SchoolPackage from "@/components/SchoolPackage";
 import { configured } from "@/lib/env";
 
@@ -72,7 +76,7 @@ export default async function Page({
               ? lineMessage(
                   `สวัสดีครับ ขอใบเสนอราคา ${programName} และเอกสารเบิกงบครับ`,
                 )
-              : lineContact
+              : greetingLine
           }
           target="_blank"
           rel="noopener noreferrer"

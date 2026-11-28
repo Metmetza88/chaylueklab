@@ -1,6 +1,8 @@
 export const distributor = "ร้าน พ.สมนึก 2&3";
 export const shopLocation = "ตลาดสดอำเภอสตึก จ.บุรีรัมย์";
 export const lineId = "@125cbuuu";
+export const addFriendLine =
+  "https://line.me/R/ti/p/" + encodeURIComponent(lineId);
 export const localService =
   "พร้อมเข้าสาธิตระบบถึงโรงเรียนในพื้นที่ อ.สตึก และ จ.บุรีรัมย์";
 export const shopPhone = { label: "084-3232324", href: "tel:0843232324" };

@@ -1,6 +1,9 @@
 import { FileText } from "lucide-react";
-import { procurementLine, procurementTemplates } from "@/lib/procurement";
-import { lineContact } from "@/lib/marketplace";
+import {
+  addFriendLine,
+  procurementLine,
+  procurementTemplates,
+} from "@/lib/procurement";
 
 export default function ProcurementDocuments() {
   return (
@@ -52,7 +55,7 @@ export default function ProcurementDocuments() {
         >
           ขอรับไฟล์ตัวอย่างทาง LINE
         </a>
-        <a href={lineContact} target="_blank" rel="noopener noreferrer">
+        <a href={addFriendLine} target="_blank" rel="noopener noreferrer">
           เพิ่มเพื่อน LINE OA
         </a>
       </div>

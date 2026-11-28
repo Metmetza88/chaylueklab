@@ -24,10 +24,10 @@ import CartLink from "@/components/CartLink";
 import DisplayControls from "@/components/DisplayControls";
 import ViewportControls from "@/components/ViewportControls";
 import StoreDialogs, { StoreDialogButton } from "@/components/StoreDialogs";
-import { lineContact } from "@/lib/marketplace";
 import { schoolPackage } from "@/lib/quote";
 import {
   distributor,
+  greetingLine,
   lineId,
   localService,
   shopPhone,
@@ -266,7 +266,7 @@ export default async function Layout({
                     {shopLocation}
                   </p>
                   <a
-                    href={lineContact}
+                    href={greetingLine}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
