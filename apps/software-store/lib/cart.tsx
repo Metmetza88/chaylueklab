@@ -26,6 +26,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       const saved: unknown = JSON.parse(localStorage.getItem(key) || "[]");
       if (Array.isArray(saved))
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- Restore the cart only in the browser after hydration.
         setIds(
           [
             ...new Set(

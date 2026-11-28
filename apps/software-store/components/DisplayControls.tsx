@@ -25,6 +25,7 @@ export default function DisplayControls() {
     try {
       const raw = localStorage.getItem(KEY);
       const saved = raw && raw.length < 200 ? JSON.parse(raw) : null;
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Load browser-only preferences after hydration.
       if (themes.some((t) => t.id === saved?.theme)) setTheme(saved.theme);
       if (typeof saved?.motion === "boolean") setMotion(saved.motion);
     } catch {

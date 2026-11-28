@@ -47,6 +47,7 @@ export function StoreProviders({
         localStorage.getItem(storageKey) ?? "{}",
       );
       if (saved && typeof saved === "object") {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- Restore the draft after the matching server render.
         setSelections(
           Object.fromEntries(
             Object.entries(saved).filter(
