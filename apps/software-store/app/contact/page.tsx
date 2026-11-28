@@ -56,8 +56,8 @@ export default async function Page({
             โปรแกรมที่สนใจ <strong>{programName}</strong>
           </p>
         )}
-        <p>กรอกข้อมูลโรงเรียน แล้วกดเปิด LINE พร้อมรายการและยอดประเมิน</p>
-        <SchoolPackage />
+        <p>กรอกข้อมูลโรงเรียน ตรวจข้อความ แล้วคัดลอกไปวางในแชท LINE ของร้าน</p>
+        <SchoolPackage slug={selected?.slug} />
         <QuoteCart
           catalog={products.map(({ slug, name }) => ({ slug, name }))}
           selectedSlug={selected?.slug}
@@ -72,9 +72,9 @@ export default async function Page({
         <a
           className="btn"
           href={
-            programName
+            selected
               ? lineMessage(
-                  `สวัสดีครับ ขอใบเสนอราคา ${programName} และเอกสารเบิกงบครับ`,
+                  `สวัสดีครับ ขอใบเสนอราคา ${selected.name} และเอกสารเบิกงบครับ`,
                 )
               : greetingLine
           }

@@ -1,14 +1,13 @@
-import { schoolPackage } from "@/lib/quote";
+import { schoolPackage, schoolQuotePrice } from "@/lib/quote";
 
-export default function SchoolPackage() {
+export default function SchoolPackage({ slug }: { slug?: string }) {
   return (
     <section
       className="market-budget school-package"
       aria-label={schoolPackage.label}
     >
-      <strong>
-        {schoolPackage.label} · {schoolPackage.price} ต่อระบบ
-      </strong>
+      <strong>{schoolPackage.label}</strong>
+      <p>{slug ? schoolQuotePrice(slug) : "ราคาแยกตามระบบและระยะเวลา"}</p>
       <ul>
         {schoolPackage.includes.map((detail) => (
           <li key={detail}>{detail}</li>

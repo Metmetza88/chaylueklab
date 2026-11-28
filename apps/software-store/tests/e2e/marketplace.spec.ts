@@ -94,7 +94,7 @@ test("shop chat answers prices and procurement and fixed navigation reaches the 
   await question.fill("MET Sport ราคาเท่าไหร่");
   await question.press("Enter");
   await expect(dialog.getByRole("log")).toContainText(
-    "MET Sport เปิดรับออเดอร์",
+    "MET Sport · ฿3,900–฿6,500 / งาน",
   );
   await dialog
     .getByRole("button", { name: "เอกสารเบิกงบ", exact: true })
@@ -108,11 +108,11 @@ test("shop chat answers prices and procurement and fixed navigation reaches the 
   ).toHaveAttribute("href", "/contact?product=met-sport#quotation");
 });
 
-test("a school can combine three programs and send one prepared LINE request", async ({
+test("a school can review separate price units without putting contact data in the LINE URL", async ({
   page,
 }) => {
   await page.goto("/products");
-  const products = ["met-sport", "met-vote", "met-attendance"];
+  const products = ["met-sport", "met-vote", "met-attendance", "met-admission"];
   await expect(page.locator(".market-card")).toHaveCount(5);
   for (const slug of products) {
     await page
@@ -120,14 +120,18 @@ test("a school can combine three programs and send one prepared LINE request", a
       .getByRole("button", { name: "เพิ่มลงใบเสนอราคา" })
       .click();
   }
-  await page.getByRole("link", { name: "ตะกร้าใบเสนอราคา 3 รายการ" }).click();
+  await page.getByRole("link", { name: "ตะกร้าใบเสนอราคา 4 รายการ" }).click();
   await expect(page).toHaveURL(/\/contact#quotation$/);
   await page.reload();
-  const quote = page.getByRole("region", { name: "ตะกร้าใบเสนอราคา (3)" });
-  await expect(quote.getByText("MET Vote", { exact: true })).toBeVisible();
-  await expect(quote.locator(".quote-estimate")).toContainText(
-    "฿10,500–฿26,700",
-  );
+  const quote = page.getByRole("region", { name: "ตะกร้าใบเสนอราคา (4)" });
+  for (const label of [
+    "฿3,900–฿6,500 / งาน",
+    "฿4,900–฿9,900 / ปี",
+    "฿2,900–฿4,500 / ครั้ง",
+  ]) {
+    await expect(quote.locator(".quote-estimate")).toContainText(label);
+  }
+  await expect(quote.getByText(/รอประเมินราคาอีก 1 ระบบ/)).toBeVisible();
   await quote.getByLabel("ชื่อโรงเรียน").fill("โรงเรียนตัวอย่าง");
   await quote.getByLabel("ชื่อผู้ติดต่อ").fill("ครูตัวอย่าง");
   await quote.getByLabel("เบอร์โทร").fill("0840000000");
@@ -139,22 +143,45 @@ test("a school can combine three programs and send one prepared LINE request", a
     };
   });
   await quote
-    .getByRole("button", { name: "เปิด LINE พร้อมคำขอใบเสนอราคา" })
-    .click();
+    .getByLabel("รายละเอียดโครงการ (ถ้ามี)")
+    .fill("รายละเอียดตัวอย่าง");
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async () => {
+          throw new Error("clipboard unavailable");
+        },
+      },
+    });
+  });
+  await quote.getByRole("button", { name: "ตรวจข้อความขอใบเสนอราคา" }).click();
+  expect(
+    await page.locator("body").getAttribute("data-request-line"),
+  ).toBeNull();
+  await quote.getByRole("button", { name: /คัดลอกและเปิดแชท LINE/ }).click();
   const message = quote.getByLabel("ข้อความสำหรับส่งทาง LINE");
   await expect(message).toHaveValue(/โรงเรียนตัวอย่าง/);
   for (const name of ["MET Sport", "MET Vote", "MET Attendance"]) {
     await expect(message).toHaveValue(new RegExp(name));
   }
+  await expect(message).toHaveValue(/ยอดประเมินต่อปี: ฿4,900–฿9,900/);
+  await expect(message).toHaveValue(/รอประเมินอีก 1 ระบบ/);
+  await expect(message).toHaveValue(/รายละเอียดตัวอย่าง/);
   const link = await quote
-    .getByRole("link", { name: /เปิดคำขออีกครั้ง/ })
+    .getByRole("link", { name: /เปิดแชทอีกครั้ง/ })
     .getAttribute("href");
-  expect(decodeURIComponent(link ?? "")).toContain(
-    "/oaMessage/@125cbuuu/?ขอใบเสนอราคาแพ็กเกจสำหรับโรงเรียน",
+  expect(link).toBe("https://line.me/R/oaMessage/%40125cbuuu");
+  expect(await page.locator("body").getAttribute("data-request-line")).toBe(
+    link,
   );
-  const actual = await page.locator("body").getAttribute("data-request-line");
-  expect(actual).toBe(link);
-  expect(decodeURIComponent(actual ?? "")).toContain("เงินรายได้สถานศึกษา");
+  await quote
+    .getByRole("button", { name: "คัดลอกข้อความ", exact: true })
+    .click();
+  await expect(quote.getByText(/เลือกข้อความแล้ว/)).toBeVisible();
+  await quote.getByRole("button", { name: "นำ MET Vote ออก" }).click();
+  await expect(message).toHaveCount(0);
+  await expect(quote.locator(".quote-estimate")).not.toContainText("2,900");
 });
 
 test("all procurement samples download and the sports demo updates scores", async ({
@@ -226,4 +253,63 @@ test("attendance and voting sandboxes operate without an account", async ({
     page.getByRole("button", { name: "ลงคะแนนตัวอย่าง" }),
   ).toBeDisabled();
   await expect(page.getByText("15 คะแนน", { exact: true })).toBeVisible();
+});
+
+test("catalog, details and popup use product-specific prices", async ({
+  page,
+}) => {
+  await page.goto("/products");
+  const met = [
+    ["met-sport", "฿3,900–฿6,500 / งาน"],
+    ["met-attendance", "฿4,900–฿9,900 / ปี"],
+    ["met-vote", "฿2,900–฿4,500 / ครั้ง"],
+    ["met-admission", "ขอใบเสนอราคาตามขอบเขตงาน"],
+    ["met-school-pro", "ขอใบเสนอราคาตามขอบเขตงาน"],
+  ];
+  for (const [slug, price] of met) {
+    await expect(
+      page.locator(`[data-product-slug="${slug}"] .product-bottom`),
+    ).toContainText(price);
+  }
+  await page
+    .locator('[data-product-slug="met-sport"]')
+    .getByRole("button", { name: "ดูรายละเอียด / ขอใบเสนอราคา" })
+    .click();
+  await expect(
+    page.getByRole("dialog").locator(".school-package"),
+  ).toContainText(met[0][1]);
+  for (const [slug, price] of met) {
+    await page.goto(`/products/${slug}`);
+    await expect(page.locator(".school-package")).toContainText(price);
+  }
+});
+
+test("School Pro publishes and removes a sample announcement", async ({
+  page,
+}) => {
+  await page.goto("/demo/met-school-pro");
+  await page
+    .getByText("ทดลองจัดการข่าว (บทบาทผู้ดูแลสมมติ)", { exact: true })
+    .click();
+  const news = "กิจกรรมเปิดบ้านวิชาการ (ข้อมูลสมมติ)";
+  await page.getByLabel("เลือกข่าวตัวอย่าง").selectOption(news);
+  await page.getByRole("button", { name: "เผยแพร่ข่าวตัวอย่าง" }).click();
+  await expect(page.getByRole("heading", { name: news })).toBeVisible();
+  await page.getByRole("button", { name: "นำข่าวล่าสุดออก" }).click();
+  await expect(page.getByRole("heading", { name: news })).toHaveCount(0);
+});
+
+test("direct quote removes an unpriced item without inventing a total", async ({
+  page,
+}) => {
+  await page.goto("/contact?product=met-admission#quotation");
+  const quote = page.getByRole("region", { name: "ตะกร้าใบเสนอราคา (1)" });
+  await expect(
+    quote.getByText("ราคาทั้งหมดรอประเมินตามขอบเขตงาน"),
+  ).toBeVisible();
+  await expect(quote.locator(".quote-estimate")).toHaveCount(0);
+  await quote.getByRole("button", { name: "นำ MET Admission ออก" }).click();
+  await expect(
+    page.getByRole("region", { name: "ตะกร้าใบเสนอราคา (0)" }),
+  ).toBeVisible();
 });

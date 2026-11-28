@@ -23,7 +23,6 @@ import {
 } from "@/lib/marketplace";
 
 import { DialogTitle, StoreDialogButton } from "./StoreDialogs";
-import { schoolPackage } from "@/lib/quote";
 import { greetingLine, lineId } from "@/lib/procurement";
 
 const quote = quoteHref();
@@ -215,7 +214,7 @@ export default function MarketplaceDock({
       product &&
       (pricing ||
         (named && !/เอกสาร|เบิก|จัดซื้อ|ใบเสนอราคา|เดโม|ทดลอง/u.test(text)))
-        ? `${product.name} เปิดรับออเดอร์ · ${schoolPackage.label} ${schoolPackage.price} ต่อระบบ ขอใบเสนอราคาตามขอบเขตงานได้ครับ`
+        ? `${product.name} · ${product.price} ยืนยันราคาและขอบเขตในใบเสนอราคาครับ`
         : "";
     const reply =
       replies.find(([pattern]) => pattern.test(question))?.[1] ??

@@ -66,7 +66,7 @@ export default function ProductQuote({
             ทีมงานจะยืนยันราคาและขอบเขตก่อนส่งใบเสนอราคา
           </p>
         </div>
-        <SchoolPackage />
+        <SchoolPackage slug={slug} />
         <div className="market-links">
           <AddToQuote slug={slug} />
           <QuoteCartLink />

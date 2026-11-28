@@ -7,11 +7,10 @@ export const localService =
   "พร้อมเข้าสาธิตระบบถึงโรงเรียนในพื้นที่ อ.สตึก และ จ.บุรีรัมย์";
 export const shopPhone = { label: "084-3232324", href: "tel:0843232324" };
 export const suppliesHref = "https://psomnuek.chaylueklab.com/work?view=shop";
+export const quoteLineChat =
+  "https://line.me/R/oaMessage/" + encodeURIComponent(lineId);
 export const lineMessage = (message: string) =>
-  "https://line.me/R/oaMessage/" +
-  encodeURIComponent(lineId) +
-  "/?" +
-  encodeURIComponent(message);
+  quoteLineChat + "/?" + encodeURIComponent(message);
 export const greetingLine = lineMessage(
   "สวัสดีครับ สนใจแพ็กเกจระบบโรงเรียน ขอรายละเอียดและนัดสาธิตครับ",
 );

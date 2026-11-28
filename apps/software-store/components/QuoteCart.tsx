@@ -2,8 +2,19 @@
 
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
-import { distributor, lineMessage, lineId, shopPhone } from "@/lib/procurement";
-import { formatBaht, schoolBudgetOptions, schoolPackage } from "@/lib/quote";
+import {
+  addFriendLine,
+  distributor,
+  lineId,
+  quoteLineChat,
+  shopPhone,
+} from "@/lib/procurement";
+import {
+  schoolBudgetOptions,
+  schoolPackage,
+  schoolQuotePrice,
+  summarizeSchoolQuote,
+} from "@/lib/quote";
 import { updateQuoteSelection, useQuoteSelection } from "./QuoteSelection";
 import QuoteMessage from "./QuoteMessage";
 
@@ -23,7 +34,13 @@ export default function QuoteCart({
   const entries = catalog.filter(
     ({ slug }) => selected[slug] || (slug === selectedSlug && removed !== slug),
   );
-  const total = `${formatBaht(entries.length * schoolPackage.min)}–${formatBaht(entries.length * schoolPackage.max)}`;
+  const selectionKey = JSON.stringify(entries.map(({ slug }) => slug));
+  const { groups, unpriced } = summarizeSchoolQuote(
+    entries.map(({ slug }) => slug),
+  );
+  const unpricedLabel = `รอประเมินราคาอีก ${unpriced} ระบบ (ไม่รวมในยอดด้านบน)`;
+  const [preparedFor, setPreparedFor] = useState("");
+  const visibleDraft = preparedFor === selectionKey ? prepared : "";
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -49,22 +66,31 @@ export default function QuoteCart({
       `เบอร์โทร: ${data.get("phone")}`,
       `หมวดงบประมาณ: ${data.get("budget")}`,
       ...entries.map(
-        ({ name }, index) => `${index + 1}. ${name} · ${schoolPackage.price}`,
+        ({ name, slug }, index) =>
+          `${index + 1}. ${name} · ${schoolQuotePrice(slug)}`,
       ),
-      `ยอดประเมินรวม: ${total}`,
+      ...groups.map(({ unit, label }) => `ยอดประเมินต่อ${unit}: ${label}`),
+      unpriced > 0 && `รอประเมินอีก ${unpriced} ระบบ (ไม่รวมในยอดประเมิน)`,
       note && `รายละเอียด: ${note}`,
     ]
       .filter(Boolean)
       .join("\n");
     setPrepared(message);
+    setPreparedFor(selectionKey);
     setCopied(false);
-    if (navigator.clipboard?.writeText) {
-      void navigator.clipboard
-        .writeText(message)
-        .then(() => setCopied(true))
-        .catch(() => {});
+  }
+
+  function openLine() {
+    setCopied(false);
+    try {
+      void navigator.clipboard?.writeText(visibleDraft).then(
+        () => setCopied(true),
+        () => setCopied(false),
+      );
+    } catch {
+      // The visible draft and its copy button remain available.
     }
-    window.open(lineMessage(message), "_blank", "noopener,noreferrer");
+    window.open(quoteLineChat, "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -80,13 +106,15 @@ export default function QuoteCart({
         </p>
       ) : (
         <>
-          <p>
-            {schoolPackage.label} · {schoolPackage.price} ต่อระบบ
-          </p>
+          <p>{schoolPackage.label} · ราคาแตกต่างตามระบบและระยะเวลา</p>
           <ul className="quote-selection-list">
             {entries.map(({ slug, name }) => (
               <li key={slug}>
-                <strong>{name}</strong>
+                <span>
+                  <strong>{name}</strong>
+                  <br />
+                  <small>{schoolQuotePrice(slug)}</small>
+                </span>
                 <button
                   type="button"
                   className="btn ghost"
@@ -102,9 +130,22 @@ export default function QuoteCart({
               </li>
             ))}
           </ul>
-          <p className="quote-estimate">
-            ยอดประเมินรวม <strong>{total}</strong>
-          </p>
+          {groups.length > 0 && (
+            <div className="quote-estimate">
+              {groups.map(({ unit, label }) => (
+                <p key={unit}>
+                  ยอดประเมินต่อ{unit} <strong>{label}</strong>
+                </p>
+              ))}
+            </div>
+          )}
+          {unpriced > 0 && (
+            <p className="muted">
+              {groups.length
+                ? unpricedLabel
+                : "ราคาทั้งหมดรอประเมินตามขอบเขตงาน"}
+            </p>
+          )}
           <p className="muted">ทีมงานยืนยันราคาและขอบเขตส่งมอบในใบเสนอราคา</p>
           <form
             className="stack"
@@ -155,23 +196,28 @@ export default function QuoteCart({
               <textarea name="note" maxLength={250} rows={3} />
             </label>
             <button className="market-primary" type="submit">
-              เปิด LINE พร้อมคำขอใบเสนอราคา
+              ตรวจข้อความขอใบเสนอราคา
             </button>
           </form>
-          {prepared && (
+          {visibleDraft && (
             <div className="stack market-budget">
               <p role="status">
-                {copied ? "คัดลอกข้อความแล้ว · " : ""}เปิดแชท {distributor}{" "}
-                แล้วกดส่งใน LINE
+                {copied ? "คัดลอกข้อความแล้ว · " : ""}ตรวจข้อความก่อน
+                แล้ววางและกดส่งในแชท {distributor} ด้วยตนเอง
               </p>
-              <QuoteMessage prepared={prepared} />
-              <a
+              <QuoteMessage prepared={visibleDraft} />
+              <button
                 className="market-primary"
-                href={lineMessage(prepared)}
-                target="_blank"
-                rel="noopener noreferrer"
+                type="button"
+                onClick={openLine}
               >
-                เปิดคำขออีกครั้ง · {lineId}
+                คัดลอกและเปิดแชท LINE · {lineId}
+              </button>
+              <a href={quoteLineChat} target="_blank" rel="noopener noreferrer">
+                เปิดแชทอีกครั้ง · {lineId}
+              </a>
+              <a href={addFriendLine} target="_blank" rel="noopener noreferrer">
+                ดูโปรไฟล์หรือ QR สำหรับเปิดในมือถือ
               </a>
               <a href={shopPhone.href}>โทร {shopPhone.label}</a>
             </div>
