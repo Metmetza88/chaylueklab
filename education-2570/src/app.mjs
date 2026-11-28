@@ -1,5 +1,6 @@
 import { modules } from './catalog.mjs';
 import * as view from './views.mjs';
+import { marketProductBySlug } from './marketplace.mjs';
 import { isMarketplaceSearching, syncMarketplace } from './marketplace-ui.mjs';
 import { demoPage,generateQuestions,questionList,scoreAnswers,updateCertificate,quoteDraft } from '../modules/demos.mjs';
 import { api,downloadCsv } from './api-client.mjs';
@@ -85,7 +86,7 @@ async function renderRoute() {
   let html;
   if(path==='/') html=view.home();
   else if(path==='/catalog') html=view.catalog(query,compare);
-  else if(path.startsWith('/product/')) html=view.product(modules.find(m=>m.slug===path.split('/')[2]));
+  else if(path.startsWith('/product/')) html=view.product(marketProductBySlug(path.split('/')[2])??modules.find(m=>m.slug===path.split('/')[2]));
   else if(path==='/compare') html=view.comparison(compare);
   else if(path==='/quote') html=view.quotePage(query,compare);
   else if(path==='/demos') html=view.demos(compare);
@@ -163,7 +164,7 @@ main.addEventListener('input',event=>{
 });
 function updateCatalog() {
  const {query}=routeInfo();
- document.getElementById('catalog-list').innerHTML=view.catalogList({category:query.get('category')??'',status:document.getElementById('status-filter').value,search:document.getElementById('search').value},compare);
+ document.getElementById('catalog-list').innerHTML=view.catalogList({category:query.get('category')??'',scope:view.catalogScope(query),status:document.getElementById('status-filter')?.value??'',search:document.getElementById('search').value},compare);
 }
 main.addEventListener('change',event=>{
  const target=event.target;

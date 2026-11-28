@@ -124,3 +124,35 @@ h1,h2,h3,.site-header .brand{font-family:var(--market-title)}
  .market-float-chat span{padding-inline:8px}
 }
 @media print{.market-bottom,.market-float,.market-dialog{display:none!important} body{padding-bottom:0}}
+
+/* Keep the public demonstrations distinct from the historical programme library. */
+.market-secondary-grid{margin-top:18px}
+.market-catalog-grid .product-image img{object-fit:cover;object-position:top center}
+.market-paired-actions{display:grid;grid-template-columns:1.25fr 1fr;gap:8px;margin-top:12px}
+.market-paired-actions a{margin:0;white-space:normal;line-height:1.35;text-align:center;justify-content:center;min-height:44px}
+.badge.market-ready{color:#513302;background:#fff0c9}
+.badge.market-stage{color:#183d78;background:#eaf2ff}
+.market-package{margin:22px 0 0;padding:clamp(16px,3vw,27px);border-color:#cbd9ee;background:linear-gradient(150deg,#f0f6ff,#fff)}
+.market-package h2{margin-bottom:2px}
+.market-package .market-price-emphasis{margin:.1rem 0;color:#163473;font-size:clamp(1.2rem,2.3vw,1.55rem);font-weight:700}
+.market-package ul{padding-inline-start:1.25rem}
+.market-package .market-seller{margin:15px 0 0;padding-top:13px;border-top:1px solid #d0ddf0;font-size:.875rem}
+.market-library-results{margin-top:1.4em}
+.market-detail-preview figure{margin:0}
+.market-detail-preview img{display:block;width:100%;height:auto;border:1px solid #d7e3f1;border-radius:12px}
+.market-detail-preview figcaption{margin-top:7px;color:var(--muted);font-size:.82rem}
+@media(max-width:360px){.market-paired-actions{grid-template-columns:1fr}}
+.market-unlisted-demos{margin-bottom:30px}
+.market-unlisted-demos figure{margin:12px 0 6px}
+.market-unlisted-demos img{display:block;width:100%;height:auto;border-radius:9px;border:1px solid #dae4f1}
+.market-unlisted-demos figcaption{margin-top:4px;color:var(--muted);font-size:.78rem}
+@media(max-width:760px){
+ .market-catalog-head{padding:18px 0}
+ .market-catalog-head h1{margin:6px 0;font-size:clamp(21px,6vw,28px)}
+ .market-catalog-head p{font-size:.85rem}
+ .market-catalog-body{padding-top:20px}
+ .market-catalog-body .catalog-layout{gap:15px}
+ .market-catalog-body .filter-sidebar{padding-bottom:9px}
+ .market-catalog-body .filter-sidebar h2{margin:0 0 6px}
+ .market-catalog-body .toolbar{margin-bottom:9px}
+}

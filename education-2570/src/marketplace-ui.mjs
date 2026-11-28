@@ -1,4 +1,4 @@
-import { answerQuestion, answers, sports } from './marketplace.mjs';
+import { answerQuestion, answers, marketProductBySlug } from './marketplace.mjs';
 import { modules } from './catalog.mjs';
 import { marketProductDetail } from './views.mjs';
 
@@ -91,7 +91,7 @@ document.addEventListener('click',event=>{
   const {marketOpen,marketProduct,marketQuestion,marketJump}=control.dataset;
   if(marketOpen)openDialog(marketOpen,control);
   if(marketProduct){
-    const product=marketProduct===sports.slug?sports:modules.find(m=>m.slug===marketProduct);
+    const product=marketProductBySlug(marketProduct)??modules.find(m=>m.slug===marketProduct);
     if(product){
       productContent.innerHTML=marketProductDetail(product);
       openDialog('market-product-dialog',control);

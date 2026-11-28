@@ -1,6 +1,5 @@
 import { categories, modules, statusLabels } from './catalog.mjs';
-import { marketIcon, procurementDocs, sports } from './marketplace.mjs';
-const store = 'https://store.chaylueklab.com';
+import { demoOnlyProducts, marketIcon, marketProducts, procurementDocs, schoolPackage, seller, sports, storeBase as store } from './marketplace.mjs';
 const schoolSupplies = 'https://psomnuek.chaylueklab.com/work?view=shop';
 const starterDemos = [
   ['exam-studio', 'ลองสร้างข้อสอบ'],
@@ -9,15 +8,9 @@ const starterDemos = [
 ];
 const entryLinks = [
   ['▤', 'ดูโปรแกรม', 'ค้นหา เปรียบเทียบ และดูรายละเอียด', '#/catalog'],
-  ['▷', 'ทดลองระบบ', 'รับสมัคร เช็กชื่อ ข้อสอบ และเกียรติบัตร', '#/demos'],
+  ['▷', 'ทดลองระบบ', 'กีฬาสี เช็กชื่อ รับสมัคร ข้อสอบ และเกียรติบัตร', '#/demos'],
   ['≡', 'ราคาและเอกสารจัดซื้อ', 'เตรียมคำขอใบเสนอราคาและดูแบบฟอร์ม', '#/quote'],
   ['⌂', 'เข้าพื้นที่โรงเรียน', 'เข้าสู่ระบบด้วยบัญชีครูหรือผู้ดูแล', '#/workspace']
-];
-const storeDemos = [
-  ['เว็บไซต์โรงเรียน', 'MET School Pro', 'จัดหน้าโรงเรียนและประกาศข่าว', 'met-school-pro'],
-  ['รับสมัครนักเรียน', 'MET Admission', 'ส่งใบสมัคร ตรวจ และประกาศผล', 'met-admission'],
-  ['เช็กชื่อ', 'MET Attendance', 'เช็กชื่อรายคาบและดาวน์โหลด CSV', 'met-attendance'],
-  ['กีฬาสี', 'MET Sport', 'บันทึกผลการแข่งขันและดูตารางคะแนน', 'met-sport']
 ];
 const homeFeatures = [
   ['students','งานทะเบียน','วางขั้นตอนตั้งแต่รับสมัคร จัดห้องเรียน ไปจนถึงดูประวัตินักเรียน'],
@@ -31,34 +24,54 @@ const homeQuestions = [
 ];
 /** Escape ข้อมูลก่อนประกอบ HTML เพื่อไม่ให้ข้อความกลายเป็นสคริปต์ */
 export const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
-export const badge = module => `<span class="badge ${module.offer?'ready':esc(module.status)}">${esc(module.offer??statusLabels[module.status])}</span>`;
+export const badge = module => `<span class="badge ${module.market?(module===sports?'market-ready':'market-stage'):esc(module.status)}">${esc(module.offer??statusLabels[module.status])}</span>`;
 export const categoryName = slug => categories.find(c => c.slug === slug)?.name ?? slug;
-export const head = (title, text = '') => `<div class="page-head"><div class="container"><div class="breadcrumb"><a href="#/">หน้าหลัก</a> / ${esc(title)}</div><h1>${esc(title)}</h1>${text ? `<p>${esc(text)}</p>` : ''}</div></div>`;
+export const head = (title, text = '', variant = '') => `<div class="page-head ${variant}"><div class="container"><div class="breadcrumb"><a href="#/">หน้าหลัก</a> / ${esc(title)}</div><h1>${esc(title)}</h1>${text ? `<p>${esc(text)}</p>` : ''}</div></div>`;
 export const loading = () => '<div class="container loading" role="status"><span class="spinner"></span>กำลังโหลดข้อมูล…</div>';
 export const empty = (title, text, link = '#/catalog', label = 'สำรวจโปรแกรม') => `<div class="empty"><span class="symbol">▤</span><h2>${esc(title)}</h2><p>${esc(text)}</p>${link ? `<a class="button secondary" href="${esc(link)}">${esc(label)}</a>` : ''}</div>`;
 export const workflowLabel = value => ({active:'เปิดใช้งาน',suspended:'ระงับ',revoked:'เพิกถอน',expired:'หมดอายุ',requested:'รับคำขอแล้ว',reviewing:'กำลังตรวจสอบ',responded:'ตอบกลับแล้ว',closed:'ปิดคำขอ',open:'รอรับเรื่อง',in_progress:'กำลังดำเนินการ',resolved:'ดำเนินการแล้ว',admin:'ผู้ดูแลโรงเรียน',teacher:'ครู',student:'นักเรียน'}[value]??value);
 export const dateThai = date => date ? new Intl.DateTimeFormat('th-TH', { dateStyle:'medium', timeZone:'Asia/Bangkok' }).format(new Date(date)) : 'ไม่ระบุ';
+const productTitlePath = module => `#/product/${module.slug}`;
+const preview = module => {
+  const [width,height]=module.imageSize??[640,360];
+  const type=module.market?'หน้าจอเดโมข้อมูลสมมติ':'ภาพแนวคิด';
+  return `<img src="${module.image}" width="${width}" height="${height}" loading="lazy" alt="${type} ${esc(module.name)}">`;
+};
+const sellerLinks = () => `ออกเอกสารในนาม ${esc(seller.name)} · ${esc(seller.location)} · <a href="${seller.telHref}">โทร ${esc(seller.tel)}</a> · <a href="${seller.lineHref}">LINE OA ${esc(seller.line)}</a>`;
+function packageCard() {
+  return `<section class="panel market-package" aria-labelledby="market-package-heading">
+    <div><p class="eyebrow">บริการสำหรับโรงเรียน</p><h2 id="market-package-heading">แพ็กเกจโรงเรียน</h2>
+    <p class="market-price-emphasis">ประมาณ ${esc(schoolPackage.estimate)}</p><p>${esc(schoolPackage.summary)}</p></div>
+    <ul>${schoolPackage.details.map(detail=>`<li>${esc(detail)}</li>`).join('')}</ul>
+    <div class="stack-actions"><a class="button secondary small" href="${procurementDocs}">ดูแบบฟอร์มจัดซื้อตัวอย่าง</a></div>
+    <p class="market-seller">${sellerLinks()} · พัฒนาโดย ${esc(seller.developer)}</p>
+  </section>`;
+}
 /** ใช้การ์ดเดียวกันทั้งหน้าหลัก แคตตาล็อก และผลค้นหา */
 export function productCard(module, selected = []) {
-  const featured = module === sports;
-  const detail = featured ? sports.detail : `#/product/${module.slug}`;
-  const price = featured ? `<span class="badge ready">${esc(sports.offer)}</span> <strong>${sports.price}</strong><small>ประเมินตามขอบเขตงาน</small>` : '<strong>ขอราคาเบื้องต้น</strong><small>ประเมินตามขอบเขตงาน</small>';
-  const tech = module.demo ? 'เว็บแอป · เดโม' : 'โครงการพัฒนา';
+  const featured=module===sports, market=module.market;
+  const detail=productTitlePath(module);
+  const price=market
+    ? `${badge(module)} ${module.quote?'<strong>ขอราคาเบื้องต้น</strong><small>ยืนยันตามขอบเขตงาน</small>':''}`
+    : '<strong>ขอราคาเบื้องต้น</strong><small>ประเมินตามขอบเขตงาน</small>';
   return `<article class="product-card${featured?' featured-product':''}" data-market-card="${module.slug}">
-    <a class="product-image" href="${detail}" aria-label="รายละเอียด ${esc(module.name)}"><img src="${module.image}" width="640" height="360" loading="lazy" alt="${featured?'หน้าจอเดโม':'ภาพแนวคิด'} ${esc(module.name)}"><span class="product-ribbon">${featured?'ไฮไลต์ · กีฬาสี':esc(statusLabels[module.status])}</span><span class="product-concept">${featured?'ข้อมูลสมมติ':'ภาพแนวคิด'}</span></a>
+    <a class="product-image" href="${detail}" aria-label="รายละเอียด ${esc(module.name)}">${preview(module)}<span class="product-ribbon">${featured?'ไฮไลต์ · กีฬาสี':market?'เดโม':esc(statusLabels[module.status])}</span><span class="product-concept">${market?'ข้อมูลสมมติ':'ภาพแนวคิด'}</span></a>
     <div class="product-body"><div class="product-category">${esc(categoryName(module.category))}</div><h3><a href="${detail}">${esc(module.name)}</a></h3><p>${esc(module.tagline)}</p>
-      <div class="market-card-meta"><span>${marketIcon('school')} <span>ยังไม่เผยแพร่ยอดโรงเรียน</span></span><span class="market-tech">${tech}</span></div>
       <div class="market-price">${price}</div>
-      <button class="market-product-cta" type="button" data-market-product="${module.slug}" aria-haspopup="dialog">ดูรายละเอียด / ขอใบเสนอราคา ${marketIcon('arrow')}</button>
-      <div class="card-actions">${module.demo ? `<a class="button secondary small" href="${module.demo}">ทดลองใช้งาน →</a>` : ''}${featured ? `<a href="${sports.detail}">เปิดรายละเอียดใน MET Store →</a>` : `<label class="check-label"><input type="checkbox" data-compare="${module.slug}" ${selected.includes(module.slug)?'checked':''}> เปรียบเทียบ</label>`}</div>
+      ${market?`<div class="card-actions market-paired-actions"><a class="button secondary small" href="${module.demo}">ทดลองดูตัวอย่าง (Demo)</a>${module.quote?`<a class="button small" href="${module.quote}">ขอใบเสนอราคา</a>`:''}</div>`:''}
+      <button class="market-product-cta" type="button" data-market-product="${module.slug}" aria-haspopup="dialog">${market?'ดูรายละเอียด':'ดูรายละเอียด / ขอใบเสนอราคา'} ${marketIcon('arrow')}</button>
+      <div class="card-actions">${!market&&module.demo?`<a class="button secondary small" href="${module.demo}">ทดลองใช้งาน →</a>`:''}${market?(module.detail?`<a href="${module.detail}">เปิดรายละเอียดใน MET Store →</a>`:''):`<label class="check-label"><input type="checkbox" data-compare="${module.slug}" ${selected.includes(module.slug)?'checked':''}> เปรียบเทียบ</label>`}</div>
     </div></article>`;
 }
-export function marketProductDetail(module) {
-  const featured=module===sports;
-  return `<p class="eyebrow">${esc(categoryName(module.category))}</p><h2 id="market-dialog-title">${esc(module.name)}</h2>
+export function marketProductDetail(module, dialog=true) {
+  const market=module.market;
+  const cta=market
+    ? `<a class="button secondary" href="${module.demo}">ทดลองดูตัวอย่าง (Demo)</a>${module.quote?`<a class="button" href="${module.quote}">ขอใบเสนอราคา</a>`:''}`
+    : `<a class="button" href="#/quote?module=${module.slug}">เตรียมคำขอใบเสนอราคา</a>`;
+  return `<p class="eyebrow">${esc(categoryName(module.category))}</p>${dialog?`<h2 id="market-dialog-title">${esc(module.name)}</h2>`:''}
     ${badge(module)}<p>${esc(module.description)}</p><ul>${module.features.map(item=>`<li>${esc(item)}</li>`).join('')}</ul>
-    <p class="notice">${esc(module.limitations)}</p><div class="market-procurement"><h3>${marketIcon('docs')} การเบิกงบโครงการ</h3><p>แจ้งชื่อโครงการ ขอบเขตงาน และรายการเอกสารที่ฝ่ายพัสดุต้องใช้ในคำขอใบเสนอราคา การเบิกงบขึ้นอยู่กับงบที่ได้รับอนุมัติและขั้นตอนของแต่ละโรงเรียน</p><a href="${procurementDocs}">ดูเอกสารจัดซื้อและแบบฟอร์ม</a><p>ออกเอกสารในนาม ร้าน พ.สมนึก 2&amp;3 · ตลาดสดอำเภอสตึก จ.บุรีรัมย์ · <a href="tel:0843232324">โทร 084-3232324</a> · <a href="https://lin.ee/Vgg2m3N">LINE OA @125cbuuu</a></p></div>
-    <div class="stack-actions"><a class="button" href="${featured?sports.quote:`#/quote?module=${module.slug}`}">เตรียมคำขอใบเสนอราคา</a><a class="button secondary" href="${featured?sports.detail:`#/product/${module.slug}`}">เปิดหน้ารายละเอียด</a></div>`;
+    <p class="notice">${esc(module.limitations)}</p><div class="market-procurement"><h3>${marketIcon('docs')} การเบิกงบโครงการ</h3><p>แจ้งชื่อโครงการ ขอบเขตงาน และเอกสารที่ฝ่ายพัสดุต้องใช้ การเบิกงบขึ้นอยู่กับงบที่ได้รับอนุมัติและขั้นตอนของโรงเรียน</p><a href="${procurementDocs}">ดูเอกสารจัดซื้อและแบบฟอร์ม</a><p>${sellerLinks()}</p></div>
+    <div class="stack-actions">${cta} ${dialog?`<a class="button secondary" href="${productTitlePath(module)}">เปิดหน้ารายละเอียด</a>`:''}</div>`;
 }
 export function home() {
   return `
@@ -92,13 +105,15 @@ export function home() {
     <div class="container campus-stats-layout">
       <h2 id="campus-stats-title">Education 2570 ในตัวเลข</h2>
       <dl>
-        ${[[modules.length,'โปรแกรม Education 2570'],[categories.length,'หมวดงานโรงเรียน'],[modules.filter(m=>m.demo).length + storeDemos.length,'เดโมที่เปิดให้ทดลอง']].map(([value,label])=>`<div><dt>${label}</dt><dd><span class="campus-sr">${value}</span><span aria-hidden="true" data-count-to="${value}">${value}</span></dd></div>`).join('')}
+        ${[[modules.length,'โปรแกรม Education 2570'],[categories.length,'หมวดงานโรงเรียน'],[modules.filter(m=>m.demo).length + marketProducts.length + demoOnlyProducts.length,'เดโมที่เปิดให้ทดลอง']].map(([value,label])=>`<div><dt>${label}</dt><dd><span class="campus-sr">${value}</span><span aria-hidden="true" data-count-to="${value}">${value}</span></dd></div>`).join('')}
       </dl>
     </div>
   </section>
   <section class="container campus-next market-highlight" aria-labelledby="market-highlight-title">
-    <div class="market-section-title"><div><p class="eyebrow">MARKETPLACE · โปรแกรมโรงเรียน</p><h2 id="market-highlight-title">ไฮไลต์สำหรับโรงเรียน</h2><p>เตรียมงานกีฬาสี และเลือกโปรแกรมตามงานที่ครูต้องทำ</p></div><a class="button secondary" href="#/catalog">ดูระบบทั้งหมด ${marketIcon('arrow')}</a></div>
+    <div class="market-section-title"><div><p class="eyebrow">MARKETPLACE · โปรแกรมโรงเรียน</p><h2 id="market-highlight-title">ไฮไลต์สำหรับโรงเรียน</h2><p>เริ่มจากกีฬาสี เช็กชื่อ รับสมัคร และเว็บไซต์โรงเรียน ทดลองด้วยข้อมูลสมมติก่อนเลือกขอบเขต</p></div><a class="button secondary" href="#/catalog">สำรวจโปรแกรม ${marketIcon('arrow')}</a></div>
     ${productCard(sports)}
+    <div class="card-grid market-catalog-grid market-secondary-grid">${marketProducts.slice(1).map(module=>productCard(module)).join('')}</div>
+    ${packageCard()}
   </section>
   <section class="container campus-next campus-features" aria-labelledby="campus-features-title">
     <p class="eyebrow">เลือกระบบตามงานของคุณ</p>
@@ -131,37 +146,68 @@ export function home() {
 }
 export function demos(selected) {
   return head('ทดลองระบบโรงเรียน','เลือกเดโมตามงานที่ต้องการลอง ทุกเดโมใช้ข้อมูลสมมติ') + `<section class="section container">
-    <h2>เว็บไซต์ รับสมัคร เช็กชื่อ และกีฬาสี</h2>
-    <div class="card-grid campus-demo-grid">${storeDemos.map(([title, product, description, slug]) => `<article class="panel"><h3>${title}</h3><p class="muted">${product} · ${description}</p><span class="badge ready">เปิดรับออเดอร์</span><div class="stack-actions"><a class="button secondary" href="${store}/demo/${slug}">ทดลอง${title}</a><a class="button secondary" href="${store}/contact?product=${slug}#quotation">ขอใบเสนอราคา</a></div></article>`).join('')}</div>
+    <h2>เดโมงานโรงเรียนที่แนะนำ</h2>
+    <div class="card-grid campus-demo-grid">${marketProducts.map(module => `<article class="panel"><h3>${esc(module===sports?'MET Sport':module.name)}</h3><p class="muted">${esc(module.description)}</p>${badge(module)}<div class="stack-actions"><a class="button secondary" href="${module.demo}">ทดลอง${module===sports?'กีฬาสี':module.slug==='met-attendance'?'เช็กชื่อ':` ${esc(module.name)}`}</a>${module.quote?`<a class="button secondary" href="${module.quote}">ขอใบเสนอราคา</a>`:''}</div></article>`).join('')}</div>
+    <h2>เดโมสำหรับสำรวจเพิ่มเติม</h2>
+    <div class="card-grid campus-demo-grid market-unlisted-demos">${demoOnlyProducts.map(module=>`<article class="panel">
+      <h3>${esc(module.name)}</h3>${badge(module)}<p class="muted">${esc(module.description)}</p>
+      <figure>${preview(module)}<figcaption>ภาพหน้าจอเดโม · ข้อมูลสมมติ</figcaption></figure>
+      <div class="stack-actions"><a class="button secondary" href="${module.demo}">ทดลอง ${esc(module.name)}</a></div>
+    </article>`).join('')}</div>
     <h2>ข้อสอบและเกียรติบัตร</h2>
     <div class="card-grid">${modules.filter(module => module.demo).map(module => productCard(module, selected)).join('')}</div>
   </section>`;
 }
+export function catalogScope(query) {
+  return query.get('scope')==='library'||query.has('category')||query.has('status')?'library':'featured';
+}
 export function catalog(query, selected) {
-  const category = query.get('category') ?? '';
-  const starterQuote = new URLSearchParams(starterDemos.map(([slug]) => ['module', slug]));
-  return head('แคตตาล็อกซอฟต์แวร์','เลือกโปรแกรมตามหมวดงานและดูสถานะความพร้อม') + `<section class="section">
-    <div class="container catalog-layout"><aside class="filter-sidebar"><h2>หมวดซอฟต์แวร์</h2><button type="button" class="ghost small" data-market-jump="catalog-shortcuts">ไปชุดข้อสอบและเดโม ↓</button><div><a href="#/catalog" class="${!category?'active':''}">ทั้งหมด (${modules.length+1})</a>${categories.map(c=>`<a class="${category===c.slug?'active':''}" href="#/catalog?category=${c.slug}">${esc(c.name)}</a>`).join('')}</div></aside><div class="catalog-results"><div class="toolbar"><input id="search" type="search" aria-label="ค้นหาโปรแกรม" placeholder="ค้นหาโปรแกรมหรือคุณสมบัติ…" value="${esc(query.get('q')??'')}"><select id="status-filter" aria-label="สถานะโปรแกรม"><option value="">ทุกสถานะ</option>${Object.entries({...statusLabels, order: 'เปิดรับออเดอร์'}).map(([key,name])=>`<option value="${key}" ${query.get('status')===key?'selected':''}>${name}</option>`).join('')}</select></div><div id="catalog-list">${catalogList({category,status:query.get('status')??'',search:query.get('q')??''},selected)}</div></div></div>
+  const category=query.get('category')??'';
+  const scope=catalogScope(query);
+  const library=scope==='library';
+  const starterQuote=new URLSearchParams(starterDemos.map(([slug])=>['module',slug]));
+  return head('แคตตาล็อกซอฟต์แวร์','ทดลองระบบโรงเรียนด้วยข้อมูลสมมติ ก่อนขอคำปรึกษาและประเมินราคา','market-catalog-head')+`<section class="section market-catalog-body">
+    <div class="container catalog-layout"><aside class="filter-sidebar"><h2>เลือกชุดโปรแกรม</h2><div>
+      <a href="#/catalog" class="${!library?'active':''}">ระบบแนะนำ (${marketProducts.length})</a>
+      <a href="#/catalog?scope=library" class="${library&&!category?'active':''}">คลังโปรแกรมเดิม (${modules.length})</a>
+      ${library?categories.map(c=>`<a class="${category===c.slug?'active':''}" href="#/catalog?scope=library&category=${c.slug}">${esc(c.name)}</a>`).join(''):''}
+      </div><button type="button" class="ghost small" data-market-jump="catalog-shortcuts">ไปชุดข้อสอบและเดโม ↓</button>
+    </aside><div class="catalog-results">
+      <div class="toolbar"><input id="search" type="search" aria-label="ค้นหาโปรแกรม" placeholder="ค้นหาโปรแกรมหรือคุณสมบัติ…" value="${esc(query.get('q')??'')}">
+      ${library?`<select id="status-filter" aria-label="สถานะโปรแกรม"><option value="">ทุกสถานะ</option>${Object.entries(statusLabels).map(([key,name])=>`<option value="${key}" ${query.get('status')===key?'selected':''}>${name}</option>`).join('')}</select>`:''}</div>
+      <div id="catalog-list">${catalogList({scope,category,status:query.get('status')??'',search:query.get('q')??''},selected)}</div>
+    </div></div>
     <div id="catalog-shortcuts" class="container market-shortcuts" tabindex="-1">
       <section class="panel catalog-starter" aria-labelledby="starter-title">
         <h2 id="starter-title">ชุดข้อสอบและเกียรติบัตร</h2>
         <p class="muted">ลองทำตั้งแต่เตรียมข้อสอบ จัดสอบ ไปจนถึงทำเกียรติบัตรด้วยข้อมูลสมมติ</p>
         <div class="stack-actions">
           <a class="button" href="#/quote?${esc(starterQuote)}">ขอราคาทั้งชุด</a>
-          ${starterDemos.map(([slug, label]) => `<a class="button secondary" href="#/demo/${slug}">${label}</a>`).join('')}
+          ${starterDemos.map(([slug,label])=>`<a class="button secondary" href="#/demo/${slug}">${label}</a>`).join('')}
         </div>
       </section>
-      <p class="catalog-collection">ระบบ MET สำหรับเว็บไซต์โรงเรียน รับสมัคร เช็กชื่อ และกีฬาสี เปิดรับออเดอร์ตามขอบเขตงาน <a class="button secondary small" href="#/demos">ทดลองดูตัวอย่าง</a> <a class="button secondary small" href="${store}/products">เปิดแคตตาล็อก MET</a></p>
+      ${packageCard()}
+      <p class="catalog-collection">ทดลองระบบหรือขอให้ประเมินขอบเขตงานก่อนติดตั้ง <a class="button secondary small" href="#/demos">ทดลองดูตัวอย่าง</a> <a class="button secondary small" href="${store}/products">เปิดแคตตาล็อก MET</a></p>
       <p class="catalog-collection">สอบถามกระดาษ วัสดุสำนักงาน และอุปกรณ์สำหรับโรงเรียน <a class="button secondary small" href="${schoolSupplies}">ติดต่อร้าน พ.สมนึก 2&amp;3</a></p>
     </div>
   </section>`;
 }
-export function catalogList({category='',status='',search=''}, selected=[]) {
-  const results=[sports,...modules].filter(m=>(!category||m.category===category)&&(!status||(m.offer?'order':m.status)===status)&&[m.name,m.tagline,categoryName(m.category),...m.features].join(' ').toLowerCase().includes(search.toLowerCase().trim()));
-  return `<p class="results-count" role="status">พบ ${results.length} โปรแกรม</p>${results.length?`<div class="card-grid">${results.map(m=>productCard(m,selected)).join('')}</div>`:empty('ยังไม่พบโปรแกรม','ลองเปลี่ยนคำค้นหาหรือเลือกสถานะอื่น')}`;
+export function catalogList({scope='featured',category='',status='',search=''}, selected=[]) {
+  const term=search.toLowerCase().trim();
+  const matches=m=>(!category||m.category===category)&&(!status||m.status===status)&&[m.name,m.tagline,categoryName(m.category),...m.features].join(' ').toLowerCase().includes(term);
+  const cards=(products,gridClass='')=>`<div class="card-grid ${gridClass}">${products.map(m=>productCard(m,selected)).join('')}</div>`;
+  const current=(scope==='library'?modules:marketProducts).filter(matches);
+  const archive=scope==='featured'&&term?modules.filter(matches):[];
+  const count=current.length+archive.length;
+  return `<p class="results-count" role="status">พบ ${count} โปรแกรม</p>${count?`${current.length?cards(current,scope==='featured'?'market-catalog-grid':''):''}${archive.length?`<h2 class="market-library-results">ผลค้นหาจากคลังโปรแกรมเดิม</h2>${cards(archive)}`:''}`:empty('ยังไม่พบโปรแกรม','ลองเปลี่ยนคำค้นหาหรือเลือกสถานะอื่น')}`;
 }
 export function product(module) {
   if(!module) return head('ไม่พบโปรแกรม')+`<section class="section container">${empty('ไม่พบโปรแกรมที่ต้องการ','กลับไปเลือกโปรแกรมในแคตตาล็อก')}</section>`;
+  if(module.market) return head(module.name,module.tagline)+`<section class="section container product-detail"><div class="two-col">
+    <div class="panel">${marketProductDetail(module,false)}</div><aside class="panel market-detail-preview">
+    <figure>${preview(module)}<figcaption>ภาพหน้าจอเดโม · ข้อมูลสมมติ</figcaption></figure>
+    </aside></div>${module.quote?packageCard():''}</section>`;
+
   return head(module.name,categoryName(module.category))+`<section class="section container product-detail"><div class="two-col"><div><div class="eyebrow">${esc(categoryName(module.category))}</div><h2 class="product-title">${esc(module.name)}</h2>${badge(module)}<p style="margin-top:20px">${esc(module.description)}</p><div class="notice">${esc(module.limitations)}</div><div class="detail-section"><h2>คุณสมบัติ${module.demo?'ในรุ่นสาธิต':'ที่วางแผนพัฒนา'}</h2><ul class="feature-list">${module.features.map(f=>`<li>${esc(f)}</li>`).join('')}</ul></div><div class="detail-section"><h2>ประโยชน์ที่ออกแบบไว้</h2><ul class="feature-list">${module.benefits.map(f=>`<li>${esc(f)}</li>`).join('')}</ul></div><div class="detail-section"><h2>วิธี${module.demo?'ทดลองใช้งาน':'เริ่มต้น'}</h2><ol>${module.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol></div></div><aside><img class="product-hero" src="${module.image}" width="640" height="360" alt="ภาพแนวคิด ${esc(module.name)}"><div class="panel"><h2>ให้เราช่วยประเมินความต้องการ</h2><p class="muted">ราคาจะระบุในใบเสนอราคาที่ได้รับอนุมัติจากเจ้าของเท่านั้น</p><div class="stack-actions"><a class="button" href="#/quote?module=${module.slug}">ขอใบเสนอราคา</a>${module.demo?`<a class="button secondary" href="${module.demo}">ทดลองใช้งาน →</a>`:''}</div><p class="item-meta" style="margin-top:15px">ภาษาไทย · ขอใบเสนอราคาเป็นเงินบาท</p></div></aside></div></section>`;
 }
 export function comparison(selected) {

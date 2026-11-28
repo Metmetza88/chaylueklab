@@ -24,6 +24,13 @@ test('the shared homepage goes to catalog, demos, procurement and the school wor
  await entry.getByRole('link',{name:/^ทดลองระบบ/}).click();
  await expect(page.getByRole('heading',{level:1})).toHaveText('ทดลองระบบโรงเรียน');
  await expect(page.getByRole('link',{name:'ทดลองเช็กชื่อ'})).toHaveAttribute('href','https://store.chaylueklab.com/demo/met-attendance');
+ const vote=page.locator('.market-unlisted-demos article').filter({hasText:'MET Vote'});
+ await expect(vote).toContainText('เดโมเท่านั้น · ยังไม่เปิดขาย');
+ await expect(vote.getByRole('link',{name:'ทดลอง MET Vote'})).toHaveAttribute('href','https://store.chaylueklab.com/demo/met-vote');
+ await expect(vote.getByRole('link',{name:'ขอใบเสนอราคา'})).toHaveCount(0);
+ await vote.getByRole('img').scrollIntoViewIfNeeded();
+ await expect(vote.getByRole('img')).toHaveAttribute('src','/assets/met-vote-demo.webp');
+ await expect.poll(()=>vote.getByRole('img').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
  await expect(page.locator('.product-card')).toHaveCount(3);
  await page.getByRole('link',{name:'หน้าหลัก',exact:true}).click();
  await entry.getByRole('link',{name:/^ราคาและเอกสารจัดซื้อ/}).click();
@@ -54,11 +61,11 @@ test('catalog counters begin when scrolled into view, with a reduced-motion fall
  await expect(stats).toHaveAttribute('data-counter-state','waiting');
  await stats.scrollIntoViewIfNeeded();
  await expect(stats).toHaveAttribute('data-counter-state','done');
- await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','7']);
+ await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','8']);
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.reload();
  await stats.scrollIntoViewIfNeeded();
- await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','7']);
+ await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','8']);
  expect(await stats.getAttribute('data-counter-state')).toBeNull();
 });
 test('home tabs swap the sample screen in place and FAQ answers toggle',async({page})=>{
@@ -85,7 +92,7 @@ test('home tabs swap the sample screen in place and FAQ answers toggle',async({p
  await expect(answer).toBeHidden();
 });
 test('catalog search, availability filter, empty state and real demos only',async({page})=>{
- await page.goto('/#/catalog');await expect(page.locator('.product-card')).toHaveCount(18);
+ await page.goto('/#/catalog?scope=library');await expect(page.locator('.product-card')).toHaveCount(17);
  await page.getByRole('searchbox').fill('QR Code');await expect(page.locator('.product-card')).toHaveCount(2);
  await page.getByRole('searchbox').fill('not-existing-test');await expect(page.getByRole('heading',{name:'ยังไม่พบโปรแกรม'})).toBeVisible();
  await page.getByRole('searchbox').fill('');await page.getByLabel('สถานะโปรแกรม').selectOption('trial');await expect(page.locator('.product-card')).toHaveCount(3);
@@ -120,7 +127,7 @@ test('product details contain features, limitations and quotation without invent
  await expect(page.locator('main')).not.toContainText(/\d[,.]?\d* บาท/);
 });
 test('comparison limits three selections and persists selection',async({page})=>{
- await page.goto('/#/catalog');
+ await page.goto('/#/catalog?scope=library');
  const picks=page.locator('[data-compare]');
  for(let i=0;i<4;i++)await picks.nth(i).click();
  await expect(picks.nth(3)).not.toBeChecked();
@@ -156,7 +163,7 @@ test('unconfigured login and workspace show actual blocker states',async({page})
 test('help, manual and mobile menu links navigate',async({page},info)=>{
  await page.goto('/#/help');await page.getByText('เชื่อม AI หรือ e-GP แล้วหรือยัง?',{exact:true}).click();await expect(page.getByText(/ไม่มีการอ้างการรับรอง/)).toBeVisible();
  await page.goto('/#/manual');await expect(page.getByRole('heading',{name:'1. สำรวจโปรแกรม'})).toBeVisible();
- if(info.project.name==='iPhone WebKit'){
+ if(info.project.name.startsWith('iPhone')){
   await page.getByRole('button',{name:'เปิดเมนู'}).click();const mainNav=page.getByRole('navigation',{name:'เมนูหลัก'});await expect(mainNav).toBeVisible();await mainNav.getByRole('link',{name:'โปรแกรมทั้งหมด',exact:true}).click();await expect(page.getByRole('heading',{level:1})).toHaveText('แคตตาล็อกซอฟต์แวร์');
  }
 });
@@ -216,7 +223,7 @@ test('marketplace search filters real cards and the sports card stays first in m
  await expect(page.locator('#catalog-list .product-card')).toHaveCount(1);
  await expect(page.locator('#catalog-list .product-card').first()).toHaveAttribute('data-market-card','met-sport');
  await input.fill('');
- await expect(page.locator('#catalog-list .product-card')).toHaveCount(18);
+ await expect(page.locator('#catalog-list .product-card')).toHaveCount(4);
  await expect(page.locator('#catalog-list .product-card').first()).toHaveAttribute('data-market-card','met-sport');
  await input.fill('QR Code');
  await expect(page.locator('#catalog-list .product-card')).toHaveCount(2);
@@ -224,13 +231,40 @@ test('marketplace search filters real cards and the sports card stays first in m
  await input.press('Escape');
  await expect(input).toBeHidden();
 });
-test('marketplace details link to procurement and prefill the existing sports quotation draft',async({page})=>{
+test('curated products show distinct demo previews, honest statuses and Store quotation links',async({page})=>{
+ await page.goto('/#/catalog');
+ const slugs=['met-sport','met-attendance','met-admission','met-school-pro'];
+ const cards=page.locator('#catalog-list .product-card');
+ await expect(cards).toHaveCount(slugs.length);
+ for(const [index,slug] of slugs.entries()){
+  const card=cards.nth(index);await expect(card).toHaveAttribute('data-market-card',slug);
+  const img=card.getByRole('img');
+  await expect(img).toHaveAttribute('src',`/assets/${slug}-demo.webp`);
+  await img.scrollIntoViewIfNeeded();
+  await expect.poll(()=>img.evaluate(node=>node.complete&&node.naturalWidth>0)).toBe(true);
+  await expect(card.getByRole('link',{name:'ทดลองดูตัวอย่าง (Demo)'})).toHaveAttribute('href',`https://store.chaylueklab.com/demo/${slug}`);
+  await expect(card.getByRole('link',{name:'ขอใบเสนอราคา',exact:true})).toHaveAttribute('href',`https://store.chaylueklab.com/contact?product=${slug}#quotation`);
+  await expect(card).not.toContainText('พร้อมใช้งาน');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+ }
+ const packageInfo=page.getByRole('region',{name:'แพ็กเกจโรงเรียน'});
+ await expect(packageInfo).toContainText('3,500–8,900 บาทต่อระบบ');
+ await expect(packageInfo).toContainText('ไม่ได้เชื่อม DMC โดยตรง');
+ await expect(packageInfo.getByRole('link',{name:'โทร 084-3232324'})).toHaveAttribute('href','tel:0843232324');
+ await expect(packageInfo.getByRole('link',{name:'LINE OA @125cbuuu'})).toHaveAttribute('href','https://lin.ee/Vgg2m3N');
+ await cards.nth(1).getByRole('link',{name:'MET Attendance',exact:true}).click();
+ await expect(page.getByRole('heading',{level:1})).toHaveText('MET Attendance');
+ await expect(page.getByRole('img',{name:/หน้าจอเดโมข้อมูลสมมติ/})).toBeVisible();
+ await page.goto('/#/catalog?category=procurement');
+ await expect(page.locator('[data-market-card="procurement"]')).toBeVisible();
+});
+test('marketplace details link to procurement and targeted quotation while keeping the old draft link',async({page})=>{
  await page.goto('/#/catalog');
  const sport=page.locator('.product-card').first();
  await expect(sport).toContainText('ขอใบเสนอราคา');
- await expect(sport).toContainText('เปิดรับออเดอร์');
+ await expect(sport).toContainText('รับประเมินงาน');
  await expect(sport.getByRole('img')).toHaveAttribute('src','/assets/met-sport-demo.webp');
- const cta=sport.getByRole('button',{name:'ดูรายละเอียด / ขอใบเสนอราคา'});
+ const cta=sport.getByRole('button',{name:'ดูรายละเอียด',exact:true});
  await cta.click();
  const dialog=page.getByRole('dialog');
  await expect(dialog).toHaveAccessibleName('ระบบบริหารจัดการแข่งขันกีฬาสีภายในโรงเรียน');
@@ -238,8 +272,9 @@ test('marketplace details link to procurement and prefill the existing sports qu
  await dialog.getByRole('button',{name:'ปิดรายละเอียด'}).click();await expect(dialog).toBeHidden();
  await expect(cta).toBeFocused();
  await cta.click();
- await dialog.getByRole('link',{name:'เตรียมคำขอใบเสนอราคา'}).click();
- await expect(dialog).toBeHidden();
+ await expect(dialog.getByRole('link',{name:'ขอใบเสนอราคา',exact:true})).toHaveAttribute('href','https://store.chaylueklab.com/contact?product=met-sport#quotation');
+ await dialog.getByRole('button',{name:'ปิดรายละเอียด'}).click();
+ await page.goto('/#/quote?module=activities&interest=met-sport');
  await expect(page.locator('#quote-form input[value="activities"]')).toBeChecked();
  await expect(page.getByLabel('รายละเอียดความต้องการ')).toHaveValue(/MET Sport/);
  await page.getByLabel('ชื่อโรงเรียน / หน่วยงาน').fill('โรงเรียนทดสอบ');
@@ -254,7 +289,7 @@ test('marketplace quick questions, notifications, LINE and five mobile shortcuts
  await page.getByRole('button',{name:/ถามได้เลย/}).click();
  let dialog=page.getByRole('dialog');
  await dialog.getByRole('button',{name:'ราคา',exact:true}).click();
- await expect(dialog.getByRole('log')).toContainText('MET Sport เปิดรับออเดอร์');
+ await expect(dialog.getByRole('log')).toContainText('MET Sport รับประเมินงาน');
  await dialog.getByRole('textbox',{name:'พิมพ์คำถาม'}).fill('เบิกงบได้ไหม');
  await dialog.getByRole('button',{name:'ถาม',exact:true}).click();
  await expect(dialog.getByRole('log')).toContainText('งบที่ได้รับอนุมัติ');
@@ -263,7 +298,7 @@ test('marketplace quick questions, notifications, LINE and five mobile shortcuts
  await expect(dialog.getByRole('link',{name:'เปิดบัญชีลูกค้าและแจ้งเตือน'})).toHaveAttribute('href','#/account');
  await dialog.getByRole('button',{name:'ปิดแจ้งเตือน'}).click();
  const nav=page.getByRole('navigation',{name:'ทางลัดบนมือถือ'});
- if(info.project.name==='iPhone WebKit'){
+ if(info.project.name.startsWith('iPhone')){
    await expect(nav.getByRole('link')).toHaveCount(4);await expect(nav.getByRole('button')).toHaveCount(1);
    await expect(nav.getByRole('link',{name:'หน้าแรก'})).toHaveAttribute('aria-current','page');
    await expect(nav.getByRole('link',{name:'เอกสารเบิกงบ'})).toHaveAttribute('href','https://store.chaylueklab.com/school-systems#procurement-samples');
