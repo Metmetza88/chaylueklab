@@ -7,7 +7,7 @@ import { ArrowUpRight, Check } from "lucide-react";
 import { productDemos } from "@/lib/product-demos";
 import styles from "./home-sections.module.css";
 
-const order = ["met-admission", "met-school-pro", "met-attendance"];
+const order = ["met-admission", "met-school-pro", "met-attendance", "met-sport"];
 const features = [...productDemos].sort(
   (a, b) => order.indexOf(a.slug) - order.indexOf(b.slug),
 );
