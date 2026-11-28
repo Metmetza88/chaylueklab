@@ -59,14 +59,13 @@ export default function ProductQuote({
           </strong>
           <p className="market-quote-price">
             <strong>{offer.label}</strong>
-            <span>{offer.priceLabel}</span>
           </p>
           <p>
             แจ้งขอบเขตงาน จำนวนผู้ใช้ และรายการเอกสารที่โรงเรียนต้องการ
             ทีมงานจะยืนยันราคาและขอบเขตก่อนส่งใบเสนอราคา
           </p>
         </div>
-        <SchoolPackage />
+        <SchoolPackage slug={slug} />
         <div className="market-links">
           <AddToQuote slug={slug} />
           <QuoteCartLink />

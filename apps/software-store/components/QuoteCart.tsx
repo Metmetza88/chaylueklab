@@ -3,7 +3,12 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { distributor, lineMessage, lineId, shopPhone } from "@/lib/procurement";
-import { formatBaht, schoolBudgetOptions, schoolPackage } from "@/lib/quote";
+import {
+  schoolBudgetOptions,
+  schoolPackage,
+  schoolQuotePrice,
+  schoolQuoteTotal,
+} from "@/lib/quote";
 import { updateQuoteSelection, useQuoteSelection } from "./QuoteSelection";
 import QuoteMessage from "./QuoteMessage";
 
@@ -23,7 +28,7 @@ export default function QuoteCart({
   const entries = catalog.filter(
     ({ slug }) => selected[slug] || (slug === selectedSlug && removed !== slug),
   );
-  const total = `${formatBaht(entries.length * schoolPackage.min)}–${formatBaht(entries.length * schoolPackage.max)}`;
+  const total = schoolQuoteTotal(entries.map(({ slug }) => slug));
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -48,10 +53,13 @@ export default function QuoteCart({
       `ผู้ติดต่อ: ${person}`,
       `เบอร์โทร: ${data.get("phone")}`,
       `หมวดงบประมาณ: ${data.get("budget")}`,
-      ...entries.map(
-        ({ name }, index) => `${index + 1}. ${name} · ${schoolPackage.price}`,
-      ),
-      `ยอดประเมินรวม: ${total}`,
+      ...entries.map(({ slug, name }, index) => {
+        const packageName =
+          slug === "met-sport" ? `${name} (กีฬาสี + เกียรติบัตรออนไลน์)` : name;
+        return `${index + 1}. ${packageName} · ${schoolQuotePrice(slug)}`;
+      }),
+      total.amount && `${total.label}: ${total.amount}`,
+      total.pending,
       note && `รายละเอียด: ${note}`,
     ]
       .filter(Boolean)
@@ -80,13 +88,12 @@ export default function QuoteCart({
         </p>
       ) : (
         <>
-          <p>
-            {schoolPackage.label} · {schoolPackage.price} ต่อระบบ
-          </p>
+          <p>{schoolPackage.label}</p>
           <ul className="quote-selection-list">
             {entries.map(({ slug, name }) => (
               <li key={slug}>
                 <strong>{name}</strong>
+                <span>{schoolQuotePrice(slug)}</span>
                 <button
                   type="button"
                   className="btn ghost"
@@ -102,9 +109,12 @@ export default function QuoteCart({
               </li>
             ))}
           </ul>
-          <p className="quote-estimate">
-            ยอดประเมินรวม <strong>{total}</strong>
-          </p>
+          {total.amount && (
+            <p className="quote-estimate">
+              {total.label} <strong>{total.amount}</strong>
+            </p>
+          )}
+          {total.pending && <p className="muted">{total.pending}</p>}
           <p className="muted">ทีมงานยืนยันราคาและขอบเขตส่งมอบในใบเสนอราคา</p>
           <form
             className="stack"

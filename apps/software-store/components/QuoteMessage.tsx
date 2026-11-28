@@ -5,9 +5,11 @@ import { Copy } from "lucide-react";
 
 export default function QuoteMessage({
   product,
+  price,
   prepared,
 }: {
   product?: string;
+  price?: string;
   prepared?: string;
 }) {
   const id = useId();
@@ -18,6 +20,7 @@ export default function QuoteMessage({
     [
       "ขอใบเสนอราคาสำหรับโรงเรียน",
       `ระบบที่สนใจ: ${product ?? ""}`,
+      ...(price ? [`ราคาแพ็กเกจ: ${price}`] : []),
       "ชื่อสถานศึกษา:",
       "ขอบเขตงาน / จำนวนผู้ใช้:",
       "ช่วงที่ต้องการใช้งาน:",

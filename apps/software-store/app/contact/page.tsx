@@ -13,6 +13,7 @@ import { getProducts } from "@/lib/shop";
 import { voteOffer } from "@/lib/school-offers";
 import SchoolPackage from "@/components/SchoolPackage";
 import { configured } from "@/lib/env";
+import { schoolQuotePrice } from "@/lib/quote";
 
 export default async function Page({
   searchParams,
@@ -57,14 +58,17 @@ export default async function Page({
           </p>
         )}
         <p>กรอกข้อมูลโรงเรียน แล้วกดเปิด LINE พร้อมรายการและยอดประเมิน</p>
-        <SchoolPackage />
+        <SchoolPackage slug={selected?.slug} />
         <QuoteCart
           catalog={products.map(({ slug, name }) => ({ slug, name }))}
           selectedSlug={selected?.slug}
         />
         <details open={programName ? true : undefined}>
           <summary>ขอใบเสนอราคาระบบเดียว</summary>
-          <QuoteMessage product={programName || undefined} />
+          <QuoteMessage
+            product={programName || undefined}
+            price={selected && schoolQuotePrice(selected.slug)}
+          />
         </details>
         <StoreDialogButton name="procurement" className="btn ghost">
           เอกสารเบิกงบ

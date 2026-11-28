@@ -57,7 +57,7 @@ export default async function Product({
           <span className={`status market-offer-${offer.kind}`}>
             {offer.label}
           </span>
-          <SchoolPackage />
+          <SchoolPackage slug={p.slug} />
           {p.status === "ready" && paymentMode() !== "disabled" ? (
             <AddToCart id={p.id} />
           ) : (

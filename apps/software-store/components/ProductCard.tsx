@@ -4,7 +4,7 @@ import { storeOffer } from "@/lib/store-offers";
 import { quoteHref } from "@/lib/marketplace";
 import ProductQuote from "./ProductQuote";
 import LiveDemoTrigger from "./LiveDemoTrigger";
-import { schoolPackage } from "@/lib/quote";
+import { schoolPackage, schoolQuotePrice } from "@/lib/quote";
 import { AddToQuote } from "./QuoteSelection";
 import { sportSlug, sportTitle } from "@/lib/marketplace";
 import { productDemos } from "@/lib/product-demos";
@@ -44,8 +44,10 @@ export default function ProductCard({ p }: { p: Product }) {
         </div>
         <div className="product-bottom">
           <span>
-            <small>{schoolPackage.label}</small>
-            <strong>{schoolPackage.price}</strong>
+            <small>
+              {sport ? "กีฬาสี + เกียรติบัตรออนไลน์" : schoolPackage.label}
+            </small>
+            <strong>{schoolQuotePrice(p.slug)}</strong>
           </span>
           <Link
             className="icon-button"

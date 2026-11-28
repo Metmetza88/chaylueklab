@@ -24,7 +24,7 @@ import CartLink from "@/components/CartLink";
 import DisplayControls from "@/components/DisplayControls";
 import ViewportControls from "@/components/ViewportControls";
 import StoreDialogs, { StoreDialogButton } from "@/components/StoreDialogs";
-import { schoolPackage } from "@/lib/quote";
+import { schoolQuotePrice } from "@/lib/quote";
 import {
   distributor,
   greetingLine,
@@ -120,7 +120,7 @@ export default async function Layout({
       category: product.category,
       features: product.features,
       status: product.status,
-      price: schoolPackage.price,
+      price: schoolQuotePrice(product.slug),
     }));
   const links = accountsEnabled
     ? [...publicLinks, ["/membership", "สมาชิก VIP"]]
