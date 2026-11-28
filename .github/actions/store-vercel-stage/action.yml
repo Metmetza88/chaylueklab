@@ -1,0 +1,83 @@
+name: Stage isolated software store
+description: Build, stage and smoke-test the verified store project without publishing production domains
+inputs:
+  target:
+    description: preview or production
+    required: true
+  vercel_token:
+    description: Scoped deployment credential
+    required: true
+  org_id:
+    description: Verified Vercel team ID
+    required: true
+  project_id:
+    description: Isolated store project ID
+    required: true
+  bypass_secret:
+    description: Optional deployment protection credential
+    required: false
+outputs:
+  url:
+    description: Verified deployment URL
+    value: ${{ steps.deployment.outputs.url }}
+  deployment_id:
+    description: Verified Vercel deployment ID
+    value: ${{ steps.deployment.outputs.deployment_id }}
+runs:
+  using: composite
+  steps:
+    - name: Install pinned Vercel CLI without credentials
+      shell: bash
+      run: npm install --global --ignore-scripts vercel@67.0.0
+    - name: Verify destination and bind project
+      shell: bash
+      env:
+        VERCEL_TOKEN: ${{ inputs.vercel_token }}
+        VERCEL_ORG_ID: ${{ inputs.org_id }}
+        VERCEL_PROJECT_ID: ${{ inputs.project_id }}
+      run: node apps/software-store/scripts/deploy/preflight.mjs
+    - name: Pull scoped environment
+      shell: bash
+      env:
+        STORE_VERCEL_TARGET: ${{ inputs.target }}
+        VERCEL_TOKEN: ${{ inputs.vercel_token }}
+        VERCEL_ORG_ID: ${{ inputs.org_id }}
+        VERCEL_PROJECT_ID: ${{ inputs.project_id }}
+      run: |
+        case "$STORE_VERCEL_TARGET" in preview|production) ;; *) exit 1 ;; esac
+        vercel pull --yes --environment="$STORE_VERCEL_TARGET" --scope "$VERCEL_ORG_ID"
+        node apps/software-store/scripts/deploy/preflight.mjs check-env
+    - name: Build Vercel artifacts
+      shell: bash
+      env:
+        STORE_VERCEL_TARGET: ${{ inputs.target }}
+      run: |
+        if [ "$STORE_VERCEL_TARGET" = production ]; then vercel build --prod; else vercel build; fi
+    - name: Create deployment without promoting production domains
+      shell: bash
+      env:
+        STORE_VERCEL_TARGET: ${{ inputs.target }}
+        VERCEL_TOKEN: ${{ inputs.vercel_token }}
+        VERCEL_ORG_ID: ${{ inputs.org_id }}
+        VERCEL_PROJECT_ID: ${{ inputs.project_id }}
+      run: |
+        if [ "$STORE_VERCEL_TARGET" = production ]; then
+          vercel deploy --prebuilt --prod --skip-domain --scope "$VERCEL_ORG_ID" --meta "sourceCommit=$GITHUB_SHA" > "$RUNNER_TEMP/store-deployment-url.txt"
+        else
+          vercel deploy --prebuilt --scope "$VERCEL_ORG_ID" --meta "sourceCommit=$GITHUB_SHA" > "$RUNNER_TEMP/store-deployment-url.txt"
+        fi
+    - name: Verify deployed project and commit
+      id: deployment
+      shell: bash
+      env:
+        STORE_VERCEL_TARGET: ${{ inputs.target }}
+        VERCEL_TOKEN: ${{ inputs.vercel_token }}
+        VERCEL_ORG_ID: ${{ inputs.org_id }}
+        VERCEL_PROJECT_ID: ${{ inputs.project_id }}
+      run: STORE_DEPLOYMENT_URL_FILE="$RUNNER_TEMP/store-deployment-url.txt" node apps/software-store/scripts/deploy/check-deployment.mjs
+    - name: Test deployment before release
+      shell: bash
+      env:
+        STORE_DEPLOYMENT_URL: ${{ steps.deployment.outputs.url }}
+        VERCEL_AUTOMATION_BYPASS_SECRET: ${{ inputs.bypass_secret }}
+      run: node apps/software-store/scripts/deploy/smoke.mjs

@@ -1,0 +1,33 @@
+{
+  "checked_at": "2026-11-26",
+  "version": "0.2.0-rc.2",
+  "fix": "Use static NotoSans-Regular and NotoSansThai-Regular font subsets for pdf-lib/fontkit.",
+  "method": [
+    "Generated the admission PDF using lib/pdf.ts",
+    "Rendered the generated PDF using pdftoppm and inspected the rendered image",
+    "Extracted PDF text using pdftotext and asserted expected strings"
+  ],
+  "expected_text_passed": [
+    "DEMO",
+    "WORAMET AI LAB",
+    "MET-2026-0000001",
+    "2570",
+    "3,500.00"
+  ],
+  "thai_render_visual_check": "passed",
+  "screenshot": "public/screenshots/met-admission-pdf.png",
+  "screenshot_sha256": "bc17dc6b047fbf44823f95d0fa6297e31c8b78e630dc537eafe1e5cb2155bdf5",
+  "fonts": [
+    {
+      "file": "public/fonts/NotoSans-Regular.ttf",
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+    },
+    {
+      "file": "public/fonts/NotoSansThai-Regular.ttf",
+      "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+    }
+  ],
+  "font_license": ["public/fonts/OFL-Latin.txt", "public/fonts/OFL-Thai.txt"],
+  "data": "Fictional demonstration data only",
+  "physical_print_tested": false
+}

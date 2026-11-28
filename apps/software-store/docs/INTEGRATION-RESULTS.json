@@ -1,0 +1,107 @@
+{
+  "date": "2026-11-27T07:11:43.757Z",
+  "source_commit": "7200473112c721e97f9dc0f71acfaacd6227e788",
+  "head_commit": "ef123d5c261e02ee6ddc6becaccb1d642b5947b6",
+  "status": "completed",
+  "environment": "Disposable PostgreSQL 17 + real GoTrue + real PostgREST + real Storage API v1.98.6 (file backend).",
+  "passed": 24,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "anonymous cannot write order status or call privileged checkout",
+      "passed": true
+    },
+    {
+      "name": "Coming Soon cannot be ordered even through trusted server RPC",
+      "passed": true
+    },
+    {
+      "name": "catalog includes 15 products, without fabricated ratings or sales columns",
+      "passed": true
+    },
+    {
+      "name": "server prices + concurrent idempotency create one complete order",
+      "passed": true
+    },
+    {
+      "name": "invalid/missing product aborts checkout with no orphan order",
+      "passed": true
+    },
+    {
+      "name": "RLS hides another buyer order and blocks role/VIP escalation",
+      "passed": true
+    },
+    {
+      "name": "wrong amount and mode cannot mark paid or grant downloads",
+      "passed": true
+    },
+    {
+      "name": "payment + grant + audit/outbox commit together and duplicate event is idempotent",
+      "passed": true
+    },
+    {
+      "name": "bank reference cannot be reused on a different order",
+      "passed": true
+    },
+    {
+      "name": "duplicate canonical slip hash is rejected across orders",
+      "passed": true
+    },
+    {
+      "name": "single-use coupon cannot be oversubscribed concurrently",
+      "passed": true
+    },
+    {
+      "name": "school provisioning is atomic and adds owner membership",
+      "passed": true
+    },
+    {
+      "name": "application validates grade, round and school before storing data",
+      "passed": true
+    },
+    {
+      "name": "cross-school staff and content editor cannot access private student data",
+      "passed": true
+    },
+    {
+      "name": "cross-school review and client status manipulation are denied",
+      "passed": true
+    },
+    {
+      "name": "applicant receives the decision and note only after publication",
+      "passed": true
+    },
+    {
+      "name": "refund revokes grants and users cannot reinstate them",
+      "passed": true
+    },
+    {
+      "name": "distributed rate limiter stops repeated requests",
+      "passed": true
+    },
+    {
+      "name": "all application tables enable RLS and storage buckets stay private",
+      "passed": true
+    },
+    {
+      "name": "outbox workers lease disjoint events and daily summary is idempotent",
+      "passed": true
+    },
+    {
+      "name": "restrictive storage fence blocks legacy permissive policies only on new buckets",
+      "passed": true
+    },
+    {
+      "name": "document registration is atomic and blocked after review",
+      "passed": true
+    },
+    {
+      "name": "support creation and notification commit together with private read access",
+      "passed": true
+    },
+    {
+      "name": "untested replacement release preserves old downloads and requires matching hash attestation",
+      "passed": true
+    }
+  ]
+}

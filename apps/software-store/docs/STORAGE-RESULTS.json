@@ -1,0 +1,65 @@
+{
+  "checked_at": "2026-11-27T07:11:46.826Z",
+  "source_commit": "7200473112c721e97f9dc0f71acfaacd6227e788",
+  "head_commit": "ef123d5c261e02ee6ddc6becaccb1d642b5947b6",
+  "environment": "Real Supabase Storage API v1.98.6 + PostgreSQL 17 + GoTrue + PostgREST, disposable file backend; synthetic data only",
+  "passed": 12,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "all four application buckets are private through the real Storage API",
+      "passed": true
+    },
+    {
+      "name": "service uploads a private image with zero cache lifetime and exact bytes",
+      "passed": true
+    },
+    {
+      "name": "anonymous and another authenticated user cannot read, upload, list or sign private objects despite a legacy permissive policy",
+      "passed": true
+    },
+    {
+      "name": "private objects cannot be fetched through public URLs",
+      "passed": true
+    },
+    {
+      "name": "signed private downloads return the original bytes",
+      "passed": true
+    },
+    {
+      "name": "tampered signed URLs are rejected",
+      "passed": true
+    },
+    {
+      "name": "signed URLs expire at the real Storage origin",
+      "passed": true
+    },
+    {
+      "name": "bucket MIME and size restrictions reject disallowed uploads",
+      "passed": true
+    },
+    {
+      "name": "existing legacy bucket policies still work without exposing the application's private buckets",
+      "passed": true
+    },
+    {
+      "name": "release ZIPs exist privately with hashes matching metadata for the browser checkout/download test",
+      "passed": true
+    },
+    {
+      "name": "a synthetic school document exists privately for browser cross-school access checks",
+      "passed": true
+    },
+    {
+      "name": "deleting a private object invalidates its previously signed URL at the origin",
+      "passed": true
+    }
+  ],
+  "hosted_storage_verified": false,
+  "cdn_expiry_verified": false,
+  "notes": [
+    "Synthetic ZIP bytes are a test fixture, not a sale product.",
+    "Hosted Supabase/CDN and physical device acceptance are separate checks.",
+    "Signed URLs and credentials are excluded from this report."
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "checked_at": "2026-11-26T14:55:07.880Z",
+  "environment": "Local production build + real PostgreSQL/GoTrue/PostgREST; synthetic data only; Storage schema fixture for this local capture",
+  "physical_device": false,
+  "screenshots": [
+    {
+      "route": "/admin",
+      "file": "public/screenshots/store-owner-iphone-local.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "f621f850db737ee10b8f00fbfe2f6736fce62ff24bd41f0e1c51246606e4d6fc"
+    },
+    {
+      "route": "/school-admin/local-school",
+      "file": "public/screenshots/met-admission-actual-admin-local.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "0e3d1ba2ebb83c134c9cacc7f1a8b767947ced6a4c478054a994c013304eccde"
+    },
+    {
+      "route": "/schools/local-school",
+      "file": "public/screenshots/met-school-pro-actual-site-local.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "8c05424606305ea0e650673e78254df4b92209e0df9ef26b3d4ac26980525ad9"
+    }
+  ]
+}

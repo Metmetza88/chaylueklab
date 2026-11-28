@@ -1,0 +1,31 @@
+{
+  "checked_at": "2026-11-27T07:20:50.706240+00:00",
+  "code_commit": "ef123d5c261e02ee6ddc6becaccb1d642b5947b6",
+  "archives": [
+    {
+      "file": "met-school-pro-v0.2.0-rc.3.zip",
+      "files": 163,
+      "sha256": "17200425628b8fbdf050ad9dd39a9988ee6b66e54d78dc388d524bdedf4eac08",
+      "crc": "passed",
+      "secret_path_and_pattern_scan": "passed",
+      "required_files": "passed",
+      "source_matches_typechecked_extraction": true,
+      "status": "release_candidate",
+      "ready_for_sale": false
+    },
+    {
+      "file": "met-admission-v0.2.0-rc.3.zip",
+      "files": 163,
+      "sha256": "08a411e9fe492d19628449449f6f0c27c15618a1287a54473e34c8923ca5a082",
+      "crc": "passed",
+      "secret_path_and_pattern_scan": "passed",
+      "required_files": "passed",
+      "source_matches_typechecked_extraction": true,
+      "status": "release_candidate",
+      "ready_for_sale": false
+    }
+  ],
+  "source_typecheck": "Both source trees extracted from the RC.3 packages passed next typegen + tsc using shared installed dependencies. Final archives contain byte-identical TypeScript/JavaScript/SQL/package source; only documentation/evidence changed afterward.",
+  "clean_dependency_install_per_archive": false,
+  "ci_verification": "https://github.com/Metmetza88/chaylueklab/actions/runs/45956592838"
+}

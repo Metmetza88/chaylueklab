@@ -1,0 +1,11 @@
+{
+  "checked_at": "2026-11-26T15:02:39.843Z",
+  "validation_error_shown": true,
+  "version_preserved": true,
+  "changelog_preserved": true,
+  "scope": "Local production browser validation error in Admin ZIP form; synthetic archive only",
+  "before_fix": {
+    "version_preserved": false,
+    "changelog_preserved": false
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "reviewed_on": "2026-11-26",
+  "files": [
+    {
+      "name": "1-ข้อความ.txt",
+      "bytes": 4459,
+      "sha256": "89a4a16bb3d777eebcdab4b6b6222357dddc1f75195956400b8fc93067711696"
+    },
+    {
+      "name": "2-Woramet-Store.html",
+      "bytes": 22374,
+      "sha256": "97d9f39c721772e3415c99d54f897a4c3e30818d90c3088bff22dcba52b170ea",
+      "placeholder_links": 0,
+      "classification": "reference HTML; not evidence of tested database or paid releases"
+    },
+    {
+      "name": "3-woramet-store-reviewed.zip",
+      "bytes": 23864,
+      "sha256": "93c126d56b4a94e63f5a58f8ed6523752323b849750bc4dc0a728febacaf4702",
+      "file_count": 27,
+      "crc_valid": true
+    },
+    {
+      "name": "4-Database_Schema___RLS_Policies.sql",
+      "bytes": 24740,
+      "sha256": "39306486f02578402871014f46f10c714411b54cd5b3aff73d404d7463bf5b8f"
+    },
+    {
+      "name": "5-woramet-store.zip",
+      "bytes": 23193,
+      "sha256": "42fc44f41165c009d232e383000a441c4e8a0415cfd06aaec52c9f1bc1b7eb43",
+      "file_count": 26,
+      "crc_valid": true
+    },
+    {
+      "name": "6-Project_Status__Security_Report___Thai_Deployment_Guide.md",
+      "bytes": 10327,
+      "sha256": "8a9e1683ecdee5aefe04e7e6a41b3084825226eccf3a24173a59c2c01b08ac98"
+    },
+    {
+      "name": "7-เว็บไซต์พอร์ทัลระบบโรงเรียน.html",
+      "bytes": 37712,
+      "sha256": "bb689146b0bc5a6f835e65246c95bc153a9fbe3ed4a8f52c5e41cbc0e8cbf938",
+      "placeholder_links": 3,
+      "classification": "reference HTML; not evidence of tested database or paid releases"
+    },
+    {
+      "name": "8-แคตตาล็อกโปรแกรมโรงเรียน.html",
+      "bytes": 29023,
+      "sha256": "bf8c4557965e7891acbc598fbd5f9d8c63e126e4d9140c112e570abfeec9e92a",
+      "placeholder_links": 0,
+      "classification": "reference HTML; not evidence of tested database or paid releases"
+    },
+    {
+      "name": "9-แคตตาล็อกดิจิทัล_วรเมธ__ในเครือ_พ.สมนึก_.html",
+      "bytes": 67912,
+      "sha256": "abc5b8409a72ead14eb8eaaf7c9b14a943b5e94e828944b666faf3624236576e",
+      "placeholder_links": 0,
+      "classification": "reference HTML; not evidence of tested database or paid releases"
+    }
+  ],
+  "notes": [
+    "Reviewed ZIP matches the older 27-file base, not a tested replacement for the developed branch",
+    "SQL and download text match previously reviewed attachments",
+    "HTML pages are references only; no unverified reviews, sales counts or personal data imported into the app",
+    "New supplied CI template adapted to the isolated app with protected stages and token env bindings"
+  ]
+}

@@ -1,0 +1,78 @@
+name: Software store checks
+on:
+  pull_request:
+    paths: ['apps/software-store/**', '.github/workflows/software-store.yml', '.github/workflows/software-store-deploy.yml', '.github/actions/store-vercel-stage/**']
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      node_version:
+        type: string
+        default: '22'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/software-store
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      TEST_STORAGE_API: 'true'
+      STORE_SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ inputs.node_version || '22' }}
+          cache: npm
+          cache-dependency-path: apps/software-store/package-lock.json
+      - name: Remove stale evidence before this run
+        run: node tests/local/report.mjs prepare
+      - name: Validate GitHub workflows
+        working-directory: ${{ github.workspace }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/store-actionlint"
+          curl --fail --silent --show-error --location https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz --output "$RUNNER_TEMP/store-actionlint/tool.tar.gz"
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  $RUNNER_TEMP/store-actionlint/tool.tar.gz" | sha256sum --check --status
+          tar -xzf "$RUNNER_TEMP/store-actionlint/tool.tar.gz" -C "$RUNNER_TEMP/store-actionlint" actionlint
+          "$RUNNER_TEMP/store-actionlint/actionlint" .github/workflows/software-store.yml .github/workflows/software-store-deploy.yml
+      - run: npm ci --ignore-scripts
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm audit --audit-level=moderate
+      - run: npm run build
+      - name: Start disposable integration services
+        run: |
+          node tests/local/start.mjs
+          node tests/local/gateway.mjs > /tmp/store-test-gateway.log 2>&1 &
+      - run: npm run test:integration
+      - name: Real private Storage API and expiring URL checks
+        run: npm run test:storage
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests against production build
+        run: |
+          node --env-file=.env.test node_modules/next/dist/bin/next start --hostname 0.0.0.0 > /tmp/store-test-next.log 2>&1 &
+          node --env-file=.env.test --input-type=module -e 'for(let i=0;i<40;i++){try{if((await fetch("http://127.0.0.1:3000/api/health")).ok)process.exit(0)}catch{}await new Promise(r=>setTimeout(r,500))}process.exit(1)'
+          PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="$(node --input-type=module -e 'import {chromium} from "@playwright/test";process.stdout.write(chromium.executablePath())')" node --env-file=.env.test node_modules/@playwright/test/cli.js test
+      - name: Collect sanitized current-run evidence
+        if: always()
+        run: node tests/local/report.mjs finalize
+      - name: Failure diagnostics without credentials
+        if: failure()
+        run: node tests/local/diagnostics.mjs
+      - name: Upload test evidence only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: store-verification-${{ env.STORE_SOURCE_COMMIT }}
+          retention-days: 7
+          path: |
+            apps/software-store/docs/INTEGRATION-RESULTS.json
+            apps/software-store/docs/STORAGE-RESULTS.json
+            apps/software-store/docs/E2E-RESULTS.json

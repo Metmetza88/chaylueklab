@@ -1,0 +1,34 @@
+[
+  {
+    "product": "met-school-pro",
+    "version": "0.2.0-rc.3",
+    "status": "release_candidate",
+    "ready_for_sale": false,
+    "requires": [
+      "Hosted Supabase Storage/CDN and deployment E2E",
+      "SMTP delivery and backup/restore verification",
+      "school data/privacy owner approval",
+      "physical iPhone/Android acceptance"
+    ],
+    "license": "single-school",
+    "file": "met-school-pro-v0.2.0-rc.3.zip",
+    "bytes": 1433098,
+    "sha256": "17200425628b8fbdf050ad9dd39a9988ee6b66e54d78dc388d524bdedf4eac08"
+  },
+  {
+    "product": "met-admission",
+    "version": "0.2.0-rc.3",
+    "status": "release_candidate",
+    "ready_for_sale": false,
+    "requires": [
+      "Hosted Supabase Storage/CDN and deployment E2E",
+      "SMTP delivery and backup/restore verification",
+      "school data/privacy owner approval",
+      "physical iPhone/Android acceptance"
+    ],
+    "license": "single-school",
+    "file": "met-admission-v0.2.0-rc.3.zip",
+    "bytes": 1432777,
+    "sha256": "08a411e9fe492d19628449449f6f0c27c15618a1287a54473e34c8923ca5a082"
+  }
+]

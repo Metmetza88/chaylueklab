@@ -1,0 +1,9 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm ci --ignore-scripts",
+  "regions": ["sin1"],
+  "git": {
+    "deploymentEnabled": false
+  }
+}

@@ -1,0 +1,18 @@
+-- Product roadmap; all remain Coming Soon. No fabricated sales or reviews.
+insert into public.store_products(id,slug,name,tagline,category,price_cents,features,description,status) values
+('11111111-1111-4111-8111-000000000001','met-school-pro','MET School Pro','เว็บไซต์โรงเรียน','เว็บไซต์และประชาสัมพันธ์',290000,'["ข่าวสารและประกาศ","จัดการเนื้อหาผ่านมือถือ","ตั้งค่าชื่อ โลโก้ และสีโรงเรียน"]'::jsonb,'MET School Pro — เว็บไซต์โรงเรียน โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000002','met-admission','MET Admission','รับสมัครนักเรียนออนไลน์','รับสมัครและทะเบียน',350000,'["สมัครเรียนและอัปโหลดเอกสาร","ตรวจสอบสถานะและพิมพ์ใบสมัคร PDF","เจ้าหน้าที่ตรวจเอกสารและส่งออก CSV"]'::jsonb,'MET Admission — รับสมัครนักเรียนออนไลน์ โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000003','met-student','MET Student','ทะเบียนนักเรียน','รับสมัครและทะเบียน',99000,'["ทะเบียนนักเรียน","ประวัติและชั้นเรียน"]'::jsonb,'MET Student — ทะเบียนนักเรียน โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000004','met-attendance','MET Attendance','เช็กชื่อและการลา','วิชาการ',79000,'["เช็กชื่อรายวัน","รายงานการมาเรียน"]'::jsonb,'MET Attendance — เช็กชื่อและการลา โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000005','met-schedule','MET Schedule','ตารางเรียนและตารางสอน','วิชาการ',99000,'["จัดตารางเรียน","ตรวจคาบสอน"]'::jsonb,'MET Schedule — ตารางเรียนและตารางสอน โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000006','met-grades','MET Grades','คะแนนและผลการเรียน','วิชาการ',99000,'["บันทึกคะแนน","ผลการเรียน"]'::jsonb,'MET Grades — คะแนนและผลการเรียน โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000007','met-assignment','MET Assignment','ส่งการบ้านออนไลน์','วิชาการ',59000,'["มอบหมายงาน","ติดตามส่งการบ้าน"]'::jsonb,'MET Assignment — ส่งการบ้านออนไลน์ โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000008','met-certificate','MET Certificate','สร้างเกียรติบัตร','กิจกรรมและบริการ',49000,'["ออกเกียรติบัตร","แม่แบบภาษาไทย"]'::jsonb,'MET Certificate — สร้างเกียรติบัตร โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000009','met-sport','MET Sport','จัดการแข่งขันกีฬาสี','กิจกรรมและบริการ',99000,'["จัดทีมสี","บันทึกผลแข่งขัน"]'::jsonb,'MET Sport — จัดการแข่งขันกีฬาสี โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000010','met-inventory','MET Inventory','พัสดุและครุภัณฑ์','บริหารและธุรการ',149000,'["ทะเบียนครุภัณฑ์","เบิกจ่ายพัสดุ"]'::jsonb,'MET Inventory — พัสดุและครุภัณฑ์ โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000011','met-e-office','MET E-Office','งานสารบรรณ','บริหารและธุรการ',199000,'["รับส่งหนังสือ","ติดตามงาน"]'::jsonb,'MET E-Office — งานสารบรรณ โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000012','met-library','MET Library','ห้องสมุด','กิจกรรมและบริการ',99000,'["ทะเบียนหนังสือ","ยืมและคืน"]'::jsonb,'MET Library — ห้องสมุด โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000013','met-parent','MET Parent','ระบบผู้ปกครอง','กิจกรรมและบริการ',99000,'["ข่าวสารผู้ปกครอง","ติดตามนักเรียน"]'::jsonb,'MET Parent — ระบบผู้ปกครอง โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000014','met-school-shop','MET School Shop','สั่งซื้อชุดนักเรียน','กิจกรรมและบริการ',99000,'["เลือกไซซ์และชุด","ติดตามคำสั่งซื้อ"]'::jsonb,'MET School Shop — สั่งซื้อชุดนักเรียน โดย WORAMET AI LAB','coming_soon'),
+('11111111-1111-4111-8111-000000000015','met-exam-ai','MET Exam AI','ระบบช่วยสร้างข้อสอบ','วิชาการ',79000,'["ร่างข้อสอบ","ครูตรวจทานก่อนใช้"]'::jsonb,'MET Exam AI — ระบบช่วยสร้างข้อสอบ โดย WORAMET AI LAB','coming_soon')
+on conflict(slug) do nothing;

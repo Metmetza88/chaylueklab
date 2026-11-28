@@ -1,0 +1,65 @@
+{
+  "checked_at": "2026-11-27T07:20:01.417221+00:00",
+  "version": "0.2.0-rc.3",
+  "repository": "Metmetza88/chaylueklab",
+  "branch": "feature/woramet-school-store-20261124",
+  "commit": "ef123d5c261e02ee6ddc6becaccb1d642b5947b6",
+  "checkout_commit": "7200473112c721e97f9dc0f71acfaacd6227e788",
+  "url": "https://github.com/Metmetza88/chaylueklab/actions/runs/45956592838",
+  "run_id": 45956592838,
+  "job_id": 140364390514,
+  "node": "v22.23.5",
+  "status": "completed",
+  "conclusion": "success",
+  "checks": {
+    "actionlint": "passed",
+    "npm_ci": "passed",
+    "typescript": "passed",
+    "eslint": "passed",
+    "unit": {
+      "passed": 59,
+      "failed": 0
+    },
+    "dependency_audit": {
+      "total_vulnerabilities": 0
+    },
+    "production_build": "passed",
+    "integration_security": {
+      "passed": 24,
+      "failed": 0
+    },
+    "real_storage_api": {
+      "passed": 12,
+      "failed": 0,
+      "version": "1.98.6",
+      "backend": "file"
+    },
+    "playwright": {
+      "passed": 99,
+      "skipped": 21,
+      "failed": 0,
+      "framework_errors": 0,
+      "skip_reason": "Seven mutating authenticated workflows run on Desktop only; other public and authenticated Owner layouts run on four Chromium viewports."
+    }
+  },
+  "artifact": {
+    "id": 15179296914,
+    "sha256": "830fdfde46eccb38b99042735df7b48d54c0ca9f2f7b8dc09ec02d658b4eb051",
+    "reports": [
+      "INTEGRATION-RESULTS.json",
+      "STORAGE-RESULTS.json",
+      "E2E-RESULTS.json"
+    ],
+    "download_hash_verified": true
+  },
+  "other_checks": [
+    "Quality checks: success",
+    "CodeQL: success"
+  ],
+  "limitations": [
+    "Hosted Supabase/CDN not configured or verified. Vercel Preview is READY and HTTP smoke tested separately.",
+    "Real bank transactions, authorized provider integration, SMTP delivery, backup/restore and physical devices not tested.",
+    "Manual PromptPay verification is the initial workflow; a provider API is optional until authorized.",
+    "All school products remain Coming Soon; ready for sale count is zero."
+  ]
+}

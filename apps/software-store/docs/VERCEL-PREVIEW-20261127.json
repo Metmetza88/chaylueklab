@@ -1,0 +1,333 @@
+{
+  "checked_at": "2026-11-27T07:17:42.808Z",
+  "project": {
+    "id": "prj_OoLCWchPlUH9UAUKQxDH91omIIG3",
+    "name": "chaylueklab-software-store",
+    "team_id": "team_kA0EAug4JrrTT6ZIc54RXcmL",
+    "root_directory": "apps/software-store",
+    "framework": "nextjs",
+    "node_setting": "22.x",
+    "sso_retained": true,
+    "domains": [
+      {
+        "name": "store.chaylueklab.com",
+        "verified": true
+      },
+      {
+        "name": "chaylueklab-software-store.vercel.app",
+        "verified": true
+      }
+    ]
+  },
+  "deployment": {
+    "id": "dpl_A6Tq7m4EausTzAqenk81z8hppD9h",
+    "url": "https://chaylueklab-software-store-azoqphrr9-waramatw2546-4532.vercel.app",
+    "ready_state": "READY",
+    "target": null,
+    "commit": "ef123d5c261e02ee6ddc6becaccb1d642b5947b6",
+    "source_repository": "Metmetza88/chaylueklab"
+  },
+  "health": {
+    "status": 200,
+    "database_configured": false,
+    "payment_mode": "disabled",
+    "ready_for_live_payments": false
+  },
+  "routes": [
+    {
+      "path": "/",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/categories",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/demo",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/demo/met-school-pro",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/demo/met-admission",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/cart",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/checkout",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/login",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/register",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/membership",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/support",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/contact",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/guide",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/privacy",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/terms",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-school-pro",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-admission",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/forgot-password",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/reset-password",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/admin",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/admin/orders",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/orders",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/downloads",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/does-not-exist",
+      "status": 404,
+      "has_main": false,
+      "server_exception": false
+    },
+    {
+      "path": "/api/download/11111111-1111-4111-8111-000000000001",
+      "status": 401,
+      "has_main": false,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-student",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-attendance",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-schedule",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-grades",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-assignment",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-certificate",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-sport",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-inventory",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-e-office",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-library",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-parent",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-school-shop",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/products/met-exam-ai",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/demo/met-attendance",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/school-systems",
+      "status": 200,
+      "has_main": true,
+      "server_exception": false
+    },
+    {
+      "path": "/api/health",
+      "status": 200,
+      "has_main": false,
+      "server_exception": false,
+      "health": {
+        "service": "chaylueklab-software-store",
+        "version": "0.2.0-rc.3",
+        "database_configured": false,
+        "payment_mode": "disabled",
+        "ready_for_live_payments": false
+      }
+    }
+  ],
+  "checks": {
+    "build": "passed; Node.js22.x pinned in package, lockfile and project settings",
+    "protected_fetch": "Vercel connector using existing account access; SSO retained",
+    "runtime_errors": {
+      "checked_at": "2026-11-27T07:18:32.983Z",
+      "deployment_id": "dpl_A6Tq7m4EausTzAqenk81z8hppD9h",
+      "environment": "preview",
+      "scope": "error/fatal for this deployment, most recent 30 minutes",
+      "query_succeeded": true,
+      "no_matching_logs": true
+    }
+  },
+  "limitations": [
+    "No hosted Supabase configuration or hosted database writes; authenticated backend tested in disposable CI services only.",
+    "Authenticated-page HTTP200 values are final login/setup pages after same-origin redirects, not proof of hosted Admin access.",
+    "No Playwright browser execution against this protected Preview; responsive/browser tests use the same source in CI.",
+    "No main merge, custom DNS changes, production promotion, paid-plan purchase or real-money processing performed.",
+    "This connector Preview is separate from the gated GitHub Actions deployment workflow, which is not enabled."
+  ],
+  "previous_previews": [
+    {
+      "id": "dpl_97PJv8QHBvXdsGfq8ay7FHa6K1XR",
+      "url": "https://chaylueklab-software-store-321z6fjfu-waramatw2546-4532.vercel.app",
+      "ready_state": "READY",
+      "target": null,
+      "commit": "630909534cddee87c1f472f228681cc2fed298fa",
+      "source_repository": "Metmetza88/chaylueklab"
+    }
+  ],
+  "rollback_reference": {
+    "scope": "Only software-store project. No rollback executed.",
+    "observed_existing_production": "dpl_FgfssVNvFwSJtwdhXdKoMwGT9nmw",
+    "observed_existing_production_commit": "3f3dd39cb7ac61a81717b5b52872ce8a94060285",
+    "older_production_candidate": "dpl_G3S7hSobK4AQLhaptTxFCP9u3HsH",
+    "required_action": "Recheck current production target and owner approval before any promotion or rollback; do not change main/DNS/database."
+  }
+}

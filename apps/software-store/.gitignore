@@ -1,0 +1,15 @@
+node_modules/
+.next/
+.env*
+!.env.example
+!.env.test.example
+*.tsbuildinfo
+.vercel/
+test-results/
+playwright-report/
+dist/
+supabase/.temp/
+supabase/.branches/
+tests/local/*.env
+tests/local/.env*
+tests/local/.accounts.json

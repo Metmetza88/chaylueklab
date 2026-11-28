@@ -1,0 +1,730 @@
+{
+  "checked_at": "2026-11-27T07:09:21.699080+00:00",
+  "url": "https://store.chaylueklab.com",
+  "deployment_id": "dpl_FgfssVNvFwSJtwdhXdKoMwGT9nmw",
+  "deployed_source_commit": "3f3dd39cb7ac61a81717b5b52872ce8a94060285",
+  "test_source_commit": "3f3dd39cb7ac61a81717b5b52872ce8a94060285",
+  "passed": 88,
+  "skipped": 0,
+  "failed": 0,
+  "flaky": 0,
+  "framework_errors": 0,
+  "duration_seconds": 130.44,
+  "start_time": "2026-11-27T00:45:46.475Z",
+  "physical_devices_tested": false,
+  "database_configured": false,
+  "payment_mode": "disabled",
+  "scope": "Read-only public routes, synthetic browser-only demonstrations, PDF, unauthorized download and cross-origin signout denial. No hosted auth/checkout or student records.",
+  "proxy": "Explicit PLAYWRIGHT_PROXY_SERVER used; no proxy credentials or address included.",
+  "initial_attempt": {
+    "passed": 68,
+    "failed": 8,
+    "cause": "APIRequestContext did not use environment network proxy; ECONNREFUSED. Retested after explicit proxy configuration."
+  },
+  "cases": [
+    {
+      "title": "public page / renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page / renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page / renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page / renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /products renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /products renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /products renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /products renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /categories renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /categories renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /categories renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /categories renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo/met-school-pro renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo/met-school-pro renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo/met-school-pro renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo/met-school-pro renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo/met-admission renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo/met-admission renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo/met-admission renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo/met-admission renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo/met-attendance renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo/met-attendance renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo/met-attendance renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /demo/met-attendance renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /cart renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /cart renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /cart renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /cart renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /checkout renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /checkout renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /checkout renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /checkout renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /login renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /login renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /login renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /login renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /register renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /register renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /register renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /register renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /membership renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /membership renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /membership renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /membership renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /support renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /support renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /support renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /support renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /contact renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /contact renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /contact renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /contact renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /guide renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /guide renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /guide renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /guide renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /school-systems renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /school-systems renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /school-systems renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /school-systems renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /privacy renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /privacy renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /privacy renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /privacy renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /terms renders and fits the viewport",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /terms renders and fits the viewport",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /terms renders and fits the viewport",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "public page /terms renders and fits the viewport",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "catalog filters and product details work",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "catalog filters and product details work",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "catalog filters and product details work",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "catalog filters and product details work",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "school services links to the demo and attendance keeps school and lesson records separate",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "school services links to the demo and attendance keeps school and lesson records separate",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "school services links to the demo and attendance keeps school and lesson records separate",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "school services links to the demo and attendance keeps school and lesson records separate",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "demo completes admission review and result announcement without submitting private data",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "demo completes admission review and result announcement without submitting private data",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "demo completes admission review and result announcement without submitting private data",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "demo completes admission review and result announcement without submitting private data",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "unknown products and protected APIs fail safely",
+      "project": "Desktop Chromium",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "unknown products and protected APIs fail safely",
+      "project": "iPhone layout (Chromium)",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "unknown products and protected APIs fail safely",
+      "project": "Android layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    },
+    {
+      "title": "unknown products and protected APIs fail safely",
+      "project": "Tablet layout",
+      "status": "expected",
+      "results": [
+        "passed"
+      ]
+    }
+  ]
+}

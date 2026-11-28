@@ -1,0 +1,125 @@
+name: CI and Deploy Software Store
+on:
+  push:
+    branches: [main]
+    paths: ['apps/software-store/**', '.github/workflows/software-store-deploy.yml', '.github/workflows/software-store.yml', '.github/actions/store-vercel-stage/**']
+  workflow_dispatch:
+    inputs:
+      deployment:
+        description: Action; promotion requires separate owner approval
+        type: choice
+        default: preview
+        options: [verify, preview, stage-production, promote-production]
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    name: Lint, Test and Build on Node 22
+    uses: ./.github/workflows/software-store.yml
+    with:
+      node_version: '22'
+  deployment-status:
+    needs: verify
+    runs-on: ubuntu-latest
+    if: vars.STORE_DEPLOY_ENABLED != 'true'
+    steps:
+      - run: echo 'Deployment disabled. Configure store environments, Vercel credentials and STORE_DEPLOY_ENABLED=true. No website was deployed.' >> "$GITHUB_STEP_SUMMARY"
+  deployment-policy:
+    needs: verify
+    if: vars.STORE_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Require actual owner approval and branch restrictions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STORE_REQUESTED_ACTION: ${{ inputs.deployment }}
+        run: node apps/software-store/scripts/deploy/actions-policy.mjs
+  preview:
+    name: Approved preview
+    needs: [verify, deployment-policy]
+    if: vars.STORE_DEPLOY_ENABLED == 'true' && github.event_name == 'workflow_dispatch' && inputs.deployment == 'preview' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/woramet-school-store-20261124')
+    runs-on: ubuntu-latest
+    environment:
+      name: store-preview
+      url: ${{ steps.stage.outputs.url }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - id: stage
+        uses: ./.github/actions/store-vercel-stage
+        with:
+          target: preview
+          vercel_token: ${{ secrets.VERCEL_TOKEN }}
+          org_id: ${{ vars.VERCEL_ORG_ID }}
+          project_id: ${{ vars.VERCEL_PROJECT_ID }}
+          bypass_secret: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+  stage-production:
+    name: Stage production without assigning domains
+    needs: [verify, deployment-policy]
+    if: vars.STORE_DEPLOY_ENABLED == 'true' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || inputs.deployment == 'stage-production' || inputs.deployment == 'promote-production')
+    runs-on: ubuntu-latest
+    environment:
+      name: store-production
+      url: ${{ steps.stage.outputs.url }}
+    outputs:
+      url: ${{ steps.stage.outputs.url }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - id: stage
+        uses: ./.github/actions/store-vercel-stage
+        with:
+          target: production
+          vercel_token: ${{ secrets.VERCEL_TOKEN }}
+          org_id: ${{ vars.VERCEL_ORG_ID }}
+          project_id: ${{ vars.VERCEL_PROJECT_ID }}
+          bypass_secret: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+  promote-production:
+    name: Owner-approved promotion of tested deployment
+    needs: stage-production
+    if: github.event_name == 'workflow_dispatch' && inputs.deployment == 'promote-production' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: store-production-release
+      url: ${{ needs.stage-production.outputs.url }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: npm install --global --ignore-scripts vercel@67.0.0
+      - name: Recheck approved project and immutable deployment
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+          STORE_VERCEL_TARGET: production
+          STORE_DEPLOYMENT_URL: ${{ needs.stage-production.outputs.url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          node apps/software-store/scripts/deploy/preflight.mjs
+          node apps/software-store/scripts/deploy/check-deployment.mjs
+          node apps/software-store/scripts/deploy/smoke.mjs
+          vercel promote "$STORE_DEPLOYMENT_URL" --scope "$VERCEL_ORG_ID" --yes

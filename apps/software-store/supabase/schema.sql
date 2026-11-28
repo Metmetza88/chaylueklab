@@ -1,0 +1,2 @@
+-- Fresh installation: apply every SQL file in migrations/ in filename order, then run catalog-drafts.sql.
+-- Never run the original generic profiles/products/orders schema on the shared production project.

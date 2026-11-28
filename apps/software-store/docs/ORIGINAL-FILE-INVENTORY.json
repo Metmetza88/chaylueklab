@@ -1,0 +1,150 @@
+{
+  "zip_sha256": "e42f3204e6d7984fc07f78e95ef1d519a43f2d910f6ef7000f3298d1f5c80b38",
+  "files": [
+    {
+      "path": ".env.example",
+      "bytes": 673,
+      "sha256": "ee704287a7f7d2bf156f80828213e81d6f19227e832cc2ff893fb95d968311e8"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 41,
+      "sha256": "0674c5b4bf5621cae135ceaccc35dac4657459771dda9fa863b5d8501fec3761"
+    },
+    {
+      "path": "DEPLOY-TH.md",
+      "bytes": 1641,
+      "sha256": "204d18c9bd8cbd30d8f028830c99f48e045e3d38302037aeb01aa30cbb8a9bda"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3251,
+      "sha256": "ad25d5fcf2d749cea41d3601ecc62ff91a797c0aca46f66d3278f8430f44a997"
+    },
+    {
+      "path": "app/actions.ts",
+      "bytes": 764,
+      "sha256": "e5809dd112da6b456618103892a2d9d85c0e0c89dd03297ddf5ddef2ba375142"
+    },
+    {
+      "path": "app/admin/orders/page.tsx",
+      "bytes": 3073,
+      "sha256": "ef4f2f6e5aa202e12220097bad2b6d23b308b7a9b1bbcd79056d3eed8c2f0d03"
+    },
+    {
+      "path": "app/api/download/[productId]/route.ts",
+      "bytes": 1723,
+      "sha256": "99d1bc5ce5c916c49cbadf43bbd3e82a0d7e5fbfa3bbcec4d0540e53a1f4c443"
+    },
+    {
+      "path": "app/api/payments/webhook/route.ts",
+      "bytes": 2314,
+      "sha256": "2e57197eaafa15587a97676860c2c40b5c4a1f19d4ca8575564844887f2b9ade"
+    },
+    {
+      "path": "app/auth/signout/route.ts",
+      "bytes": 312,
+      "sha256": "c264d56a91252ee927f762221c603a3d3fd9daebd9f9d590b875961232d1ede0"
+    },
+    {
+      "path": "app/cart/page.tsx",
+      "bytes": 2395,
+      "sha256": "e1745d6612a2e44d7ef5e8b5be3a12571b4f3c9595cfcf5c7fa6ad80617408a6"
+    },
+    {
+      "path": "app/globals.css",
+      "bytes": 2502,
+      "sha256": "5bb6c999efa23687034f3694ea7a1a3fbd19c1b237a8c4c58e38fb3f2bafda5b"
+    },
+    {
+      "path": "app/layout.tsx",
+      "bytes": 1815,
+      "sha256": "41bb2cd9c32f1604c3f973ddd638e254e19827d2adc738d995b4fe5da479cae5"
+    },
+    {
+      "path": "app/login/page.tsx",
+      "bytes": 2437,
+      "sha256": "1cabaa90c6c48b4abd284b2cc8d88448f761cc14b4279bb6d3632116ea9290c3"
+    },
+    {
+      "path": "app/membership/page.tsx",
+      "bytes": 974,
+      "sha256": "47a13fd5098496e972c732f6dc174ca2608b2c7b81a2efc23c1cf70a46ea6e0c"
+    },
+    {
+      "path": "app/orders/page.tsx",
+      "bytes": 2685,
+      "sha256": "46f663a2079495b73ad0524e4a9a06ee6e331c3085a6c2587bbd7fd0760aa777"
+    },
+    {
+      "path": "app/page.tsx",
+      "bytes": 4222,
+      "sha256": "8964ddcfdc50b6a3d3d9896c3371eeea6efc45a886c61e979129be2b3b7f619f"
+    },
+    {
+      "path": "app/products/[slug]/page.tsx",
+      "bytes": 1117,
+      "sha256": "b187160ca434886b9c99d5c421ad26c8afb72eec5f3ad24e528fa735c5daecd6"
+    },
+    {
+      "path": "components/AddToCart.tsx",
+      "bytes": 422,
+      "sha256": "b10b141211df088cbf0d2b4053e130f6ab88645c3d1f1911e67f60923d21094f"
+    },
+    {
+      "path": "components/CartLink.tsx",
+      "bytes": 265,
+      "sha256": "1926c7561573451e2a4805ff7ac0924b0253dd18a1b4c9fe3e8fe551a60d6294"
+    },
+    {
+      "path": "components/PromptPayQR.tsx",
+      "bytes": 974,
+      "sha256": "7118a2e7438b793eaf225eafdf358d92c7b747816df8e4c2cf4138f73205bc0f"
+    },
+    {
+      "path": "lib/cart.tsx",
+      "bytes": 1066,
+      "sha256": "f8970bc9ff0be62790cd9896860b82da24780425def649225b850d24160b14b3"
+    },
+    {
+      "path": "lib/promptpay.ts",
+      "bytes": 1358,
+      "sha256": "ffcf62c932ecb6da42f591c334d75887305ae27a9bc14ec29b18d5fafcf66261"
+    },
+    {
+      "path": "lib/shop.ts",
+      "bytes": 1076,
+      "sha256": "46a273edc39b28e2c9b31414f5c9268e0e3db52d9e817f472e495c6f0fa73074"
+    },
+    {
+      "path": "lib/supabase/client.ts",
+      "bytes": 214,
+      "sha256": "6c8e82752485cd20f048b345b4ed2037f0a969f26ad396e58f114e485a0a120e"
+    },
+    {
+      "path": "lib/supabase/server.ts",
+      "bytes": 1041,
+      "sha256": "2d910ae25da64ec7ff0e5ed3da1a3eb1b427a1f2e7780fc8f6a46586ef2fb915"
+    },
+    {
+      "path": "package.json",
+      "bytes": 543,
+      "sha256": "603e47d95e939f9f92423d5a6b40679ddb587b3b191efd0662fef3d7194a2fd9"
+    },
+    {
+      "path": "supabase/catalog-drafts.sql",
+      "bytes": 2348,
+      "sha256": "02315314ba56778eb96c078c0881eb825bbb9f76fc1209afc636046e26744f78"
+    },
+    {
+      "path": "supabase/schema.sql",
+      "bytes": 4636,
+      "sha256": "d8a530e939cc8b0f21f12da8a607c0feff75d70258e3db417f6d6d41c8b96fe5"
+    },
+    {
+      "path": "tsconfig.json",
+      "bytes": 563,
+      "sha256": "104fbd18432406714408395ec11b2fbb3c716da1fce21e5abd7d74e80720838f"
+    }
+  ]
+}
