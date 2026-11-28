@@ -1,6 +1,6 @@
 import { dashboardMarkup } from "./dashboard-samples.mjs";
 import { categories, modules, statusLabels } from './catalog.mjs';
-import { marketIcon, procurementDocs, procurementLine, sports } from './marketplace.mjs';
+import { greetingLine, marketIcon, procurementDocs, procurementLine, sports } from './marketplace.mjs';
 const store = 'https://store.chaylueklab.com';
 const schoolSupplies = 'https://psomnuek.chaylueklab.com/work?view=shop';
 const starterDemos = [
@@ -65,7 +65,7 @@ export function marketProductDetail(module) {
   const featured=module===sports;
   return `<p class="eyebrow">${esc(categoryName(module.category))}</p><h2 id="market-dialog-title">${esc(module.name)}</h2>
     ${badge(module)}<p>${esc(module.description)}</p><ul>${module.features.map(item=>`<li>${esc(item)}</li>`).join('')}</ul>
-    <p class="notice">${esc(publicLimitations(module))}</p><div class="market-procurement"><h3>${marketIcon('docs')} การเบิกงบโครงการ</h3><p>แจ้งชื่อโครงการ ขอบเขตงาน และรายการเอกสารที่ฝ่ายพัสดุต้องใช้ในคำขอใบเสนอราคา การเบิกงบขึ้นอยู่กับงบที่ได้รับอนุมัติและขั้นตอนของแต่ละโรงเรียน</p><a href="${procurementDocs}">ดูเอกสารจัดซื้อและแบบฟอร์ม</a><p><a href="${procurementLine}" target="_blank" rel="noopener noreferrer">ขอตัวอย่างไฟล์ทาง LINE</a></p><p>ออกเอกสารในนาม ร้าน พ.สมนึก 2&amp;3 · ตลาดสดอำเภอสตึก จ.บุรีรัมย์ · <a href="tel:0843232324">โทร 084-3232324</a> · <a href="https://lin.ee/Vgg2m3N">LINE OA @125cbuuu</a></p></div>
+    <p class="notice">${esc(publicLimitations(module))}</p><div class="market-procurement"><h3>${marketIcon('docs')} การเบิกงบโครงการ</h3><p>แจ้งชื่อโครงการ ขอบเขตงาน และรายการเอกสารที่ฝ่ายพัสดุต้องใช้ในคำขอใบเสนอราคา การเบิกงบขึ้นอยู่กับงบที่ได้รับอนุมัติและขั้นตอนของแต่ละโรงเรียน</p><a href="${procurementDocs}">ดูเอกสารจัดซื้อและแบบฟอร์ม</a><p><a href="${procurementLine}" target="_blank" rel="noopener noreferrer">ขอตัวอย่างไฟล์ทาง LINE</a></p><p>ออกเอกสารในนาม ร้าน พ.สมนึก 2&amp;3 · ตลาดสดอำเภอสตึก จ.บุรีรัมย์ · <a href="tel:0843232324">โทร 084-3232324</a> · <a href="${greetingLine}">LINE OA @125cbuuu</a></p></div>
     <div class="stack-actions"><a class="button" href="${featured?sports.quote:`#/quote?module=${module.slug}`}">เตรียมคำขอใบเสนอราคา</a><a class="button secondary" href="${featured?sports.detail:`#/product/${module.slug}`}">เปิดหน้ารายละเอียด</a></div>`;
 }
 export function home() {

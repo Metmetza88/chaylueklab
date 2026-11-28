@@ -1,4 +1,5 @@
 export const lineMessage = message => `https://line.me/R/oaMessage/%40125cbuuu/?${encodeURIComponent(message)}`;
+export const greetingLine = lineMessage('สวัสดีครับ สนใจแพ็กเกจระบบโรงเรียน ขอรายละเอียดและนัดสาธิตครับ');
 export const procurementLine = lineMessage('สวัสดีครับ ขอรับไฟล์ตัวอย่างเอกสารเบิกงบสำหรับโรงเรียนครับ');
 export const procurementDocs = 'https://store.chaylueklab.com/school-systems#procurement-samples';
 export const sports = {
