@@ -181,7 +181,12 @@ test("a school can review separate price units without putting contact data in t
   await expect(quote.getByText(/เลือกข้อความแล้ว/)).toBeVisible();
   await quote.getByRole("button", { name: "นำ MET Vote ออก" }).click();
   await expect(message).toHaveCount(0);
-  await expect(quote.locator(".quote-estimate")).not.toContainText("2,900");
+  const reducedQuote = page.getByRole("region", {
+    name: "ตะกร้าใบเสนอราคา (3)",
+  });
+  await expect(reducedQuote.locator(".quote-estimate")).not.toContainText(
+    "2,900",
+  );
 });
 
 test("all procurement samples download and the sports demo updates scores", async ({
