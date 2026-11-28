@@ -16,7 +16,11 @@ import {
   UserRound,
 } from "lucide-react";
 import { CartProvider } from "@/lib/cart";
-import { baht, getProducts, getViewer } from "@/lib/shop";
+import { getProducts, getViewer } from "@/lib/shop";
+import {
+  isSchoolPackage,
+  schoolPackagePriceLabel,
+} from "@/lib/school-packages";
 import { sportFirst } from "@/lib/marketplace";
 import CartLink from "@/components/CartLink";
 import DisplayControls from "@/components/DisplayControls";
@@ -107,16 +111,19 @@ export default async function Layout({
   }
   const accountsEnabled = configured();
   const { products, source } = await getProducts();
-  const marketplaceProducts = [...products].sort(sportFirst).map((product) => ({
-    slug: product.slug,
-    name: product.name,
-    tagline: product.tagline,
-    description: product.description,
-    category: product.category,
-    features: product.features,
-    status: product.status,
-    price: baht(product.price_cents),
-  }));
+  const marketplaceProducts = products
+    .filter((product) => isSchoolPackage(product.slug))
+    .sort(sportFirst)
+    .map((product) => ({
+      slug: product.slug,
+      name: product.name,
+      tagline: product.tagline,
+      description: product.description,
+      category: product.category,
+      features: product.features,
+      status: product.status,
+      price: schoolPackagePriceLabel,
+    }));
   const links = accountsEnabled
     ? [...publicLinks, ["/membership", "สมาชิก VIP"]]
     : publicLinks;
@@ -131,7 +138,7 @@ export default async function Layout({
             <div className="top-bar">
               <a
                 className="school-home-link"
-                href="https://education.chaylueklab.com/"
+                href="https://education.chaylueklab.com/#/catalog"
               >
                 หน้ารวมระบบโรงเรียน
               </a>
@@ -215,8 +222,8 @@ export default async function Layout({
               >
                 <ShieldCheck size={23} aria-hidden="true" />
                 <div>
-                  <strong>จัดจำหน่ายโดย {distributor}</strong>
-                  <p>พัฒนาโดย WORAMET AI LAB · ขอเอกสารจัดซื้อในนามร้าน</p>
+                  <strong>จัดจำหน่ายและออกเอกสารในนาม {distributor}</strong>
+                  <p>{shopLocation} · พัฒนาโดย WORAMET AI LAB</p>
                 </div>
                 <StoreDialogButton name="procurement" className="btn ghost">
                   เอกสารเบิกงบ
@@ -305,7 +312,7 @@ export default async function Layout({
                 <div>
                   <Link href="/privacy">ความเป็นส่วนตัว</Link>
                   <Link href="/terms">เงื่อนไขและการคืนเงิน</Link>
-                  <a href="https://education.chaylueklab.com/">
+                  <a href="https://education.chaylueklab.com/#/catalog">
                     Education 2570
                   </a>
                 </div>

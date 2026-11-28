@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CalendarDays, ClipboardCheck, Download, Bell } from "lucide-react";
+import {
+  CalendarDays,
+  ClipboardCheck,
+  Download,
+  Bell,
+  ScanLine,
+} from "lucide-react";
 import { csvCell } from "@/lib/csv";
 import styles from "./attendance-demo.module.css";
 
@@ -63,6 +69,7 @@ export default function AttendanceDemo() {
   const [period, setPeriod] = useState("daily");
   const [records, setRecords] = useState(initialRecords);
   const [feedback, setFeedback] = useState("");
+  const [qrNotice, setQrNotice] = useState("");
   const school = schools.find((item) => item.id === schoolId) ?? schools[0];
   const session = `${school.id}|${date}|${period}`;
   const current = records[session] ?? {};
@@ -101,6 +108,14 @@ export default function AttendanceDemo() {
     });
     setFeedback(
       status ? `บันทึกสถานะ ${statuses[status]} แล้ว` : "ล้างสถานะแล้ว",
+    );
+  }
+
+  function simulateQr() {
+    const currentName = school.students[0];
+    update(studentId(0), "present");
+    setQrNotice(
+      `บันทึก ${currentName} (สมมติ) · มาเรียน · ${school.room} · ${periodName}`,
     );
   }
 
@@ -165,6 +180,7 @@ export default function AttendanceDemo() {
             onChange={(event) => {
               setSchoolId(event.target.value);
               setFeedback("");
+              setQrNotice("");
             }}
           >
             {schools.map((item) => (
@@ -185,6 +201,7 @@ export default function AttendanceDemo() {
               if (event.target.validity.valid && event.target.value)
                 setDate(event.target.value);
               setFeedback("");
+              setQrNotice("");
             }}
           />
         </label>
@@ -195,6 +212,7 @@ export default function AttendanceDemo() {
             onChange={(event) => {
               setPeriod(event.target.value);
               setFeedback("");
+              setQrNotice("");
             }}
           >
             <option value="daily">เช็กชื่อรายวัน</option>
@@ -207,9 +225,38 @@ export default function AttendanceDemo() {
         </label>
       </div>
 
-      <dl className={styles.stats}>
+      <section
+        className={`${styles.panel} ${styles.qrDemo}`}
+        aria-labelledby="attendance-qr-heading"
+      >
         <div>
-          <dt>เช็กแล้ว</dt>
+          <h2 id="attendance-qr-heading">
+            <ScanLine size={18} aria-hidden="true" /> สาธิตเช็กชื่อด้วย QR
+          </h2>
+          <p className="muted">
+            จำลองการสแกนด้วยข้อมูลคนแรกในห้องตัวอย่าง ไม่เปิดกล้องและไม่ส่ง LINE
+            จริง
+          </p>
+        </div>
+        <button className="btn ghost" type="button" onClick={simulateQr}>
+          จำลองสแกน QR
+        </button>
+        <div className={styles.qrFeedback} aria-live="polite">
+          {qrNotice && (
+            <>
+              <strong>LINE · ตัวอย่างการแจ้งเตือน (ไม่ได้ส่งจริง)</strong>
+              <p>{qrNotice}</p>
+            </>
+          )}
+        </div>
+      </section>
+
+      <dl
+        className={styles.stats}
+        aria-label={`สรุปการเช็กชื่อรอบนี้ · ${periodName}`}
+      >
+        <div>
+          <dt>เช็กแล้วในรอบนี้</dt>
           <dd>
             {reported.length} <small>/ {school.students.length}</small>
           </dd>
@@ -305,6 +352,7 @@ export default function AttendanceDemo() {
                     onClick={() => {
                       setPeriod(item.id);
                       setFeedback("");
+                      setQrNotice("");
                     }}
                   >
                     <time>{item.time}</time>

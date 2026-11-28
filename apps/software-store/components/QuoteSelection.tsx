@@ -1,14 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore, type ChangeEvent } from "react";
+import { useSyncExternalStore } from "react";
 import { ClipboardList, Plus } from "lucide-react";
-import {
-  formatBaht,
-  packages,
-  serviceRange,
-  type QuotePlan,
-} from "@/lib/quote";
+import type { QuotePlan } from "@/lib/quote";
+import { isSchoolPackage } from "@/lib/school-packages";
 
 const storageKey = "chaylueklab-quote-selection";
 const changeEvent = "chaylueklab-quote-change";
@@ -52,6 +48,7 @@ export function useQuoteSelection() {
 
 export function updateQuoteSelection(slug: string, plan?: QuotePlan) {
   const next = { ...readSelection() };
+  if (plan && !isSchoolPackage(slug)) return;
   if (plan) next[slug] = plan;
   else delete next[slug];
   selection = next;
@@ -66,7 +63,7 @@ export function updateQuoteSelection(slug: string, plan?: QuotePlan) {
 
 export function QuoteCartLink() {
   const items = useQuoteSelection();
-  const count = Object.keys(items).length;
+  const count = Object.keys(items).filter(isSchoolPackage).length;
   return (
     <Link
       className="market-quote-cart-link"
@@ -80,56 +77,19 @@ export function QuoteCartLink() {
   );
 }
 
-export function AddToQuote({ slug, plan }: { slug: string; plan?: QuotePlan }) {
+export function AddToQuote({ slug }: { slug: string }) {
   const items = useQuoteSelection();
-  const desired = plan ?? items[slug] ?? "files";
+  if (!isSchoolPackage(slug)) return null;
+  const chosen = Boolean(items[slug]);
   return (
     <button
       className="btn ghost market-add-quote"
       type="button"
-      aria-pressed={items[slug] === desired}
-      onClick={() => updateQuoteSelection(slug, desired)}
+      aria-pressed={chosen}
+      onClick={() => updateQuoteSelection(slug, "service")}
     >
       <Plus size={15} aria-hidden="true" />
-      {items[slug] === desired ? "เพิ่มในใบเสนอราคาแล้ว" : "เพิ่มลงใบเสนอราคา"}
+      {chosen ? "เพิ่มในใบเสนอราคาแล้ว" : "เพิ่มลงใบเสนอราคา"}
     </button>
-  );
-}
-
-export function PackageChoice({
-  value,
-  onChange,
-  filesPrice,
-}: {
-  value: QuotePlan;
-  onChange: (plan: QuotePlan) => void;
-  filesPrice: string;
-}) {
-  function select(event: ChangeEvent<HTMLSelectElement>) {
-    onChange(event.target.value === "service" ? "service" : "files");
-  }
-
-  return (
-    <label>
-      แพ็กเกจ
-      <select value={value} onChange={select}>
-        <option value="files">
-          {packages.files.label} · {filesPrice}
-        </option>
-        <option value="service">
-          {packages.service.label} · 3,500–5,900 บาท
-        </option>
-      </select>
-    </label>
-  );
-}
-
-export function PackageDetails({ plan }: { plan: QuotePlan }) {
-  return (
-    <p>
-      {packages[plan].description}
-      {plan === "service" &&
-        ` · งานเพิ่มตามขอบเขตประเมินได้ถึง ${formatBaht(serviceRange.extendedMax)}`}
-    </p>
   );
 }

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { getProducts } from "@/lib/shop";
+import { isSchoolPackage } from "@/lib/school-packages";
 export default async function Page() {
-  const { products } = await getProducts();
+  const { products: all } = await getProducts();
+  const products = all.filter((product) => isSchoolPackage(product.slug));
   const cats = [...new Set(products.map((p) => p.category))];
   return (
     <section className="section">

@@ -42,6 +42,7 @@ test("customer checkout, signed Sandbox webhook, entitlement and receipt", async
 }) => {
   await login(page, accounts.buyer);
   await page.goto("/products/met-admission");
+  await page.getByText("ซื้อไฟล์หรือจัดการรายการเดิม", { exact: true }).click();
   await page.getByRole("button", { name: "ใส่ตะกร้า", exact: true }).click();
   await page.getByRole("link", { name: /ตะกร้าสินค้า/ }).click();
   await page

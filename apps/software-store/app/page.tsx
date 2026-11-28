@@ -14,23 +14,20 @@ import ProductCard from "@/components/ProductCard";
 import HomeStats from "@/components/HomeStats";
 import HomeFeatures from "@/components/HomeFeatures";
 import HomeFAQ from "@/components/HomeFAQ";
-import { sportFirst, sportSlug } from "@/lib/marketplace";
+import { quoteHref } from "@/lib/marketplace";
+import {
+  schoolPackagePriceLabel,
+  schoolPackageSlugs,
+} from "@/lib/school-packages";
 import { productDemos } from "@/lib/product-demos";
 export default async function Home() {
   if (process.env.APP_VARIANT === "school")
     redirect(`/schools/${process.env.SCHOOL_SLUG ?? "my-school"}`);
   const { products, source } = await getProducts();
-  const featured = [...products]
-    .sort(
-      (a, b) =>
-        sportFirst(a, b) ||
-        ["met-admission", "met-school-pro"].indexOf(b.slug) -
-          ["met-admission", "met-school-pro"].indexOf(a.slug),
-    )
-    .slice(
-      0,
-      3 + Number(products.some((product) => product.slug === sportSlug)),
-    );
+  // Keep the storefront's lead cards limited to the four trial-backed packages.
+  const featured = schoolPackageSlugs.flatMap(
+    (slug) => products.find((product) => product.slug === slug) ?? [],
+  );
   return (
     <>
       <section
@@ -42,20 +39,24 @@ export default async function Home() {
             WORAMET AI LAB <span /> ซอฟต์แวร์เพื่อการศึกษา
           </span>
           <h1 id="school-store-title">
-            ระบบโรงเรียน
+            แพ็กเกจระบบโรงเรียน
             <br />
-            ลองก่อนเลือก
+            ทดลองก่อนวางระบบ
           </h1>
           <p>
-            รับสมัคร เช็กชื่อ ทำเว็บโรงเรียน และจัดกีฬาสี
-            ลองทำงานจริงในเดโมด้วยข้อมูลสมมติ
+            กีฬาสี เช็กชื่อ รับสมัคร และเว็บไซต์โรงเรียน
+            ลองทำงานในเดโมด้วยข้อมูลสมมติ ก่อนขอให้ทีมงานประเมินการติดตั้ง
           </p>
+          <div className="school-package-hero-estimate">
+            <strong>{schoolPackagePriceLabel}</strong>
+            <span>งบประเมินต่อระบบ ยืนยันตามขอบเขตในใบเสนอราคา</span>
+          </div>
           <div className="school-store-actions">
-            <Link className="btn" href="/products">
-              ดูระบบทั้งหมด <ArrowRight size={17} />
+            <Link className="btn" href={quoteHref()}>
+              ขอใบเสนอราคาติดตั้ง <ArrowRight size={17} />
             </Link>
             <Link className="btn ghost" href="/demo">
-              ทดลองใช้งาน <ArrowUpRight size={16} />
+              ทดลองดูตัวอย่าง (Demo) <ArrowUpRight size={16} />
             </Link>
           </div>
           <Link
@@ -115,7 +116,7 @@ export default async function Home() {
         {source !== "database" && (
           <p className="notice">
             {source === "roadmap"
-              ? "โปรแกรมที่เปิดรับออเดอร์ขอใบเสนอราคาได้ ทีมงานยืนยันขอบเขตและการติดตั้งก่อนสั่งซื้อ"
+              ? "เปิดรับประเมินแพ็กเกจโรงเรียน ทีมงานยืนยันขอบเขต ราคา และกำหนดส่งก่อนรับงาน"
               : "ไม่สามารถโหลดแคตตาล็อกจากฐานข้อมูลได้ในขณะนี้"}
           </p>
         )}
@@ -128,14 +129,14 @@ export default async function Home() {
       <HomeStats
         stats={[
           {
-            value: products.length,
-            label: "โปรแกรมในแคตตาล็อก",
-            detail: "ดูสถานะและแผนพัฒนาในหน้าสินค้า",
+            value: featured.length,
+            label: "แพ็กเกจที่รับประเมิน",
+            detail: "ตกลงขอบเขตและราคาก่อนเริ่มงาน",
           },
           {
-            value: productDemos.length,
+            value: productDemos.length + 1,
             label: "ระบบที่เปิดทดลองได้",
-            detail: "ใช้ข้อมูลสมมติในเบราว์เซอร์",
+            detail: "ใช้ข้อมูลสมมติ รวม MET Vote ที่เป็นเดโมเท่านั้น",
           },
           {
             value: productDemos.filter(
@@ -152,7 +153,7 @@ export default async function Home() {
           <MonitorSmartphone size={20} /> ใช้งานได้ทุกอุปกรณ์
         </div>
         <div>
-          <Code2 size={20} /> ปรับแต่ง Source Code ได้
+          <Code2 size={20} /> ตั้งค่าตามขอบเขตโรงเรียน
         </div>
         <div>
           <ShieldCheck size={20} /> สิทธิ์เข้าถึงข้อมูลตามหน้าที่
@@ -175,13 +176,13 @@ export default async function Home() {
             ],
             [
               "02",
-              "สั่งซื้ออย่างมั่นใจ",
-              "เมื่อเปิดจำหน่ายแล้ว ชำระตามยอดคำสั่งซื้อที่ระบบคำนวณ",
+              "ขอใบเสนอราคา",
+              "แจ้งระบบที่สนใจ จำนวนผู้ใช้ และเอกสารที่โรงเรียนต้องการ ทีมงานจะประเมินขอบเขตและราคา",
             ],
             [
               "03",
-              "ดาวน์โหลดและติดตั้ง",
-              "รับสิทธิ์ดาวน์โหลดหลังตรวจสอบการชำระ พร้อมคู่มือภาษาไทย",
+              "ยืนยันขอบเขตและติดตั้ง",
+              "ทีมงานนัดติดตั้ง ตั้งค่า และแนะนำการใช้งานตามใบเสนอราคาที่ตกลง",
             ],
           ].map(([n, h, t]) => (
             <div key={n}>

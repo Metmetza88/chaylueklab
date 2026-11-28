@@ -1,14 +1,20 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Check, ArrowUpRight } from "lucide-react";
+import { Check, ArrowUpRight, ClipboardList } from "lucide-react";
 import AddToCart from "@/components/AddToCart";
 import ProductPreview from "@/components/ProductPreview";
+import { AddToQuote } from "@/components/QuoteSelection";
 import { storeOffer } from "@/lib/store-offers";
 import { quoteHref } from "@/lib/marketplace";
-import { getProducts, baht } from "@/lib/shop";
+import { getProducts } from "@/lib/shop";
 import { paymentMode } from "@/lib/env";
 import ProductGallery from "@/components/ProductGallery";
 import { productDemos } from "@/lib/product-demos";
+import {
+  isSchoolPackage,
+  schoolPackageDetails,
+  schoolPackagePriceLabel,
+} from "@/lib/school-packages";
 
 const screenshots: Record<string, { file: string; label: string }[]> = {
   "met-school-pro": [
@@ -21,6 +27,7 @@ const screenshots: Record<string, { file: string; label: string }[]> = {
     { file: "met-admission-pdf.png", label: "ใบสมัคร PDF ตัวอย่าง" },
   ],
 };
+
 export default async function Product({
   params,
 }: {
@@ -32,7 +39,11 @@ export default async function Product({
   if (!p) notFound();
   const hasDemo = productDemos.some((demo) => demo.slug === slug);
   const images = screenshots[slug];
+  const schoolPackage = isSchoolPackage(slug);
   const offer = storeOffer(p.slug, p.status);
+  const hasExistingPurchase =
+    p.status === "ready" && paymentMode() !== "disabled";
+
   return (
     <section className="section">
       <div className="breadcrumbs">
@@ -51,53 +62,99 @@ export default async function Product({
           <h1>{p.name}</h1>
           <h2>{p.tagline}</h2>
           <p className="muted">{p.description}</p>
-          <span className={`status market-offer-${offer.kind}`}>
-            {offer.label}
+          <span
+            className={`status market-offer-${schoolPackage ? "order" : offer.kind}`}
+          >
+            {schoolPackage
+              ? "เปิดรับประเมินงาน"
+              : hasExistingPurchase
+                ? "ติดต่อเพื่อเช็กความพร้อม"
+                : offer.label}
           </span>
-          <div className="detail-price">
-            {offer.kind === "order" ? "ขอใบเสนอราคา" : baht(p.price_cents)}
-            <small>{offer.priceLabel}</small>
-          </div>
-          {p.status === "ready" && paymentMode() !== "disabled" ? (
-            <AddToCart id={p.id} />
+          {schoolPackage ? (
+            <div className="detail-price school-package-detail-price">
+              {schoolPackagePriceLabel}
+              <small>
+                งบประเมินแพ็กเกจต่อระบบ ไม่ใช่ราคายืนยัน
+                ทีมงานตกลงขอบเขตและกำหนดส่งกับโรงเรียนก่อนรับงาน
+              </small>
+            </div>
           ) : (
-            <p className="notice">
-              {offer.kind === "order"
-                ? "รับประเมินและสั่งทำตามสเปกโรงเรียน ยืนยันราคา กำหนดส่ง และรายละเอียดติดตั้งในใบเสนอราคา"
-                : "ยังไม่รับชำระเงินสำหรับสินค้านี้"}
-            </p>
+            <p className="notice">โปรดสอบถามความพร้อมและขอบเขตงานก่อนจัดซื้อ</p>
           )}
           <ul className="feature-list">
             {p.features.map((f) => (
               <li key={f}>
-                <Check size={17} />
+                <Check size={17} aria-hidden="true" />
                 {f}
               </li>
             ))}
           </ul>
           <div className="market-links">
-            {hasDemo && (
-              <Link className="btn ghost" href={`/demo/${slug}`}>
-                ทดลองดูตัวอย่าง (Demo) <ArrowUpRight size={18} />
+            {schoolPackage && (
+              <Link className="btn" href={quoteHref(slug)}>
+                ขอใบเสนอราคา <ClipboardList size={16} aria-hidden="true" />
               </Link>
             )}
-            <Link className="btn" href={quoteHref(slug)}>
-              ขอใบเสนอราคา
-            </Link>
+            {hasDemo && (
+              <Link className="btn ghost" href={`/demo/${slug}`}>
+                ทดลองดูตัวอย่าง (Demo){" "}
+                <ArrowUpRight size={18} aria-hidden="true" />
+              </Link>
+            )}
+            {schoolPackage ? (
+              <AddToQuote slug={slug} />
+            ) : (
+              <Link className="btn ghost" href="/contact">
+                ติดต่อสอบถาม
+              </Link>
+            )}
           </div>
+          {hasDemo && (
+            <p className="muted">
+              เดโมใช้ข้อมูลสมมติ
+              ไม่ใช่ระบบที่ติดตั้งและตรวจรับแล้วสำหรับโรงเรียนของคุณ
+            </p>
+          )}
+          {hasExistingPurchase && (
+            <details className="panel product-legacy-purchase">
+              <summary>ซื้อไฟล์หรือจัดการรายการเดิม</summary>
+              <p className="muted">
+                ระบบสั่งซื้อไฟล์เดิม แยกจากแพ็กเกจติดตั้งตามใบเสนอราคา
+              </p>
+              <AddToCart id={p.id} />
+            </details>
+          )}
         </div>
       </div>
       <div className="info-grid">
         <section className="panel">
-          <h2>ขอบเขตการส่งมอบ</h2>
-          <p>
-            Source Code, ฐานข้อมูล, ระบบผู้ดูแล, คู่มือติดตั้งและใช้งานภาษาไทย,
-            ไฟล์ ZIP พร้อมเวอร์ชันและประวัติอัปเดต
-          </p>
-          <p className="muted">
-            จะระบุเวอร์ชันพร้อมขายเมื่อทดสอบและผ่านการตรวจรับ release
-            แล้วเท่านั้น
-          </p>
+          <h2>
+            {schoolPackage ? "ขอบเขตแพ็กเกจพร้อมติดตั้ง" : "ขอบเขตการส่งมอบ"}
+          </h2>
+          {schoolPackage ? (
+            <>
+              <ul className="feature-list">
+                {schoolPackageDetails.map((detail) => (
+                  <li key={detail}>{detail}</li>
+                ))}
+              </ul>
+              <p className="muted">
+                สิ่งที่จะส่งมอบ สิทธิ์การใช้งาน การนำเข้าข้อมูล และวันส่งงาน
+                จะแจ้งไว้ในใบเสนอราคาและยืนยันก่อนเริ่มงาน
+              </p>
+            </>
+          ) : (
+            <>
+              <p>
+                รายการที่อาจส่งมอบ ได้แก่ Source Code, ฐานข้อมูล, ระบบผู้ดูแล,
+                คู่มือภาษาไทย และไฟล์ ZIP ตามรุ่นที่ตกลง
+              </p>
+              <p className="muted">
+                จะระบุเวอร์ชันพร้อมขายเมื่อทดสอบและตรวจรับแล้วเท่านั้น
+              </p>
+            </>
+          )}
         </section>
         <section className="panel">
           <h2>สิทธิ์การใช้งาน</h2>

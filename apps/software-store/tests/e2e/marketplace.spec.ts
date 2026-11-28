@@ -54,14 +54,23 @@ test("product quote keeps the product context and opens the existing LINE channe
   await expect(
     dialog.getByText("เอกสารประกอบการเบิกงบโครงการกีฬาสี"),
   ).toBeVisible();
-  await expect(dialog.getByText("ประเมินตามขอบเขตงาน")).toBeVisible();
+  await expect(dialog.getByText("3,500–8,900 บาท")).toBeVisible();
   await dialog.getByRole("link", { name: "ขอใบเสนอราคา", exact: true }).click();
   await expect(page).toHaveURL(/\/contact\?product=met-sport#quotation$/);
   await expect(page.getByLabel("ข้อความสำหรับส่งทาง LINE")).toHaveValue(
     /MET Sport/,
   );
   await expect(
-    page.getByRole("link", { name: "เปิด LINE OA @125cbuuu" }),
+    page.getByRole("link", { name: "เปิด LINE OA @125cbuuu", exact: true }),
+  ).toHaveAttribute(
+    "href",
+    /^https:\/\/line\.me\/R\/oaMessage\/%40125cbuuu\/\?/,
+  );
+  await expect(
+    page.getByRole("link", {
+      name: "เปิด LINE OA แบบปกติ / เพิ่มเพื่อน",
+      exact: true,
+    }),
   ).toHaveAttribute("href", "https://lin.ee/Vgg2m3N");
 });
 
@@ -86,7 +95,7 @@ test("shop chat answers prices and procurement and fixed navigation reaches the 
 
   await expect(page.getByRole("link", { name: "แชท LINE" })).toHaveAttribute(
     "href",
-    "https://lin.ee/Vgg2m3N",
+    /^https:\/\/line\.me\/R\/oaMessage\/%40125cbuuu\/\?/,
   );
   await page.getByRole("button", { name: "🤖 ถามได้เลย!" }).click();
   const dialog = page.getByRole("dialog", { name: "ถามเรื่องราคาและเบิกงบ" });
@@ -94,7 +103,7 @@ test("shop chat answers prices and procurement and fixed navigation reaches the 
   await question.fill("MET Sport ราคาเท่าไหร่");
   await question.press("Enter");
   await expect(dialog.getByRole("log")).toContainText(
-    "MET Sport เปิดรับออเดอร์",
+    "MET Sport แพ็กเกจโรงเรียน 3,500–8,900 บาท (ประมาณการต่อระบบ)",
   );
   await dialog
     .getByRole("button", { name: "เอกสารเบิกงบ", exact: true })
@@ -108,12 +117,20 @@ test("shop chat answers prices and procurement and fixed navigation reaches the 
   ).toHaveAttribute("href", "/contact?product=met-sport#quotation");
 });
 
-test("a school can combine three programs and send one prepared LINE request", async ({
+test("a school can review three packages while private fields stay out of the LINE URL", async ({
   page,
+  context,
 }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/products");
-  const products = ["met-sport", "met-certificate", "met-attendance"];
-  for (const slug of products) {
+  await page.evaluate(() =>
+    localStorage.setItem(
+      "chaylueklab-quote-selection",
+      JSON.stringify({ "met-certificate": "files" }),
+    ),
+  );
+  await page.reload();
+  for (const slug of ["met-sport", "met-admission", "met-attendance"]) {
     await page
       .locator(`[data-product-slug="${slug}"]`)
       .getByRole("button", { name: "เพิ่มลงใบเสนอราคา" })
@@ -123,25 +140,99 @@ test("a school can combine three programs and send one prepared LINE request", a
   await expect(page).toHaveURL(/\/contact#quotation$/);
   await page.reload();
   const quote = page.getByRole("region", { name: "ตะกร้าใบเสนอราคา (3)" });
-  await expect(
-    quote.getByText("MET Certificate", { exact: true }),
-  ).toBeVisible();
-  await quote.getByLabel("แพ็กเกจ").first().selectOption("service");
-  await expect(quote.locator(".quote-estimate")).toContainText("–");
+  await expect(quote.getByText("MET Certificate", { exact: true })).toHaveCount(
+    0,
+  );
+  await expect(quote.getByText(/มี 1 รายการที่บันทึกไว้/)).toBeVisible();
+  await expect(quote.locator(".quote-estimate")).toContainText(
+    "10,500–26,700 บาท",
+  );
+  await expect(quote.getByLabel("แพ็กเกจ", { exact: true })).toHaveCount(0);
+
+  const prepare = quote.getByRole("button", {
+    name: "เตรียมคำขอใบเสนอราคารวม",
+  });
+  await prepare.click();
+  await expect(quote.getByLabel("ข้อความสำหรับส่งทาง LINE")).toHaveCount(0);
   await quote.getByLabel("ชื่อโรงเรียน").fill("โรงเรียนตัวอย่าง");
+  await quote.getByLabel("ชื่อผู้ติดต่อ").fill("ผู้ประสานงานตัวอย่าง");
   await quote.getByLabel("เบอร์โทร").fill("0840000000");
-  await quote.getByRole("button", { name: "เตรียมคำขอใบเสนอราคารวม" }).click();
+  await quote.getByLabel("แหล่งงบประมาณ").selectOption("learner-development");
+  await quote.getByLabel(/ช่วงงบประมาณ/).selectOption("unknown");
+  await quote.getByLabel(/รายละเอียดโครงการ/).fill("หมายเหตุส่วนตัวสมมติ");
+
+  const requests: string[] = [];
+  page.on("request", (req) =>
+    requests.push(req.url() + (req.postData() ?? "")),
+  );
+  await prepare.click();
   const message = quote.getByLabel("ข้อความสำหรับส่งทาง LINE");
-  await expect(message).toHaveValue(/โรงเรียนตัวอย่าง/);
-  for (const name of ["MET Sport", "MET Certificate", "MET Attendance"]) {
-    await expect(message).toHaveValue(new RegExp(name));
-  }
-  const link = await quote
-    .getByRole("link", { name: /เปิด LINE เพื่อส่งคำขอรวม/ })
-    .getAttribute("href");
-  expect(decodeURIComponent(link ?? "")).toContain(
+  const draft = await message.inputValue();
+  for (const expected of [
+    "โรงเรียนตัวอย่าง",
+    "ผู้ประสานงานตัวอย่าง",
+    "0840000000",
+    "หมายเหตุส่วนตัวสมมติ",
+    "MET Sport",
+    "MET Admission",
+    "MET Attendance",
+    "แหล่งงบประมาณ: งบกิจกรรมพัฒนาผู้เรียน",
+    "ยังไม่ทราบ / ยังไม่กำหนด",
+    "ยอดประเมินเบื้องต้น: 10,500–26,700 บาท (ไม่ใช่ราคายืนยัน)",
+  ])
+    expect(draft).toContain(expected);
+  await quote.getByRole("button", { name: "คัดลอกข้อความ" }).click();
+  await expect(quote.getByText("คัดลอกข้อความแล้ว")).toBeVisible();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(draft);
+
+  const external = quote.getByRole("link", {
+    name: /เปิด LINE เพื่อส่งคำขอรวม/,
+  });
+  const href = await external.getAttribute("href");
+  expect(decodeURIComponent(href ?? "")).toContain(
     "/oaMessage/@125cbuuu/?ขอใบเสนอราคารวม",
   );
+  for (const safe of [
+    "MET Sport",
+    "MET Admission",
+    "MET Attendance",
+    "10,500–26,700 บาท",
+  ]) {
+    expect(decodeURIComponent(href ?? "")).toContain(safe);
+  }
+  await expect(external).toHaveAttribute("referrerpolicy", "no-referrer");
+  // The live app handoff requires an installed LINE client. Validate clipboard in
+  // a real click while suppressing external navigation from this test.
+  await page.evaluate(() => {
+    document.addEventListener("click", (event) => event.preventDefault(), {
+      once: true,
+    });
+    return navigator.clipboard.writeText("");
+  });
+  await external.click();
+  await expect(
+    quote.getByText("คัดลอกข้อความฉบับเต็มแล้ว", { exact: false }),
+  ).toBeVisible();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(draft);
+  await expect(
+    quote.getByRole("link", { name: "เปิด LINE OA แบบปกติ", exact: true }),
+  ).toHaveAttribute("href", "https://lin.ee/Vgg2m3N");
+  const locallySaved = await page.evaluate(() =>
+    localStorage.getItem("chaylueklab-quote-selection"),
+  );
+  for (const privateField of [
+    "โรงเรียนตัวอย่าง",
+    "ผู้ประสานงานตัวอย่าง",
+    "0840000000",
+    "หมายเหตุส่วนตัวสมมติ",
+    "งบกิจกรรมพัฒนาผู้เรียน",
+  ]) {
+    expect(decodeURIComponent(href ?? "")).not.toContain(privateField);
+    expect(locallySaved).not.toContain(privateField);
+    expect(requests.join("\n")).not.toContain(privateField);
+  }
+  await quote.getByLabel("ชื่อโรงเรียน").fill("แก้ชื่อโรงเรียน");
+  await expect(message).toHaveCount(0);
 });
 
 test("all procurement samples download and the sports demo updates scores", async ({
@@ -154,6 +245,15 @@ test("all procurement samples download and the sports demo updates scores", asyn
     .getByRole("button", { name: "เอกสารเบิกงบ" })
     .click();
   const docs = page.getByRole("dialog", { name: "เอกสารเบิกงบ" });
+  await expect(
+    docs.getByRole("link", { name: "ขอรับไฟล์ตัวอย่างทาง LINE" }),
+  ).toHaveAttribute(
+    "href",
+    /^https:\/\/line\.me\/R\/oaMessage\/%40125cbuuu\/\?/,
+  );
+  await expect(
+    docs.getByRole("link", { name: "เพิ่มเพื่อน LINE OA" }),
+  ).toHaveAttribute("href", "https://lin.ee/Vgg2m3N");
   const links = await docs
     .locator("a[download]")
     .evaluateAll((nodes) =>

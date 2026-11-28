@@ -1,24 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useRef, useState } from "react";
+import { useId, useRef } from "react";
 import { quoteHref } from "@/lib/marketplace";
-import type { storeOffer } from "@/lib/store-offers";
-import { DialogTitle, StoreDialogButton } from "./StoreDialogs";
 import {
-  AddToQuote,
-  PackageChoice,
-  PackageDetails,
-  QuoteCartLink,
-  useQuoteSelection,
-} from "./QuoteSelection";
+  isSchoolPackage,
+  schoolPackagePriceLabel,
+} from "@/lib/school-packages";
+import { DialogTitle, StoreDialogButton } from "./StoreDialogs";
+import { AddToQuote, QuoteCartLink } from "./QuoteSelection";
 import {
   distributor,
   lineId,
   shopLocation,
   shopPhone,
 } from "@/lib/procurement";
-import type { QuotePlan } from "@/lib/quote";
 
 export default function ProductQuote({
   slug,
@@ -26,8 +22,6 @@ export default function ProductQuote({
   hasDemo,
   description,
   features,
-  price,
-  offer,
   sport,
 }: {
   slug: string;
@@ -35,28 +29,37 @@ export default function ProductQuote({
   hasDemo: boolean;
   description: string;
   features: string[];
-  price: string;
-  offer: ReturnType<typeof storeOffer>;
   sport: boolean;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
   const title = useId();
-  const selected = useQuoteSelection();
-  const [plan, setPlan] = useState<QuotePlan>("files");
+  const schoolPackage = isSchoolPackage(slug);
+
   return (
     <>
       <button
+        ref={trigger}
         className="market-primary market-card-cta"
         type="button"
         aria-haspopup="dialog"
-        onClick={() => {
-          setPlan(selected[slug] ?? "files");
-          dialog.current?.showModal();
+        onClick={() => dialog.current?.showModal()}
+      >
+        {schoolPackage ? "ดูรายละเอียด / ขอใบเสนอราคา" : "ดูรายละเอียด"}
+      </button>
+      <dialog
+        ref={dialog}
+        className="market-dialog"
+        aria-labelledby={title}
+        onClose={() => {
+          if (
+            document.activeElement === dialog.current ||
+            document.activeElement === document.body
+          ) {
+            trigger.current?.focus();
+          }
         }}
       >
-        ดูรายละเอียด / ขอใบเสนอราคา
-      </button>
-      <dialog ref={dialog} className="market-dialog" aria-labelledby={title}>
         <DialogTitle id={title} title={name} />
         <p>{description}</p>
         {features.length > 0 && (
@@ -72,37 +75,44 @@ export default function ProductQuote({
               ? "เอกสารประกอบการเบิกงบโครงการกีฬาสี"
               : "เอกสารประกอบการเบิกงบโครงการ"}
           </strong>
-          <p className="market-quote-price">
-            <strong>{offer.kind === "order" ? offer.label : price}</strong>
-            <span>{offer.priceLabel}</span>
-          </p>
+          {schoolPackage && (
+            <p className="market-quote-price">
+              <strong>{schoolPackagePriceLabel}</strong>
+              <span>งบประเมินต่อระบบ · ประเมินตามขอบเขตงาน</span>
+            </p>
+          )}
           <p>
             แจ้งขอบเขตงาน จำนวนผู้ใช้ และรายการเอกสารที่โรงเรียนต้องการ
-            ทีมงานจะยืนยันราคาและขอบเขตก่อนส่งใบเสนอราคา
+            ทีมงานจะยืนยันราคา ขอบเขต และกำหนดส่งก่อนรับงาน
           </p>
         </div>
-        <div className="market-budget">
-          <PackageChoice value={plan} onChange={setPlan} filesPrice={price} />
-          <PackageDetails plan={plan} />
-          <div className="market-links">
-            <AddToQuote slug={slug} plan={plan} />
-            <QuoteCartLink />
+        {schoolPackage && (
+          <div className="market-budget">
+            <strong>แพ็กเกจระบบโรงเรียนพร้อมติดตั้ง</strong>
+            <p>
+              รวมติดตั้ง ตั้งค่าตามขอบเขต แนะนำการใช้งาน และเอกสารตามข้อตกลง
+            </p>
+            <div className="market-links">
+              <AddToQuote slug={slug} />
+              <QuoteCartLink />
+            </div>
           </div>
-        </div>
+        )}
         <p>
           ออกเอกสารในนาม {distributor} · {shopLocation} ·{" "}
           <a href={shopPhone.href}>โทร {shopPhone.label}</a> · LINE OA {lineId}
         </p>
         <p className="muted">
-          รองรับการจัดซื้อวิธีเฉพาะเจาะจงตามระเบียบและเงื่อนไขที่สถานศึกษากำหนด
+          เอกสารประกอบการจัดซื้อเป็นไปตามเงื่อนไขที่สถานศึกษากำหนด
+          โรงเรียนเป็นผู้ตรวจสอบและอนุมัติการเบิกจ่าย
         </p>
         <div className="market-links">
           <Link
             className="market-primary"
-            href={quoteHref(slug)}
+            href={schoolPackage ? quoteHref(slug) : "/contact"}
             onClick={() => dialog.current?.close()}
           >
-            ขอใบเสนอราคา
+            {schoolPackage ? "ขอใบเสนอราคา" : "ติดต่อสอบถาม"}
           </Link>
           <StoreDialogButton
             name="procurement"

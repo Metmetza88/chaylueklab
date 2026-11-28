@@ -26,3 +26,33 @@
   font-size: 12px;
   line-height: 1.6;
 }
+
+.highlights {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding-inline-start: 1.2rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.voteScreenshot {
+  flex: 0 1 280px;
+  max-width: 100%;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface2);
+}
+.voteScreenshot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}

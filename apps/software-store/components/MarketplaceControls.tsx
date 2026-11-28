@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
 import {
-  lineContact,
   matchesProduct,
   quoteHref,
   sportSlug,
@@ -24,7 +23,8 @@ import {
 } from "@/lib/marketplace";
 
 import { DialogTitle, StoreDialogButton } from "./StoreDialogs";
-import { storeOffer } from "@/lib/store-offers";
+import { helperLine, storeInquiryLine } from "@/lib/procurement";
+import { schoolPackagePriceLabel } from "@/lib/school-packages";
 
 const quote = quoteHref();
 
@@ -41,9 +41,6 @@ export function MarketplaceHeader({
   const matches = query.trim()
     ? products.filter((product) => matchesProduct(product, query))
     : [];
-  const readyCount = products.filter(
-    (product) => product.status === "ready",
-  ).length;
   return (
     <div className="market-header-actions">
       <button
@@ -126,9 +123,7 @@ export function MarketplaceHeader({
         <p>
           {source === "error"
             ? "ไม่สามารถโหลดสถานะแคตตาล็อกได้ในขณะนี้"
-            : readyCount
-              ? `มี ${readyCount} โปรแกรมพร้อมจำหน่าย ดูสถานะล่าสุดได้จากรายการระบบ`
-              : "โปรแกรมอยู่ระหว่างพัฒนา ดูสถานะและราคาเป้าหมายได้จากแคตตาล็อก"}
+            : "ดูเดโมแพ็กเกจโรงเรียนและขอใบเสนอราคาเพื่อประเมินขอบเขตงาน"}
         </p>
         <div className="market-links">
           <Link href="/products?q=กีฬาสี" onClick={() => news.current?.close()}>
@@ -157,7 +152,7 @@ const replies = [
   ],
   [
     /ราคา|งบ|บาท|กีฬาสี/,
-    "ราคาเป้าหมายบนการ์ดเป็นข้อมูลวางแผนสำหรับโปรแกรมที่ยังไม่เปิดขาย ราคาของงานกีฬาสีให้ทีมประเมินจากจำนวนทีม รายการแข่ง และงานที่ต้องการครับ",
+    "ยอดบนการ์ดเป็นราคาประเมินต่อระบบ ทีมงานจะยืนยันตามขอบเขตงานและเอกสารที่ต้องการก่อนออกใบเสนอราคาครับ",
   ],
   [
     /เดโม|ทดลอง/,
@@ -203,20 +198,22 @@ export default function MarketplaceDock({
       (p) =>
         text.includes(p.name.toLocaleLowerCase("th")) ||
         text.includes(p.slug) ||
-        text.includes(p.tagline.toLocaleLowerCase("th")) ||
+        (p.tagline.trim().length > 0 &&
+          text.includes(p.tagline.toLocaleLowerCase("th"))) ||
         (p.slug === sportSlug && text.includes("กีฬาสี")),
     );
     const product = named ?? products.find((p) => p.slug === selectedSlug);
     const pricing = /ราคา|เท่าไหร่|เท่าไร|กี่บาท|ค่าใช้จ่าย/u.test(
       text.replaceAll("ใบเสนอราคา", ""),
     );
-    const offer = product && storeOffer(product.slug, product.status);
     const priceReply =
       product &&
       (pricing ||
         (named && !/เอกสาร|เบิก|จัดซื้อ|ใบเสนอราคา|เดโม|ทดลอง/u.test(text)))
-        ? `${product.name} ${offer?.kind === "order" ? "เปิดรับออเดอร์ ขอใบเสนอราคาตามขอบเขตงานได้ครับ" : `${offer?.priceLabel} ${product.price}`}`
-        : "";
+        ? `${product.name} แพ็กเกจโรงเรียน ${schoolPackagePriceLabel} (ประมาณการต่อระบบ)`
+        : pricing
+          ? `แพ็กเกจโรงเรียน ${schoolPackagePriceLabel} (ประมาณการต่อระบบ)`
+          : "";
     const reply =
       replies.find(([pattern]) => pattern.test(question))?.[1] ??
       "ผมช่วยตอบเรื่องราคา เอกสารเบิกงบ และเดโมได้ครับ ถ้าเป็นคำถามเฉพาะโครงการ กดคุยกับทีมงานทาง LINE ได้เลย";
@@ -250,9 +247,10 @@ export default function MarketplaceDock({
       </button>
       <a
         className="market-line"
-        href={lineContact}
+        href={storeInquiryLine}
         target="_blank"
         rel="noopener noreferrer"
+        referrerPolicy="no-referrer"
         aria-label="แชท LINE"
       >
         <MessageCircle size={25} aria-hidden="true" />
@@ -296,7 +294,7 @@ export default function MarketplaceDock({
         aria-labelledby="market-chat-title"
       >
         <DialogTitle id="market-chat-title" title="ถามเรื่องราคาและเบิกงบ" />
-        <p>ผู้ช่วยตอบคำถามอัตโนมัติในหน้านี้</p>
+        <p>ผู้ช่วยตอบคำถามอัตโนมัติบนหน้านี้ ไม่ได้ส่งข้อความไปยัง LINE</p>
         <div className="market-links">
           {["ราคากีฬาสี", "เอกสารเบิกงบ", "ขอใบเสนอราคา"].map((q) => (
             <button key={q} type="button" onClick={() => ask(q)}>
@@ -352,7 +350,12 @@ export default function MarketplaceDock({
           >
             เอกสารเบิกงบ
           </StoreDialogButton>
-          <a href={lineContact} target="_blank" rel="noopener noreferrer">
+          <a
+            href={helperLine}
+            target="_blank"
+            rel="noopener noreferrer"
+            referrerPolicy="no-referrer"
+          >
             คุยกับทีมงานทาง LINE
           </a>
         </div>

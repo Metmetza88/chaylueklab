@@ -4,7 +4,12 @@ import Link from "next/link";
 import { createContext, useContext, useRef, type ReactNode } from "react";
 import { X } from "lucide-react";
 import { lineContact, procurementHref } from "@/lib/marketplace";
-import { lineId, localService, shopPhone } from "@/lib/procurement";
+import {
+  lineId,
+  localService,
+  shopPhone,
+  storeInquiryLine,
+} from "@/lib/procurement";
 import ProcurementDocuments from "./ProcurementDocuments";
 
 type DialogName = "procurement" | "contact";
@@ -93,13 +98,22 @@ export default function StoreDialogs({ children }: { children: ReactNode }) {
         <div className="market-links">
           <a
             className="market-primary"
-            href={lineContact}
+            href={storeInquiryLine}
             target="_blank"
             rel="noopener noreferrer"
+            referrerPolicy="no-referrer"
           >
             LINE OA {lineId}
           </a>
-          <a href={shopPhone.href}>โทร {shopPhone.label}</a>
+          <a
+            href={lineContact}
+            target="_blank"
+            rel="noopener noreferrer"
+            referrerPolicy="no-referrer"
+          >
+            เพิ่มเพื่อน LINE OA
+          </a>
+          <a href={shopPhone.href}>โทรสอบถามร้าน {shopPhone.label}</a>
           <Link
             href="/contact#quotation"
             onClick={() => contact.current?.close()}

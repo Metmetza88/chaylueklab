@@ -48,10 +48,16 @@ export default function ProcurementDocuments() {
           href={procurementLine}
           target="_blank"
           rel="noopener noreferrer"
+          referrerPolicy="no-referrer"
         >
           ขอรับไฟล์ตัวอย่างทาง LINE
         </a>
-        <a href={lineContact} target="_blank" rel="noopener noreferrer">
+        <a
+          href={lineContact}
+          target="_blank"
+          rel="noopener noreferrer"
+          referrerPolicy="no-referrer"
+        >
           เพิ่มเพื่อน LINE OA
         </a>
       </div>

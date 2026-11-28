@@ -6,15 +6,18 @@ import { Copy } from "lucide-react";
 export default function QuoteMessage({
   product,
   prepared,
+  draft,
 }: {
   product?: string;
   prepared?: string;
+  draft?: string;
 }) {
   const id = useId();
   const field = useRef<HTMLTextAreaElement>(null);
   const [status, setStatus] = useState("");
   const message =
     prepared ??
+    draft ??
     [
       "ขอใบเสนอราคาสำหรับโรงเรียน",
       `ระบบที่สนใจ: ${product ?? ""}`,
@@ -29,8 +32,10 @@ export default function QuoteMessage({
       await navigator.clipboard.writeText(field.current?.value ?? message);
       setStatus("คัดลอกข้อความแล้ว");
     } catch {
-      field.current?.focus();
-      field.current?.select();
+      const input = field.current;
+      input?.focus();
+      input?.select();
+      input?.setSelectionRange(0, input.value.length);
       setStatus("เลือกข้อความแล้ว สามารถคัดลอกได้จากเมนูของอุปกรณ์");
     }
   }
@@ -44,7 +49,7 @@ export default function QuoteMessage({
         ref={field}
         defaultValue={message}
         readOnly={Boolean(prepared)}
-        rows={6}
+        rows={draft ? 7 : 6}
         maxLength={1500}
       />
       <button className="btn ghost" type="button" onClick={copyMessage}>
