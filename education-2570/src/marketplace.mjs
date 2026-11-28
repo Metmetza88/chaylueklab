@@ -1,3 +1,5 @@
+export const lineMessage = message => `https://line.me/R/oaMessage/%40125cbuuu/?${encodeURIComponent(message)}`;
+export const procurementLine = lineMessage('สวัสดีครับ ขอรับไฟล์ตัวอย่างเอกสารเบิกงบสำหรับโรงเรียนครับ');
 export const procurementDocs = 'https://store.chaylueklab.com/school-systems#procurement-samples';
 export const sports = {
   slug: 'met-sport',
@@ -9,7 +11,7 @@ export const sports = {
   image: '/assets/met-sport-demo.webp',
   features: ['จัดทีมสี', 'บันทึกผลแข่งขัน'],
   price: 'ขอใบเสนอราคา',
-  offer: 'เปิดรับออเดอร์',
+  offer: 'เปิดรับออเดอร์ · พร้อมวางระบบ',
   demo: 'https://store.chaylueklab.com/demo/met-sport',
   limitations: 'เดโมใช้ข้อมูลสมมติ ร้านจะยืนยันราคา วันติดตั้ง และขอบเขตในใบเสนอราคา',
   detail: 'https://store.chaylueklab.com/products/met-sport',

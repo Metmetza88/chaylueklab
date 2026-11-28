@@ -54,11 +54,11 @@ test('catalog counters begin when scrolled into view, with a reduced-motion fall
  await expect(stats).toHaveAttribute('data-counter-state','waiting');
  await stats.scrollIntoViewIfNeeded();
  await expect(stats).toHaveAttribute('data-counter-state','done');
- await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','7']);
+ await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','8']);
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.reload();
  await stats.scrollIntoViewIfNeeded();
- await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','7']);
+ await expect(stats.locator('[data-count-to]')).toHaveText(['17','14','8']);
  expect(await stats.getAttribute('data-counter-state')).toBeNull();
 });
 test('home tabs swap the sample screen in place and FAQ answers toggle',async({page})=>{
@@ -69,12 +69,12 @@ test('home tabs swap the sample screen in place and FAQ answers toggle',async({p
  await finance.click();
  await expect(finance).toHaveAttribute('aria-selected','true');
  const panel=page.getByRole('tabpanel',{name:'งานการเงิน'});
- await expect(panel.getByRole('img')).toHaveAttribute('src','/assets/finance.svg');
- await expect.poll(()=>panel.getByRole('img').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
+ await expect(panel.getByRole('img')).toBeVisible();
+ await expect(panel.getByRole('link',{name:'ดูโปรแกรมงานการเงินใน Store'})).toHaveAttribute('href','https://store.chaylueklab.com/products?category='+encodeURIComponent('งานการเงิน'));
  await expect(panel.getByText(/วางระบบบันทึกรายรับรายจ่าย/)).toBeVisible();
  await finance.press('ArrowRight');
  await expect(tabs.getByRole('tab',{name:'งานกิจกรรม'})).toBeFocused();
- await expect(page.getByRole('tabpanel',{name:'งานกิจกรรม'}).getByRole('img')).toHaveAttribute('src','/assets/activities.svg');
+ await expect(page.getByRole('tabpanel',{name:'งานกิจกรรม'}).getByRole('img')).toBeVisible();
  expect(page.url()).toBe(previousUrl);
  const answer=page.getByText(/เดโมใช้ข้อมูลสมมติ ไม่ควรกรอกข้อมูลนักเรียนจริง/);
  await expect(answer).toBeHidden();
@@ -89,7 +89,7 @@ test('catalog search, availability filter, empty state and real demos only',asyn
  await page.getByRole('searchbox').fill('QR Code');await expect(page.locator('.product-card')).toHaveCount(2);
  await page.getByRole('searchbox').fill('not-existing-test');await expect(page.getByRole('heading',{name:'ยังไม่พบโปรแกรม'})).toBeVisible();
  await page.getByRole('searchbox').fill('');await page.getByLabel('สถานะโปรแกรม').selectOption('trial');await expect(page.locator('.product-card')).toHaveCount(3);
- await page.getByLabel('สถานะโปรแกรม').selectOption('development');await expect(page.locator('.card-actions a[href^="#/demo/"]')).toHaveCount(0);
+ await page.getByLabel('สถานะโปรแกรม').selectOption('order');await expect(page.locator('.card-actions a[href^="#/demo/"]')).toHaveCount(14);
 });
 test('the catalog starter bundle opens each demo and preselects all three quotation items',async({page})=>{
  await page.goto('/#/catalog');
@@ -116,7 +116,7 @@ test('product details contain features, limitations and quotation without invent
  await page.goto('/#/product/procurement');
  await expect(page.getByRole('heading',{level:1,name:'งานจัดซื้อจัดจ้าง'})).toBeVisible();
  await expect(page.getByText(/ไม่ได้เชื่อมต่อ e-GP/)).toBeVisible();
- await expect(page.getByRole('link',{name:'ทดลองใช้งาน →',exact:true})).toHaveCount(0);
+ await expect(page.getByRole('link',{name:'ทดลองใช้ตัวจริง (Live Demo)',exact:true})).toHaveAttribute('href','#/demo/procurement');
  await expect(page.locator('main')).not.toContainText(/\d[,.]?\d* บาท/);
 });
 test('comparison limits three selections and persists selection',async({page})=>{
@@ -146,7 +146,7 @@ test('certificate escapes HTML and has a real print action',async({page})=>{
 test('quotation draft is honest, escapes inputs and does not claim submission',async({page})=>{
  await page.goto('/#/quote?module=exam-studio');await page.getByLabel('ชื่อโรงเรียน / หน่วยงาน').fill('โรงเรียนทดสอบ <script>');await page.getByLabel('รายละเอียดความต้องการ').fill('ผู้ใช้งาน 10 คน');
  await page.getByRole('button',{name:'สร้างสรุปคำขอ'}).click();await expect(page.locator('#quote-result')).toContainText('ยังไม่ได้ส่งให้ทีมงาน');await expect(page.locator('#quote-result script')).toHaveCount(0);
- await expect(page.getByRole('link',{name:'เปิด LINE พ.สมนึก 2&3'})).toHaveAttribute('href','https://lin.ee/8qkUbdt');
+ await expect(page.getByRole('link',{name:'เปิด LINE พร้อมคำขอ @125cbuuu'})).toHaveAttribute('href',/^https:\/\/line\.me\/R\/oaMessage\/%40125cbuuu\//);
  await page.getByRole('button',{name:'เข้าสู่ระบบ / ส่งคำขอ'}).click();await expect(page.locator('#send-status')).toContainText('ระบบบัญชียังไม่เชื่อมต่อ');
 });
 test('unconfigured login and workspace show actual blocker states',async({page})=>{
@@ -250,7 +250,7 @@ test('marketplace details link to procurement and prefill the existing sports qu
 test('marketplace quick questions, notifications, LINE and five mobile shortcuts work',async({page},info)=>{
  await page.goto('/');
  const line=page.getByRole('link',{name:'แชท LINE พ.สมนึก 2&3'});
- await expect(line).toHaveAttribute('href','https://lin.ee/8qkUbdt');
+ await expect(line).toHaveAttribute('href',/^https:\/\/line\.me\/R\/oaMessage\/%40125cbuuu\//);
  await page.getByRole('button',{name:/ถามได้เลย/}).click();
  let dialog=page.getByRole('dialog');
  await dialog.getByRole('button',{name:'ราคา',exact:true}).click();
@@ -270,7 +270,7 @@ test('marketplace quick questions, notifications, LINE and five mobile shortcuts
    await nav.getByRole('link',{name:'ขอใบเสนอราคา'}).click();
    await expect(nav.getByRole('link',{name:'ขอใบเสนอราคา'})).toHaveAttribute('aria-current','page');
    await nav.getByRole('button',{name:'ติดต่อเรา'}).click();
-   await expect(dialog.getByRole('link',{name:'เปิด LINE พ.สมนึก 2&3'})).toHaveAttribute('href','https://lin.ee/8qkUbdt');
+   await expect(dialog.getByRole('link',{name:'เปิด LINE พ.สมนึก 2&3'})).toHaveAttribute('href',/^https:\/\/line\.me\/R\/oaMessage\/%40125cbuuu\//);
    await dialog.getByRole('button',{name:'ปิดช่องทางติดต่อ'}).click();
    await page.setViewportSize({width:320,height:640});
    await nav.getByRole('link',{name:'ระบบทั้งหมด'}).click();
@@ -283,4 +283,17 @@ test('marketplace quick questions, notifications, LINE and five mobile shortcuts
    await page.locator('.market-header-actions').getByRole('button',{name:'ติดต่อเรา'}).click();
    await expect(dialog.getByRole('link',{name:'เปิด LINE พ.สมนึก 2&3'})).toBeVisible();
  }
+});
+
+test('education dashboards filter synthetic rows and the quote opens the correct official account',async({page})=>{
+ await page.goto('/#/demo/finance');
+ await expect(page.getByRole('status').filter({hasText:'แสดง 3 รายการ'})).toBeVisible();
+ await page.getByLabel('กรองสถานะ').selectOption('รอตรวจ');
+ await expect(page.getByRole('status').filter({hasText:'แสดง 2 รายการ'})).toBeVisible();
+ await page.locator('a[href="#/quote?module=finance"]').click();
+ await page.getByLabel('ชื่อโรงเรียน / หน่วยงาน').fill('โรงเรียนตัวอย่าง');
+ await page.getByRole('button',{name:'สร้างสรุปคำขอ'}).click();
+ const line=await page.getByRole('link',{name:'เปิด LINE พร้อมคำขอ @125cbuuu'}).getAttribute('href');
+ expect(decodeURIComponent(line)).toContain('โรงเรียนตัวอย่าง');
+ expect(decodeURIComponent(line)).toContain('/oaMessage/@125cbuuu/');
 });

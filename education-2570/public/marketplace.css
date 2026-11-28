@@ -124,3 +124,23 @@ h1,h2,h3,.site-header .brand{font-family:var(--market-title)}
  .market-float-chat span{padding-inline:8px}
 }
 @media print{.market-bottom,.market-float,.market-dialog{display:none!important} body{padding-bottom:0}}
+
+.edu-sample-dashboard { min-width:0; color:#f3f7ff; border:1px solid #44658e; border-radius:11px; padding:12px; background:radial-gradient(ellipse at right top,#234c79,transparent 75%),#0c213c; text-align:left; }
+.product-card[data-market-card] .edu-sample-dashboard { padding-top:44px; border:0; border-radius:0; }
+.edu-sample-dashboard header { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:9px; }
+.edu-sample-dashboard header b { color:#f4d38b; }
+.edu-sample-dashboard small { color:#bed3ed; }
+.edu-sample-metrics, .edu-sample-layout { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.edu-sample-metrics { margin-bottom:8px; }
+.edu-sample-metrics div, .edu-sample-layout > div { border:1px solid #3d6489; background:#173756; border-radius:7px; padding:6px; min-width:0; }
+.edu-sample-metrics b { display:block; color:#f7d892; }
+.edu-sample-chart > div { display:grid; gap:2px; margin-bottom:4px; }
+.edu-sample-chart span,.edu-sample-table { font-size:clamp(.65rem,1.5vw,.82rem); overflow-wrap:anywhere; }
+.edu-sample-chart i { width:var(--bar); height:5px; background:linear-gradient(90deg,#499def,#a9e9ff); border-radius:4px; }
+.edu-sample-table table { width:100%; margin:0; border-collapse:collapse; }
+.edu-sample-table :is(td,th) { color:#eff6ff; padding:3px; border-bottom:1px solid #456783; }
+.edu-sample-full { margin-block:14px; }
+.edu-sample-full label { display:block; max-width:320px; margin-block:12px; }
+.edu-sample-full select { width:100%; }
+.edu-sample-dashboard [hidden] { display:none !important; }
+@media(max-width:440px) { .edu-sample-full .edu-sample-layout { grid-template-columns:1fr; } }

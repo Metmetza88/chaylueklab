@@ -1,4 +1,5 @@
 import { modules } from './catalog.mjs';
+import { lineMessage } from './marketplace.mjs';
 import * as view from './views.mjs';
 import { isMarketplaceSearching, syncMarketplace } from './marketplace-ui.mjs';
 import { demoPage,generateQuestions,questionList,scoreAnswers,updateCertificate,quoteDraft } from '../modules/demos.mjs';
@@ -7,6 +8,7 @@ const main=document.getElementById('main');
 let compare=[];
 try { compare=JSON.parse(localStorage.getItem('edu_compare')??'[]').filter(s=>modules.some(m=>m.slug===s)).slice(0,3); } catch { compare=[]; }
 let user=null, schoolId='', draft=null, routeVersion=0, reportRows=[];
+const draftLineText = draft => ['ขอใบเสนอราคา Education 2570', `หน่วยงาน: ${draft.schoolName}`, `โปรแกรม: ${draft.products.map(product=>product.name).join(', ')}`, draft.note].filter(Boolean).join('\n');
 let config={authConfigured:false,platformEnabled:false};
 let toastTimer;
 /** แสดงข้อความสถานะที่อ่านได้ด้วย Screen Reader */
@@ -89,7 +91,10 @@ async function renderRoute() {
   else if(path==='/compare') html=view.comparison(compare);
   else if(path==='/quote') html=view.quotePage(query,compare);
   else if(path==='/demos') html=view.demos(compare);
-  else if(path.startsWith('/demo/')) html=demoPage(path.split('/')[2]);
+  else if(path.startsWith('/demo/')) {
+   const slug=path.split('/')[2], module=modules.find(item=>item.slug===slug);
+   html=module&&!module.demo?view.dashboardDemo(module):demoPage(slug);
+  }
   else if(path==='/help') html=view.help();
   else if(path==='/manual') html=view.manual();
   else if(path==='/login') {
@@ -146,7 +151,7 @@ main.addEventListener('submit',async event=>{
   const result=document.getElementById('quote-result');
   if(!slugs.length){result.textContent='กรุณาเลือกอย่างน้อย 1 โปรแกรม';return;}
   draft={schoolName:fields.get('school_name').trim(),note:fields.get('note').trim(),products:modules.filter(m=>slugs.includes(m.slug))};
-  result.innerHTML=quoteDraft(draft)+`<div class="no-print"><p>คัดลอกสรุป แล้วเปิด LINE ของ พ.สมนึก 2&3 เพื่อส่งข้อความให้ทีมงาน กรุณางดแนบข้อมูลนักเรียน</p><div class="stack-actions"><button type="button" class="secondary" data-copy-draft>คัดลอกสรุป</button><a class="button" href="https://lin.ee/8qkUbdt" target="_blank" rel="noopener noreferrer">เปิด LINE พ.สมนึก 2&3</a><button type="button" class="secondary" data-print-draft>พิมพ์สรุปคำขอ</button><button type="button" class="secondary" data-send-quote>เข้าสู่ระบบ / ส่งคำขอ</button></div><div id="send-status" role="status"></div></div>`;
+  result.innerHTML=quoteDraft(draft)+`<div class="no-print"><p>เปิด LINE พร้อมสรุป แล้วกดส่งให้ทีมงาน กรุณางดแนบข้อมูลนักเรียน</p><div class="stack-actions"><button type="button" class="secondary" data-copy-draft>คัดลอกสรุป</button><a class="button" href="${view.esc(lineMessage(draftLineText(draft)))}" data-line-draft target="_blank" rel="noopener noreferrer">เปิด LINE พร้อมคำขอ @125cbuuu</a><button type="button" class="secondary" data-print-draft>พิมพ์สรุปคำขอ</button><button type="button" class="secondary" data-send-quote>เข้าสู่ระบบ / ส่งคำขอ</button></div><div id="send-status" role="status"></div></div>`;
  }
  if(form.id==='profile-form') await submitTask(form,async()=>{
   await api('customer-profile',{body:{school_id:schoolId,contact_name:new FormData(form).get('contact_name')}});toast('บันทึกข้อมูลผู้ติดต่อแล้ว');
@@ -176,6 +181,10 @@ main.addEventListener('change',event=>{
  if(target.id==='school-select'){schoolId=target.value;if(routeInfo().path!=='/quote')void renderRoute();}
 });
 main.addEventListener('click',async event=>{
+ if(event.target.closest('[data-line-draft]')&&draft) {
+  void navigator.clipboard?.writeText(draftLineText(draft)).catch(()=>{});
+  return;
+ }
  const target=event.target.closest('button');if(!target)return;
  if(target.matches('[data-campus-tabs] [role="tab"]')){selectCampusTab(target);return;}
  if(target.hasAttribute('data-retry'))void renderRoute();
@@ -187,7 +196,7 @@ main.addEventListener('click',async event=>{
  }
  if(target.hasAttribute('data-copy-draft')&&draft){
   const status=document.getElementById('send-status');
-  const text=['ขอใบเสนอราคา Education 2570',`หน่วยงาน: ${draft.schoolName}`,`โปรแกรม: ${draft.products.map(product=>product.name).join(', ')}`,draft.note].filter(Boolean).join('\n');
+  const text=draftLineText(draft);
   try {
    await navigator.clipboard.writeText(text);
    status.textContent='คัดลอกแล้ว เปิด LINE แล้ววางข้อความเพื่อส่งคำขอ';
@@ -234,3 +243,14 @@ document.querySelector('.mobile-menu').addEventListener('click',event=>{
 window.addEventListener('afterprint',()=>{document.body.classList.remove('printing');document.querySelectorAll('.print-target').forEach(el=>el.classList.remove('print-target'));});
 window.addEventListener('hashchange',()=>{void renderRoute();if(!isMarketplaceSearching())main.focus({preventScroll:true});window.scrollTo(0,0);});
 setCompare();void renderRoute();
+
+main.addEventListener('change',event=>{
+ const filter=event.target.closest('[data-edu-demo-filter]');
+ if(!filter)return;
+ const panel=filter.closest('[data-edu-dashboard]');
+ const active=filter.value;
+ panel.querySelectorAll('[data-sample-status]').forEach(row=>{row.hidden=!!active&&row.dataset.sampleStatus!==active;});
+ const count=panel.querySelectorAll('tr[data-sample-status]:not([hidden])').length;
+ panel.querySelector('[data-edu-count]').textContent=String(count);
+ panel.querySelector('[data-edu-demo-result]').textContent=`แสดง ${count} รายการ`;
+});
