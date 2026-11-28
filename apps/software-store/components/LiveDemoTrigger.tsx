@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { Play } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import LiveDemoBanner from "./LiveDemoBanner";
 import { DialogTitle } from "./StoreDialogs";
@@ -54,7 +55,7 @@ export default function LiveDemoTrigger({
           setOpen(true);
         }}
       >
-        ทดลองใช้ตัวจริง (Live Demo)
+        <Play size={15} aria-hidden="true" /> ทดลองใช้ตัวจริง (Live Demo)
       </button>
       <dialog
         className="market-dialog live-demo-modal"

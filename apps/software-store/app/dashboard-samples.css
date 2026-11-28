@@ -223,18 +223,29 @@
   background: #176342;
   color: #f1fff7;
 }
-.live-demo-button {
+.live-demo-button,
+.market-links .live-demo-button.btn {
   background: #ebc878;
   color: #142034;
   border-color: #f5e3b6;
+  gap: 7px;
   font-weight: 650;
 }
-.live-demo-button:hover {
+.live-demo-button > svg {
+  flex: none;
+}
+.live-demo-button:hover,
+.market-links .live-demo-button.btn:hover {
   background: #f3daa0;
   color: #142034;
 }
-.market-card-demo :is(a, button) {
-  flex: 1 1 145px;
+.market-card-demo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+.market-card-demo > :is(a, button) {
+  white-space: normal;
   justify-content: center;
   text-align: center;
 }
