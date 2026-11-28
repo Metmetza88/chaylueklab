@@ -55,7 +55,7 @@ export const productDemos = [
       "บันทึกและแก้ไขผลการแข่งขัน",
       "ดูตารางคะแนนที่อัปเดตทันที",
     ],
-    preview: "/screenshots/demos/met-sport.webp",
+    preview: "/screenshots/demos/met-sport-clean.webp",
     previewAlt: "หน้าจอ MET Sport แสดงตารางแข่งขันและคะแนนทีมสีด้วยข้อมูลสมมติ",
   },
 ];

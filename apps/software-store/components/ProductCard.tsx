@@ -6,7 +6,7 @@ import ProductQuote from "./ProductQuote";
 import { AddToQuote } from "./QuoteSelection";
 import { sportSlug, sportTitle } from "@/lib/marketplace";
 import { productDemos } from "@/lib/product-demos";
-import { ArrowUpRight, School } from "lucide-react";
+import { ArrowUpRight, Monitor } from "lucide-react";
 import { type Product, baht } from "@/lib/shop";
 export default function ProductCard({ p }: { p: Product }) {
   const preview = productDemos.find((demo) => demo.slug === p.slug);
@@ -36,8 +36,9 @@ export default function ProductCard({ p }: { p: Product }) {
         </h3>
         <p>{sport ? `${p.name} · ${p.tagline}` : p.tagline}</p>
         <div className="market-card-meta">
-          <span title="ยังไม่มีจำนวนโรงเรียนที่ยืนยัน">
-            <School size={15} aria-hidden="true" /> โรงเรียนที่ใช้ · ยังไม่ระบุ
+          <span>
+            <Monitor size={15} aria-hidden="true" />{" "}
+            {preview ? "เดโมใช้ข้อมูลสมมติ" : "แสดงแนวทางการใช้งาน"}
           </span>
           <small>{preview ? "Cloud Web App" : "Web App · แผนพัฒนา"}</small>
         </div>

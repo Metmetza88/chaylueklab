@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import {
   ArrowRight,
@@ -6,7 +7,7 @@ import {
   Code2,
   ShieldCheck,
   MonitorSmartphone,
-  Check,
+  Trophy,
 } from "lucide-react";
 import { getProducts } from "@/lib/shop";
 import ProductCard from "@/components/ProductCard";
@@ -19,9 +20,6 @@ export default async function Home() {
   if (process.env.APP_VARIANT === "school")
     redirect(`/schools/${process.env.SCHOOL_SLUG ?? "my-school"}`);
   const { products, source } = await getProducts();
-  const readyCount = products.filter(
-    (product) => product.status === "ready",
-  ).length;
   const featured = [...products]
     .sort(
       (a, b) =>
@@ -35,128 +33,77 @@ export default async function Home() {
     );
   return (
     <>
-      <section className="hero hero-premium">
-        <div className="hero-artwork" aria-hidden="true" />
-        <div className="hero-coordinate" aria-hidden="true">
-          CHAYLUEKLAB / DIGITAL COLLECTION
-        </div>
-        <div className="hero-copy">
-          <span className="pill">
-            <span className="dot" /> WORAMET AI LAB · BUILT FOR EDUCATION
+      <section
+        className="school-store-hero"
+        aria-labelledby="school-store-title"
+      >
+        <div className="school-store-copy">
+          <span className="school-store-kicker">
+            WORAMET AI LAB <span /> ซอฟต์แวร์เพื่อการศึกษา
           </span>
-          <h1>
-            ออกแบบเวลาใหม่
+          <h1 id="school-store-title">
+            ระบบโรงเรียน
             <br />
-            ให้<span className="gradient-text">โรงเรียนของคุณ</span>
+            ลองก่อนเลือก
           </h1>
           <p>
-            พื้นที่ของเครื่องมือที่คิดมาเพื่องานโรงเรียน
-            <br className="desktop-only" />
-            รวมโปรแกรมสำหรับโรงเรียนไทย ตั้งแต่รับสมัคร
-            <br className="desktop-only" />
-            ไปจนถึงงานวิชาการและบริหาร
+            รับสมัคร เช็กชื่อ ทำเว็บโรงเรียน และจัดกีฬาสี
+            ลองทำงานจริงในเดโมด้วยข้อมูลสมมติ
           </p>
-          <div className="row hero-buttons">
+          <div className="school-store-actions">
             <Link className="btn" href="/products">
-              ค้นหาโปรแกรมของคุณ <ArrowRight size={18} />
+              ดูระบบทั้งหมด <ArrowRight size={17} />
             </Link>
             <Link className="btn ghost" href="/demo">
-              ทดลองใช้งาน <ArrowUpRight size={18} />
+              ทดลองใช้งาน <ArrowUpRight size={16} />
             </Link>
           </div>
-          <p className="hero-status">
-            {readyCount === 0
-              ? "อยู่ระหว่างพัฒนา · ทดลองด้วยข้อมูลสมมติก่อนเปิดจำหน่าย"
-              : "ดูสถานะพร้อมจำหน่ายและรายละเอียดของแต่ละโปรแกรม"}
-          </p>
-          <div className="hero-proof">
-            <span>
-              <Check size={15} /> รายละเอียด Source Code และคู่มือ
+          <Link
+            className="school-store-procurement"
+            href="/school-systems#procurement"
+          >
+            <ShieldCheck size={16} /> วางระบบและขอเอกสารจัดซื้อ
+          </Link>
+        </div>
+        <figure className="school-store-proof">
+          <figcaption>
+            <span className="school-store-proof-icon">
+              <Trophy size={20} aria-hidden="true" />
             </span>
             <span>
-              <Check size={15} /> ใช้งานผ่านมือถือ
+              <strong>MET Sport</strong>
+              <small>ตารางแข่งขันและคะแนนทีมสี</small>
             </span>
-          </div>
-          <p>
-            <Link className="subtle-link" href="/school-systems">
-              วางระบบสำหรับโรงเรียนและขอเอกสารจัดซื้อ <ArrowUpRight size={15} />
+            <span className="school-store-live-label">หน้าจอเดโม</span>
+          </figcaption>
+          <Link
+            href="/demo/met-sport"
+            className="school-store-screen"
+            aria-label="ทดลองเดโม MET Sport"
+          >
+            <Image
+              src="/screenshots/demos/met-sport-results.webp"
+              alt="หน้าจอเดโม MET Sport หลังบันทึกผลตัวอย่าง มีตารางแข่งขันและคะแนนสะสมทีมสี"
+              width={1200}
+              height={354}
+              sizes="(max-width: 840px) 92vw, 55vw"
+              priority
+              unoptimized
+            />
+          </Link>
+          <div className="school-store-proof-foot">
+            <span>ข้อมูลสมมติ</span>
+            <Link href="/demo/met-sport">
+              ลองบันทึกผลแข่ง <ArrowUpRight size={15} />
             </Link>
-          </p>
-        </div>
-        <div className="hero-visual">
-          <div className="visual-glow" />
-          <div className="mini-window">
-            <div className="window-bar">
-              <div>
-                <i />
-                <i />
-                <i />
-              </div>
-              <span>MET ADMISSION / ตัวอย่างข้อมูลสมมติ</span>
-              <ShieldCheck size={13} />
-            </div>
-            <div className="window-body">
-              <aside>
-                <span className="mini-logo">
-                  M<span>ET</span>
-                </span>
-                <div className="mini-active">ภาพรวมระบบ</div>
-                <div>ใบสมัครเรียน</div>
-                <div>ตรวจเอกสาร</div>
-                <div>ตั้งค่าโรงเรียน</div>
-                <small>WORAMET AI LAB</small>
-              </aside>
-              <div className="mini-main">
-                <span className="eyebrow">SCHOOL WORKSPACE</span>
-                <h3>ทุกการเริ่มต้น จัดการได้ง่ายขึ้น</h3>
-                <div className="mini-tiles">
-                  <div>
-                    <span>01</span>
-                    <small>สมัครออนไลน์</small>
-                  </div>
-                  <div>
-                    <span>02</span>
-                    <small>ตรวจเอกสาร</small>
-                  </div>
-                  <div>
-                    <span>03</span>
-                    <small>ประกาศผล</small>
-                  </div>
-                </div>
-                <div className="mini-list">
-                  <div className="row spaced">
-                    <strong>ขั้นตอนการรับสมัคร</strong>
-                    <span className="cyan">ดูระบบ →</span>
-                  </div>
-                  {[
-                    "กรอกข้อมูลและเลือกชั้นเรียน",
-                    "แนบเอกสารและตรวจสอบข้อมูล",
-                    "ติดตามสถานะใบสมัคร",
-                  ].map((t, i) => (
-                    <div className="mini-list-row" key={t}>
-                      <span className="step-dot">{i + 1}</span>
-                      <span>{t}</span>
-                      <Check size={13} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
-          <div className="floating-tag">
-            <Code2 size={21} />
-            <div>
-              <b>Designed for your school</b>
-              <small>Next.js + TypeScript + Supabase</small>
-            </div>
-          </div>
-        </div>
+        </figure>
       </section>
-      <section className="section">
+      <section className="section school-store-featured">
         <div className="section-heading">
           <div>
-            <span className="eyebrow">CURATED FOR YOUR SCHOOL</span>
-            <h2>เครื่องมือดี ๆ เริ่มต้นที่นี่</h2>
+            <span className="eyebrow">ระบบแนะนำ</span>
+            <h2>เลือกตามงานโรงเรียน</h2>
             <p className="muted">
               เลือกดูระบบที่เหมาะกับงานของคุณ ทดลองก่อนตัดสินใจ
             </p>

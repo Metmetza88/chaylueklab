@@ -1,6 +1,7 @@
 import "./globals.css";
 import "./premium.css";
 import "./marketplace.css";
+import "./school-store-visual.css";
 import MarketplaceDock, {
   MarketplaceHeader,
 } from "@/components/MarketplaceControls";
@@ -214,13 +215,8 @@ export default async function Layout({
               >
                 <ShieldCheck size={23} aria-hidden="true" />
                 <div>
-                  <strong>
-                    จัดจำหน่ายและออกเอกสารจัดซื้อจัดจ้างในนาม {distributor}
-                  </strong>
-                  <p>
-                    พัฒนาโดย WORAMET AI LAB ·
-                    รองรับการจัดซื้อวิธีเฉพาะเจาะจงตามระเบียบและเงื่อนไขที่สถานศึกษากำหนด
-                  </p>
+                  <strong>จัดจำหน่ายโดย {distributor}</strong>
+                  <p>พัฒนาโดย WORAMET AI LAB · ขอเอกสารจัดซื้อในนามร้าน</p>
                 </div>
                 <StoreDialogButton name="procurement" className="btn ghost">
                   เอกสารเบิกงบ

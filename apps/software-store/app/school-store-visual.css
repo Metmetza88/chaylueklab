@@ -1,0 +1,255 @@
+.school-store-hero {
+  --ink: #122747;
+  --blue: #173fba;
+  --secondary: #465d78;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 55px);
+  margin-top: 14px;
+  padding: clamp(25px, 4.1vw, 56px);
+  border: 1px solid #d6e3f7;
+  border-radius: 23px;
+  background:
+    radial-gradient(ellipse at 76% 110%, #d9e7ff, transparent 63%), #f4f8ff;
+  color: var(--ink);
+}
+.school-store-copy {
+  min-width: 0;
+}
+.school-store-kicker {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+  color: #31589d;
+  font-size: 0.76rem;
+  font-weight: 650;
+}
+.school-store-kicker > span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #bc8732;
+}
+.school-store-copy h1 {
+  margin: 0.5rem 0;
+  font-size: clamp(27px, 4.4vw, 56px);
+  line-height: 1.25;
+  color: var(--ink);
+  letter-spacing: -0.026em;
+}
+.school-store-copy p {
+  color: var(--secondary);
+  line-height: 1.65;
+  max-width: 37ch;
+  margin: 0;
+  font-size: clamp(0.87rem, 1.6vw, 1rem);
+}
+.school-store-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.school-store-actions .btn {
+  background: var(--blue);
+  color: white;
+  border-color: var(--blue);
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+}
+.school-store-actions .btn.ghost {
+  background: #fff;
+  color: #153b9a;
+  border-color: #b8cbed;
+}
+.school-store-procurement {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 12px;
+  color: #254d96;
+  font-size: 0.8rem;
+  min-height: 35px;
+  text-underline-offset: 3px;
+  text-decoration: underline;
+}
+.school-store-proof {
+  min-width: 0;
+  margin: 0;
+  padding: 11px;
+  border-radius: 17px;
+  border: 1px solid #c6d7f3;
+  background: #fff;
+  box-shadow: 0 16px 35px #183c7c19;
+}
+.school-store-proof figcaption {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding: 1px 2px 9px;
+  color: var(--ink);
+}
+.school-store-proof figcaption strong,
+.school-store-proof figcaption small {
+  display: block;
+  line-height: 1.3;
+}
+.school-store-proof figcaption small {
+  color: var(--secondary);
+  font-size: 0.73rem;
+}
+.school-store-proof-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 37px;
+  height: 37px;
+  background: #e9f1ff;
+  color: var(--blue);
+  border-radius: 9px;
+}
+.school-store-live-label {
+  border-radius: 999px;
+  background: #eaf4ea;
+  color: #236038;
+  font-size: 0.7rem;
+  padding: 4px 7px;
+  margin-inline-start: auto;
+  white-space: nowrap;
+}
+.school-store-screen {
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #142a44;
+}
+.school-store-screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.school-store-proof-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 7px;
+  padding-top: 7px;
+  font-size: 0.75rem;
+  color: var(--secondary);
+}
+.school-store-proof-foot a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #254d96;
+  font-weight: 650;
+}
+.market-preview-v2.market-preview-concept {
+  background: #eaf1fb;
+}
+.market-preview-v2.market-preview-concept img {
+  object-fit: contain;
+  object-position: center;
+}
+.market-preview-unavailable {
+  color: #f3f8ff;
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  padding: 6px;
+  text-align: center;
+}
+.market-preview-v2 .market-ribbon {
+  background: #fafcff;
+  box-shadow: 0 1px 4px #1227472b;
+}
+@media (max-width: 840px) {
+  .school-store-hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+  }
+}
+@media (max-width: 600px) {
+  .storefront .market-procurement-banner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px;
+    padding: 8px 9px;
+  }
+  .market-procurement-banner > svg {
+    display: none;
+  }
+  .market-procurement-banner strong {
+    font-size: 0.78rem;
+  }
+  .market-procurement-banner p {
+    font-size: 0.66rem;
+    line-height: 1.4;
+  }
+  .market-procurement-banner .btn {
+    min-height: 39px;
+    padding: 6px 8px;
+    font-size: 0.71rem;
+    white-space: nowrap;
+  }
+  .school-store-hero {
+    border-radius: 15px;
+    padding: 15px 13px 12px;
+  }
+  .school-store-copy h1 {
+    max-width: 20ch;
+    margin-block: 5px 7px;
+  }
+  .school-store-actions {
+    margin-top: 10px;
+  }
+  .school-store-procurement {
+    min-height: 30px;
+    margin-top: 4px;
+  }
+}
+
+/* Restrict the Education-inspired light surfaces to the public catalog. */
+.storefront :is(.featured-collection, .market-catalog) .market-card {
+  --bg: #f3f6fb;
+  --surface: #fff;
+  --surface2: #eef4fd;
+  --fg: #142847;
+  --muted: #465c79;
+  --line: #cbd9ef;
+  --accent: #204ba1;
+  --cyan: #285395;
+  background: #fff;
+  color: var(--fg);
+}
+.storefront :is(.featured-collection, .market-catalog) .market-featured {
+  border-color: #d8b776;
+}
+.storefront
+  :is(.featured-collection, .market-catalog)
+  .market-card
+  .market-budget {
+  background: #edf3fd;
+  color: #183057;
+}
+.storefront
+  :is(.featured-collection, .market-catalog)
+  .market-card
+  .market-offer-order.status {
+  background: #fff1cb;
+  color: #664305;
+  border-color: #e9c76c;
+}
+.storefront
+  :is(.featured-collection, .market-catalog)
+  .market-card
+  .market-offer-ready.status {
+  background: #e4f4e9;
+  color: #22613a;
+  border-color: #8cc9a2;
+}
+.school-store-featured .section-heading h2 {
+  letter-spacing: -0.01em;
+}
